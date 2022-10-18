@@ -2,10 +2,9 @@ import { MoreVertical, Edit, FileText, Archive, Trash, Trash2 } from 'react-feat
 
 // ** Reactstrap Imports
 import { Badge, UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap'
-import axios from 'axios'
+// import axios from 'axios'
 // ** Vars
 // const states = ['success', 'danger', 'warning', 'info', 'dark', 'primary', 'secondary']
-
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 const MySwal = withReactContent(Swal)

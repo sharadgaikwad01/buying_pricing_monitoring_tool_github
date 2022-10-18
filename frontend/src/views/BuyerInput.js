@@ -136,7 +136,6 @@ const BuyerInput = () => {
     await axios.get(`http://localhost:8080/supplier_input`, { params: { searchSupplierNumber, searchRequestedDate } }).then((res) => {
       setsupplierInputsData(res.data.data.supplierInputs)
       setsupllierNumberOptions(res.data.data.supplierIDOptions)
-      setarticleOptions(res.data.data.articleOptions)
     })
 
   }
@@ -163,7 +162,6 @@ const BuyerInput = () => {
     await axios.get(`http://localhost:8080/supplier_input`, { params: { searchSupplierNumber, searchRequestedDate } }).then((res) => {
       setsupplierInputsData(res.data.data.supplierInputs)
       setsupllierNumberOptions(res.data.data.supplierIDOptions)
-      setarticleOptions(res.data.data.articleOptions)
     })
   }
 
@@ -178,6 +176,19 @@ const BuyerInput = () => {
     {
       name: '#',
       cell: (row, index) => index + 1
+      // minWidth: 5,
+      // width: 10
+    },
+    {
+      name: 'Actions',
+      allowOverflow: true,
+      cell: (row) => {
+        return (
+          <div className='d-flex'>
+            <Edit size={15} onClick={(e) => handleEdit(e, row)} />
+          </div>
+        )
+      }
     },
     {
       name: 'Supplier No.',
@@ -247,17 +258,6 @@ const BuyerInput = () => {
       name: 'Price Finalize Date',
       sortable: true,
       selector: row => row.negotiate_final_price
-    },    
-    {
-      name: 'Actions',
-      allowOverflow: true,
-      cell: (row) => {
-        return (
-          <div className='d-flex'>
-            <Edit size={15} onClick={(e) => handleEdit(e, row)} />
-          </div>
-        )
-      }
     }
   ]
   return (

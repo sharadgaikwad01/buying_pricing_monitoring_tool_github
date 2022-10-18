@@ -260,26 +260,26 @@ const Home = () => {
               />
             </Col>
           </Row>
+          <Row className='mt-1 mb-50'>
+            <div className='react-dataTable'>
+              <DataTable
+                noHeader
+                pagination
+                selectableRowsNoSelectAll
+                columns={columns}
+                paginationPerPage={50}
+                className='react-dataTable'
+                sortIcon={<ChevronDown size={10} />}
+                paginationDefaultPage={currentPage + 1}
+                paginationComponent={CustomPagination}
+                // data={searchValue.length ? filteredData : data}
+                data={dataToRender()}
+              />
+            </div>
+          </Row>
         </CardBody>       
-        <div className='react-dataTable'>
-          <DataTable
-            noHeader
-            pagination
-            selectableRowsNoSelectAll
-            columns={columns}
-            paginationPerPage={50}
-            className='react-dataTable'
-            sortIcon={<ChevronDown size={10} />}
-            paginationDefaultPage={currentPage + 1}
-            paginationComponent={CustomPagination}
-            // data={searchValue.length ? filteredData : data}
-            data={dataToRender()}
-          />
-        </div>
       </Card>
       <AddNewModal open={modal} handleModal={handleModal} />
-      
-      
     </Fragment>
   )
 }
