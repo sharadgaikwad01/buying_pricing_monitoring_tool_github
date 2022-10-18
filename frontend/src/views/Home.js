@@ -1,5 +1,5 @@
 // ** Table Data & Columns
-import { columns } from './data'
+// import { columns } from './data'
 import { Fragment, useState, forwardRef, useEffect } from 'react'
 import Select from 'react-select'
 
@@ -301,6 +301,18 @@ const Home = () => {
       cell: (row, index) => index + 1
     },
     {
+      name: 'Actions',
+      allowOverflow: true,
+      cell: (row) => {
+        return (
+          <div className='d-flex'>
+            <Edit size={15} onClick={(e) => handleEdit(e, row)} />
+            <Trash size={15} onClick={(e) => handleDelete(e, row)} />
+          </div>
+        )
+      }
+    },
+    {
       name: 'Supplier Number',
       sortable: true,
       selector: row => row.suppl_no
@@ -342,18 +354,6 @@ const Home = () => {
       cell: row => {
         return (
           row.action_status
-        )
-      }
-    },
-    {
-      name: 'Actions',
-      allowOverflow: true,
-      cell: (row) => {
-        return (
-          <div className='d-flex'>
-            <Edit size={15} onClick={(e) => handleEdit(e, row)} />
-            <Trash size={15} onClick={(e) => handleDelete(e, row)} />
-          </div>
         )
       }
     }

@@ -59,7 +59,7 @@ module.exports = function(app, con) {
             condition = condition + " AND request_date = '" +req.query.searchRequestedDate+"'"
         }
 
-        var query = "SELECT country_name, bdm_global_umbrella_no, bdm_global_umbrella_name, suppl_no, suppl_name, suppl_name_tl, vat_no, art_no, art_name, art_name_tl, unit_nnbp, request_date, new_price, price_change_reason, suppl_updated_datetime, suppl_updated_by, negotiate_final_price, internal_metro_comment, price_increase_communicated_date, price_increase_effective_date, buyer_name, buyer_updated_datetime, price_increase_perc, agreed_price_increase_perc, price_difference, price_difference_perc, action_status, record_insert_date FROM public.vw_request_details where action_status='Open' and new_price IS NOT NULL and request_date IS NOT NULL " + condition;
+        var query = "SELECT country_name, bdm_global_umbrella_no, bdm_global_umbrella_name, suppl_no, suppl_name, suppl_name_tl, vat_no, art_no, art_name, art_name_tl, current_price, request_date, new_price, price_change_reason, suppl_updated_datetime, suppl_updated_by, negotiate_final_price, internal_metro_comment, price_increase_communicated_date, price_increase_effective_date, buyer_name, buyer_updated_datetime, price_increase_perc, agreed_price_increase_perc, price_difference, price_difference_perc, action_status, record_insert_date FROM public.vw_request_details where action_status='Open' and new_price IS NOT NULL and request_date IS NOT NULL " + condition;
 
         console.log(query)
 		
