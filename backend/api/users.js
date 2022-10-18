@@ -39,10 +39,10 @@ module.exports = function(app, con) {
 	app.post('/add_user_input', function(req, res){
 		// var role = 'Admin';
 		// usp_addNewUser('id','user_name','email','emp_id','user_role')
-		if(req.body.id != 'undefined' || req.body.id != 0){
-			sql=`CALL public.usp_addNewUser('` + req.body.id + `','` + req.body.name +`','`+ req.body.email +`',`+ req.body.emp_id +`,`+ req.body.emp_id +`,'` + req.body.user_type + `','','','','` + req.body.user_role + `');`;
+		if(req.body.user_id == 'undefined' || req.body.user_id == 0){
+			sql=`CALL public.usp_addNewUser('0','` + req.body.name +`','`+ req.body.email +`','`+ req.body.emp_id +`','`+ req.body.emp_id +`','` + req.body.user_type + `','','','','` + req.body.user_role + `');`;
 		}else{
-		sql=`CALL public.usp_addNewUser('','` + req.body.name +`','`+ req.body.email +`',`+ req.body.emp_id +`,`+ req.body.emp_id +`,'` + req.body.user_type + `','','','','` + req.body.user_role + `');`;
+			sql=`CALL public.usp_addNewUser('` + req.body.user_id + `','` + req.body.name +`','`+ req.body.email +`','`+ req.body.emp_id +`','`+ req.body.emp_id +`','` + req.body.user_type + `','','','','` + req.body.user_role + `');`;		
 		}
 		console.log(sql);
 		con.query(sql, function(err, result) {

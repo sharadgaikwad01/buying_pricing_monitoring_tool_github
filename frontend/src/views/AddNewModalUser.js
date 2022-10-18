@@ -48,13 +48,14 @@ const AddNewModal = ({ open, handleModal }) => {
     const emp_id = data.emp_id
     const user_role = data.user_role
     const user_type = data.user_type
+    const user_id = data.user_id
 
     handleModal(false)
     
     axios({
       method: "post",
       url: "http://localhost:8080/add_user_input",
-      data: { name, email, emp_id, user_role, user_type }
+      data: { name, email, emp_id, user_role, user_type, user_id }
     })
       .then(function (success) {
         //handle success        
@@ -166,11 +167,11 @@ const AddNewModal = ({ open, handleModal }) => {
                 render={({ field }) => <Input type="text"{...field} placeholder='Email' invalid={errors.email && true} />}
               />
               <Controller
-                id='id'
-                name='id'
-                defaultValue=''
+                id='user_id'
+                name='user_id'
+                defaultValue='0'
                 control={control}
-                render={({ field }) => <Input type="hidden"{...field} placeholder='id' invalid={errors.id && true} />}
+                render={({ field }) => <Input type="hidden"{...field} placeholder='user_id' invalid={errors.user_id && true}/>}
               />
               {errors.email && <FormFeedback>{"Email is a required field"}</FormFeedback>}
             </InputGroup>
