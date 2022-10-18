@@ -33,6 +33,7 @@ const Avatar = forwardRef((props, ref) => {
   // ** Function to extract initials from content
   const getInitials = str => {
     const results = []
+    console.log(str)
     const wordArray = str.split(' ')
     wordArray.forEach(e => {
       results.push(e[0], e[1])

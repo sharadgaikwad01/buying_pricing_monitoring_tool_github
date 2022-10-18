@@ -11,12 +11,12 @@ const LoginCover = () => {
   const { skin } = useSkin()
 
   const illustration = skin === 'dark' ? 'login-v2-dark.svg' : 'login-v2.svg',
-    source = require(`@src/assets/images/pages/${illustration}`).default
+  source = require(`@src/assets/images/pages/${illustration}`).default
   
-    const auth_token = localStorage.getItem('token')
-    if (auth_token) {
-      window.location.replace('http://localhost:3000/home')
-    }
+  const auth_token = localStorage.getItem('token')
+  if (auth_token) {
+    window.location.replace('http://localhost:3000/home')
+  }
 
   const handleLogin = () => {
     window.location.replace('http://localhost:8080/api/v1/login')

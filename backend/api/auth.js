@@ -4,9 +4,21 @@ const { generators } = require('openid-client');
 const code_verifier = generators.codeVerifier();
 const code_challenge = generators.codeChallenge(code_verifier);
 const { Issuer } = require('openid-client');
+const { Pool, Client } = require('pg');
+var config = require('./../config');
 
 let client = undefined;
 var token = '';
+
+const clientDB = new Client({
+	user: config.db_user,
+	host: config.db_host,
+	database: config.db_name,
+	password: config.db_password,
+	port: config.db_port,
+})
+clientDB.connect();
+console.log(clientDB);
 
 Issuer.discover('https://idam.metrosystems.net') // => Promise
   .then((idam) => {
@@ -14,6 +26,7 @@ Issuer.discover('https://idam.metrosystems.net') // => Promise
     client = new idam.Client({
         client_id: 'BUYING_PRICING_MONITORING_TOOL',
         client_secret: 'wFq9MLAW4n',
+        realm_id: 'BUY_PRI_M_T',
         redirect_uris: ['http://localhost:8080/api/v1/callback'],
         response_types: ['code'],
     }); // => Client
@@ -26,7 +39,6 @@ router.use((req, res, next) => {
     if (req.query.code == undefined) {
         next()
         return
-
     }
     const params = client.callbackParams(req)
     client.callback('http://localhost:8080/api/v1/callback', params, { code_verifier }) // => Promise
@@ -34,15 +46,48 @@ router.use((req, res, next) => {
 			let user_details = token.claims();
             console.log('received and validated tokens %j', token);
             console.log('validated ID Token claims %j', token.claims());
-			res.redirect(303, 'http://localhost:3000/auth?token='+token.id_token+'&id='+user_details.metro_id+'&email='+user_details.email+'&type=SUPPLIER&country=HUNGERY&vat=123')
+			res.redirect(303, 'http://localhost:3000/auth?token='+token.id_token+'&id='+user_details.metro_id+'&email='+user_details.email)
+            // sql = "SELECT * FROM public.tbl_users where email = '"+user_details.email +"'";
+            // clientDB.query(sql, function(err, result) {
+            //     if (err) {
+            //         res.redirect(303, 'http://localhost:3000/auth?error=User not Exist')
+            //     } else{
+            //         if(result.rowCount == 0){
+            //         	res.redirect(303, 'http://localhost:3000/auth?error=User not Exist');
+            //         }else{
+            //             res.redirect(303, 'http://localhost:3000/auth?token='+token.id_token+'&id='+user_details.metro_id+'&email='+user_details.email+'&type=SUPPLIER&country=HUNGERY&vat=123');
+            //         }				
+            //     }	
+            // });	
         }).catch( err => {
             console.log(err);
         });
     next()
 })
 
-router.get('/api/v1/callback', (req, res, next) => {    
+router.get('/api/v1/callback', (req, res, next) => {  
+    // res.send("callback")  
 })
+
+// module.exports = function(app, con) {
+//     router.get('/api/v1/callback', async (req, res, next) => {
+//         var getUniqueSupplierIdQuery = "SELECT DISTINCT email FROM public.tbl_users WHERE email="+res.email;
+
+//             await con.query(getUniqueSupplierIdQuery, function(err, result) {
+//                 if (err) {
+//                     res.json({ status: false });
+//                     return;
+//                 } else{				
+//                     result.rows.forEach(function(value, key) {
+//                         option = { value: value.suppl_no, label: value.suppl_no }
+//                         supplierIDOptions.push(option);
+//                     });
+//                     data.supplierIDOptions = supplierIDOptions;
+//                 }			
+//             });
+//         // res.send("callback")  
+//     })
+// }
 
 router.get('/api/v1/login', (req, res, next) => {
     if (client == undefined) {

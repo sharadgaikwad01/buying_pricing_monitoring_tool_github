@@ -38,7 +38,7 @@ const UserDropdown = () => {
           <span className='user-status'>{user_type}</span>
         </div>
         {/* <Avatar img={userAvatar} imgHeight='40' imgWidth='40' status='online' /> */}
-        <Avatar color='light-primary' content={user_email} initials />
+        {/* <Avatar color='light-primary' content={user_email} initials /> */}
       </DropdownToggle>
       <DropdownMenu end>
         <DropdownItem onClick={handlelogout}>

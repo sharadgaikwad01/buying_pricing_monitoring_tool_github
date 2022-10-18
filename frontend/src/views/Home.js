@@ -1,3 +1,5 @@
+// ** Table Data & Columns
+import { columns } from './data'
 import { Fragment, useState, forwardRef, useEffect } from 'react'
 import Select from 'react-select'
 
@@ -51,6 +53,7 @@ const BootstrapCheckbox = forwardRef((props, ref) => (
 
 const Home = () => {
   // ** States
+
   const [supplierInputsData, setsupplierInputsData] = useState([])
   const [searchSupplierNumber, setSupplierNumber] = useState('')
   const [searchArticleNumber, setArticleNumber] = useState('')
@@ -81,6 +84,7 @@ const Home = () => {
 
   useEffect(async () => {
     await axios.get(`http://localhost:8080/supplier_input`, { params: { searchSupplierNumber, searchArticleNumber, searchRequestedDate, searchStatus } }).then((res) => {
+      console.log(res.data.data)
       setsupplierInputsData(res.data.data.supplierInputs)
       setsupllierNumberOptions(res.data.data.supplierIDOptions)
       setarticleOptions(res.data.data.articleOptions)
@@ -186,7 +190,7 @@ const Home = () => {
   }
 
   // ** Function to handle date filter
-  const handleRequestedDateFilter = async (date) => {
+  const handleRequestedDateFilter = async (date) => {    
     const arr = []
     date.map(i => {
       const date = new Date(i)
@@ -208,7 +212,7 @@ const Home = () => {
       setsupplierInputsData(res.data.data.supplierInputs)
       setsupllierNumberOptions(res.data.data.supplierIDOptions)
       setarticleOptions(res.data.data.articleOptions)
-    })
+    })    
   }
 
   // ** Function to handle status filter
@@ -356,23 +360,23 @@ const Home = () => {
   ]
   return (
     <Fragment>
-      <Card>
-        <CardHeader className='flex-md-row flex-column align-md-items-center align-items-start border-bottom'>
+      <Card className='pageBox'>
+        <CardHeader className='flex-md-row flex-column align-items-center align-items-start border-bottom'>
           <CardTitle tag='h2'>Inflation Price Data</CardTitle>
           <div className='d-flex mt-md-0 mt-1'>
-            <Button.Ripple className='ms-2 btn-icon' color='primary' onClick={handleModal}>
+            <Button.Ripple className='ms-1 btn-icon' color='primary' onClick={handleModal}>
               <Plus size={16} />
               <span className='align-middle ms-25'>Add New Input</span>
             </Button.Ripple>
-            <Button.Ripple className='ms-2' outline color='warning' onClick={downloadArticleModal}>
+            <Button.Ripple className='ms-1' outline color='warning' onClick={downloadArticleModal}>
               <Download size={14} />
               <span className='align-middle ms-25'>Articles</span>
             </Button.Ripple>
-            <Button.Ripple className='ms-2' outline color='success' onClick={handleUploadArticleModal}>
-              <Upload size={14} />
+            <Button.Ripple className='ms-1' outline color='info' onClick={handleUploadArticleModal}>
+              <Upload size={14}/>
               <span className='align-middle ms-25'>Upload Articles</span>
-            </Button.Ripple>
-            <UncontrolledButtonDropdown className='ms-2'>
+            </Button.Ripple>            
+            <UncontrolledButtonDropdown className='ms-1'>
               <DropdownToggle color='primary' caret outline>
                 <Download size={15} />
               </DropdownToggle>
@@ -380,14 +384,14 @@ const Home = () => {
                 <DropdownItem className='w-100' onClick={() => downloadCSV(data)}>
                   <FileText size={15} />
                   <span className='align-middle ms-50'>CSV</span>
-                </DropdownItem>
+                </DropdownItem>                
               </DropdownMenu>
             </UncontrolledButtonDropdown>
           </div>
         </CardHeader>
         <CardBody>
-          <Row className='mt-1 mb-50'>
-            <Col lg='3' md='6' className='mb-1'>
+          <Row className='g-1 filter-row'>
+            <Col  className='col-auto'>
               {/* <Label className='form-label' for='name'>
                 Supplier Name:
               </Label>
@@ -406,7 +410,7 @@ const Home = () => {
                 onChange={handleSupplierNumberFilter}
               />
             </Col>
-            <Col lg='3' md='6' className='mb-1'>
+            <Col  className='col-auto'>
               <Label className='form-label' for='city'>
                 Article Number:
               </Label>
@@ -424,11 +428,11 @@ const Home = () => {
                 onChange={handleArticleFilter}
               />
             </Col>
-            <Col lg='3' md='6' className='mb-1'>
+            <Col  className='col-auto'>
               <Label className='form-label' for='date'>
                 Requested Date:
-              </Label>
-              <Flatpickr
+              </Label>              
+              <Flatpickr 
                 className='form-control'
                 value={searchRequestedDate}
                 onChange={date => handleRequestedDateFilter(date)}
@@ -438,7 +442,7 @@ const Home = () => {
                 }}
               />
             </Col>
-            <Col lg='3' md='6' className='mb-1'>
+            <Col className='col-auto'>
               <Label className='form-label' for='salary'>
                 Status:
               </Label>
