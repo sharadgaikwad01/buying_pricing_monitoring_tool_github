@@ -91,4 +91,18 @@ module.exports = function(app, con) {
             }			
 		});
 	});
+
+	app.post('/delete_user_input', async function(req, res){
+		var query = "DELETE FROM public.tbl_users where id = '"+req.body.id +"'";
+		console.log(query);
+		await con.query(query, function(err, result) {
+			if (err) {
+				res.json({ status: false });
+				return;
+			} else{				
+				res.json({ status: true, data: result.rows });
+				return;
+            }			
+		});
+	});
 }

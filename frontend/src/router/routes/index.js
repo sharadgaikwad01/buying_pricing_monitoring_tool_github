@@ -13,6 +13,10 @@ const Routes = [
     component: lazy(() => import('../../views/Home'))
   },
   {
+    path: '/users',
+    component: lazy(() => import('../../views/Users'))
+  },
+  {
     path: '/buyer_input',
     component: lazy(() => import('../../views/BuyerInput'))
   },
