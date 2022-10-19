@@ -18,37 +18,72 @@ import '@styles/react/libs/flatpickr/flatpickr.scss'
 
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
-// import { useState } from 'react'
+
+import { useState, useEffect } from 'react'
 const MySwal = withReactContent(Swal)
 
-const AddNewModal = ({ open, handleModal }) => {
-  // ** State
-  // const [Picker, setPicker] = useState('')
-  // const { id } = handleModal.params;
-  // const isAddMode = !id;
-  // ** Custom close btn
-  const CloseBtn = <X className='cursor-pointer' size={15} onClick={handleModal} />
+
+const AddNewModalUser = ({ open, handleModal, rowData, setUsersInputsData }) => {
+  // const [UserData, setUsersData] = useState({user_name:'', email:'', user_id:'', emp_id:'', row_id:''})
+  const [NameValue, setNameValue] = useState('')
+  const [EmailValue, setEmailValue] = useState('')
+  const [UserTypeValue, setUserTypeValue] = useState('')
+  const [UserRoleValue, setUserRoleValue] = useState('')
+  const [UserEmpIdValue, setUserEmpIdValue] = useState('')
+  const [UserIdValue, setUserIdValue] = useState(0)
 
   const validationSchema = yup.object().shape({
-    name: yup.string().required(),
+    user_name: yup.string().required(),
     email: yup.string().required().email(),
-    emp_id: yup.string().required().test('len', 'Must be exactly 8 characters', val => val.length === 8),
+    // emp_id: yup.string().required().test('len', 'Must be exactly 8 characters', val => val.length === 8),
+    emp_id: yup.string().required(),
     user_role: yup.string().required(),
     user_type: yup.string().required()
   })
 
-  // ** Hooks
   const {
     control,
+    setValue,
     handleSubmit,
     reset,
     formState: { errors }
   } = useForm({ mode: 'onChange', resolver: yupResolver(validationSchema) })
+  // console.log(rowData)
 
-  // const [UserData, setUsersData] = useState({name:'', email:'', user_id:'', emp_id:''}) 
+  useEffect(async () => {
+    // setUsersData(rowData)
+    if (rowData.user_name) {
+      await setNameValue(rowData.user_name)
+      setValue('user_name', rowData.user_name, { shouldValidate:true })
+    }
+
+    if (rowData.email) {
+      await setEmailValue(rowData.email)
+      setValue('email', rowData.email)
+    }
+
+    if (rowData.user_type) {
+      await setUserTypeValue(rowData.user_type)
+      setValue('user_type', rowData.user_type)
+    }
+    if (rowData.user_role) {
+      await setUserRoleValue(rowData.user_role)
+      setValue('user_role', rowData.user_role)
+    } 
+    if (rowData.metro_id) {
+      await setUserEmpIdValue(rowData.metro_id)
+      setValue('emp_id', rowData.metro_id)
+    }
+    if (rowData.row_id) {
+      await setUserIdValue(rowData.row_id)
+      setValue('user_id', rowData.row_id)
+    }
+    // setEmailValue(rowData.email)
+  }, [rowData])
+  const CloseBtn = <X className='cursor-pointer' size={15} onClick={handleModal} />
 
   const onSubmit = data => {
-    const name = data.name
+    const user_name = data.user_name
     const email = data.email
     const emp_id = data.emp_id
     const user_role = data.user_role
@@ -56,28 +91,42 @@ const AddNewModal = ({ open, handleModal }) => {
     const user_id = data.user_id
 
     handleModal(false)
-    
     axios({
       method: "post",
       url: "http://localhost:8080/add_user_input",
-      data: { name, email, emp_id, user_role, user_type, user_id }
+      data: { user_name, email, emp_id, user_role, user_type, user_id }
     })
-      .then(function (success) {
+      .then(async function (success) {
         //handle success        
-        if (success.data.status) {
-          return MySwal.fire({
-            title: 'Done!',
-            text: 'User Created Successfully!',
-            icon: 'success',
-            customClass: {
-              confirmButton: 'btn btn-primary'
-            },
-            buttonsStyling: false
-          })
-          axios.get(`http://localhost:8080/users`, { params: { searchName, searchStatus, searchRole } }).then((res) => {
-            console.log(res.data.data)
-            setUsersInputsData(res.data.data.users)  
-          })
+        if (success.status) {
+          await setUsersInputsData(success.data.users)
+          if (user_id) {
+            return MySwal.fire({
+              title: 'Done!',
+              text: 'User Updated Successfully!',
+              icon: 'success',
+              customClass: {
+                confirmButton: 'btn btn-primary'
+              },
+              buttonsStyling: false
+            })
+          } else {
+            return MySwal.fire({
+              title: 'Done!',
+              text: 'User Created Successfully!',
+              icon: 'success',
+              customClass: {
+                confirmButton: 'btn btn-primary'
+              },
+              buttonsStyling: false
+            })
+          }
+          
+          
+          // // axios.get(`http://localhost:8080/users`, { params: { searchName, searchStatus, searchRole } }).then((res) => {
+          // //   console.log(res.data.data)
+          // setUsersInputsData(res.data.data.users)  
+          // })
         } else {
           return MySwal.fire({
             title: 'Error',
@@ -138,7 +187,7 @@ const AddNewModal = ({ open, handleModal }) => {
                   options={RoleOptions}
                   className='is-invalid'
                   value={RoleOptions.find((c) => c.value === value)}
-                  onChange={(val) => onChange(val.value)}
+                  onChange={(val) => { onChange(val.value); setValue('user_role', val.value) } }
                 />
               )}
             />
@@ -150,15 +199,14 @@ const AddNewModal = ({ open, handleModal }) => {
               Name
             </Label>
             <InputGroup>
-              
               <Controller
-                id='name'
-                name='name'
+                id='user_name'
+                name='user_name'
                 defaultValue=''
                 control={control}
-                render={({ field }) => <Input type="text"{...field} placeholder='Name' invalid={errors.name && true} />}
+                render={({ field }) => <Input type="text"{...field} placeholder='user_name' value={NameValue} onChange={(e) => { setNameValue(e.target.value); setValue('user_name', e.target.value) } }  invalid={errors.user_name && true} />}
               />
-              {errors.name && <FormFeedback>{"Name is a required field"}</FormFeedback>}
+              {errors.user_name && <FormFeedback>{"Name is a required field"}</FormFeedback>}
             </InputGroup>
           </div>
 
@@ -172,15 +220,16 @@ const AddNewModal = ({ open, handleModal }) => {
                 id='email'
                 name='email'
                 defaultValue=''
+                
                 control={control}
-                render={({ field }) => <Input type="text"{...field} placeholder='Email'  invalid={errors.email && true} />}
+                render={({ field }) => <Input type="text"{...field} placeholder='Email' value={EmailValue} onChange={(e) => { setEmailValue(e.target.value); setValue('email', e.target.value) } }  invalid={errors.email && true} />}
               />
               <Controller
                 id='user_id'
                 name='user_id'
                 defaultValue='0'
                 control={control}
-                render={({ field }) => <Input type="hidden"{...field} placeholder='user_id'  invalid={errors.user_id && true}/>}
+                render={({ field }) => <Input type="hidden"{...field} placeholder='user_id' value={UserIdValue}  invalid={errors.user_id && true}/>}
               />
               {errors.email && <FormFeedback>{"Email is a required field"}</FormFeedback>}
             </InputGroup>
@@ -191,13 +240,12 @@ const AddNewModal = ({ open, handleModal }) => {
               Employee ID
             </Label>
             <InputGroup>
-              
               <Controller
                 id='emp_id'
                 name='emp_id'
                 defaultValue=''
                 control={control}
-                render={({ field }) => <Input type="text"{...field} placeholder='Employee ID' invalid={errors.emp_id && true} />}
+                render={({ field }) => <Input type="text"{...field} placeholder='Employee ID' value={UserEmpIdValue} invalid={errors.emp_id && true} />}
               />
               {errors.emp_id && <FormFeedback>{"Employee ID is a required & must be 8 Digit"}</FormFeedback>}
             </InputGroup>
@@ -234,4 +282,4 @@ const AddNewModal = ({ open, handleModal }) => {
   )
 }
 
-export default AddNewModal
+export default AddNewModalUser

@@ -8,7 +8,7 @@ import axios from 'axios'
 
 // ** Add New Modal Component
 import Flatpickr from 'react-flatpickr'
-import AddNewModal from './AddNewModalUser'
+import AddNewModalUser from './AddNewModalUser'
 // import DownloadArticliesModal from './DownloadArticlesModal'
 // import UploadArticliesModal from './UploadArticliesModal'
 import ReactPaginate from 'react-paginate'
@@ -60,7 +60,7 @@ const Home = () => {
 
   const [UsersInputsData, setUsersInputsData] = useState([])
   const [searchName, setsearchname] = useState('')
-  // const [rowData, setRowData] = useState([])
+  const [rowData, setRowData] = useState([])
   // const [searchRequestedDate, setSearchRequestedDate] = useState('')
   const [searchStatus, setSearchStatus] = useState('')
   const [searchRole, setsearchRole] = useState('')
@@ -71,15 +71,18 @@ const Home = () => {
   // const [uploadArticleModal, setUploadArticleModal] = useState(false)
 
   const [currentPage, setCurrentPage] = useState(0)
+  // const [rowData, setrowData] = useState([])
   // ** Function to handle Modal toggle
   const handleModal = () => setModal(!modal)
   const downloadArticleModal = () => setSupplierInputModal(!supplierInputModal)
+  const [UserData] = useState({user_name:'', email:'',  emp_id:'', row_id:'', user_type:'', user_role: ''})
   // const handleUploadArticleModal = () => setUploadArticleModal(!uploadArticleModal)
 
   // ** Function to handle Pagination
   const handlePagination = page => {
     setCurrentPage(page.selected)
   }
+   
 
   useEffect(async () => {
     await axios.get(`http://localhost:8080/users`, { params: { searchName, searchStatus, searchRole } }).then((res) => {
@@ -196,7 +199,15 @@ const Home = () => {
     console.log(`tttttttttttttttttt${row}`)
     console.log(`tttttttttttttttttt${row.row_id}`)
     handleModal()
-    setUsersData(row)
+    setRowData(row)
+  }
+  
+  const handleAdd = async (e) => {
+    e.preventDefault()
+    // console.log(`tttttttttttttttttt${row}`)
+    // console.log(`tttttttttttttttttt${row.row_id}`)
+    handleModal()
+    setRowData(UserData)
   }
   
   const handleDelete = (e, row) => {
@@ -333,7 +344,7 @@ const Home = () => {
         <CardHeader className='flex-md-row flex-column align-md-items-center align-items-start border-bottom'>
           <CardTitle tag='h2'>Users Data</CardTitle>
           <div className='d-flex mt-md-0 mt-1'>
-            <Button.Ripple className='ms-2 btn-icon' color='primary' onClick={handleModal}>
+            <Button.Ripple className='ms-2 btn-icon' color='primary' onClick={handleAdd}>
               <Plus size={16} />
               <span className='align-middle ms-25'>Add New User</span>
             </Button.Ripple>
@@ -418,7 +429,7 @@ const Home = () => {
           </Row>
         </CardBody>       
       </Card>
-      <AddNewModal open={modal} handleModal={handleModal} />
+      <AddNewModalUser open={modal} handleModal={handleModal} rowData={rowData} setUsersInputsData={setUsersInputsData} />
     </Fragment>
   )
 }

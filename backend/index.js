@@ -10,7 +10,7 @@ const { Pool, Client } = require('pg')
 //=========== API modules ===================
 var auth = require('./api/auth');
 var supplierInput = require('./api/supplier_input')
-var users = require('./api/users')
+var users = require('./api/usersModal')
 
 //=========== Create server ===================
 var app = express();
