@@ -120,9 +120,20 @@ const DownloadArticliesModal = ({ open, handleModal, supllierNumberOptions }) =>
                                 render={({ field: { onChange, value } }) => (
                                     <Select
                                         options={supllierNumberOptions}
-                                        className='is-invalid'
+                                        className='is-invalid select-custom'
+                                        classNamePrefix="react-select"
                                         value={supllierNumberOptions.find((c) => c.value === value)}
                                         onChange={(val) => onChange(val.value)}
+                                        theme={(theme) => ({
+                                            ...theme,
+                                            borderRadius: '4px',
+                                            height: "20px",
+                                            maxHeight: "30px",
+                                            colors: {
+                                              ...theme.colors,
+                                              primary: "#003B7E"
+                                            }
+                                          })}
                                     />
                                 )}
                             />

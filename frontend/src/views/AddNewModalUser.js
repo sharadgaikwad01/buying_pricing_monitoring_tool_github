@@ -137,6 +137,7 @@ const AddNewModal = ({ open, handleModal }) => {
                 <Select
                   options={RoleOptions}
                   className='is-invalid select-custom'
+                  classNamePrefix="react-select"
                   value={RoleOptions.find((c) => c.value === value)}
                   onChange={(val) => onChange(val.value)}
                 />
@@ -214,6 +215,7 @@ const AddNewModal = ({ open, handleModal }) => {
                 <Select
                   options={user_typeOptions}
                   className='is-invalid select-custom'
+                  classNamePrefix="react-select"
                   value={user_typeOptions.find((c) => c.value === value)}
                   onChange={(val) => onChange(val.value)}
                   
