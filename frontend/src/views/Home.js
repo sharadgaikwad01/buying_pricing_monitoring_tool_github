@@ -342,7 +342,7 @@ const Home = () => {
     {
       name: 'Category',
       sortable: true,
-      width: '100px',
+      width: '150px',
       selector: row => row.bdm_global_umbrella_name
     },
     {
@@ -376,7 +376,7 @@ const Home = () => {
   ]
   return (
     <Fragment>
-      <Card className='pageBox'>
+      <Card className='pageBox supplier-screen'>
         <CardHeader className='flex-md-row flex-column align-items-center align-items-start border-bottom'>
           <CardTitle tag='h2'>Inflation Price Data</CardTitle>
           <div className='d-flex mt-md-0 mt-1'>

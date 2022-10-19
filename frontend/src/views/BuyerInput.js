@@ -277,7 +277,7 @@ const BuyerInput = () => {
   ]
   return (
     <Fragment>
-      <Card className='pageBox'>
+      <Card className='pageBox buyer-screen'>
         <CardHeader className='flex-md-row flex-column align-md-items-center align-items-start border-bottom'>
           <CardTitle tag='h2'>Inflation Price Data</CardTitle>
           <UncontrolledButtonDropdown className='ms-2'>

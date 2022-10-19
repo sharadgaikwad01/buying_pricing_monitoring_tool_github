@@ -56,7 +56,7 @@ label {
 }
 body{
     background: none;
-    background-image: url('../images/metro/banner/banner.webp');
+    background-image: url('../images/metro/banner/white-bg-blur.jpg');
     background-size: cover;
     background-position: center center;
     background-attachment: fixed;
@@ -861,21 +861,28 @@ input.form-control{
 .bordered-layout .dropdown-menu{
     box-shadow: 0 5px 25px rgb(34 41 47 / 10%);
 }
-.select-custom {
-    border: 1px solid #d8d6de !important;
-    border-radius: 4px !important;
-    box-shadow: unset !important;
-}
-.select-custom div{
-    box-shadow: unset !important;
-}
-.select-custom div:hover {
-    border: 0 !important;
-    box-shadow: unset !important;
-}
+// .select-custom {
+//     border: 1px solid #d8d6de !important;
+//     border-radius: 4px !important;
+//     box-shadow: unset !important;
+// }
+// .select-custom div{
+//     box-shadow: unset !important;
+// }
+// .select-custom div:hover {
+//     border: 0 !important;
+//     box-shadow: unset !important;
+// }
 .react-dataTable .rdt_TableHead .rdt_TableHeadRow{
     height: auto !important;
 }
-.filter-buyer{
-    
+.supplier-screen{
+    max-width: 1400px;
+    margin-left: auto;
+    margin-right: auto;
+}
+.buyer-screen{
+    max-width: 1800px;
+    margin-left: auto;
+    margin-right: auto;
 }

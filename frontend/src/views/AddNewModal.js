@@ -128,6 +128,14 @@ const AddNewModal = ({ open, handleModal, supllierNumberOptions }) => {
                   className='is-invalid select-custom'
                   value={supllierNumberOptions.find((c) => c.value === value)}
                   onChange={(val) => { handleSupplierNumberFilter(val); onChange(val.value) } }
+                  theme={(theme) => ({
+                    ...theme,
+                    borderRadius: '4px',
+                    colors: {
+                      ...theme.colors,
+                      primary: "#003B7E"
+                    }
+                  })}
                 />
               )}
             />
@@ -146,6 +154,14 @@ const AddNewModal = ({ open, handleModal, supllierNumberOptions }) => {
                   className='is-invalid select-custom'
                   value={articleOptions.find((c) => c.value === value)}
                   onChange={(val) => onChange(val.value)}
+                  theme={(theme) => ({
+                    ...theme,
+                    borderRadius: '4px',
+                    colors: {
+                      ...theme.colors,
+                      primary: "#003B7E"
+                    }
+                  })}
                 />
               )}
             />

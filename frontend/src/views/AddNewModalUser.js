@@ -206,6 +206,7 @@ const AddNewModal = ({ open, handleModal }) => {
                   className='is-invalid select-custom'
                   value={user_typeOptions.find((c) => c.value === value)}
                   onChange={(val) => onChange(val.value)}
+                  
                 />
               )}
             />
