@@ -9,18 +9,17 @@ module.exports = function(app, con) {
 		var condition  = '';
 
         if (req.query.searchName != ''){
-            condition = condition + " AND name = '" +req.query.searchName+"'"
+            condition = condition + " AND name LIKE %'" +req.query.searchName+"'%"
         }
 
-        if (req.query.searchStatus != ''){
-            condition = condition +" AND status = '" +req.query.searchStatus+"'"
+        if (req.query.UserType != ''){
+            condition = condition +" AND user_type = '" +req.query.UserType+"'"
         }
 
         if (req.query.searchRole != ''){
             condition = condition + " AND user_role = '" +req.query.searchRole+"'"
         }
-
-        var query = "SELECT * FROM public.tbl_users" + condition;
+        var query = "SELECT * FROM public.tbl_users where email IS NOT NULL" + condition;
         console.log(query)
         console.log(req.query);
 
@@ -60,8 +59,8 @@ module.exports = function(app, con) {
 				res.json({ status: true });
 				return;
 			} else{
-				//data.users = result.rows
-                res.json({ status: true, data: result.rows });
+				data.users = result.rows
+                res.json({ status: true, data: data });
 				return;
             }			
 		});

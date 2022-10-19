@@ -39,14 +39,15 @@ import {
 } from 'reactstrap'
 
 const MySwal = withReactContent(Swal)
-const statusOptions = [
-  { value: 'buyer', label: 'Buyer' },
-  { value: 'supplier', label: 'Supplier' }
-]
 
 const RoleOptions = [
   { value: 'Admin', label: 'Admin' },
   { value: 'User', label: 'User' }
+]
+
+const user_typeOptions = [
+  { value: 'buyer', label: 'Buyer' },
+  { value: 'supplier', label: 'Supplier' }
 ]
 
 const BootstrapCheckbox = forwardRef((props, ref) => (
@@ -59,10 +60,10 @@ const Home = () => {
   // ** States
 
   const [UsersInputsData, setUsersInputsData] = useState([])
-  const [searchName, setsearchname] = useState('')
+  const [searchName, setsearchName] = useState('')
   const [rowData, setRowData] = useState([])
   // const [searchRequestedDate, setSearchRequestedDate] = useState('')
-  const [searchStatus, setSearchStatus] = useState('')
+  const [UserType, setUserType] = useState('')
   const [searchRole, setsearchRole] = useState('')
 
   const [modal, setModal] = useState(false)
@@ -85,8 +86,8 @@ const Home = () => {
    
 
   useEffect(async () => {
-    await axios.get(`http://localhost:8080/users`, { params: { searchName, searchStatus, searchRole } }).then((res) => {
-      console.log(res.data.data)
+    await axios.get(`http://localhost:8080/users`, { params: { searchName, UserType, searchRole } }).then((res) => {
+      console.log(res.data.data.users)
       setUsersInputsData(res.data.data.users)  
     })
   }, [])
@@ -161,36 +162,29 @@ const Home = () => {
   }
 
   // ** Function to handle supplier filter
-  const handleNameFilter = async(e) => {
-    const searchname = e.value
-    setsearchname(searchname)
-
-    await axios.get(`http://localhost:8080/users`, { params: { searchName, searchStatus, searchRole } }).then((res) => {
-      setUsersInputsData(res.data.data.supplierInputs)
-      
+  const handleNameFilter = async (e) => {
+    const search_Name = e.value
+    setsearchName(search_Name)
+    await axios.get(`http://localhost:8080/users`, { params: { searchName, UserType, searchRole } }).then((res) => {
+      setUsersInputsData(res.data.data.users)
     })
-
   }
 
 
   // ** Function to handle status filter
-  const handleStatusFilter = async (e) => {
-    const searchStatus = e.value
-    setSearchStatus(searchStatus)
-
-    await axios.get(`http://localhost:8080/users`, { params: { searchName, searchStatus, searchRole } }).then((res) => {
-      setUsersInputsData(res.data.data.supplierInputs)
-      
+  const handleUserTypeFilter = async (e) => {
+    const UserType = e.value
+    setUserType(UserType)
+    await axios.get(`http://localhost:8080/users`, { params: { searchName, UserType, searchRole } }).then((res) => {
+      setUsersInputsData(res.data.data.users)
     })
   }
   
   const handleRoleFilter = async (e) => {
     const searchRole = e.value
     setsearchRole(searchRole)
-
-    await axios.get(`http://localhost:8080/users`, { params: { searchName, searchStatus, searchRole } }).then((res) => {
-      setUsersInputsData(res.data.data.supplierInputs)
-      
+    await axios.get(`http://localhost:8080/users`, { params: { searchName, UserType, searchRole } }).then((res) => {
+      setUsersInputsData(res.data.data.users)
     })
   }
 
@@ -371,11 +365,11 @@ const Home = () => {
                <Label className='form-label' for='name'>
                 User Name:
               </Label>
-              <Input className='form-control' id='name' placeholder='User Name' value={searchName} onChange={handleNameFilter} /> 
+              <Input className='form-control' type='text' id='name' placeholder='User Name' value={searchName} onChange={handleNameFilter} /> 
             </Col>
             
             <Col className='mb-1 col-auto'>
-              <Label className='form-label' for='salary'>
+              <Label className='form-label' for='user_role'>
                 Role:
               </Label>
               <Select
@@ -383,30 +377,30 @@ const Home = () => {
                 className='react-select'
                 classNamePrefix='select'
                 defaultValue={RoleOptions[1]}
-                name='status'
+                name='user_role'
                 options={RoleOptions}
                 value={RoleOptions.filter(function(option) {
-                  return option.value === searchStatus
+                  return option.value === searchRole
                 })}
                 onChange={handleRoleFilter}
               />
             </Col>
 
              <Col className='mb-1 col-auto'>
-              <Label className='form-label' for='salary'>
+              <Label className='form-label' for='user_type'>
                 User Type:
               </Label>
               <Select
                 theme={selectThemeColors}
                 className='react-select'
                 classNamePrefix='select'
-                defaultValue={statusOptions[1]}
-                name='status'
-                options={statusOptions}
-                value={statusOptions.filter(function(option) {
-                  return option.value === searchStatus
+                defaultValue={user_typeOptions[1]}
+                name='user_type'
+                options={user_typeOptions}
+                value={user_typeOptions.filter(function(option) {
+                  return option.value === UserType
                 })}
-                onChange={handleStatusFilter}
+                onChange={handleUserTypeFilter}
               />
             </Col>
           </Row>
