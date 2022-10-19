@@ -39,10 +39,10 @@ module.exports = function(app, con) {
 	app.post('/add_user_input', function(req, res){
 		// var role = 'Admin';
 		// usp_addNewUser('id','user_name','email','emp_id','user_role')
-		if(req.body.id != 'undefined' || req.body.id != 0){
-			sql=`CALL public.usp_addNewUser('` + req.body.id + `','` + req.body.name +`','`+ req.body.email +`',`+ req.body.emp_id +`,`+ req.body.emp_id +`,'` + req.body.user_type + `','','','','` + req.body.user_role + `');`;
+		if(req.body.user_id == 'undefined' || req.body.user_id == 0){
+			sql=`CALL public.usp_addNewUser('0','` + req.body.name +`','`+ req.body.email +`','`+ req.body.emp_id +`','`+ req.body.emp_id +`','` + req.body.user_type + `','','','','` + req.body.user_role + `');`;
 		}else{
-		sql=`CALL public.usp_addNewUser('','` + req.body.name +`','`+ req.body.email +`',`+ req.body.emp_id +`,`+ req.body.emp_id +`,'` + req.body.user_type + `','','','','` + req.body.user_role + `');`;
+			sql=`CALL public.usp_addNewUser('` + req.body.user_id + `','` + req.body.name +`','`+ req.body.email +`','`+ req.body.emp_id +`','`+ req.body.emp_id +`','` + req.body.user_type + `','','','','` + req.body.user_role + `');`;		
 		}
 		console.log(sql);
 		con.query(sql, function(err, result) {
@@ -87,6 +87,20 @@ module.exports = function(app, con) {
 				// }				
 				res.json({ status: true, data: result.rows });
 				// res.redirect(303, 'http://localhost:3000/auth?token='+req.query.token+'&id='+req.query.id+'&email='+req.query.email+'&type=SUPPLIER&country=HUNGERY&vat=123')
+				return;
+            }			
+		});
+	});
+
+	app.post('/delete_user_input', async function(req, res){
+		var query = "DELETE FROM public.tbl_users where id = '"+req.body.id +"'";
+		console.log(query);
+		await con.query(query, function(err, result) {
+			if (err) {
+				res.json({ status: false });
+				return;
+			} else{				
+				res.json({ status: true, data: result.rows });
 				return;
             }			
 		});

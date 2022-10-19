@@ -18,16 +18,18 @@ import '@styles/react/libs/flatpickr/flatpickr.scss'
 
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
+// import { useState } from 'react'
 const MySwal = withReactContent(Swal)
 
 const AddNewModal = ({ open, handleModal }) => {
   // ** State
   // const [Picker, setPicker] = useState('')
-
+  // const { id } = handleModal.params;
+  // const isAddMode = !id;
   // ** Custom close btn
   const CloseBtn = <X className='cursor-pointer' size={15} onClick={handleModal} />
 
-  const SupplierInputSchema = yup.object().shape({
+  const validationSchema = yup.object().shape({
     name: yup.string().required(),
     email: yup.string().required().email(),
     emp_id: yup.string().required().test('len', 'Must be exactly 8 characters', val => val.length === 8),
@@ -39,8 +41,11 @@ const AddNewModal = ({ open, handleModal }) => {
   const {
     control,
     handleSubmit,
+    reset,
     formState: { errors }
-  } = useForm({ mode: 'onChange', resolver: yupResolver(SupplierInputSchema) })
+  } = useForm({ mode: 'onChange', resolver: yupResolver(validationSchema) })
+
+  // const [UserData, setUsersData] = useState({name:'', email:'', user_id:'', emp_id:''}) 
 
   const onSubmit = data => {
     const name = data.name
@@ -48,13 +53,14 @@ const AddNewModal = ({ open, handleModal }) => {
     const emp_id = data.emp_id
     const user_role = data.user_role
     const user_type = data.user_type
+    const user_id = data.user_id
 
     handleModal(false)
     
     axios({
       method: "post",
       url: "http://localhost:8080/add_user_input",
-      data: { name, email, emp_id, user_role, user_type }
+      data: { name, email, emp_id, user_role, user_type, user_id }
     })
       .then(function (success) {
         //handle success        
@@ -67,6 +73,10 @@ const AddNewModal = ({ open, handleModal }) => {
               confirmButton: 'btn btn-primary'
             },
             buttonsStyling: false
+          })
+          axios.get(`http://localhost:8080/users`, { params: { searchName, searchStatus, searchRole } }).then((res) => {
+            console.log(res.data.data)
+            setUsersInputsData(res.data.data.users)  
           })
         } else {
           return MySwal.fire({
@@ -100,7 +110,7 @@ const AddNewModal = ({ open, handleModal }) => {
 
   const user_typeOptions = [
     { value: 'buyer', label: 'Buyer' },
-  { value: 'supplier', label: 'Supplier' }
+    { value: 'supplier', label: 'Supplier' }
   ]
 
   return (
@@ -115,7 +125,7 @@ const AddNewModal = ({ open, handleModal }) => {
         <h5 className='modal-title'>New Record</h5>
       </ModalHeader>
       <ModalBody className='flex-grow-1'>
-        <Form onSubmit={handleSubmit(onSubmit)}>
+        <Form onSubmit={handleSubmit(onSubmit)} onReset={reset}>
           <div className='mb-1'>
             <Label className='form-label' for='user_role'>
               Role
@@ -163,14 +173,14 @@ const AddNewModal = ({ open, handleModal }) => {
                 name='email'
                 defaultValue=''
                 control={control}
-                render={({ field }) => <Input type="text"{...field} placeholder='Email' invalid={errors.email && true} />}
+                render={({ field }) => <Input type="text"{...field} placeholder='Email'  invalid={errors.email && true} />}
               />
               <Controller
-                id='id'
-                name='id'
-                defaultValue=''
+                id='user_id'
+                name='user_id'
+                defaultValue='0'
                 control={control}
-                render={({ field }) => <Input type="hidden"{...field} placeholder='id' invalid={errors.id && true} />}
+                render={({ field }) => <Input type="hidden"{...field} placeholder='user_id'  invalid={errors.user_id && true}/>}
               />
               {errors.email && <FormFeedback>{"Email is a required field"}</FormFeedback>}
             </InputGroup>

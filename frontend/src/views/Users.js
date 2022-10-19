@@ -1,5 +1,5 @@
 // ** Table Data & Columns
-import { columns } from './dataUsers'
+// import { columns } from './dataUsers'
 import { Fragment, useState, forwardRef, useEffect } from 'react'
 import Select from 'react-select'
 
@@ -13,14 +13,17 @@ import AddNewModal from './AddNewModalUser'
 // import UploadArticliesModal from './UploadArticliesModal'
 import ReactPaginate from 'react-paginate'
 import DataTable from 'react-data-table-component'
-import { Download, Search, ChevronDown, Share, Printer, FileText, File, Grid, Copy, Plus, Upload } from 'react-feather'
+import { Download, Search, ChevronDown, Share, Printer, FileText, File, Grid, Copy, Plus, Upload, Edit, Trash} from 'react-feather'
 
 import '@styles/react/libs/tables/react-dataTable-component.scss'
 import '@styles/react/libs/flatpickr/flatpickr.scss'
+import Swal from 'sweetalert2'
+import withReactContent from 'sweetalert2-react-content'
 
 // ** Reactstrap Imports
 import {
   Row,
+  Badge,
   Col,
   Card,
   Input,
@@ -35,6 +38,7 @@ import {
   UncontrolledButtonDropdown
 } from 'reactstrap'
 
+const MySwal = withReactContent(Swal)
 const statusOptions = [
   { value: 'buyer', label: 'Buyer' },
   { value: 'supplier', label: 'Supplier' }
@@ -56,18 +60,17 @@ const Home = () => {
 
   const [UsersInputsData, setUsersInputsData] = useState([])
   const [searchName, setsearchname] = useState('')
-
+  // const [rowData, setRowData] = useState([])
   // const [searchRequestedDate, setSearchRequestedDate] = useState('')
   const [searchStatus, setSearchStatus] = useState('')
   const [searchRole, setsearchRole] = useState('')
 
   const [modal, setModal] = useState(false)
+  // 
   const [supplierInputModal, setSupplierInputModal] = useState(false)
   // const [uploadArticleModal, setUploadArticleModal] = useState(false)
 
   const [currentPage, setCurrentPage] = useState(0)
- 
-
   // ** Function to handle Modal toggle
   const handleModal = () => setModal(!modal)
   const downloadArticleModal = () => setSupplierInputModal(!supplierInputModal)
@@ -187,6 +190,142 @@ const Home = () => {
       
     })
   }
+
+  const handleEdit = async (e, row) => {
+    e.preventDefault()
+    console.log(`tttttttttttttttttt${row}`)
+    console.log(`tttttttttttttttttt${row.row_id}`)
+    handleModal()
+    setUsersData(row)
+  }
+  
+  const handleDelete = (e, row) => {
+    const id = row.row_id
+    e.preventDefault()
+    MySwal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, delete it!',
+      customClass: {
+        confirmButton: 'btn btn-primary',
+        cancelButton: 'btn btn-outline-danger ms-1'
+      },
+      buttonsStyling: false
+    }).then(function (result) {
+      if (result.value) {
+        axios({
+          method: "post",
+          url: "http://localhost:8080/delete_user_input",
+          data: { id }
+        })
+          .then(function (success) {
+            //handle success        
+            if (success.data.status) {
+              return MySwal.fire({
+                title: 'Done!',
+                text: 'Record has been deleted successfully',
+                icon: 'success',
+                customClass: {
+                  confirmButton: 'btn btn-primary'
+                },
+                buttonsStyling: false
+              })
+            } else {
+              return MySwal.fire({
+                title: 'Error',
+                text: 'Something went wrong. Please try again later',
+                icon: 'error',
+                customClass: {
+                  confirmButton: 'btn btn-primary'
+                },
+                buttonsStyling: false
+              })
+            }
+          })
+          .catch(function () {
+            return MySwal.fire({
+              title: 'Error',
+              text: 'Something went wrong. Please try again later',
+              icon: 'error',
+              customClass: {
+                confirmButton: 'btn btn-primary'
+              },
+              buttonsStyling: false
+            })
+          })
+      }
+    })
+  }
+  
+  // ** Table Common Column
+  const columns = [
+    {
+      name: 'Sr. No',
+      width: "80px",
+      sortable: true,
+      selector: row => row.row_id
+    },
+    {
+      name: 'Actions',
+      width: "80px",
+      allowOverflow: true,
+      cell: (row) => {
+        return (
+          <div className='d-flex'>
+            <Edit size={15} onClick={(e) => handleEdit(e, row)} />
+            <Trash size={15} onClick={(e) => handleDelete(e, row)} />
+          </div>
+        )
+      }
+    },
+    {
+      name: 'User name',
+      // width: "10",
+      sortable: true,
+      selector: row => row.user_name
+    },
+    {
+      name: 'Email',
+      // width: "auto",
+      sortable: true,
+      selector: row => row.email
+    },
+    {
+      name: 'Emp. ID',
+      // width: "auto",
+      sortable: true,
+      selector: row => row.metro_id
+    },
+    {
+      name: 'User Type',
+      sortable: true,
+      selector: row => row.user_type,
+      cell: row => {
+         return (
+          row.user_type === 'BUYER' ? <Badge color='success' pill>{row.user_type}</Badge> : <Badge color='primary' pill>{row.user_type}</Badge>
+            // row.user_type === 'BUYER' ? `<span class="badge badge-success">${row.user_type}</span>` : `<span class="badge badge-success">${row.user_type}</span>`
+         )
+      }
+    },
+    {
+      name: 'User Role',
+      sortable: true,
+      selector: row => row.user_role,
+      cell: row => {
+         return (
+          row.user_role === 'Admin' ? <Badge color='success' pill>{row.user_role}</Badge> : <Badge color='warning' pill>{row.user_role}</Badge>
+            // row.user_type === 'BUYER' ? `<span class="badge badge-success">${row.user_type}</span>` : `<span class="badge badge-success">${row.user_type}</span>`
+         )
+      }
+    },
+    {
+      name: 'country',
+      sortable: true,
+      selector: row => row.country
+    }  
+  ]
 
   return (
     <Fragment>

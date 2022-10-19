@@ -10,6 +10,7 @@ const { Pool, Client } = require('pg')
 //=========== API modules ===================
 var auth = require('./api/auth');
 var supplierInput = require('./api/supplier_input')
+var users = require('./api/users')
 
 //=========== Create server ===================
 var app = express();
@@ -127,6 +128,7 @@ client.query('SELECT NOW()', (err, res) => {
 app.use("/", auth)
 // app.use("/", auth)
 supplierInput(app, client);
+users(app, client);
 
 app.listen(config.port, () => {
 	console.log("Application is running at localhost:" + config.port)
