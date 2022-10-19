@@ -56,7 +56,7 @@ label {
 }
 body{
     background: none;
-    background-image: url('../images/metro/banner/banner.webp');
+    background-image: url('../images/metro/banner/white-bg-blur.jpg');
     background-size: cover;
     background-position: center center;
     background-attachment: fixed;
@@ -591,7 +591,6 @@ padding: 5px 15px;
     border-radius: 6px;
     // color: #fff;
     font-weight: 600;
-    border: 0;
     padding: 0.5rem 1.2rem !important;
     font-size: 12px;
     line-height: 1 ;
@@ -834,7 +833,7 @@ input.form-control{
     padding-top: 1rem !important;
 }
 .react-dataTable .rdt_TableHead .rdt_TableHeadRow .rdt_TableCol, .react-dataTable .rdt_TableBody .rdt_TableRow .rdt_TableCell{
-    padding: 0.5rem 1rem !important;
+    padding: 0.3rem .5rem !important;
 }
 .react-dataTable .rdt_TableBody .rdt_TableRow .rdt_TableCell{
     min-width: 50px !important;
@@ -848,4 +847,51 @@ input.form-control{
 }
 .horizontal-menu .header-navbar.navbar-brand-center .navbar-header{
     left: unset !important;
+}
+.editTableIcon{
+    margin-left: .1rem;
+
+}
+.deleteTableIcon{
+    margin-left: .1rem;
+}
+.select__placeholder {
+    color: #c3c3c3 !important;
+}
+.bordered-layout .dropdown-menu{
+    box-shadow: 0 5px 25px rgb(34 41 47 / 10%);
+}
+// .select-custom {
+//     border: 1px solid #d8d6de !important;
+//     border-radius: 4px !important;
+//     box-shadow: unset !important;
+// }
+// .select-custom div{
+//     box-shadow: unset !important;
+// }
+// .select-custom div:hover {
+//     border: 0 !important;
+//     box-shadow: unset !important;
+// }
+.react-dataTable .rdt_TableHead .rdt_TableHeadRow{
+    height: auto !important;
+}
+.supplier-screen{
+    max-width: 1400px;
+    margin-left: auto;
+    margin-right: auto;
+}
+.buyer-screen{
+    max-width: 1800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+.user-screen{
+    max-width: 1400px;
+    margin-left: auto;
+    margin-right: auto;
+}
+.react-select__input-container {
+    padding: 0 !important;
+    margin: 0 !important;
 }

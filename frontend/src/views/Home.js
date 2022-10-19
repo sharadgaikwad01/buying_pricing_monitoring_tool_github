@@ -298,16 +298,24 @@ const Home = () => {
   const columns = [
     {
       name: '#',
-      cell: (row, index) => index + 1
+      cell: (row, index) => index + 1,
+      width: '50px',
+      maxWidth: '60px',
+      center : 'yes',
+      style : {
+        align: 'center'
+      }
     },
     {
       name: 'Actions',
       allowOverflow: true,
+      center : 'yes',
+      width: '100px',
       cell: (row) => {
         return (
           <div className='d-flex'>
-            <Edit size={15} onClick={(e) => handleEdit(e, row)} />
-            <Trash size={15} onClick={(e) => handleDelete(e, row)} />
+            <Edit size={15} onClick={(e) => handleEdit(e, row)} className="editTableIcon text-info" />
+            <Trash size={15} onClick={(e) => handleDelete(e, row)} className="deleteTableIcon text-danger ms-1" />
           </div>
         )
       }
@@ -315,41 +323,49 @@ const Home = () => {
     {
       name: 'Supplier Number',
       sortable: true,
+      width: '150px',
       selector: row => row.suppl_no
     },
     {
       name: 'Article Number',
       sortable: true,
+      width: '130px',
       selector: row => row.art_no
     },
     {
       name: 'Art. Desp',
       sortable: true,
+      width: 'auto',
       selector: row => row.art_name_tl
     },
   
     {
       name: 'Category',
       sortable: true,
+      width: '150px',
       selector: row => row.bdm_global_umbrella_name
     },
     {
       name: 'New Price',
       sortable: true,
+      width: '100px',
       selector: row => row.new_price
     },
     {
       name: 'Request Date',
       sortable: true,
+      width: 'auto',
       selector: row => row.request_date
     },
     {
       name: 'Final Price',
       sortable: true,
+      width: '120px',
       selector: row => row.negotiate_final_price
     },
     {
       name: 'Status',
+      width: '100px',
       sortable: row => row.action_status,
       cell: row => {
         return (
@@ -360,7 +376,7 @@ const Home = () => {
   ]
   return (
     <Fragment>
-      <Card className='pageBox'>
+      <Card className='pageBox supplier-screen'>
         <CardHeader className='flex-md-row flex-column align-items-center align-items-start border-bottom'>
           <CardTitle tag='h2'>Inflation Price Data</CardTitle>
           <div className='d-flex mt-md-0 mt-1'>
@@ -436,7 +452,7 @@ const Home = () => {
                 className='form-control'
                 value={searchRequestedDate}
                 onChange={date => handleRequestedDateFilter(date)}
-                id='default-picker'
+                id='default-picker' placeholder='DD/MM/YYYY'
                 options={{
                   dateFormat: 'm/d/Y'
                 }}
@@ -460,22 +476,26 @@ const Home = () => {
               />
             </Col>
           </Row>
+
+          <div className='react-dataTable my-1'>
+            <DataTable
+              noHeader
+              pagination
+              selectableRowsNoSelectAll
+              columns={columns}
+              paginationPerPage={50}
+              className='react-dataTable'
+              sortIcon={<ChevronDown size={10} />}
+              paginationDefaultPage={currentPage + 1}
+              paginationComponent={CustomPagination}
+              // data={searchValue.length ? filteredData : data}
+              data={dataToRender()}
+            />
+          </div>
+
+
         </CardBody>
-        <div className='react-dataTable'>
-          <DataTable
-            noHeader
-            pagination
-            selectableRowsNoSelectAll
-            columns={columns}
-            paginationPerPage={50}
-            className='react-dataTable'
-            sortIcon={<ChevronDown size={10} />}
-            paginationDefaultPage={currentPage + 1}
-            paginationComponent={CustomPagination}
-            // data={searchValue.length ? filteredData : data}
-            data={dataToRender()}
-          />
-        </div>
+
       </Card>
       <AddNewModal open={modal} handleModal={handleModal} supllierNumberOptions={supllierNumberOptions}/>
       <UploadArticliesModal open={uploadArticleModal} handleModal={handleUploadArticleModal} />

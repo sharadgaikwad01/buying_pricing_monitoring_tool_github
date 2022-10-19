@@ -175,12 +175,14 @@ const BuyerInput = () => {
   const columns = [
     {
       name: '#',
+      center: 'yes',
+      width: '50px',
       cell: (row, index) => index + 1
-      // minWidth: 5,
-      // width: 10
     },
     {
-      name: 'Actions',
+      name: 'Actions',      
+      center: 'yes',
+      width: '80px',
       allowOverflow: true,
       cell: (row) => {
         return (
@@ -192,56 +194,67 @@ const BuyerInput = () => {
     },
     {
       name: 'Supplier No.',
-      sortable: true,
+      sortable: true,      
+      width: 'auto',
       selector: row => row.suppl_no
     },
     {
       name: 'Supplier Name',
-      sortable: true,
+      sortable: true,      
+      minWidth: 'auto',
       selector: row => row.suppl_name
     },
     {
       name: 'Article No.',
-      sortable: true,
+      sortable: true,      
+      minWidth: 'auto',
       selector: row => row.art_no
     },
     {
       name: 'Art. Desp',
-      sortable: true,
+      sortable: true,      
+      minWidth: 'auto',
       selector: row => row.art_name_tl
     },
     {
       name: 'Current Price',
-      sortable: true,
+      sortable: true,      
+      minWidth: 'auto',
       selector: row => row.new_price
     },
     {
       name: 'New Price',
-      sortable: true,
+      sortable: true,      
+      minWidth: 'auto',
       selector: row => row.new_price
     },
     {
       name: 'Price Increase in %',
-      sortable: true,
+      sortable: true,      
+      minWidth: 'auto',
       selector: row => row.price_difference_perc
     },
     {
       name: 'Request Creation Date',
-      sortable: true,
+      sortable: true,      
+      minWidth: 'auto',
       selector: row => row.request_date
     },
     {
       name: 'Price Effective Date',
-      sortable: true,
+      sortable: true,      
+      minWidth: 'auto',
       selector: row => row.price_increase_effective_date
     },
     {
       name: 'Reason For Price Change',
-      sortable: true,
+      sortable: true,      
+      minWidth: 'auto',
       selector: row => row.price_increase_effective_date
     },
     {
-      name: 'Status',
+      name: 'Status',      
+      width: 'auto',
       sortable: row => row.action_status,
       cell: row => {
         return (
@@ -251,18 +264,20 @@ const BuyerInput = () => {
     },
     {
       name: 'Final Price',
-      sortable: true,
+      sortable: true,      
+      width: 'auto',
       selector: row => row.negotiate_final_price
     },
     {
       name: 'Price Finalize Date',
-      sortable: true,
+      sortable: true,      
+      width: 'auto',
       selector: row => row.negotiate_final_price
     }
   ]
   return (
     <Fragment>
-      <Card>
+      <Card className='pageBox buyer-screen'>
         <CardHeader className='flex-md-row flex-column align-md-items-center align-items-start border-bottom'>
           <CardTitle tag='h2'>Inflation Price Data</CardTitle>
           <UncontrolledButtonDropdown className='ms-2'>
@@ -278,8 +293,8 @@ const BuyerInput = () => {
             </UncontrolledButtonDropdown>
         </CardHeader>
         <CardBody>
-          <Row className='mt-1 mb-50'>
-          <Col lg='3' md='6' className='mb-1'>
+          <Row className='mb-50 g-1 filter-row filter-buyer'>
+          <Col className='col-auto'>
               {/* <Label className='form-label' for='name'>
                 Supplier Name:
               </Label>
@@ -298,7 +313,7 @@ const BuyerInput = () => {
                 onChange={handleSupplierNumberFilter}
               />
             </Col>
-            <Col lg='3' md='6' className='mb-1'>
+            <Col className='col-auto'>
               <Label className='form-label' for='date'>
                 Requested Date:
               </Label>
@@ -313,8 +328,7 @@ const BuyerInput = () => {
               />
             </Col>
           </Row>
-        </CardBody>
-        <div className='react-dataTable'>
+          <div className='react-dataTable my-1'>
           <DataTable
             noHeader
             pagination
@@ -329,6 +343,8 @@ const BuyerInput = () => {
             data={dataToRender()}
           />
         </div>
+        </CardBody>
+
       </Card>
       <EditSupplierRequestModal open={editSupplierModal} handleModal={handleEdit} rowData={rowData} supllierNumberOptions={supllierNumberOptions} />
     </Fragment>

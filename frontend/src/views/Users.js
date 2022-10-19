@@ -340,7 +340,7 @@ const Home = () => {
 
   return (
     <Fragment>
-      <Card>
+      <Card className='pageBox user-screen'>
         <CardHeader className='flex-md-row flex-column align-md-items-center align-items-start border-bottom'>
           <CardTitle tag='h2'>Users Data</CardTitle>
           <div className='d-flex mt-md-0 mt-1'>
@@ -366,15 +366,15 @@ const Home = () => {
           </div>
         </CardHeader>
         <CardBody>
-          <Row className='mt-1 mb-50'>
-            <Col lg='3' md='6' className='mb-1'>
+          <Row className='g-1 filter-row'>
+            <Col className='mb-1 col-auto'>
                <Label className='form-label' for='name'>
                 User Name:
               </Label>
-              <Input id='name' placeholder='User Name' value={searchName} onChange={handleNameFilter} /> 
+              <Input className='form-control' id='name' placeholder='User Name' value={searchName} onChange={handleNameFilter} /> 
             </Col>
             
-            <Col lg='3' md='6' className='mb-1'>
+            <Col className='mb-1 col-auto'>
               <Label className='form-label' for='salary'>
                 Role:
               </Label>
@@ -392,7 +392,7 @@ const Home = () => {
               />
             </Col>
 
-             <Col lg='3' md='6' className='mb-1'>
+             <Col className='mb-1 col-auto'>
               <Label className='form-label' for='salary'>
                 User Type:
               </Label>
@@ -410,8 +410,8 @@ const Home = () => {
               />
             </Col>
           </Row>
-          <Row className='mt-1 mb-50'>
-            <div className='react-dataTable'>
+          <Row className='mt-1 mb-50 mx-auto'>
+            <div className='react-dataTable my-1'>
               <DataTable
                 noHeader
                 pagination

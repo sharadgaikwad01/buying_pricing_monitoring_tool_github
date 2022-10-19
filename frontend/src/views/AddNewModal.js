@@ -119,15 +119,25 @@ const AddNewModal = ({ open, handleModal, supllierNumberOptions }) => {
             <Label className='form-label' for='supplier_number'>
               Supplier Number
             </Label>
-            <Controller
+            <Controller className="select-custom-wrap"
               name="supplier_number"
               control={control}
               render={({ field: { onChange, value } }) => (
                 <Select
                   options={supllierNumberOptions}
-                  className='is-invalid'
+                  className='is-invalid select-custom'
+                  classNamePrefix="react-select"
                   value={supllierNumberOptions.find((c) => c.value === value)}
                   onChange={(val) => { handleSupplierNumberFilter(val); onChange(val.value) } }
+                  theme={(theme) => ({
+                    ...theme,
+                    borderRadius: '4px',
+                    height: "20px",
+                    colors: {
+                      ...theme.colors,
+                      primary: "#003B7E"
+                    }
+                  })}
                 />
               )}
             />
@@ -137,15 +147,24 @@ const AddNewModal = ({ open, handleModal, supllierNumberOptions }) => {
             <Label className='form-label' for='article_number'>
               Article Number
             </Label>
-            <Controller
+            <Controller className="select-custom-wrap"
               name="article_number"
               control={control}
               render={({ field: { onChange, value } }) => (
                 <Select
                   options={articleOptions}
-                  className='is-invalid'
+                  className='is-invalid select-custom'
+                  classNamePrefix="react-select"
                   value={articleOptions.find((c) => c.value === value)}
                   onChange={(val) => onChange(val.value)}
+                  theme={(theme) => ({
+                    ...theme,
+                    borderRadius: '4px',
+                    colors: {
+                      ...theme.colors,
+                      primary: "#003B7E"
+                    }
+                  })}
                 />
               )}
             />
@@ -185,7 +204,7 @@ const AddNewModal = ({ open, handleModal, supllierNumberOptions }) => {
           <Button className='me-1' color='primary' type='submit'>
             Submit
           </Button>
-          <Button color='secondary' onClick={handleModal} outline>
+          <Button color='danger' onClick={handleModal} outline>
             Cancel
           </Button>
         </Form>

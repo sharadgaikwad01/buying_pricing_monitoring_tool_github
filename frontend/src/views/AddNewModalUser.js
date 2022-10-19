@@ -179,13 +179,14 @@ const AddNewModalUser = ({ open, handleModal, rowData, setUsersInputsData }) => 
             <Label className='form-label' for='user_role'>
               Role
             </Label>
-            <Controller
+            <Controller  className="select-custom-wrap"
               name="user_role"
               control={control}
               render={({ field: { onChange, value } }) => (
                 <Select
                   options={RoleOptions}
-                  className='is-invalid'
+                  className='is-invalid select-custom'
+                  classNamePrefix="react-select"
                   value={RoleOptions.find((c) => c.value === value)}
                   onChange={(val) => { onChange(val.value); setValue('user_role', val.value) } }
                 />
@@ -255,15 +256,17 @@ const AddNewModalUser = ({ open, handleModal, rowData, setUsersInputsData }) => 
             <Label className='form-label' for='user_type'>
               User type
             </Label>
-            <Controller
+            <Controller className="select-custom-wrap"
               name="user_type"
               control={control}
               render={({ field: { onChange, value } }) => (
                 <Select
                   options={user_typeOptions}
-                  className='is-invalid'
+                  className='is-invalid select-custom'
+                  classNamePrefix="react-select"
                   value={user_typeOptions.find((c) => c.value === value)}
                   onChange={(val) => onChange(val.value)}
+                  
                 />
               )}
             />
@@ -273,7 +276,7 @@ const AddNewModalUser = ({ open, handleModal, rowData, setUsersInputsData }) => 
           <Button className='me-1' color='primary' type='submit'>
             Submit
           </Button>
-          <Button color='secondary' onClick={handleModal} outline>
+          <Button color='danger' onClick={handleModal} outline>
             Cancel
           </Button>
         </Form>

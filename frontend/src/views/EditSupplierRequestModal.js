@@ -129,7 +129,8 @@ const EditSupplierRequestModal = ({ open, handleModal, rowData, supllierNumberOp
               render={({ field: { onChange } }) => (
                 <Select
                   options={supllierNumberOptions}
-                  className='is-invalid'
+                  className='is-invalid select-custom'
+                  classNamePrefix="react-select"
                   value={supllierNumberOptions.find((c) => c.value === rowData.suppl_no)}
                   onChange={(val) => { handleSupplierNumberFilter(val); onChange(val.value) }}
                 />
@@ -147,7 +148,8 @@ const EditSupplierRequestModal = ({ open, handleModal, rowData, supllierNumberOp
               render={({ field: { onChange } }) => (
                 <Select
                   options={articleOptions}
-                  className='is-invalid'
+                  className='is-invalid select-custom'
+                  classNamePrefix="react-select"
                   value={articleOptions.find((c) => c.value === rowData.art_no)}
                   onChange={(val) => onChange(val.value)}
                 />
@@ -188,7 +190,7 @@ const EditSupplierRequestModal = ({ open, handleModal, rowData, supllierNumberOp
           <Button className='me-1' color='primary' type='submit'>
             Update
           </Button>
-          <Button color='secondary' onClick={(e) => handleModal(e, false)} outline>
+          <Button color='danger' onClick={(e) => handleModal(e, false)} outline>
             Cancel
           </Button>
         </Form>
