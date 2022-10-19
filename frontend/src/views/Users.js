@@ -260,8 +260,8 @@ const Home = () => {
               />
             </Col>
           </Row>
-          <Row className='mt-1 mb-50'>
-            <div className='react-dataTable'>
+          <Row className='mt-1 mb-50 mx-auto'>
+            <div className='react-dataTable my-1'>
               <DataTable
                 noHeader
                 pagination

@@ -11,7 +11,7 @@ const StatisticsCards = props => {
   const { className, hideChart, iconRight, iconBg, icon, stat, statTitle, options, series, type, height } = props
 
   return (
-    <Card>
+    <Card className='pageBox'>
       <CardBody
         className={classnames('stats-card-body d-flex pt-2', {
           [className]: className,

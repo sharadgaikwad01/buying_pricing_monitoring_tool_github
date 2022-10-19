@@ -188,7 +188,7 @@ const EditSupplierRequestModal = ({ open, handleModal, rowData, supllierNumberOp
           <Button className='me-1' color='primary' type='submit'>
             Update
           </Button>
-          <Button color='secondary' onClick={(e) => handleModal(e, false)} outline>
+          <Button color='danger' onClick={(e) => handleModal(e, false)} outline>
             Cancel
           </Button>
         </Form>

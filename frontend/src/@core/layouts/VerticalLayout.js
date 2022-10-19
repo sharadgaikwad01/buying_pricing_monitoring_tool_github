@@ -97,7 +97,7 @@ const VerticalLayout = props => {
   // ** Vars
   const footerClasses = {
     static: 'footer-static',
-    sticky: 'footer-fixed',
+    // sticky: 'footer-fixed',
     hidden: 'footer-hidden'
   }
 

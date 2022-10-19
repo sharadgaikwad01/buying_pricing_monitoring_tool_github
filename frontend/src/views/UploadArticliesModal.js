@@ -95,7 +95,7 @@ const UploadArticliesModal = ({ open, handleModal }) => {
     <Modal
       isOpen={open}
       toggle={handleModal}
-      className='modal-dialog-centered modal-lg'
+      className=''
       contentClassName='pt-0'
     >
       <ModalHeader className='mb-1' toggle={handleModal} close={CloseBtn} tag='div'>

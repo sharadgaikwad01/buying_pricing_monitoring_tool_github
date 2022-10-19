@@ -101,7 +101,7 @@ const DownloadArticliesModal = ({ open, handleModal, supllierNumberOptions }) =>
         <Modal
             isOpen={open}
             toggle={handleModal}
-            className='modal-dialog-centered modal-sm'
+            className='modal-sm'
             contentClassName='pt-0'
         >
             <ModalHeader className='mb-1' toggle={handleModal} close={CloseBtn} tag='div'>
