@@ -99,7 +99,7 @@ const AddNewModalUser = ({ open, handleModal, rowData, setUsersInputsData }) => 
       .then(async function (success) {
         //handle success        
         if (success.status) {
-          await setUsersInputsData(success.data.users)
+          await setUsersInputsData(success.data.data.users)
           if (user_id) {
             return MySwal.fire({
               title: 'Done!',
