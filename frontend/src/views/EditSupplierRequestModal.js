@@ -26,17 +26,14 @@ const EditSupplierRequestModal = ({ open, handleModal, rowData, supllierNumberOp
   // ** State
   // const [Picker, setPicker] = useState('')
 
+  const country = localStorage.getItem('country')
+  const vat_number = localStorage.getItem('vat')
+
   const [articleOptions, setarticleOptions] = useState([])
-
-  useEffect(async () => {
-    const supplierNumber = rowData.suppl_no
-    await axios.get(`http://localhost:8080/getArticlesBySupplierNumber`, { params: { supplierNumber } }).then((res) => {
-      setarticleOptions(res.data.data.articleOptions)
-    })
-  }, [rowData])
-
-  // ** Custom close btn
-  const CloseBtn = <X className='cursor-pointer' size={15} onClick={(e) => handleModal(e, false)} />
+  const [newPrice, setNewPrice] = useState('')
+  const [reason, setReason] = useState('')
+  const [supplierNumber, setSupplierNumber] = useState('')
+  const [articleNumber, setArticleNumber] = useState('')
 
   const SupplierInputSchema = yup.object().shape({
     new_price: yup.number().required().positive().integer(),
@@ -44,14 +41,40 @@ const EditSupplierRequestModal = ({ open, handleModal, rowData, supllierNumberOp
     supplier_number: yup.string().required(),
     article_number: yup.string().required()
   })
-  // ** Hooks
+
   const {
     control,
+    setValue,
     handleSubmit,
     formState: { errors }
-  } = useForm({ mode: 'onChange', resolver: yupResolver(SupplierInputSchema) })
+  } = useForm({ mode: 'onChange', reValidateMode: 'onChange', resolver: yupResolver(SupplierInputSchema) })  
+
+  useEffect(async () => {
+    if (rowData) {
+      const supplierNumber = rowData.suppl_no
+      await setNewPrice(rowData.new_price)
+      await setReason(rowData.request_date)
+      await setSupplierNumber(rowData.suppl_no)
+      await setArticleNumber(rowData.art_no)
+
+      setValue('new_price', rowData.new_price, { shouldValidate: true })
+      setValue('reason', rowData.request_date, { shouldValidate: true })
+      setValue('supplier_number', rowData.suppl_no, { shouldValidate: true })
+      setValue('article_number', rowData.art_no, { shouldValidate: true })
+
+      await axios.get(`http://localhost:8080/getArticlesBySupplierNumber`, { params: { supplierNumber, country, vat_number } }).then((res) => {
+        setarticleOptions(res.data.data.articleOptions)
+      })
+    }
+  }, [rowData])
+
+  // ** Custom close btn
+  const CloseBtn = <X className='cursor-pointer' size={15} onClick={(e) => handleModal(e, false)} />
+
+  // ** Hooks  
 
   const onSubmit = data => {
+
     const new_price = data.new_price
     const reason = data.reason
     const supplier_number = data.supplier_number
@@ -61,14 +84,14 @@ const EditSupplierRequestModal = ({ open, handleModal, rowData, supllierNumberOp
 
     axios({
       method: "post",
-      url: "http://localhost:8080/add_supplier_input",
+      url: "http://localhost:8080/update_supplier_input",
       data: { new_price, reason, supplier_number, article_number }
     }).then(function (success) {
       //handle success        
       if (success.data.status) {
         return MySwal.fire({
           title: 'Done!',
-          text: 'File has been downloaded!',
+          text: 'Records has been updated successfully.',
           icon: 'success',
           customClass: {
             confirmButton: 'btn btn-primary'
@@ -101,6 +124,7 @@ const EditSupplierRequestModal = ({ open, handleModal, rowData, supllierNumberOp
 
   const handleSupplierNumberFilter = async (value) => {
     const supplierNumber = value.value
+    setValue('article_number', '', { shouldValidate: true })
     await axios.get(`http://localhost:8080/getArticlesBySupplierNumber`, { params: { supplierNumber } }).then((res) => {
       setarticleOptions(res.data.data.articleOptions)
     })
@@ -125,14 +149,14 @@ const EditSupplierRequestModal = ({ open, handleModal, rowData, supllierNumberOp
             </Label>
             <Controller
               name="supplier_number"
+              id="supplier_number"
               control={control}
               render={({ field: { onChange } }) => (
                 <Select
                   options={supllierNumberOptions}
-                  className='is-invalid select-custom'
-                  classNamePrefix="react-select"
-                  value={supllierNumberOptions.find((c) => c.value === rowData.suppl_no)}
-                  onChange={(val) => { handleSupplierNumberFilter(val); onChange(val.value) }}
+                  className='is-invalid'
+                  value={supllierNumberOptions.find((c) => c.value === supplierNumber)}
+                  onChange={(val) => { setSupplierNumber(val); handleSupplierNumberFilter(val); setValue('supplier_number', val, { shouldValidate: true }); onChange(val.value) }}
                 />
               )}
             />
@@ -144,14 +168,14 @@ const EditSupplierRequestModal = ({ open, handleModal, rowData, supllierNumberOp
             </Label>
             <Controller
               name="article_number"
+              id="article_number"
               control={control}
               render={({ field: { onChange } }) => (
                 <Select
                   options={articleOptions}
-                  className='is-invalid select-custom'
-                  classNamePrefix="react-select"
-                  value={articleOptions.find((c) => c.value === rowData.art_no)}
-                  onChange={(val) => onChange(val.value)}
+                  className='is-invalid'
+                  value={articleOptions.find((c) => c.value === articleNumber)}
+                  onChange={(val) => { setArticleNumber(val); onChange(val.value); setValue('article_number', val.value, { shouldValidate: true }) }}
                 />
               )}
             />
@@ -169,7 +193,7 @@ const EditSupplierRequestModal = ({ open, handleModal, rowData, supllierNumberOp
                 id='new_price'
                 name='new_price'
                 control={control}
-                render={({ field }) => <Input type="number"{...field} placeholder='e.g. 65' value={rowData.new_price} invalid={errors.new_price && true} />}
+                render={({ field }) => <Input type="number"{...field} placeholder='e.g. 65' value={newPrice} onChange={e => { setNewPrice(e.target.value); setValue('new_price', e.target.value, { shouldValidate: true }) }} invalid={errors.new_price && true} />}
               />
               {errors.new_price && <FormFeedback>{"New Price is a required field"}</FormFeedback>}
             </InputGroup>
@@ -183,14 +207,14 @@ const EditSupplierRequestModal = ({ open, handleModal, rowData, supllierNumberOp
               name='reason'
               defaultValue=''
               control={control}
-              render={({ field }) => <Input type='textarea' rows='3' {...field} placeholder='Reason' value={''} invalid={errors.reason && true} />}
+              render={({ field }) => <Input type='textarea' rows='5' {...field} placeholder='Reason' value={reason} onChange={e => { setReason(e.target.value); setValue('reason', e.target.value, { shouldValidate: true }) }} invalid={errors.reason && true} />}
             />
             {errors.reason && <FormFeedback>{"Reason is a required field"}</FormFeedback>}
           </div>
           <Button className='me-1' color='primary' type='submit'>
             Update
           </Button>
-          <Button color='danger' onClick={(e) => handleModal(e, false)} outline>
+          <Button color='secondary' onClick={(e) => handleModal(e, false)} outline>
             Cancel
           </Button>
         </Form>

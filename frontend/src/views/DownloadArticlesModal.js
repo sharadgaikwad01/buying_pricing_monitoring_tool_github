@@ -22,9 +22,11 @@ const MySwal = withReactContent(Swal)
 
 const DownloadArticliesModal = ({ open, handleModal, supllierNumberOptions }) => {
 
+    const country = localStorage.getItem('country')
+    const vat_number = localStorage.getItem('vat')
+
     function convertArrayOfObjectsToCSV(array) {
         let result
-
         const columnDelimiter = ','
         const lineDelimiter = '\n'
         const keys = Object.keys(array[0])
@@ -46,7 +48,7 @@ const DownloadArticliesModal = ({ open, handleModal, supllierNumberOptions }) =>
         })
 
         return result
-    }    
+    }
     // ** Downloads CSV
     async function downloadCSV(array) {
         const link = document.createElement('a')
@@ -79,19 +81,32 @@ const DownloadArticliesModal = ({ open, handleModal, supllierNumberOptions }) =>
     const SupplierInputSchema = yup.object().shape({
         supplier_number: yup.string().required()
     })
-    
+
     const {
         control,
         handleSubmit,
         formState: { errors }
     } = useForm({ mode: 'onChange', resolver: yupResolver(SupplierInputSchema) })
-    
+
     const onSubmit = async (data) => {
         const supplier_number = data.supplier_number
-        await axios.get(`http://localhost:8080/supplier_article_details`, { params: { supplier_number } }).then((res) => {
-            downloadCSV(res.data.data)
+        await axios.get(`http://localhost:8080/supplier_article_details`, { params: { supplier_number, country, vat_number } }).then((res) => {
+            console.log(res.data)
+            if (res.data.data.length > 0) {
+                downloadCSV(res.data.data)
+            } else {
+                handleModal(false)
+                MySwal.fire({
+                    title: 'Error',
+                    text: 'There is no article details available for this supplier number',
+                    icon: 'error',
+                    customClass: {
+                        confirmButton: 'btn btn-primary'
+                    },
+                    buttonsStyling: false
+                })
+            }
         })
-        
     }
 
     // ** Custom close btn
@@ -130,10 +145,10 @@ const DownloadArticliesModal = ({ open, handleModal, supllierNumberOptions }) =>
                                             height: "20px",
                                             maxHeight: "30px",
                                             colors: {
-                                              ...theme.colors,
-                                              primary: "#003B7E"
+                                                ...theme.colors,
+                                                primary: "#003B7E"
                                             }
-                                          })}
+                                        })}
                                     />
                                 )}
                             />

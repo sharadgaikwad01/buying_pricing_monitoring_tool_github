@@ -10,7 +10,13 @@ import { Modal, Input, Label, Button, ModalHeader, ModalBody, InputGroup, InputG
 // ** Styles
 import '@styles/react/libs/flatpickr/flatpickr.scss'
 
-const UploadArticliesModal = ({ open, handleModal }) => {
+import Swal from 'sweetalert2'
+import withReactContent from 'sweetalert2-react-content'
+const MySwal = withReactContent(Swal)
+
+const UploadArticliesModal = ({ open, handleModal, setsupplierInputsData }) => {
+  const country = localStorage.getItem('country')
+  const vat_number = localStorage.getItem('vat')
 
   // ** Custom close btn
   const CloseBtn = <X className='cursor-pointer' size={15} onClick={handleModal} />
@@ -29,20 +35,30 @@ const UploadArticliesModal = ({ open, handleModal }) => {
 
     const supplier_inputs = csvRows.map(i => {
       const values = i.split(",")
+      
       const obj = csvHeader.reduce((object, header, index) => {
-        object[header] = values[index]
+        if (values[index]) {
+          object[header.replace('\r', '').replace('"', '')] = values[index].replace('\r', '')
+        }
+        
         return object
       }, {})
       return obj
     })
 
+    handleModal(false)
+
     await axios({
       method: "post",
       url: "http://localhost:8080/upload_supplier_input",
-      data: { supplier_inputs }
+      data: { supplier_inputs, country, vat_number }
     })
       .then(function (success) {
-        //handle success        
+        //handle success    
+        setsupplierInputsData(success.data.data.supplierInputs)
+
+        console.log(success.data)
+
         if (success.data.status) {
           return MySwal.fire({
             title: 'Done!',
@@ -55,8 +71,8 @@ const UploadArticliesModal = ({ open, handleModal }) => {
           })
         } else {
           return MySwal.fire({
-            title: 'Error',
-            text: 'Something went wrong. Please try again later',
+            title: 'Duplicate entry found.',
+            text: 'Request already open for article. Please check file records',
             icon: 'error',
             customClass: {
               confirmButton: 'btn btn-primary'

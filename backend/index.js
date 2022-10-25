@@ -11,6 +11,7 @@ const { Pool, Client } = require('pg')
 var auth = require('./api/auth');
 var supplierInput = require('./api/supplier_input')
 var users = require('./api/usersModal')
+var buyerInput = require('./api/buyer_input')
 
 //=========== Create server ===================
 var app = express();
@@ -82,26 +83,6 @@ app.use(function (req, res, next) {
 		console.log(ex);
 	}
 });
-// initialize express-session to allow us track the logged-in user across sessions.
-// app.use(session({
-// 	key: 'user_id',
-// 	secret: config.session_encryption,
-// 	resave: false,
-// 	saveUninitialized: true,
-// 	cookie: {
-// 		maxAge: config.session_expiration
-// 	}
-// }))
-
-// This middleware will check if user's cookie is still saved in browser and user is not set, then automatically log the user out.
-// This usually happens when you stop your express server after login, your cookie still remains saved in the browser.
-// var checkAuth = function(req, res, next) {
-// 	if (!req.session.user_id) {
-// 		res.send("Please Login");
-// 	} else {
-// 		next();
-// 	}
-// }
 
 //=========== Mysql connect ===================
 
@@ -129,6 +110,7 @@ app.use("/", auth)
 // app.use("/", auth)
 supplierInput(app, client);
 users(app, client);
+buyerInput(app, client);
 
 app.listen(config.port, () => {
 	console.log("Application is running at localhost:" + config.port)

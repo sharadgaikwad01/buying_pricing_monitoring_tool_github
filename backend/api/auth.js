@@ -46,19 +46,7 @@ router.use((req, res, next) => {
 			let user_details = token.claims();
             console.log('received and validated tokens %j', token);
             console.log('validated ID Token claims %j', token.claims());
-			res.redirect(303, 'http://localhost:3000/auth?token='+token.id_token+'&id='+user_details.metro_id+'&email='+user_details.email)
-            // sql = "SELECT * FROM public.tbl_users where email = '"+user_details.email +"'";
-            // clientDB.query(sql, function(err, result) {
-            //     if (err) {
-            //         res.redirect(303, 'http://localhost:3000/auth?error=User not Exist')
-            //     } else{
-            //         if(result.rowCount == 0){
-            //         	res.redirect(303, 'http://localhost:3000/auth?error=User not Exist');
-            //         }else{
-            //             res.redirect(303, 'http://localhost:3000/auth?token='+token.id_token+'&id='+user_details.metro_id+'&email='+user_details.email+'&type=SUPPLIER&country=HUNGERY&vat=123');
-            //         }				
-            //     }	
-            // });	
+			res.redirect(303, 'http://localhost:3000/auth?token='+token.id_token+'&id='+user_details.metro_id+'&email='+user_details.email+'&type=SUPPLIER&country=HUNGERY&vat=123')
         }).catch( err => {
             console.log(err);
         });

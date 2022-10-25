@@ -6,7 +6,7 @@ import axios from 'axios'
 
 // ** Add New Modal Component
 import Flatpickr from 'react-flatpickr'
-import EditSupplierRequestModal from './EditSupplierRequestModal'
+import AddBuyerInputModal from './AddBuyerInputModal'
 import ReactPaginate from 'react-paginate'
 import DataTable from 'react-data-table-component'
 import { Download, Search, ChevronDown, Share, Printer, FileText, File, Grid, Copy, Plus, Upload, Edit, Trash } from 'react-feather'
@@ -28,7 +28,8 @@ import {
   DropdownMenu,
   DropdownItem,
   DropdownToggle,
-  UncontrolledButtonDropdown
+  UncontrolledButtonDropdown,
+  Badge
 } from 'reactstrap'
 
 const BuyerInput = () => {
@@ -37,7 +38,7 @@ const BuyerInput = () => {
   const [searchSupplierNumber, setSupplierNumber] = useState('')
   const [searchRequestedDate, setSearchRequestedDate] = useState('')
 
-  const [editSupplierModal, setEditSupplierModal] = useState(false)
+  const [editBuyerModal, setBuyerInputModal] = useState(false)
 
   const [currentPage, setCurrentPage] = useState(0)
 
@@ -50,7 +51,7 @@ const BuyerInput = () => {
   const [rowData, setRowData] = useState([])
 
   useEffect(async () => {
-    await axios.get(`http://localhost:8080/supplier_input`, { params: { searchSupplierNumber, searchRequestedDate } }).then((res) => {
+    await axios.get(`http://localhost:8080/buyer_input`, { params: { searchSupplierNumber, searchRequestedDate } }).then((res) => {
       setsupplierInputsData(res.data.data.supplierInputs)
       setsupllierNumberOptions(res.data.data.supplierIDOptions)
     })
@@ -127,13 +128,20 @@ const BuyerInput = () => {
     link.setAttribute('download', filename)
     link.click()
   }
+  
+  const handleDownloadCSV = async () => {
+    const supplier_number = data.supplier_number
+    await axios.get(`http://localhost:8080/buyer_article_details`, { params: { supplier_number } }).then((res) => {
+        downloadCSV(res.data.data)
+    })   
+  }
 
   // ** Function to handle supplier filter
   const handleSupplierNumberFilter = async (e) => {
     const searchSupplierNumber = e.value
     setSupplierNumber(searchSupplierNumber)
 
-    await axios.get(`http://localhost:8080/supplier_input`, { params: { searchSupplierNumber, searchRequestedDate } }).then((res) => {
+    await axios.get(`http://localhost:8080/buyer_input`, { params: { searchSupplierNumber, searchRequestedDate } }).then((res) => {
       setsupplierInputsData(res.data.data.supplierInputs)
       setsupllierNumberOptions(res.data.data.supplierIDOptions)
     })
@@ -159,7 +167,7 @@ const BuyerInput = () => {
     })
     const searchRequestedDate = arr[0]
     setSearchRequestedDate(searchRequestedDate)
-    await axios.get(`http://localhost:8080/supplier_input`, { params: { searchSupplierNumber, searchRequestedDate } }).then((res) => {
+    await axios.get(`http://localhost:8080/buyer_input`, { params: { searchSupplierNumber, searchRequestedDate } }).then((res) => {
       setsupplierInputsData(res.data.data.supplierInputs)
       setsupllierNumberOptions(res.data.data.supplierIDOptions)
     })
@@ -169,7 +177,7 @@ const BuyerInput = () => {
   const handleEdit = async (e, row) => {
     e.preventDefault()
     setRowData(row)
-    setEditSupplierModal(!editSupplierModal)   
+    setBuyerInputModal(!editBuyerModal)   
   }
 
   const columns = [
@@ -187,7 +195,7 @@ const BuyerInput = () => {
       cell: (row) => {
         return (
           <div className='d-flex'>
-            <Edit size={15} onClick={(e) => handleEdit(e, row)} />
+            <Edit size={15} onClick={(e) => handleEdit(e, row)} className="editTableIcon text-info" />
           </div>
         )
       }
@@ -196,61 +204,100 @@ const BuyerInput = () => {
       name: 'Supplier No.',
       sortable: true,      
       width: 'auto',
-      selector: row => row.suppl_no
+      selector: row => row.suppl_no,
+      cell: row => {
+        return (
+          row.suppl_no ? row.suppl_no : "-"
+        )
+      }
     },
     {
       name: 'Supplier Name',
       sortable: true,      
       minWidth: 'auto',
-      selector: row => row.suppl_name
+      selector: row => row.suppl_name,
+      cell: row => {
+        return (
+          row.suppl_name ? row.suppl_name : "-"
+        )
+      }
     },
     {
       name: 'Article No.',
       sortable: true,      
       minWidth: 'auto',
-      selector: row => row.art_no
+      selector: row => row.art_no,
+      cell: row => {
+        return (
+          row.art_no ? row.art_no : "-"
+        )
+      }
     },
     {
       name: 'Art. Desp',
       sortable: true,      
       minWidth: 'auto',
-      selector: row => row.art_name_tl
+      selector: row => row.art_name_tl,
+      cell: row => {
+        return (
+          row.art_name_tl ? row.art_name_tl : "-"
+        )
+      }
     },
     {
       name: 'Current Price',
       sortable: true,      
       minWidth: 'auto',
-      selector: row => row.new_price
+      selector: row => row.current_price,
+      cell: row => {
+        return (
+          row.current_price ? row.current_price : "-"
+        )
+      }
     },
     {
       name: 'New Price',
       sortable: true,      
       minWidth: 'auto',
-      selector: row => row.new_price
+      selector: row => row.new_price,
+      cell: row => {
+        return (
+          row.new_price ? row.new_price : "-"
+        )
+      }
     },
     {
       name: 'Price Increase in %',
       sortable: true,      
       minWidth: 'auto',
-      selector: row => row.price_difference_perc
+      selector: row => row.price_difference_perc,
+      cell: row => {
+        return (
+          row.price_difference_perc ? row.price_difference_perc : "-"
+        )
+      }
     },
     {
       name: 'Request Creation Date',
       sortable: true,      
       minWidth: 'auto',
-      selector: row => row.request_date
-    },
-    {
-      name: 'Price Effective Date',
-      sortable: true,      
-      minWidth: 'auto',
-      selector: row => row.price_increase_effective_date
-    },
+      selector: row => row.request_date,
+      cell: row => {
+        return (
+          row.request_date ? row.request_date : "-"
+        )
+      }
+    },    
     {
       name: 'Reason For Price Change',
       sortable: true,      
       minWidth: 'auto',
-      selector: row => row.price_increase_effective_date
+      selector: row => row.price_change_reason,
+      cell: row => {
+        return (
+          row.price_change_reason ? row.price_change_reason : "-"
+        )
+      }
     },
     {
       name: 'Status',      
@@ -258,7 +305,7 @@ const BuyerInput = () => {
       sortable: row => row.action_status,
       cell: row => {
         return (
-          row.action_status
+          row.action_status === 'open' ? <Badge color='primary' pill>{row.action_status}</Badge> : <Badge color='success' pill>{row.action_status}</Badge>
         )
       }
     },
@@ -266,13 +313,34 @@ const BuyerInput = () => {
       name: 'Final Price',
       sortable: true,      
       width: 'auto',
-      selector: row => row.negotiate_final_price
+      selector: row => row.negotiate_final_price,
+      cell: row => {
+        return (
+          row.negotiate_final_price ? row.negotiate_final_price : "-"
+        )
+      }
     },
     {
       name: 'Price Finalize Date',
       sortable: true,      
       width: 'auto',
-      selector: row => row.negotiate_final_price
+      selector: row => row.negotiate_final_price,
+      cell: row => {
+        return (
+          row.negotiate_final_price ? row.negotiate_final_price : "-"
+        )
+      }
+    },
+    {
+      name: 'Price Effective Date',
+      sortable: true,      
+      minWidth: 'auto',
+      selector: row => row.price_increase_effective_date,
+      cell: row => {
+        return (
+          row.price_increase_effective_date ? row.price_increase_effective_date : "-"
+        )
+      }
     }
   ]
   return (
@@ -285,7 +353,7 @@ const BuyerInput = () => {
                 <Download size={15} />
               </DropdownToggle>
               <DropdownMenu>
-                <DropdownItem className='w-100' onClick={() => downloadCSV(data)}>
+                <DropdownItem className='w-100' onClick={() => handleDownloadCSV()}>
                   <FileText size={15} />
                   <span className='align-middle ms-50'>CSV</span>
                 </DropdownItem>
@@ -323,7 +391,7 @@ const BuyerInput = () => {
                 onChange={date => handleRequestedDateFilter(date)}
                 id='default-picker'
                 options={{
-                  dateFormat: 'm/d/Y'
+                  dateFormat: 'Y-m-d'
                 }}
               />
             </Col>
@@ -344,9 +412,8 @@ const BuyerInput = () => {
           />
         </div>
         </CardBody>
-
       </Card>
-      <EditSupplierRequestModal open={editSupplierModal} handleModal={handleEdit} rowData={rowData} supllierNumberOptions={supllierNumberOptions} />
+      <AddBuyerInputModal open={editBuyerModal} handleModal={handleEdit} rowData={rowData} />
     </Fragment>
   )
 }
