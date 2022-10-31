@@ -38,7 +38,7 @@ const UploadArticliesModal = ({ open, handleModal }) => {
 
     await axios({
       method: "post",
-      url: "http://localhost:8080/upload_supplier_input",
+      url: "http://10.16.148.18:81/upload_supplier_input",
       data: { supplier_inputs }
     })
       .then(function (success) {

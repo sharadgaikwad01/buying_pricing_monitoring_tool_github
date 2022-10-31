@@ -93,7 +93,7 @@ const AddNewModalUser = ({ open, handleModal, rowData, setUsersInputsData }) => 
     handleModal(false)
     axios({
       method: "post",
-      url: "http://localhost:8080/add_user_input",
+      url: "http://10.16.148.18:81/add_user_input",
       data: { user_name, email, emp_id, user_role, user_type, user_id }
     })
       .then(async function (success) {
@@ -123,7 +123,7 @@ const AddNewModalUser = ({ open, handleModal, rowData, setUsersInputsData }) => 
           }
           
           
-          // // axios.get(`http://localhost:8080/users`, { params: { searchName, searchStatus, searchRole } }).then((res) => {
+          // // axios.get(`http://10.16.148.18:81/users`, { params: { searchName, searchStatus, searchRole } }).then((res) => {
           // //   console.log(res.data.data)
           // setUsersInputsData(res.data.data.users)  
           // })

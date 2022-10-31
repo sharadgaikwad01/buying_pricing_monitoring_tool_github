@@ -15,11 +15,11 @@ const LoginCover = () => {
   
   const auth_token = localStorage.getItem('token')
   if (auth_token) {
-    window.location.replace('http://localhost:3000/home')
+    window.location.replace('http://10.16.148.18:82/home')
   }
 
   const handleLogin = () => {
-    window.location.replace('http://localhost:8080/api/v1/login')
+    window.location.replace('http://10.16.148.18:81/api/v1/login')
   }
 
   return (

@@ -50,7 +50,7 @@ const BuyerInput = () => {
   const [rowData, setRowData] = useState([])
 
   useEffect(async () => {
-    await axios.get(`http://localhost:8080/supplier_input`, { params: { searchSupplierNumber, searchRequestedDate } }).then((res) => {
+    await axios.get(`http://10.16.148.18:81/supplier_input`, { params: { searchSupplierNumber, searchRequestedDate } }).then((res) => {
       setsupplierInputsData(res.data.data.supplierInputs)
       setsupllierNumberOptions(res.data.data.supplierIDOptions)
     })
@@ -133,7 +133,7 @@ const BuyerInput = () => {
     const searchSupplierNumber = e.value
     setSupplierNumber(searchSupplierNumber)
 
-    await axios.get(`http://localhost:8080/supplier_input`, { params: { searchSupplierNumber, searchRequestedDate } }).then((res) => {
+    await axios.get(`http://10.16.148.18:81/supplier_input`, { params: { searchSupplierNumber, searchRequestedDate } }).then((res) => {
       setsupplierInputsData(res.data.data.supplierInputs)
       setsupllierNumberOptions(res.data.data.supplierIDOptions)
     })
@@ -159,7 +159,7 @@ const BuyerInput = () => {
     })
     const searchRequestedDate = arr[0]
     setSearchRequestedDate(searchRequestedDate)
-    await axios.get(`http://localhost:8080/supplier_input`, { params: { searchSupplierNumber, searchRequestedDate } }).then((res) => {
+    await axios.get(`http://10.16.148.18:81/supplier_input`, { params: { searchSupplierNumber, searchRequestedDate } }).then((res) => {
       setsupplierInputsData(res.data.data.supplierInputs)
       setsupllierNumberOptions(res.data.data.supplierIDOptions)
     })

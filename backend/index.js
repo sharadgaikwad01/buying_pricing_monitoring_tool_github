@@ -23,7 +23,7 @@ var corsOptions = {
 	credentials: true,
 	origin: function (origin, callback){
 		console.log("Origin is: " + origin);
-		if (origin == "http://localhost:3000") return callback(null, true);
+		if (origin == "http://10.16.148.18:82") return callback(null, true);
 		if (true) {
 			return callback(null, true);
 		}
@@ -41,7 +41,7 @@ app.use(function(req, res, next) {
 	// Website you wish to allow to connect
 	// //have you check oringin in header
 	console.log(req.headers.origin);
-	res.setHeader('Access-Control-Allow-Origin', "http://localhost:3000");
+	res.setHeader('Access-Control-Allow-Origin', "http://10.16.148.18:82");
 	console.log(req.headers.origin);
 	//res.setHeader('Access-Control-Allow-Origin', req.headers.origin);
 
@@ -67,7 +67,7 @@ app.use(function (req, res, next) {
 			var headers = {};
 			// // IE8 does not allow domains to be specif	ied, just the *
 			let origin = req.headers.origin;
-			headers["Access-Control-Allow-Origin"] = 'http://localhost:3000';
+			headers["Access-Control-Allow-Origin"] = 'http://10.16.148.18:82';
 			headers["Access-Control-Allow-Methods"] = 'GET, POST, PUT, PATCH, DELETE, OPTIONS';
 			headers["Access-Control-Allow-Credentials"] = true;
 			headers["Access-Control-Max-Age"] = "86400"; // 24 hours

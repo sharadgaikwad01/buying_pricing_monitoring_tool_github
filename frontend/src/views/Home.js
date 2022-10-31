@@ -83,7 +83,7 @@ const Home = () => {
   const [articleOptions, setarticleOptions] = useState([])
 
   useEffect(async () => {
-    await axios.get(`http://localhost:8080/supplier_input`, { params: { searchSupplierNumber, searchArticleNumber, searchRequestedDate, searchStatus } }).then((res) => {
+    await axios.get(`http://10.16.148.18:81/supplier_input`, { params: { searchSupplierNumber, searchArticleNumber, searchRequestedDate, searchStatus } }).then((res) => {
       console.log(res.data.data)
       setsupplierInputsData(res.data.data.supplierInputs)
       setsupllierNumberOptions(res.data.data.supplierIDOptions)
@@ -168,7 +168,7 @@ const Home = () => {
     const searchSupplierNumber = e.value
     setSupplierNumber(searchSupplierNumber)
 
-    await axios.get(`http://localhost:8080/supplier_input`, { params: { searchSupplierNumber, searchArticleNumber, searchRequestedDate, searchStatus } }).then((res) => {
+    await axios.get(`http://10.16.148.18:81/supplier_input`, { params: { searchSupplierNumber, searchArticleNumber, searchRequestedDate, searchStatus } }).then((res) => {
       setsupplierInputsData(res.data.data.supplierInputs)
       setsupllierNumberOptions(res.data.data.supplierIDOptions)
       setarticleOptions(res.data.data.articleOptions)
@@ -181,7 +181,7 @@ const Home = () => {
     const searchArticleNumber = e.value
     setArticleNumber(searchArticleNumber)
 
-    await axios.get(`http://localhost:8080/supplier_input`, { params: { searchSupplierNumber, searchArticleNumber, searchRequestedDate, searchStatus } }).then((res) => {
+    await axios.get(`http://10.16.148.18:81/supplier_input`, { params: { searchSupplierNumber, searchArticleNumber, searchRequestedDate, searchStatus } }).then((res) => {
       setsupplierInputsData(res.data.data.supplierInputs)
       setsupllierNumberOptions(res.data.data.supplierIDOptions)
       setarticleOptions(res.data.data.articleOptions)
@@ -208,7 +208,7 @@ const Home = () => {
     })
     const searchRequestedDate = arr[0]
     setSearchRequestedDate(searchRequestedDate)
-    await axios.get(`http://localhost:8080/supplier_input`, { params: { searchSupplierNumber, searchArticleNumber, searchRequestedDate, searchStatus } }).then((res) => {
+    await axios.get(`http://10.16.148.18:81/supplier_input`, { params: { searchSupplierNumber, searchArticleNumber, searchRequestedDate, searchStatus } }).then((res) => {
       setsupplierInputsData(res.data.data.supplierInputs)
       setsupllierNumberOptions(res.data.data.supplierIDOptions)
       setarticleOptions(res.data.data.articleOptions)
@@ -220,7 +220,7 @@ const Home = () => {
     const searchStatus = e.value
     setSearchStatus(searchStatus)
 
-    await axios.get(`http://localhost:8080/supplier_input`, { params: { searchSupplierNumber, searchArticleNumber, searchRequestedDate, searchStatus } }).then((res) => {
+    await axios.get(`http://10.16.148.18:81/supplier_input`, { params: { searchSupplierNumber, searchArticleNumber, searchRequestedDate, searchStatus } }).then((res) => {
       setsupplierInputsData(res.data.data.supplierInputs)
       setsupllierNumberOptions(res.data.data.supplierIDOptions)
       setarticleOptions(res.data.data.articleOptions)
@@ -253,7 +253,7 @@ const Home = () => {
       if (result.value) {
         axios({
           method: "post",
-          url: "http://localhost:8080/delete_supplier_input",
+          url: "http://10.16.148.18:81/delete_supplier_input",
           data: { id }
         })
           .then(function (success) {

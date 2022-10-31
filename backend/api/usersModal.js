@@ -89,14 +89,9 @@ module.exports = function(app, con) {
 			console.log(err);
 			if (err) {
 				res.json({ status: false });
-				// res.redirect(303, 'http://localhost:3000/auth?error=User not Exist')
 				return;
 			} else{
-				// if(result.rowCount == 0){
-				// 	res.redirect(303, 'http://localhost:3000/auth?error=User not Exist')
-				// }				
 				res.json({ status: true, data: result.rows });
-				// res.redirect(303, 'http://localhost:3000/auth?token='+req.query.token+'&id='+req.query.id+'&email='+req.query.email+'&type=SUPPLIER&country=HUNGERY&vat=123')
 				return;
             }			
 		});

@@ -54,7 +54,7 @@ const AddNewModal = ({ open, handleModal, supllierNumberOptions }) => {
     
     axios({
       method: "post",
-      url: "http://localhost:8080/add_supplier_input",
+      url: "http://10.16.148.18:81/add_supplier_input",
       data: { new_price, reason, supplier_number, article_number }
     })
       .then(function (success) {
@@ -97,7 +97,7 @@ const AddNewModal = ({ open, handleModal, supllierNumberOptions }) => {
   const handleSupplierNumberFilter = async (value) => {
     setarticleOptions([{ value: '', label: '' }])
     const supplierNumber = value.value
-    await axios.get(`http://localhost:8080/getArticlesBySupplierNumber`, { params: { supplierNumber} }).then((res) => {
+    await axios.get(`http://10.16.148.18:81/getArticlesBySupplierNumber`, { params: { supplierNumber} }).then((res) => {
       setarticleOptions(res.data.data.articleOptions)
     })
   } 

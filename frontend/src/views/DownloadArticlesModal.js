@@ -88,7 +88,7 @@ const DownloadArticliesModal = ({ open, handleModal, supllierNumberOptions }) =>
     
     const onSubmit = async (data) => {
         const supplier_number = data.supplier_number
-        await axios.get(`http://localhost:8080/supplier_article_details`, { params: { supplier_number } }).then((res) => {
+        await axios.get(`http://10.16.148.18:81/supplier_article_details`, { params: { supplier_number } }).then((res) => {
             downloadCSV(res.data.data)
         })
         

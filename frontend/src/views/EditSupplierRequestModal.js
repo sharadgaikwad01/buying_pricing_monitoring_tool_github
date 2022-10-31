@@ -30,7 +30,7 @@ const EditSupplierRequestModal = ({ open, handleModal, rowData, supllierNumberOp
 
   useEffect(async () => {
     const supplierNumber = rowData.suppl_no
-    await axios.get(`http://localhost:8080/getArticlesBySupplierNumber`, { params: { supplierNumber } }).then((res) => {
+    await axios.get(`http://10.16.148.18:81/getArticlesBySupplierNumber`, { params: { supplierNumber } }).then((res) => {
       setarticleOptions(res.data.data.articleOptions)
     })
   }, [rowData])
@@ -61,7 +61,7 @@ const EditSupplierRequestModal = ({ open, handleModal, rowData, supllierNumberOp
 
     axios({
       method: "post",
-      url: "http://localhost:8080/add_supplier_input",
+      url: "http://10.16.148.18:81/add_supplier_input",
       data: { new_price, reason, supplier_number, article_number }
     }).then(function (success) {
       //handle success        
@@ -101,7 +101,7 @@ const EditSupplierRequestModal = ({ open, handleModal, rowData, supllierNumberOp
 
   const handleSupplierNumberFilter = async (value) => {
     const supplierNumber = value.value
-    await axios.get(`http://localhost:8080/getArticlesBySupplierNumber`, { params: { supplierNumber } }).then((res) => {
+    await axios.get(`http://10.16.148.18:81/getArticlesBySupplierNumber`, { params: { supplierNumber } }).then((res) => {
       setarticleOptions(res.data.data.articleOptions)
     })
   }
