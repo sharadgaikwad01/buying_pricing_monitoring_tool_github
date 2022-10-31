@@ -33,7 +33,8 @@ import {
   DropdownMenu,
   DropdownItem,
   DropdownToggle,
-  UncontrolledButtonDropdown
+  UncontrolledButtonDropdown,
+  Badge 
 } from 'reactstrap'
 
 import Swal from 'sweetalert2'
@@ -53,8 +54,11 @@ const BootstrapCheckbox = forwardRef((props, ref) => (
 
 const Home = () => {
   // ** States
+  const country = localStorage.getItem('country')
+  const vat_number = localStorage.getItem('vat')
 
   const [supplierInputsData, setsupplierInputsData] = useState([])
+
   const [searchSupplierNumber, setSupplierNumber] = useState('')
   const [searchArticleNumber, setArticleNumber] = useState('')
   const [searchRequestedDate, setSearchRequestedDate] = useState('')
@@ -69,7 +73,16 @@ const Home = () => {
 
 
   // ** Function to handle Modal toggle
-  const handleModal = () => setModal(!modal)
+  // const handleModal = () => setModal(!modal)
+
+  const handleModal = async () => {
+    setSupplierNumber("")
+    setArticleNumber("")
+    setSearchRequestedDate("")
+    setSearchStatus("")
+    setModal(!modal)
+  }
+
   const downloadArticleModal = () => setSupplierInputModal(!supplierInputModal)
   const handleUploadArticleModal = () => setUploadArticleModal(!uploadArticleModal)
 
@@ -83,7 +96,7 @@ const Home = () => {
   const [articleOptions, setarticleOptions] = useState([])
 
   useEffect(async () => {
-    await axios.get(`http://10.16.148.18:81/supplier_input`, { params: { searchSupplierNumber, searchArticleNumber, searchRequestedDate, searchStatus } }).then((res) => {
+    await axios.get(`http://10.16.148.18:81/supplier_input`, { params: { searchSupplierNumber, searchArticleNumber, searchRequestedDate, searchStatus, country, vat_number } }).then((res) => {
       console.log(res.data.data)
       setsupplierInputsData(res.data.data.supplierInputs)
       setsupllierNumberOptions(res.data.data.supplierIDOptions)
@@ -125,7 +138,7 @@ const Home = () => {
 
     const columnDelimiter = ','
     const lineDelimiter = '\n'
-    const keys = Object.keys(data[0])
+    const keys = Object.keys(array[0])
 
     result = ''
     result += keys.join(columnDelimiter)
@@ -167,8 +180,7 @@ const Home = () => {
   const handleSupplierNumberFilter = async (e) => {
     const searchSupplierNumber = e.value
     setSupplierNumber(searchSupplierNumber)
-
-    await axios.get(`http://10.16.148.18:81/supplier_input`, { params: { searchSupplierNumber, searchArticleNumber, searchRequestedDate, searchStatus } }).then((res) => {
+    await axios.get(`http://10.16.148.18:81/supplier_input`, { params: { searchSupplierNumber, searchArticleNumber, searchRequestedDate, searchStatus, country, vat_number } }).then((res) => {
       setsupplierInputsData(res.data.data.supplierInputs)
       setsupllierNumberOptions(res.data.data.supplierIDOptions)
       setarticleOptions(res.data.data.articleOptions)
@@ -180,8 +192,7 @@ const Home = () => {
   const handleArticleFilter = async (e) => {
     const searchArticleNumber = e.value
     setArticleNumber(searchArticleNumber)
-
-    await axios.get(`http://10.16.148.18:81/supplier_input`, { params: { searchSupplierNumber, searchArticleNumber, searchRequestedDate, searchStatus } }).then((res) => {
+    await axios.get(`http://10.16.148.18:81/supplier_input`, { params: { searchSupplierNumber, searchArticleNumber, searchRequestedDate, searchStatus, country, vat_number  } }).then((res) => {
       setsupplierInputsData(res.data.data.supplierInputs)
       setsupllierNumberOptions(res.data.data.supplierIDOptions)
       setarticleOptions(res.data.data.articleOptions)
@@ -190,7 +201,7 @@ const Home = () => {
   }
 
   // ** Function to handle date filter
-  const handleRequestedDateFilter = async (date) => {    
+  const handleRequestedDateFilter = async (date) => {
     const arr = []
     date.map(i => {
       const date = new Date(i)
@@ -208,19 +219,18 @@ const Home = () => {
     })
     const searchRequestedDate = arr[0]
     setSearchRequestedDate(searchRequestedDate)
-    await axios.get(`http://10.16.148.18:81/supplier_input`, { params: { searchSupplierNumber, searchArticleNumber, searchRequestedDate, searchStatus } }).then((res) => {
+    await axios.get(`http://10.16.148.18:81/supplier_input`, { params: { searchSupplierNumber, searchArticleNumber, searchRequestedDate, searchStatus, country, vat_number  } }).then((res) => {
       setsupplierInputsData(res.data.data.supplierInputs)
       setsupllierNumberOptions(res.data.data.supplierIDOptions)
       setarticleOptions(res.data.data.articleOptions)
-    })    
+    })
   }
 
   // ** Function to handle status filter
   const handleStatusFilter = async (e) => {
     const searchStatus = e.value
     setSearchStatus(searchStatus)
-
-    await axios.get(`http://10.16.148.18:81/supplier_input`, { params: { searchSupplierNumber, searchArticleNumber, searchRequestedDate, searchStatus } }).then((res) => {
+    await axios.get(`http://10.16.148.18:81/supplier_input`, { params: { searchSupplierNumber, searchArticleNumber, searchRequestedDate, searchStatus, country, vat_number  } }).then((res) => {
       setsupplierInputsData(res.data.data.supplierInputs)
       setsupllierNumberOptions(res.data.data.supplierIDOptions)
       setarticleOptions(res.data.data.articleOptions)
@@ -231,7 +241,7 @@ const Home = () => {
   const handleEdit = async (e, row) => {
     e.preventDefault()
     setRowData(row)
-    setEditSupplierModal(!editSupplierModal)   
+    setEditSupplierModal(!editSupplierModal)
   }
 
   // ** Function to handle delete
@@ -295,21 +305,25 @@ const Home = () => {
     })
   }
 
+  const handleDownloadCSV = async() => {
+    downloadCSV(supplierInputsData)
+  }
+
   const columns = [
     {
       name: '#',
       cell: (row, index) => index + 1,
       width: '50px',
       maxWidth: '60px',
-      center : 'yes',
-      style : {
+      center: 'yes',
+      style: {
         align: 'center'
       }
     },
     {
       name: 'Actions',
       allowOverflow: true,
-      center : 'yes',
+      center: 'yes',
       width: '100px',
       cell: (row) => {
         return (
@@ -333,17 +347,10 @@ const Home = () => {
       selector: row => row.art_no
     },
     {
-      name: 'Art. Desp',
+      name: 'Article Description',
       sortable: true,
       width: 'auto',
-      selector: row => row.art_name_tl
-    },
-  
-    {
-      name: 'Category',
-      sortable: true,
-      width: '150px',
-      selector: row => row.bdm_global_umbrella_name
+      selector: row => row.art_name
     },
     {
       name: 'New Price',
@@ -361,15 +368,43 @@ const Home = () => {
       name: 'Final Price',
       sortable: true,
       width: '120px',
-      selector: row => row.negotiate_final_price
+      selector: row => row.negotiate_final_price,
+      cell: row => {
+        return (
+          row.negotiate_final_price ? row.negotiate_final_price : "-"
+        )
+      }
+    },
+    {
+      name: 'Price Finalize Date',
+      sortable: true,
+      width: 'auto',
+      selector: row => row.price_increase_communicated_date,
+      cell: row => {
+        return (
+          row.price_increase_communicated_date ? row.price_increase_communicated_date : "-"
+        )
+      }
+    },
+    {
+      name: 'Price Effective Date',
+      sortable: true,
+      width: 'auto',
+      selector: row => row.price_increase_effective_date,
+      cell: row => {
+        return (
+          row.price_increase_effective_date ? row.price_increase_effective_date : "-"
+        )
+      }
     },
     {
       name: 'Status',
-      width: '100px',
-      sortable: row => row.action_status,
+      sortable: true,
+      minWidth: '100px',
+      selector: row => row.action_status,
       cell: row => {
         return (
-          row.action_status
+          row.action_status === 'open' ? <Badge color='primary' pill>{row.action_status}</Badge> : <Badge color='success' pill>{row.action_status}</Badge>
         )
       }
     }
@@ -389,25 +424,25 @@ const Home = () => {
               <span className='align-middle ms-25'>Articles</span>
             </Button.Ripple>
             <Button.Ripple className='ms-1' outline color='info' onClick={handleUploadArticleModal}>
-              <Upload size={14}/>
+              <Upload size={14} />
               <span className='align-middle ms-25'>Upload Articles</span>
-            </Button.Ripple>            
+            </Button.Ripple>
             <UncontrolledButtonDropdown className='ms-1'>
               <DropdownToggle color='primary' caret outline>
                 <Download size={15} />
               </DropdownToggle>
               <DropdownMenu>
-                <DropdownItem className='w-100' onClick={() => downloadCSV(data)}>
+                <DropdownItem className='w-100' onClick={() => handleDownloadCSV()}>
                   <FileText size={15} />
                   <span className='align-middle ms-50'>CSV</span>
-                </DropdownItem>                
+                </DropdownItem>
               </DropdownMenu>
             </UncontrolledButtonDropdown>
           </div>
         </CardHeader>
         <CardBody>
           <Row className='g-1 filter-row'>
-            <Col  className='col-auto'>
+            <Col className='col-auto'>
               {/* <Label className='form-label' for='name'>
                 Supplier Name:
               </Label>
@@ -426,7 +461,7 @@ const Home = () => {
                 onChange={handleSupplierNumberFilter}
               />
             </Col>
-            <Col  className='col-auto'>
+            <Col className='col-auto'>
               <Label className='form-label' for='city'>
                 Article Number:
               </Label>
@@ -444,17 +479,17 @@ const Home = () => {
                 onChange={handleArticleFilter}
               />
             </Col>
-            <Col  className='col-auto'>
+            <Col className='col-auto'>
               <Label className='form-label' for='date'>
                 Requested Date:
-              </Label>              
-              <Flatpickr 
+              </Label>
+              <Flatpickr
                 className='form-control'
                 value={searchRequestedDate}
                 onChange={date => handleRequestedDateFilter(date)}
                 id='default-picker' placeholder='DD/MM/YYYY'
                 options={{
-                  dateFormat: 'm/d/Y'
+                  dateFormat: 'Y-m-d'
                 }}
               />
             </Col>
@@ -483,7 +518,7 @@ const Home = () => {
               pagination
               selectableRowsNoSelectAll
               columns={columns}
-              paginationPerPage={50}
+              paginationPerPage={7}
               className='react-dataTable'
               sortIcon={<ChevronDown size={10} />}
               paginationDefaultPage={currentPage + 1}
@@ -497,8 +532,8 @@ const Home = () => {
         </CardBody>
 
       </Card>
-      <AddNewModal open={modal} handleModal={handleModal} supllierNumberOptions={supllierNumberOptions}/>
-      <UploadArticliesModal open={uploadArticleModal} handleModal={handleUploadArticleModal} />
+      <AddNewModal open={modal} handleModal={handleModal} supllierNumberOptions={supllierNumberOptions} setsupplierInputsData={setsupplierInputsData}  />
+      <UploadArticliesModal open={uploadArticleModal} handleModal={handleUploadArticleModal} setsupplierInputsData={setsupplierInputsData} />
       <DownloadArticliesModal open={supplierInputModal} handleModal={downloadArticleModal} supllierNumberOptions={supllierNumberOptions} />
       <EditSupplierRequestModal open={editSupplierModal} handleModal={handleEdit} rowData={rowData} supllierNumberOptions={supllierNumberOptions} />
     </Fragment>

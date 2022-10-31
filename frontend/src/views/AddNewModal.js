@@ -22,9 +22,11 @@ import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 const MySwal = withReactContent(Swal)
 
-const AddNewModal = ({ open, handleModal, supllierNumberOptions }) => {
+const AddNewModal = ({ open, handleModal, supllierNumberOptions, setsupplierInputsData }) => {
   // ** State
   // const [Picker, setPicker] = useState('')
+  const country = localStorage.getItem('country')
+  const vat_number = localStorage.getItem('vat')
 
   const [articleOptions, setarticleOptions] = useState([])
 
@@ -55,10 +57,12 @@ const AddNewModal = ({ open, handleModal, supllierNumberOptions }) => {
     axios({
       method: "post",
       url: "http://10.16.148.18:81/add_supplier_input",
-      data: { new_price, reason, supplier_number, article_number }
+      data: { new_price, reason, supplier_number, article_number, country, vat_number }
     })
       .then(function (success) {
-        //handle success        
+        //handle success 
+        console.log(success.data.data)
+        setsupplierInputsData(success.data.data.supplierInputs)     
         if (success.data.status) {
           return MySwal.fire({
             title: 'Done!',
@@ -97,7 +101,7 @@ const AddNewModal = ({ open, handleModal, supllierNumberOptions }) => {
   const handleSupplierNumberFilter = async (value) => {
     setarticleOptions([{ value: '', label: '' }])
     const supplierNumber = value.value
-    await axios.get(`http://10.16.148.18:81/getArticlesBySupplierNumber`, { params: { supplierNumber} }).then((res) => {
+    await axios.get(`http://10.16.148.18:81/getArticlesBySupplierNumber`, { params: { supplierNumber, country, vat_number} }).then((res) => {
       setarticleOptions(res.data.data.articleOptions)
     })
   } 
@@ -197,7 +201,7 @@ const AddNewModal = ({ open, handleModal, supllierNumberOptions }) => {
               name='reason'
               defaultValue=''
               control={control}
-              render={({ field }) => <Input type='textarea' rows='3' {...field} placeholder='Reason' invalid={errors.reason && true} />}
+              render={({ field }) => <Input type='textarea' rows='5' {...field} placeholder='Reason' invalid={errors.reason && true} />}
             />
             {errors.reason && <FormFeedback>{"Reason is a required field"}</FormFeedback>}
           </div>

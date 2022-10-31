@@ -190,16 +190,12 @@ const Home = () => {
 
   const handleEdit = async (e, row) => {
     e.preventDefault()
-    console.log(`tttttttttttttttttt${row}`)
-    console.log(`tttttttttttttttttt${row.row_id}`)
     handleModal()
     setRowData(row)
   }
   
   const handleAdd = async (e) => {
     e.preventDefault()
-    // console.log(`tttttttttttttttttt${row}`)
-    // console.log(`tttttttttttttttttt${row.row_id}`)
     handleModal()
     setRowData(UserData)
   }
