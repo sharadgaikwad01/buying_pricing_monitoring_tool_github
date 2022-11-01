@@ -27,7 +27,7 @@ Issuer.discover('https://idam.metrosystems.net') // => Promise
         client_id: 'BUYING_PRICING_MONITORING_TOOL',
         client_secret: 'wFq9MLAW4n',
         realm_id: 'BUY_PRI_M_T',
-        redirect_uris: ['http://10.16.148.18:81/api/v1/callback'],
+        redirect_uris: ['http://localhost:8080/api/v1/callback'],
         response_types: ['code'],
     }); // => Client
 }).catch( err => {
@@ -41,12 +41,14 @@ router.use((req, res, next) => {
         return
     }
     const params = client.callbackParams(req)
-    client.callback('http://10.16.148.18:81/api/v1/callback', params, { code_verifier }) // => Promise
+    client.callback('http://localhost:8080/api/v1/callback', params, { code_verifier }) // => Promise
         .then(token => {
 			let user_details = token.claims();
             console.log('received and validated tokens %j', token);
             console.log('validated ID Token claims %j', token.claims());
-			res.redirect(303, 'http://10.16.148.18:82/auth?token='+token.id_token+'&id='+user_details.metro_id+'&email='+user_details.email+'&type=BUYER&country=hungary&vat=10886861-2-44');
+            var frontend_redirect_url = 'http://localhost:3000/auth?token='+token.id_token+'&id='+user_details.metro_id+'&email='+user_details.email+'&type=SUPPLIER&country=HUNGARY&vat=10886861-2-44'
+            res.send('<script>window.location.href="'+frontend_redirect_url+'";</script>');
+			//res.redirect(303, 'http://localhost:3000/auth?token='+token.id_token+'&id='+user_details.metro_id+'&email='+user_details.email+'&type=BUYER&country=hungary&vat=10886861-2-44');
             // sql = "SELECT * FROM public.tbl_users where email = '"+user_details.email +"'";
             // clientDB.query(sql, function(err, result) {
             //     if (err) {
@@ -69,26 +71,6 @@ router.get('/api/v1/callback', (req, res, next) => {
     // res.send("callback")  
 })
 
-// module.exports = function(app, con) {
-//     router.get('/api/v1/callback', async (req, res, next) => {
-//         var getUniqueSupplierIdQuery = "SELECT DISTINCT email FROM public.tbl_users WHERE email="+res.email;
-
-//             await con.query(getUniqueSupplierIdQuery, function(err, result) {
-//                 if (err) {
-//                     res.json({ status: false });
-//                     return;
-//                 } else{				
-//                     result.rows.forEach(function(value, key) {
-//                         option = { value: value.suppl_no, label: value.suppl_no }
-//                         supplierIDOptions.push(option);
-//                     });
-//                     data.supplierIDOptions = supplierIDOptions;
-//                 }			
-//             });
-//         // res.send("callback")  
-//     })
-// }
-
 router.get('/api/v1/login', (req, res, next) => {
     if (client == undefined) {
         res.send("Authorization provider is unavailable");
@@ -100,8 +82,11 @@ router.get('/api/v1/login', (req, res, next) => {
         code_challenge,
         code_challenge_method: 'S256',
     });
-    res.redirect(303, authUrl)
+   
+	// res.redirect(303, authUrl);
+    res.send('<script>window.location.href="'+authUrl+'";</script>');
     next()
+    
 }) 
 
 module.exports = router

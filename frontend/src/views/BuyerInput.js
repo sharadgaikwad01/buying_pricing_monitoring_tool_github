@@ -32,8 +32,9 @@ import {
   Badge
 } from 'reactstrap'
 
-const BuyerInput = () => {
-  // ** States
+const BuyerInput = props => {
+  const country = localStorage.getItem('country')
+
   const [supplierInputsData, setsupplierInputsData] = useState([])
   const [searchSupplierNumber, setSupplierNumber] = useState('')
   const [searchRequestedDate, setSearchRequestedDate] = useState('')
@@ -51,7 +52,11 @@ const BuyerInput = () => {
   const [rowData, setRowData] = useState([])
 
   useEffect(async () => {
-    await axios.get(`http://10.16.148.18:81/buyer_input`, { params: { searchSupplierNumber, searchRequestedDate } }).then((res) => {
+    const user_type = localStorage.getItem("type")
+    if (user_type === 'SUPPLIER') {
+      props.history.push('/home')
+    }
+    await axios.get(`http://localhost:8080/buyer_input`, { params: { searchSupplierNumber, searchRequestedDate, country } }).then((res) => {
       setsupplierInputsData(res.data.data.supplierInputs)
       setsupllierNumberOptions(res.data.data.supplierIDOptions)
     })
@@ -128,12 +133,12 @@ const BuyerInput = () => {
     link.setAttribute('download', filename)
     link.click()
   }
-  
+
   const handleDownloadCSV = async () => {
     const supplier_number = data.supplier_number
-    await axios.get(`http://10.16.148.18:81/buyer_article_details`, { params: { supplier_number } }).then((res) => {
-        downloadCSV(res.data.data)
-    })   
+    await axios.get(`http://localhost:8080/buyer_article_details`, { params: { supplier_number } }).then((res) => {
+      downloadCSV(res.data.data)
+    })
   }
 
   // ** Function to handle supplier filter
@@ -141,7 +146,7 @@ const BuyerInput = () => {
     const searchSupplierNumber = e.value
     setSupplierNumber(searchSupplierNumber)
 
-    await axios.get(`http://10.16.148.18:81/buyer_input`, { params: { searchSupplierNumber, searchRequestedDate } }).then((res) => {
+    await axios.get(`http://localhost:8080/buyer_input`, { params: { searchSupplierNumber, searchRequestedDate } }).then((res) => {
       setsupplierInputsData(res.data.data.supplierInputs)
       setsupllierNumberOptions(res.data.data.supplierIDOptions)
     })
@@ -167,7 +172,7 @@ const BuyerInput = () => {
     })
     const searchRequestedDate = arr[0]
     setSearchRequestedDate(searchRequestedDate)
-    await axios.get(`http://10.16.148.18:81/buyer_input`, { params: { searchSupplierNumber, searchRequestedDate } }).then((res) => {
+    await axios.get(`http://localhost:8080/buyer_input`, { params: { searchSupplierNumber, searchRequestedDate } }).then((res) => {
       setsupplierInputsData(res.data.data.supplierInputs)
       setsupllierNumberOptions(res.data.data.supplierIDOptions)
     })
@@ -177,7 +182,7 @@ const BuyerInput = () => {
   const handleEdit = async (e, row) => {
     e.preventDefault()
     setRowData(row)
-    setBuyerInputModal(!editBuyerModal)   
+    setBuyerInputModal(!editBuyerModal)
   }
 
   const columns = [
@@ -188,7 +193,7 @@ const BuyerInput = () => {
       cell: (row, index) => index + 1
     },
     {
-      name: 'Actions',      
+      name: 'Actions',
       center: 'yes',
       width: '80px',
       allowOverflow: true,
@@ -202,7 +207,7 @@ const BuyerInput = () => {
     },
     {
       name: 'Supplier No.',
-      sortable: true,      
+      sortable: true,
       width: 'auto',
       selector: row => row.suppl_no,
       cell: row => {
@@ -213,7 +218,7 @@ const BuyerInput = () => {
     },
     {
       name: 'Supplier Name',
-      sortable: true,      
+      sortable: true,
       minWidth: 'auto',
       selector: row => row.suppl_name,
       cell: row => {
@@ -224,7 +229,7 @@ const BuyerInput = () => {
     },
     {
       name: 'Article No.',
-      sortable: true,      
+      sortable: true,
       minWidth: 'auto',
       selector: row => row.art_no,
       cell: row => {
@@ -235,7 +240,7 @@ const BuyerInput = () => {
     },
     {
       name: 'Art. Desp',
-      sortable: true,      
+      sortable: true,
       minWidth: 'auto',
       selector: row => row.art_name_tl,
       cell: row => {
@@ -246,7 +251,7 @@ const BuyerInput = () => {
     },
     {
       name: 'Current Price',
-      sortable: true,      
+      sortable: true,
       minWidth: 'auto',
       selector: row => row.current_price,
       cell: row => {
@@ -257,7 +262,7 @@ const BuyerInput = () => {
     },
     {
       name: 'New Price',
-      sortable: true,      
+      sortable: true,
       minWidth: 'auto',
       selector: row => row.new_price,
       cell: row => {
@@ -268,7 +273,7 @@ const BuyerInput = () => {
     },
     {
       name: 'Price Increase in %',
-      sortable: true,      
+      sortable: true,
       minWidth: 'auto',
       selector: row => row.price_difference_perc,
       cell: row => {
@@ -279,7 +284,7 @@ const BuyerInput = () => {
     },
     {
       name: 'Request Creation Date',
-      sortable: true,      
+      sortable: true,
       minWidth: 'auto',
       selector: row => row.request_date,
       cell: row => {
@@ -287,10 +292,10 @@ const BuyerInput = () => {
           row.request_date ? row.request_date : "-"
         )
       }
-    },    
+    },
     {
       name: 'Reason For Price Change',
-      sortable: true,      
+      sortable: true,
       minWidth: 'auto',
       selector: row => row.price_change_reason,
       cell: row => {
@@ -300,7 +305,7 @@ const BuyerInput = () => {
       }
     },
     {
-      name: 'Status',      
+      name: 'Status',
       width: 'auto',
       sortable: row => row.action_status,
       cell: row => {
@@ -311,7 +316,7 @@ const BuyerInput = () => {
     },
     {
       name: 'Final Price',
-      sortable: true,      
+      sortable: true,
       width: 'auto',
       selector: row => row.negotiate_final_price,
       cell: row => {
@@ -322,7 +327,7 @@ const BuyerInput = () => {
     },
     {
       name: 'Price Finalize Date',
-      sortable: true,      
+      sortable: true,
       width: 'auto',
       selector: row => row.negotiate_final_price,
       cell: row => {
@@ -333,7 +338,7 @@ const BuyerInput = () => {
     },
     {
       name: 'Price Effective Date',
-      sortable: true,      
+      sortable: true,
       minWidth: 'auto',
       selector: row => row.price_increase_effective_date,
       cell: row => {
@@ -349,20 +354,20 @@ const BuyerInput = () => {
         <CardHeader className='flex-md-row flex-column align-md-items-center align-items-start border-bottom'>
           <CardTitle tag='h2'>Inflation Price Data</CardTitle>
           <UncontrolledButtonDropdown className='ms-2'>
-              <DropdownToggle color='primary' caret outline>
-                <Download size={15} />
-              </DropdownToggle>
-              <DropdownMenu>
-                <DropdownItem className='w-100' onClick={() => handleDownloadCSV()}>
-                  <FileText size={15} />
-                  <span className='align-middle ms-50'>CSV</span>
-                </DropdownItem>
-              </DropdownMenu>
-            </UncontrolledButtonDropdown>
+            <DropdownToggle color='primary' caret outline>
+              <Download size={15} />
+            </DropdownToggle>
+            <DropdownMenu>
+              <DropdownItem className='w-100' onClick={() => handleDownloadCSV()}>
+                <FileText size={15} />
+                <span className='align-middle ms-50'>CSV</span>
+              </DropdownItem>
+            </DropdownMenu>
+          </UncontrolledButtonDropdown>
         </CardHeader>
         <CardBody>
           <Row className='mb-50 g-1 filter-row filter-buyer'>
-          <Col className='col-auto'>
+            <Col className='col-auto'>
               {/* <Label className='form-label' for='name'>
                 Supplier Name:
               </Label>
@@ -397,20 +402,20 @@ const BuyerInput = () => {
             </Col>
           </Row>
           <div className='react-dataTable my-1'>
-          <DataTable
-            noHeader
-            pagination
-            selectableRowsNoSelectAll
-            columns={columns}
-            paginationPerPage={50}
-            className='react-dataTable'
-            sortIcon={<ChevronDown size={10} />}
-            paginationDefaultPage={currentPage + 1}
-            paginationComponent={CustomPagination}
-            // data={searchValue.length ? filteredData : data}
-            data={dataToRender()}
-          />
-        </div>
+            <DataTable
+              noHeader
+              pagination
+              selectableRowsNoSelectAll
+              columns={columns}
+              paginationPerPage={50}
+              className='react-dataTable'
+              sortIcon={<ChevronDown size={10} />}
+              paginationDefaultPage={currentPage + 1}
+              paginationComponent={CustomPagination}
+              // data={searchValue.length ? filteredData : data}
+              data={dataToRender()}
+            />
+          </div>
         </CardBody>
       </Card>
       <AddBuyerInputModal open={editBuyerModal} handleModal={handleEdit} rowData={rowData} />
