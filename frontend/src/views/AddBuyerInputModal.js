@@ -32,7 +32,7 @@ const AddBuyerInputModal = ({ open, handleModal, rowData }) => {
 
   const SupplierInputSchema = yup.object().shape({
     final_price: yup.number().required().positive().integer(),
-    reason: yup.string().required()
+    comment: yup.string().required()
   })
   // ** Hooks
   const {
@@ -43,14 +43,14 @@ const AddBuyerInputModal = ({ open, handleModal, rowData }) => {
 
   const onSubmit = data => {
     const final_price = data.final_price
-    const reason = data.reason
+    const comment = data.comment
 
     handleModal(false)
     
     axios({
       method: "post",
       url: "http://localhost:8080/add_supplier_input",
-      data: { final_price, reason, country, vat_number }
+      data: { final_price, comment, country, vat_number }
     })
       .then(function (success) {
         //handle success 
@@ -120,21 +120,21 @@ const AddBuyerInputModal = ({ open, handleModal, rowData }) => {
                 control={control}
                 render={({ field }) => <Input type="number"{...field} placeholder='e.g. 65' invalid={errors.final_price && true} />}
               />
-              {errors.final_price && <FormFeedback>{"New Price is a required field"}</FormFeedback>}
+              {errors.final_price && <FormFeedback>{"Final Price is a required field"}</FormFeedback>}
             </InputGroup>
           </div>
           <div className='mb-1'>
-            <Label className='form-label' for='reason'>
+            <Label className='form-label' for='comment'>
               Comment
             </Label>
             <Controller
-              id='reason'
-              name='reason'
+              id='comment'
+              name='comment'
               defaultValue=''
               control={control}
-              render={({ field }) => <Input type='textarea' rows='5' {...field} placeholder='Comment' invalid={errors.reason && true} />}
+              render={({ field }) => <Input type='textarea' rows='5' {...field} placeholder='Comment' invalid={errors.comment && true} />}
             />
-            {errors.reason && <FormFeedback>{"Reason is a required field"}</FormFeedback>}
+            {errors.comment && <FormFeedback>{"Comment is a required field"}</FormFeedback>}
           </div>
           <Button className='me-1' color='primary' type='submit'>
             Submit
