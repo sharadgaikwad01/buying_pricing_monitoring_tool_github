@@ -3,6 +3,7 @@ var nodemailer = require('nodemailer');
 //=========== MonthEnd API Module ===================
 module.exports = function(app, con) {
     app.get('/supplier_input', async function(req, res){
+		console.log("I am here ============= ")
 		var data = {};
 		var supplierIDOptions = [];
 		var articleOptions = [];
@@ -64,7 +65,7 @@ module.exports = function(app, con) {
             condition = condition + " AND action_status = '" +req.query.searchStatus+"'"
         }
 
-        var query = "SELECT suppl_no, art_no, art_name, new_price, to_char(request_date, 'YYYY-MM-dd') as request_date, to_char(negotiate_final_price, 'YYYY-MM-dd') as negotiate_final_price, to_char(price_increase_communicated_date, 'YYYY-MM-dd') as price_increase_communicated_date, price_increase_effective_date, action_status FROM public.vw_request_details where country_name='"+req.query.country+"' AND vat_no='"+req.query.vat_number+"' AND new_price IS NOT NULL AND request_date IS NOT NULL " + condition;
+        var query = "SELECT row_id, suppl_no, art_no, art_name, new_price, to_char(request_date, 'YYYY-MM-dd') as request_date, to_char(negotiate_final_price, 'YYYY-MM-dd') as negotiate_final_price, to_char(price_increase_communicated_date, 'YYYY-MM-dd') as price_increase_communicated_date, price_increase_effective_date, action_status FROM public.vw_request_details where country_name='"+req.query.country+"' AND vat_no='"+req.query.vat_number+"' AND new_price IS NOT NULL AND request_date IS NOT NULL " + condition;
 		
         await con.query(query, function(err, result) {
 			if (err) {
@@ -89,7 +90,7 @@ module.exports = function(app, con) {
 				return;
 			};
 
-			var query = "SELECT suppl_no, art_no, art_name, new_price, to_char(request_date, 'YYYY-MM-dd') as request_date, to_char(negotiate_final_price, 'YYYY-MM-dd') as negotiate_final_price, to_char(price_increase_communicated_date, 'YYYY-MM-dd') as price_increase_communicated_date, price_increase_effective_date, action_status FROM public.vw_request_details where country_name='"+req.body.country+"' AND vat_no='"+req.body.vat_number+"' AND new_price IS NOT NULL AND request_date IS NOT NULL ";
+			var query = "SELECT row_id, suppl_no, art_no, art_name, new_price, to_char(request_date, 'YYYY-MM-dd') as request_date, to_char(negotiate_final_price, 'YYYY-MM-dd') as negotiate_final_price, to_char(price_increase_communicated_date, 'YYYY-MM-dd') as price_increase_communicated_date, price_increase_effective_date, action_status FROM public.vw_request_details where country_name='"+req.body.country+"' AND vat_no='"+req.body.vat_number+"' AND new_price IS NOT NULL AND request_date IS NOT NULL ";
 
 			console.log(query)
 			
@@ -108,7 +109,7 @@ module.exports = function(app, con) {
 
 	app.get('/supplier_article_details', async function(req, res){
 
-		var query = "select art.country_name, vat_no, art.suppl_no, art_no, art_name_tl, umbrella_name, '' as new_price, '' as price_change_reason from tbl_article art inner join tbl_supplier suppl ON art.suppl_no = suppl.suppl_no and art.umbrella_no = suppl.umbrella_no and art.country_name = suppl.country_name Where suppl.suppl_no='"+req.query.supplier_number +"' and suppl.country_name ='"+req.query.country +"' and suppl.vat_no ='"+req.query.vat_number +"'";
+		var query = "select art.row_id, art.country_name, vat_no, art.suppl_no, art_no, art_name_tl, umbrella_name, '' as new_price, '' as price_change_reason from tbl_article art inner join tbl_supplier suppl ON art.suppl_no = suppl.suppl_no and art.umbrella_no = suppl.umbrella_no and art.country_name = suppl.country_name Where suppl.suppl_no='"+req.query.supplier_number +"' and suppl.country_name ='"+req.query.country +"' and suppl.vat_no ='"+req.query.vat_number +"'";
 
 		console.log(query);
 
@@ -125,7 +126,7 @@ module.exports = function(app, con) {
 
 	app.post('/delete_supplier_input', async function(req, res){
 
-		var query = "Update FROM public.vw_request_details where row_id = '"+req.body.id +"'";
+		var query = "call usp_update_requestdetails (record_id=> "+req.body.id +" , is_deleted=> TRUE)";
 
 		console.log(query);
 
@@ -138,6 +139,22 @@ module.exports = function(app, con) {
 				return;
             }			
 		});
+	});
+
+	app.post('/update_supplier_input', async function(req, res){
+		console.log(req.body)
+
+		// var query = "call usp_update_requestdetails (record_id=> "+req.body.id +", )";
+
+		// await con.query(query, function(err, result) {
+		// 	if (err) {
+		// 		res.json({ status: false });
+		// 		return;
+		// 	} else{				
+		// 		res.json({ status: true, data: result.rows });
+		// 		return;
+        //     }			
+		// });
 	});
 
 	app.get('/getArticlesBySupplierNumber', async function(req, res){
@@ -187,7 +204,7 @@ module.exports = function(app, con) {
 						console.log(len-1)
 						console.log(sucess_count)
 						if( len-1 == sucess_count){
-							var query = "SELECT suppl_no, art_no, art_name, new_price, to_char(request_date, 'YYYY-MM-dd') as request_date, to_char(negotiate_final_price, 'YYYY-MM-dd') as negotiate_final_price, to_char(price_increase_communicated_date, 'YYYY-MM-dd') as price_increase_communicated_date, price_increase_effective_date, action_status FROM public.vw_request_details where country_name='"+req.body.country+"' AND vat_no='"+req.body.vat_number+"' AND new_price IS NOT NULL AND request_date IS NOT NULL ";
+							var query = "SELECT row_id, suppl_no, art_no, art_name, new_price, to_char(request_date, 'YYYY-MM-dd') as request_date, to_char(negotiate_final_price, 'YYYY-MM-dd') as negotiate_final_price, to_char(price_increase_communicated_date, 'YYYY-MM-dd') as price_increase_communicated_date, price_increase_effective_date, action_status FROM public.vw_request_details where country_name='"+req.body.country+"' AND vat_no='"+req.body.vat_number+"' AND new_price IS NOT NULL AND request_date IS NOT NULL ";
 							
 							con.query(query, function(err, result) {
 								if (err) {

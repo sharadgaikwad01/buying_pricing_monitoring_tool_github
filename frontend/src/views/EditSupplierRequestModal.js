@@ -27,20 +27,26 @@ const EditSupplierRequestModal = ({ open, handleModal, rowData, supllierNumberOp
   // const [Picker, setPicker] = useState('')
   const [articleOptions, setarticleOptions] = useState([])
 
+  console.log("================ ")
+    console.log(rowData)
+
   useEffect(async () => {
+    console.log("================ ")
+    console.log(rowData)
     const supplierNumber = rowData.suppl_no
     await axios.get(`http://10.16.148.18:81/getArticlesBySupplierNumber`, { params: { supplierNumber } }).then((res) => {
       setarticleOptions(res.data.data.articleOptions)
     })
   }, [rowData])
+
   const country = localStorage.getItem('country')
   const vat_number = localStorage.getItem('vat')
   
-  const [articleOptions, setarticleOptions] = useState([])
   const [newPrice, setNewPrice] = useState('')
   const [reason, setReason] = useState('')
   const [supplierNumber, setSupplierNumber] = useState('')
   const [articleNumber, setArticleNumber] = useState('')
+  const [rowId, setRowId] = useState('')
 
   const SupplierInputSchema = yup.object().shape({
     new_price: yup.number().required().positive().integer(),
@@ -58,11 +64,13 @@ const EditSupplierRequestModal = ({ open, handleModal, rowData, supllierNumberOp
 
   useEffect(async () => {
     if (rowData) {
+      console.log(rowData)
       const supplierNumber = rowData.suppl_no
       await setNewPrice(rowData.new_price)
       await setReason(rowData.request_date)
       await setSupplierNumber(rowData.suppl_no)
       await setArticleNumber(rowData.art_no)
+      await setRowId(rowData.row_id)
 
       setValue('new_price', rowData.new_price, { shouldValidate: true })
       setValue('reason', rowData.request_date, { shouldValidate: true })
@@ -86,13 +94,14 @@ const EditSupplierRequestModal = ({ open, handleModal, rowData, supllierNumberOp
     const reason = data.reason
     const supplier_number = data.supplier_number
     const article_number = data.article_number
+    const row_id = data.row_id
 
     handleModal(false)
 
     axios({
       method: "post",
       url: "http://10.16.148.18:81/update_supplier_input",
-      data: { new_price, reason, supplier_number, article_number }
+      data: { row_id, new_price, reason, supplier_number, article_number }
     }).then(function (success) {
       //handle success        
       if (success.data.status) {
@@ -150,6 +159,7 @@ const EditSupplierRequestModal = ({ open, handleModal, rowData, supllierNumberOp
       </ModalHeader>
       <ModalBody className='flex-grow-1'>
         <Form onSubmit={handleSubmit(onSubmit)}>
+          <input type="hidden" name="row_id" defaultValue={rowId} />
           <div className='mb-1'>
             <Label className='form-label' for='supplier_number'>
               Supplier Number

@@ -27,7 +27,7 @@ const UserDropdown = () => {
 
   const handlelogout = () => {
     localStorage.clear()
-    window.location.replace('http://localhost:3000/login')
+    window.location.replace('http://10.16.148.18:82/login')
   }
 
   return (

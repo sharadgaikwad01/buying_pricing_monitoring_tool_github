@@ -34,7 +34,7 @@ import {
   DropdownItem,
   DropdownToggle,
   UncontrolledButtonDropdown,
-  Badge 
+  Badge
 } from 'reactstrap'
 
 import Swal from 'sweetalert2'
@@ -52,7 +52,7 @@ const BootstrapCheckbox = forwardRef((props, ref) => (
   </div>
 ))
 
-const Home = () => {
+const Home = props => {
   // ** States
   const country = localStorage.getItem('country')
   const vat_number = localStorage.getItem('vat')
@@ -96,8 +96,11 @@ const Home = () => {
   const [articleOptions, setarticleOptions] = useState([])
 
   useEffect(async () => {
+    const user_type = localStorage.getItem("type")
+    if (user_type === 'BUYER') {
+      props.history.push('/buyer_input')
+    }
     await axios.get(`http://10.16.148.18:81/supplier_input`, { params: { searchSupplierNumber, searchArticleNumber, searchRequestedDate, searchStatus, country, vat_number } }).then((res) => {
-      console.log(res.data.data)
       setsupplierInputsData(res.data.data.supplierInputs)
       setsupllierNumberOptions(res.data.data.supplierIDOptions)
       setarticleOptions(res.data.data.articleOptions)
@@ -192,7 +195,7 @@ const Home = () => {
   const handleArticleFilter = async (e) => {
     const searchArticleNumber = e.value
     setArticleNumber(searchArticleNumber)
-    await axios.get(`http://10.16.148.18:81/supplier_input`, { params: { searchSupplierNumber, searchArticleNumber, searchRequestedDate, searchStatus, country, vat_number  } }).then((res) => {
+    await axios.get(`http://10.16.148.18:81/supplier_input`, { params: { searchSupplierNumber, searchArticleNumber, searchRequestedDate, searchStatus, country, vat_number } }).then((res) => {
       setsupplierInputsData(res.data.data.supplierInputs)
       setsupllierNumberOptions(res.data.data.supplierIDOptions)
       setarticleOptions(res.data.data.articleOptions)
@@ -219,7 +222,7 @@ const Home = () => {
     })
     const searchRequestedDate = arr[0]
     setSearchRequestedDate(searchRequestedDate)
-    await axios.get(`http://10.16.148.18:81/supplier_input`, { params: { searchSupplierNumber, searchArticleNumber, searchRequestedDate, searchStatus, country, vat_number  } }).then((res) => {
+    await axios.get(`http://10.16.148.18:81/supplier_input`, { params: { searchSupplierNumber, searchArticleNumber, searchRequestedDate, searchStatus, country, vat_number } }).then((res) => {
       setsupplierInputsData(res.data.data.supplierInputs)
       setsupllierNumberOptions(res.data.data.supplierIDOptions)
       setarticleOptions(res.data.data.articleOptions)
@@ -230,7 +233,7 @@ const Home = () => {
   const handleStatusFilter = async (e) => {
     const searchStatus = e.value
     setSearchStatus(searchStatus)
-    await axios.get(`http://10.16.148.18:81/supplier_input`, { params: { searchSupplierNumber, searchArticleNumber, searchRequestedDate, searchStatus, country, vat_number  } }).then((res) => {
+    await axios.get(`http://10.16.148.18:81/supplier_input`, { params: { searchSupplierNumber, searchArticleNumber, searchRequestedDate, searchStatus, country, vat_number } }).then((res) => {
       setsupplierInputsData(res.data.data.supplierInputs)
       setsupllierNumberOptions(res.data.data.supplierIDOptions)
       setarticleOptions(res.data.data.articleOptions)
@@ -238,15 +241,14 @@ const Home = () => {
   }
 
   // ** Function to handle edit
-  const handleEdit = async (e, row) => {
-    e.preventDefault()
+  const handleEdit = async (row) => {
     setRowData(row)
     setEditSupplierModal(!editSupplierModal)
   }
 
   // ** Function to handle delete
   const handleDelete = (e, row) => {
-    const id = row.art_no
+    const id = row.row_id
     e.preventDefault()
     MySwal.fire({
       title: 'Are you sure?',
@@ -305,7 +307,7 @@ const Home = () => {
     })
   }
 
-  const handleDownloadCSV = async() => {
+  const handleDownloadCSV = async () => {
     downloadCSV(supplierInputsData)
   }
 
@@ -333,6 +335,11 @@ const Home = () => {
           </div>
         )
       }
+    },
+    {
+      name: 'Row Id',
+      omit:true,
+      selector: row => row.row_id
     },
     {
       name: 'Supplier Number',
@@ -532,7 +539,7 @@ const Home = () => {
         </CardBody>
 
       </Card>
-      <AddNewModal open={modal} handleModal={handleModal} supllierNumberOptions={supllierNumberOptions} setsupplierInputsData={setsupplierInputsData}  />
+      <AddNewModal open={modal} handleModal={handleModal} supllierNumberOptions={supllierNumberOptions} setsupplierInputsData={setsupplierInputsData} />
       <UploadArticliesModal open={uploadArticleModal} handleModal={handleUploadArticleModal} setsupplierInputsData={setsupplierInputsData} />
       <DownloadArticliesModal open={supplierInputModal} handleModal={downloadArticleModal} supllierNumberOptions={supllierNumberOptions} />
       <EditSupplierRequestModal open={editSupplierModal} handleModal={handleEdit} rowData={rowData} supllierNumberOptions={supllierNumberOptions} />
