@@ -28,13 +28,12 @@ module.exports = function(app, con) {
             condition = condition + " AND suppl_no = '" +req.query.searchSupplierNumber+"'"
         }
 
-        if (req.query.searchArticleNumber != '' && req.query.searchArticleNumber != undefined){
-            condition = condition +" AND art_no = '" +req.query.searchArticleNumber+"'"
+        if (req.query.searchRequestedDate != '' && req.query.searchRequestedDate != undefined){
+            condition = condition +" AND request_date = '" +req.query.searchRequestedDate+"'"
         }
 
         var query = "SELECT row_id, suppl_no, suppl_name, art_no, art_name_tl, current_price, new_price, price_difference_perc, to_char(request_date, 'YYYY-MM-dd') as request_date, price_change_reason, action_status, to_char(negotiate_final_price, 'YYYY-MM-dd') as negotiate_final_price, to_char(price_increase_effective_date, 'YYYY-MM-dd') as price_increase_effective_date FROM public.vw_request_details where country_name='"+req.query.country+"' AND new_price IS NOT NULL AND request_date IS NOT NULL " + condition;
 
-		console.log("buyer query ===================")
 		console.log(query)
 		
         await con.query(query, function(err, result) {
@@ -48,5 +47,67 @@ module.exports = function(app, con) {
             }			
 		});
     });
+
+	app.post('/update_buyer_input', async function(req, res){
+		console.log(req.body)
+		var data = {};
+		var query = "call public.usp_update_requestdetails (record_id=>"+req.body.row_id +", in_new_price=>"+req.body.new_price +", in_reason=>'"+req.body.reason +"')";
+
+		console.log(query)
+
+		// await con.query(query, function(err, result) {
+		// 	if (err) {
+		// 		console.log(err)
+		// 		res.json({ status: false });
+		// 		return;
+		// 	} else{				
+		// 		var query = "SELECT row_id, suppl_no, suppl_name, art_no, art_name_tl, current_price, new_price, price_difference_perc, to_char(request_date, 'YYYY-MM-dd') as request_date, price_change_reason, action_status, to_char(negotiate_final_price, 'YYYY-MM-dd') as negotiate_final_price, to_char(price_increase_effective_date, 'YYYY-MM-dd') as price_increase_effective_date FROM public.vw_request_details where country_name='"+req.query.country+"' AND new_price IS NOT NULL AND request_date IS NOT NULL "
+
+		// 		console.log(query)
+				
+		// 		con.query(query, function(err, result) {
+		// 			if (err) {
+		// 				res.json({ status: false });
+		// 				return;
+		// 			} else{
+		// 				data.buyerInputs = result.rows
+		// 				res.json({ status: true, data: data });
+		// 				return;
+		// 			}			
+		// 		});
+        //     }			
+		// });
+	});
+
+	app.post('/closed_supplier_input', async function(req, res){
+		var data = {};
+		var query = "call public.usp_update_requestdetails (record_id=>"+req.body.id +", in_action_status => 'closed')";
+
+		console.log(query);
+
+		await con.query(query, function(err, result) {
+			if (err) {
+				console.log(err)
+				res.json({ status: false });
+				return;
+			} else{				
+				var query = "SELECT row_id, suppl_no, suppl_name, art_no, art_name_tl, current_price, new_price, price_difference_perc, to_char(request_date, 'YYYY-MM-dd') as request_date, price_change_reason, action_status, to_char(negotiate_final_price, 'YYYY-MM-dd') as negotiate_final_price, to_char(price_increase_effective_date, 'YYYY-MM-dd') as price_increase_effective_date FROM public.vw_request_details where country_name='"+req.body.country+"' AND new_price IS NOT NULL AND request_date IS NOT NULL ";
+				;
+
+				console.log(query);
+				
+				con.query(query, function(err, result) {
+					if (err) {
+						res.json({ status: false });
+						return;
+					} else{
+						data.supplierInputs = result.rows
+						res.json({ status: true, data: data });
+						return;
+					}			
+				});
+            }			
+		});
+	});
 
 }

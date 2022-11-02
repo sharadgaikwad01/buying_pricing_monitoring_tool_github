@@ -26,14 +26,6 @@ const EditSupplierRequestModal = ({ open, handleModal, rowData, supllierNumberOp
   // ** State
   // const [Picker, setPicker] = useState('')
   const [articleOptions, setarticleOptions] = useState([])
-
-  useEffect(async () => {
-    const supplierNumber = rowData.suppl_no
-    await axios.get(`http://localhost:8080/getArticlesBySupplierNumber`, { params: { supplierNumber } }).then((res) => {
-      setarticleOptions(res.data.data.articleOptions)
-    })
-  }, [rowData])
-
   const country = localStorage.getItem('country')
   const vat_number = localStorage.getItem('vat')
   

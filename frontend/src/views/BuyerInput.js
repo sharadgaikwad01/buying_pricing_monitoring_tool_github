@@ -9,7 +9,7 @@ import Flatpickr from 'react-flatpickr'
 import AddBuyerInputModal from './AddBuyerInputModal'
 import ReactPaginate from 'react-paginate'
 import DataTable from 'react-data-table-component'
-import { Download, Search, ChevronDown, Share, Printer, FileText, File, Grid, Copy, Plus, Upload, Edit, Trash } from 'react-feather'
+import { Download, Search, ChevronDown, Share, Printer, FileText, File, Grid, Copy, Plus, Upload, Edit, Trash, Check } from 'react-feather'
 
 import '@styles/react/libs/tables/react-dataTable-component.scss'
 import '@styles/react/libs/flatpickr/flatpickr.scss'
@@ -31,6 +31,10 @@ import {
   UncontrolledButtonDropdown,
   Badge
 } from 'reactstrap'
+
+import Swal from 'sweetalert2'
+import withReactContent from 'sweetalert2-react-content'
+const MySwal = withReactContent(Swal)
 
 const BuyerInput = props => {
   const country = localStorage.getItem('country')
@@ -146,7 +150,7 @@ const BuyerInput = props => {
     const searchSupplierNumber = e.value
     setSupplierNumber(searchSupplierNumber)
 
-    await axios.get(`http://localhost:8080/buyer_input`, { params: { searchSupplierNumber, searchRequestedDate } }).then((res) => {
+    await axios.get(`http://localhost:8080/buyer_input`, { params: { searchSupplierNumber, searchRequestedDate, country } }).then((res) => {
       setsupplierInputsData(res.data.data.supplierInputs)
       setsupllierNumberOptions(res.data.data.supplierIDOptions)
     })
@@ -172,7 +176,7 @@ const BuyerInput = props => {
     })
     const searchRequestedDate = arr[0]
     setSearchRequestedDate(searchRequestedDate)
-    await axios.get(`http://localhost:8080/buyer_input`, { params: { searchSupplierNumber, searchRequestedDate } }).then((res) => {
+    await axios.get(`http://localhost:8080/buyer_input`, { params: { searchSupplierNumber, searchRequestedDate, country } }).then((res) => {
       setsupplierInputsData(res.data.data.supplierInputs)
       setsupllierNumberOptions(res.data.data.supplierIDOptions)
     })
@@ -183,6 +187,67 @@ const BuyerInput = props => {
     e.preventDefault()
     setRowData(row)
     setBuyerInputModal(!editBuyerModal)
+  }
+
+  const handleClosedAction = (e, row) => {
+    const id = row.row_id
+    e.preventDefault()
+    MySwal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, Close it!',
+      customClass: {
+        confirmButton: 'btn btn-primary',
+        cancelButton: 'btn btn-outline-danger ms-1'
+      },
+      buttonsStyling: false
+    }).then(function (result) {
+      if (result.value) {
+        axios({
+          method: "post",
+          url: "http://localhost:8080/closed_supplier_input",
+          data: { id, country}
+        })
+          .then(function (success) {
+            //handle success        
+            if (success.data.status) { 
+              setsupplierInputsData(success.data.data.supplierInputs) 
+              return MySwal.fire({
+                title: 'Done!',
+                text: 'Request has been closed successfully',
+                icon: 'success',
+                customClass: {
+                  confirmButton: 'btn btn-primary'
+                },
+                buttonsStyling: false
+              })
+            } else {
+              return MySwal.fire({
+                title: 'Error',
+                text: 'Something went wrong. Please try again later',
+                icon: 'error',
+                customClass: {
+                  confirmButton: 'btn btn-primary'
+                },
+                buttonsStyling: false
+              })
+            }
+          })
+          .catch(function () {
+            return MySwal.fire({
+              title: 'Error',
+              text: 'Something went wrong. Please try again later',
+              icon: 'error',
+              customClass: {
+                confirmButton: 'btn btn-primary'
+              },
+              buttonsStyling: false
+            })
+          })
+      }
+    })
   }
 
   const columns = [
@@ -199,11 +264,18 @@ const BuyerInput = props => {
       allowOverflow: true,
       cell: (row) => {
         return (
+          row.action_status === 'open' ?
           <div className='d-flex'>
             <Edit size={15} onClick={(e) => handleEdit(e, row)} className="editTableIcon text-info" />
-          </div>
+            <Check size={15} onClick={(e) => handleClosedAction(e, row)} className="deleteTableIcon text-success ms-1" />
+          </div> : -
         )
       }
+    },
+    {
+      name: 'Row Id',
+      omit:true,
+      selector: row => row.row_id
     },
     {
       name: 'Supplier No.',
