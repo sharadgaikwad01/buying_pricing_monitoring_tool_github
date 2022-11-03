@@ -42,8 +42,8 @@ import withReactContent from 'sweetalert2-react-content'
 const MySwal = withReactContent(Swal)
 
 const statusOptions = [
-  { value: 'Open', label: 'Open' },
-  { value: 'Closed', label: 'Closed' }
+  { value: 'open', label: 'Open' },
+  { value: 'closed', label: 'Closed' }
 ]
 
 const BootstrapCheckbox = forwardRef((props, ref) => (
@@ -101,9 +101,11 @@ const Home = props => {
       props.history.push('/buyer_input')
     }
     await axios.get(`http://localhost:8080/supplier_input`, { params: { searchSupplierNumber, searchArticleNumber, searchRequestedDate, searchStatus, country, vat_number } }).then((res) => {
-      setsupplierInputsData(res.data.data.supplierInputs)
-      setsupllierNumberOptions(res.data.data.supplierIDOptions)
-      setarticleOptions(res.data.data.articleOptions)
+      if (res.data.data) {
+        setsupplierInputsData(res.data.data.supplierInputs)
+        setsupllierNumberOptions(res.data.data.supplierIDOptions)
+        setarticleOptions(res.data.data.articleOptions)
+      }      
     })
   }, [])
 
@@ -330,10 +332,7 @@ const Home = props => {
       width: '100px',
       cell: (row) => {
         return (
-          <div className='d-flex'>
-            <Edit size={15} onClick={() => handleEdit(row)} className="editTableIcon text-info" />
-            <Trash size={15} onClick={(e) => handleDelete(e, row)} className="deleteTableIcon text-danger ms-1" />
-          </div>
+          row.action_status === 'open' ? <div className='d-flex'> <Edit size={15} onClick={() => handleEdit(row)} className="editTableIcon text-info" /> <Trash size={15} onClick={(e) => handleDelete(e, row)} className="deleteTableIcon text-danger ms-1" /> </div> : "-"
         )
       }
     },
@@ -502,7 +501,7 @@ const Home = props => {
               />
             </Col>
             <Col className='col-auto'>
-              <Label className='form-label' for='salary'>
+              <Label className='form-label' for='status'>
                 Status:
               </Label>
               <Select

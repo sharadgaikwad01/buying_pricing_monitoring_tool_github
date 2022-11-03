@@ -36,12 +36,18 @@ import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 const MySwal = withReactContent(Swal)
 
+const statusOptions = [
+  { value: 'open', label: 'Open' },
+  { value: 'closed', label: 'Closed' }
+]
+
 const BuyerInput = props => {
   const country = localStorage.getItem('country')
 
   const [supplierInputsData, setsupplierInputsData] = useState([])
   const [searchSupplierNumber, setSupplierNumber] = useState('')
   const [searchRequestedDate, setSearchRequestedDate] = useState('')
+  const [searchStatus, setSearchStatus] = useState('')
 
   const [editBuyerModal, setBuyerInputModal] = useState(false)
 
@@ -139,8 +145,7 @@ const BuyerInput = props => {
   }
 
   const handleDownloadCSV = async () => {
-    const supplier_number = data.supplier_number
-    await axios.get(`http://localhost:8080/buyer_article_details`, { params: { supplier_number } }).then((res) => {
+    await axios.get(`http://localhost:8080/buyer_article_details`, { params: { country } }).then((res) => {
       downloadCSV(res.data.data)
     })
   }
@@ -182,9 +187,18 @@ const BuyerInput = props => {
     })
   }
 
+  // ** Function to handle status filter
+  const handleStatusFilter = async (e) => {
+    const searchStatus = e.value
+    setSearchStatus(searchStatus)
+    await axios.get(`http://localhost:8080/buyer_input`, { params: { searchSupplierNumber, searchRequestedDate, searchStatus, country } }).then((res) => {
+      setsupplierInputsData(res.data.data.supplierInputs)
+      setsupllierNumberOptions(res.data.data.supplierIDOptions)
+    })
+  }
+
   // ** Function to handle edit
   const handleEdit = async (e, row) => {
-    e.preventDefault()
     setRowData(row)
     setBuyerInputModal(!editBuyerModal)
   }
@@ -264,11 +278,7 @@ const BuyerInput = props => {
       allowOverflow: true,
       cell: (row) => {
         return (
-          row.action_status === 'open' ?
-          <div className='d-flex'>
-            <Edit size={15} onClick={(e) => handleEdit(e, row)} className="editTableIcon text-info" />
-            <Check size={15} onClick={(e) => handleClosedAction(e, row)} className="deleteTableIcon text-success ms-1" />
-          </div> : -
+          row.action_status === 'open' ? <div className='d-flex'><Edit size={15} onClick={(e) => handleEdit(e, row)} className="editTableIcon text-info" /><Check size={15} onClick={(e) => handleClosedAction(e, row)} className="deleteTableIcon text-success ms-1" /></div> : "-"
         )
       }
     },
@@ -401,10 +411,10 @@ const BuyerInput = props => {
       name: 'Price Finalize Date',
       sortable: true,
       width: 'auto',
-      selector: row => row.negotiate_final_price,
+      selector: row => row.price_increase_communicated_date,
       cell: row => {
         return (
-          row.negotiate_final_price ? row.negotiate_final_price : "-"
+          row.price_increase_communicated_date ? row.price_increase_communicated_date : "-"
         )
       }
     },
@@ -470,6 +480,23 @@ const BuyerInput = props => {
                 options={{
                   dateFormat: 'Y-m-d'
                 }}
+              />
+            </Col>
+            <Col className='col-auto'>
+              <Label className='form-label' for='status'>
+                Status:
+              </Label>
+              <Select
+                theme={selectThemeColors}
+                className='react-select'
+                classNamePrefix='select'
+                defaultValue={statusOptions[1]}
+                name='status'
+                options={statusOptions}
+                value={statusOptions.filter(function (option) {
+                  return option.value === searchStatus
+                })}
+                onChange={handleStatusFilter}
               />
             </Col>
           </Row>

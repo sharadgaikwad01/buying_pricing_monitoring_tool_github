@@ -52,16 +52,17 @@ const EditSupplierRequestModal = ({ open, handleModal, rowData, supllierNumberOp
 
   useEffect(async () => {
     if (rowData) {
+      console.log(rowData)
       const supplierNumber = rowData.suppl_no
       await setRowId(rowData.row_id)
       await setNewPrice(rowData.new_price)
-      await setReason(rowData.request_date)
+      await setReason(rowData.price_change_reason)
       await setSupplierNumber(rowData.suppl_no)
       await setArticleNumber(rowData.art_no)
       
       setValue('row_id', rowData.row_id)
       setValue('new_price', rowData.new_price, { shouldValidate: true })
-      setValue('reason', rowData.request_date, { shouldValidate: true })
+      setValue('reason', rowData.price_change_reason, { shouldValidate: true })
       setValue('supplier_number', rowData.suppl_no, { shouldValidate: true })
       setValue('article_number', rowData.art_no, { shouldValidate: true })
 
@@ -216,7 +217,7 @@ const EditSupplierRequestModal = ({ open, handleModal, rowData, supllierNumberOp
               name='reason'
               defaultValue=''
               control={control}
-              render={({ field }) => <Input type='textarea' rows='5' {...field} placeholder='Reason' value={reason} onChange={e => { setReason(e.target.value); setValue('reason', e.target.value, { shouldValidate: true }) }} invalid={errors.reason && true} />}
+              render={({ field }) => <Input type='textarea' rows='5' {...field} placeholder='Reason' value={reason} onChange={e1 => { setReason(e1.target.value); setValue('reason', e1.target.value, { shouldValidate: true }) }} invalid={errors.reason && true} />}
             />
             {errors.reason && <FormFeedback>{"Reason is a required field"}</FormFeedback>}
           </div>

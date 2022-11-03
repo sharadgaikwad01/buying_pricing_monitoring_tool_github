@@ -35,7 +35,6 @@ const AddNewModal = ({ open, handleModal, supllierNumberOptions, setsupplierInpu
 
   const SupplierInputSchema = yup.object().shape({
     new_price: yup.number().required().positive().integer(),
-    reason: yup.string().required(),
     supplier_number: yup.string().required(),
     article_number: yup.string().required()
   })
@@ -66,7 +65,7 @@ const AddNewModal = ({ open, handleModal, supllierNumberOptions, setsupplierInpu
         if (success.data.status) {
           return MySwal.fire({
             title: 'Done!',
-            text: 'File has been downloaded!',
+            text: 'Request has been added successfully',
             icon: 'success',
             customClass: {
               confirmButton: 'btn btn-primary'

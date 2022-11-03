@@ -46,7 +46,7 @@ router.use((req, res, next) => {
 			let user_details = token.claims();
             console.log('received and validated tokens %j', token);
             console.log('validated ID Token claims %j', token.claims());
-            var frontend_redirect_url = 'http://localhost:3000/auth?token='+token.id_token+'&id='+user_details.metro_id+'&email='+user_details.email+'&type=SUPPLIER&country=HUNGARY&vat=10886861-2-44'
+            var frontend_redirect_url = 'http://localhost:3000/auth?token='+token.id_token+'&id='+user_details.metro_id+'&email='+user_details.email+'&type=BUYER&country=HUNGARY&vat=10886861-2-44'
             res.send('<script>window.location.href="'+frontend_redirect_url+'";</script>');
 			//res.redirect(303, 'http://localhost:3000/auth?token='+token.id_token+'&id='+user_details.metro_id+'&email='+user_details.email+'&type=BUYER&country=hungary&vat=10886861-2-44');
             // sql = "SELECT * FROM public.tbl_users where email = '"+user_details.email +"'";
