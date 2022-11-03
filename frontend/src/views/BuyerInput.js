@@ -1,7 +1,7 @@
 import { Fragment, useState, useEffect } from 'react'
 import Select from 'react-select'
 
-import { selectThemeColors } from '@utils'
+import { selectThemeColors, nodeBackend } from '@utils'
 import axios from 'axios'
 
 // ** Add New Modal Component
@@ -66,7 +66,7 @@ const BuyerInput = props => {
     if (user_type === 'SUPPLIER') {
       props.history.push('/home')
     }
-    await axios.get(`http://localhost:8080/buyer_input`, { params: { searchSupplierNumber, searchRequestedDate, country } }).then((res) => {
+    await axios.get(`${nodeBackend}/buyer_input`, { params: { searchSupplierNumber, searchRequestedDate, country } }).then((res) => {
       setsupplierInputsData(res.data.data.supplierInputs)
       setsupllierNumberOptions(res.data.data.supplierIDOptions)
     })
@@ -145,7 +145,7 @@ const BuyerInput = props => {
   }
 
   const handleDownloadCSV = async () => {
-    await axios.get(`http://localhost:8080/buyer_article_details`, { params: { country } }).then((res) => {
+    await axios.get(`${nodeBackend}/buyer_article_details`, { params: { country } }).then((res) => {
       downloadCSV(res.data.data)
     })
   }
@@ -155,7 +155,7 @@ const BuyerInput = props => {
     const searchSupplierNumber = e.value
     setSupplierNumber(searchSupplierNumber)
 
-    await axios.get(`http://localhost:8080/buyer_input`, { params: { searchSupplierNumber, searchRequestedDate, country } }).then((res) => {
+    await axios.get(`${nodeBackend}/buyer_input`, { params: { searchSupplierNumber, searchRequestedDate, country } }).then((res) => {
       setsupplierInputsData(res.data.data.supplierInputs)
       setsupllierNumberOptions(res.data.data.supplierIDOptions)
     })
@@ -181,7 +181,7 @@ const BuyerInput = props => {
     })
     const searchRequestedDate = arr[0]
     setSearchRequestedDate(searchRequestedDate)
-    await axios.get(`http://localhost:8080/buyer_input`, { params: { searchSupplierNumber, searchRequestedDate, country } }).then((res) => {
+    await axios.get(`${nodeBackend}/buyer_input`, { params: { searchSupplierNumber, searchRequestedDate, country } }).then((res) => {
       setsupplierInputsData(res.data.data.supplierInputs)
       setsupllierNumberOptions(res.data.data.supplierIDOptions)
     })
@@ -191,7 +191,7 @@ const BuyerInput = props => {
   const handleStatusFilter = async (e) => {
     const searchStatus = e.value
     setSearchStatus(searchStatus)
-    await axios.get(`http://localhost:8080/buyer_input`, { params: { searchSupplierNumber, searchRequestedDate, searchStatus, country } }).then((res) => {
+    await axios.get(`${nodeBackend}/buyer_input`, { params: { searchSupplierNumber, searchRequestedDate, searchStatus, country } }).then((res) => {
       setsupplierInputsData(res.data.data.supplierInputs)
       setsupllierNumberOptions(res.data.data.supplierIDOptions)
     })
@@ -221,7 +221,7 @@ const BuyerInput = props => {
       if (result.value) {
         axios({
           method: "post",
-          url: "http://localhost:8080/closed_supplier_input",
+          url: `${nodeBackend}/closed_supplier_input`,
           data: { id, country}
         })
           .then(function (success) {

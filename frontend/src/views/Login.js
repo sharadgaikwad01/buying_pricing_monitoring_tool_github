@@ -4,7 +4,7 @@ import { Facebook, Twitter, Mail, GitHub } from 'react-feather'
 import InputPasswordToggle from '@components/input-password-toggle'
 import { Row, Col, CardTitle, CardText, Form, Label, Input, Button } from 'reactstrap'
 import '@styles/react/pages/page-authentication.scss'
-
+import { nodeBackend, reactFrontend } from '@utils'
 export const data = []
 
 const LoginCover = () => {
@@ -15,11 +15,11 @@ const LoginCover = () => {
   
   const auth_token = localStorage.getItem('token')
   if (auth_token) {
-    window.location.replace('http://localhost:3000/home')
+    window.location.replace(`${reactFrontend}/home`)
   }
 
   const handleLogin = () => {
-    window.location.replace('http://localhost:8080/api/v1/login')
+    window.location.replace(`${nodeBackend}/api/v1/login`)
   }
 
   return (

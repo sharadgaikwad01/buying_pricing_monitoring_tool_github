@@ -1,7 +1,7 @@
 // ** React Imports
 // ** Third Party Components
 import { useState, useEffect } from 'react'
-
+import { nodeBackend } from '@utils'
 import { User, Briefcase, Mail, Calendar, DollarSign, X } from 'react-feather'
 
 import axios from 'axios'
@@ -98,7 +98,7 @@ const AddBuyerInputModal = ({ open, handleModal, rowData }) => {
     
     axios({
       method: "post",
-      url: "http://localhost:8080/update_buyer_input",
+      url: `${nodeBackend}/update_buyer_input`,
       data: { row_id, final_price, comment, finalize_date, effective_date, country}
     })
       .then(function (success) {

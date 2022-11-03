@@ -6,7 +6,7 @@ import { User, Briefcase, Mail, Calendar, DollarSign, X } from 'react-feather'
 
 import axios from 'axios'
 import Select from 'react-select'
-
+import { nodeBackend } from '@utils'
 // ** Reactstrap Imports
 import { Modal, Input, Label, Button, ModalHeader, ModalBody, InputGroup, InputGroupText, FormFeedback, Form } from 'reactstrap'
 
@@ -66,7 +66,7 @@ const EditSupplierRequestModal = ({ open, handleModal, rowData, supllierNumberOp
       setValue('supplier_number', rowData.suppl_no, { shouldValidate: true })
       setValue('article_number', rowData.art_no, { shouldValidate: true })
 
-      await axios.get(`http://localhost:8080/getArticlesBySupplierNumber`, { params: { supplierNumber, country, vat_number } }).then((res) => {
+      await axios.get(`${nodeBackend}/getArticlesBySupplierNumber`, { params: { supplierNumber, country, vat_number } }).then((res) => {
         setarticleOptions(res.data.data.articleOptions)
       })
     }
@@ -88,7 +88,7 @@ const EditSupplierRequestModal = ({ open, handleModal, rowData, supllierNumberOp
 
     axios({
       method: "post",
-      url: "http://localhost:8080/update_supplier_input",
+      url: `${nodeBackend}/update_supplier_input`,
       data: { row_id, new_price, reason, supplier_number, article_number, country, vat_number}
     }).then(function (success) {
       //handle success        
@@ -130,7 +130,7 @@ const EditSupplierRequestModal = ({ open, handleModal, rowData, supllierNumberOp
   const handleSupplierNumberFilter = async (value) => {
     const supplierNumber = value.value
     setValue('article_number', '', { shouldValidate: true })
-    await axios.get(`http://localhost:8080/getArticlesBySupplierNumber`, { params: { supplierNumber, country, vat_number } }).then((res) => {
+    await axios.get(`${nodeBackend}/getArticlesBySupplierNumber`, { params: { supplierNumber, country, vat_number } }).then((res) => {
       console.log(res.data)
       setarticleOptions(res.data.data.articleOptions)
     })

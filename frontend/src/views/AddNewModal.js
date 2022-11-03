@@ -1,7 +1,7 @@
 // ** React Imports
 // ** Third Party Components
 import { useState } from 'react'
-
+import { nodeBackend } from '@utils'
 import { User, Briefcase, Mail, Calendar, DollarSign, X } from 'react-feather'
 
 import axios from 'axios'
@@ -55,7 +55,7 @@ const AddNewModal = ({ open, handleModal, supllierNumberOptions, setsupplierInpu
     
     axios({
       method: "post",
-      url: "http://localhost:8080/add_supplier_input",
+      url: `${nodeBackend}/add_supplier_input`,
       data: { new_price, reason, supplier_number, article_number, country, vat_number }
     })
       .then(function (success) {
@@ -100,7 +100,7 @@ const AddNewModal = ({ open, handleModal, supllierNumberOptions, setsupplierInpu
   const handleSupplierNumberFilter = async (value) => {
     setarticleOptions([{ value: '', label: '' }])
     const supplierNumber = value.value
-    await axios.get(`http://localhost:8080/getArticlesBySupplierNumber`, { params: { supplierNumber, country, vat_number} }).then((res) => {
+    await axios.get(`${nodeBackend}/getArticlesBySupplierNumber`, { params: { supplierNumber, country, vat_number} }).then((res) => {
       setarticleOptions(res.data.data.articleOptions)
     })
   } 

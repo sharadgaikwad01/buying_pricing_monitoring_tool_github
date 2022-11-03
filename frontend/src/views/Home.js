@@ -3,9 +3,8 @@
 import { Fragment, useState, forwardRef, useEffect } from 'react'
 import Select from 'react-select'
 
-import { selectThemeColors } from '@utils'
+import { selectThemeColors, nodeBackend } from '@utils'
 import axios from 'axios'
-
 // ** Add New Modal Component
 import Flatpickr from 'react-flatpickr'
 import AddNewModal from './AddNewModal'
@@ -100,7 +99,7 @@ const Home = props => {
     if (user_type === 'BUYER') {
       props.history.push('/buyer_input')
     }
-    await axios.get(`http://localhost:8080/supplier_input`, { params: { searchSupplierNumber, searchArticleNumber, searchRequestedDate, searchStatus, country, vat_number } }).then((res) => {
+    await axios.get(`${nodeBackend}/supplier_input`, { params: { searchSupplierNumber, searchArticleNumber, searchRequestedDate, searchStatus, country, vat_number } }).then((res) => {
       if (res.data.data) {
         setsupplierInputsData(res.data.data.supplierInputs)
         setsupllierNumberOptions(res.data.data.supplierIDOptions)
@@ -185,7 +184,7 @@ const Home = props => {
   const handleSupplierNumberFilter = async (e) => {
     const searchSupplierNumber = e.value
     setSupplierNumber(searchSupplierNumber)
-    await axios.get(`http://localhost:8080/supplier_input`, { params: { searchSupplierNumber, searchArticleNumber, searchRequestedDate, searchStatus, country, vat_number } }).then((res) => {
+    await axios.get(`${nodeBackend}/supplier_input`, { params: { searchSupplierNumber, searchArticleNumber, searchRequestedDate, searchStatus, country, vat_number } }).then((res) => {
       setsupplierInputsData(res.data.data.supplierInputs)
       setsupllierNumberOptions(res.data.data.supplierIDOptions)
       setarticleOptions(res.data.data.articleOptions)
@@ -197,7 +196,7 @@ const Home = props => {
   const handleArticleFilter = async (e) => {
     const searchArticleNumber = e.value
     setArticleNumber(searchArticleNumber)
-    await axios.get(`http://localhost:8080/supplier_input`, { params: { searchSupplierNumber, searchArticleNumber, searchRequestedDate, searchStatus, country, vat_number } }).then((res) => {
+    await axios.get(`${nodeBackend}/supplier_input`, { params: { searchSupplierNumber, searchArticleNumber, searchRequestedDate, searchStatus, country, vat_number } }).then((res) => {
       setsupplierInputsData(res.data.data.supplierInputs)
       setsupllierNumberOptions(res.data.data.supplierIDOptions)
       setarticleOptions(res.data.data.articleOptions)
@@ -224,7 +223,7 @@ const Home = props => {
     })
     const searchRequestedDate = arr[0]
     setSearchRequestedDate(searchRequestedDate)
-    await axios.get(`http://localhost:8080/supplier_input`, { params: { searchSupplierNumber, searchArticleNumber, searchRequestedDate, searchStatus, country, vat_number } }).then((res) => {
+    await axios.get(`${nodeBackend}/supplier_input`, { params: { searchSupplierNumber, searchArticleNumber, searchRequestedDate, searchStatus, country, vat_number } }).then((res) => {
       setsupplierInputsData(res.data.data.supplierInputs)
       setsupllierNumberOptions(res.data.data.supplierIDOptions)
       setarticleOptions(res.data.data.articleOptions)
@@ -235,7 +234,7 @@ const Home = props => {
   const handleStatusFilter = async (e) => {
     const searchStatus = e.value
     setSearchStatus(searchStatus)
-    await axios.get(`http://localhost:8080/supplier_input`, { params: { searchSupplierNumber, searchArticleNumber, searchRequestedDate, searchStatus, country, vat_number } }).then((res) => {
+    await axios.get(`${nodeBackend}/supplier_input`, { params: { searchSupplierNumber, searchArticleNumber, searchRequestedDate, searchStatus, country, vat_number } }).then((res) => {
       setsupplierInputsData(res.data.data.supplierInputs)
       setsupllierNumberOptions(res.data.data.supplierIDOptions)
       setarticleOptions(res.data.data.articleOptions)
@@ -267,7 +266,7 @@ const Home = props => {
       if (result.value) {
         axios({
           method: "post",
-          url: "http://localhost:8080/delete_supplier_input",
+          url: `${nodeBackend}/delete_supplier_input`,
           data: { id, country, vat_number}
         })
           .then(function (success) {
