@@ -1,6 +1,8 @@
 // ** React Imports
 import { Link } from 'react-router-dom'
 
+import { useState, useEffect } from 'react'
+
 // ** Custom Components
 import Avatar from '@components/avatar'
 
@@ -19,24 +21,35 @@ import { UncontrolledDropdown, DropdownMenu, DropdownToggle, DropdownItem } from
 const UserDropdown = () => {
   // ** State
   const user_email = localStorage.getItem('email')
-  const user_type = localStorage.getItem('type')
   const vat_number = localStorage.getItem('vat')
   const user_name = localStorage.getItem('name')
+
+  const [userDetails, setUserDetails] = useState([])
 
   //** Vars
   //const userAvatar = (userData && userData.avatar) || defaultAvatar
 
   const handlelogout = () => {
     localStorage.clear()
-    window.location.replace('http://10.16.148.18:82/login')
+    window.location.replace('http://localhost:3000/login')
   }
+
+  useEffect(async () => {
+    const user_type = localStorage.getItem("type")
+    if (user_type === 'SUPPLIER') {
+      const result = `${user_type} / ${vat_number} / ${user_name}`
+      setUserDetails(result)
+    } else {
+      setUserDetails(user_type)
+    }
+  }, [])
 
   return (
     <UncontrolledDropdown tag='li' className='dropdown-user nav-item'>
       <DropdownToggle href='/' tag='a' className='nav-link dropdown-user-link' onClick={e => e.preventDefault()}>
         <div className='user-nav d-sm-flex d-none'>
           <span className='user-name fw-bold'>{user_email}</span>
-          <span className='user-status'>{user_type}  {vat_number} {user_name}</span>
+            <span className='user-status'>{userDetails}</span>
         </div>        
         <Avatar color='light-primary' content={user_name} initials />
       </DropdownToggle>

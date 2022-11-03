@@ -468,6 +468,11 @@ const Home = props => {
                 onChange={handleSupplierNumberFilter}
               />
             </Col>
+
+            <Col className='col-auto'>
+              <Badge color='primary' pill>1</Badge>
+            </Col>
+            
             <Col className='col-auto'>
               <Label className='form-label' for='city'>
                 Article Number:
