@@ -11,6 +11,10 @@ export default class Auth extends Component {
         const country = searchParams.get("country")
         const vat = searchParams.get("vat")
         const name = searchParams.get("name")
+        const error = searchParams.get("error")
+        if (error) {
+            this.props.history.push({ pathname: '/notAuthorized', search: `?error=${error}` })
+        }
 
         if (searchParams.has('id') && searchParams.has('token') && searchParams.has('email') && searchParams.has('type') && searchParams.has('country')) {
 
@@ -19,11 +23,11 @@ export default class Auth extends Component {
             localStorage.setItem("email", email)
             localStorage.setItem("type", type)
             localStorage.setItem("country", country)
+            localStorage.setItem("name", name)
             if (type === 'BUYER') {
                 this.props.history.push('/buyer_input')
             } else {
                 localStorage.setItem("vat", vat)
-                localStorage.setItem("name", name)
                 this.props.history.push('/home')
             }
         } else {

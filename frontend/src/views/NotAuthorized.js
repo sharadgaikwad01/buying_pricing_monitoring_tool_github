@@ -27,8 +27,7 @@ const NotAuthorized = () => {
         <div className='w-100 text-center'>
           <h2 className='mb-1'>You are not authorized! 🔐</h2>
           <p className='mb-2'>
-            The Webtrends Marketing Lab website in IIS uses the default IUSR account credentials to access the web pages
-            it serves.
+            For more details Please contact you administartor.
           </p>
           <Button tag={Link} to='/' color='primary' className='btn-sm-block mb-1'>
             Back to Home
