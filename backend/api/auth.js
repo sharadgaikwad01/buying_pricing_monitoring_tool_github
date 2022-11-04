@@ -44,25 +44,32 @@ router.use((req, res, next) => {
     client.callback(config.nodebackend+'/api/v1/callback', params, { code_verifier }) // => Promise
         .then(token => {
 			let user_details = token.claims();
-            console.log('received and validated tokens %j', token);
-            console.log('validated ID Token claims %j', token.claims());
+            // console.log('received and validated tokens %j', token);
+            // console.log('validated ID Token claims %j', token.claims());
+            console.log(user_details)
 
-            var frontend_redirect_url = config.reactFrontend + '/auth?token='+token.id_token+'&id='+user_details.metro_id+'&email='+user_details.email+'&type=BUYER&country=HUNGARY&vat=10886861-2-44'
-            res.send('<script>window.location.href="'+frontend_redirect_url+'";</script>');
+            // var frontend_redirect_url = config.reactFrontend + '/auth?token='+token.id_token+'&id='+user_details.metro_id+'&email='+user_details.email+'&type=BUYER&country=HUNGARY&vat=10886861-2-44&name='+user_details.name
+            // res.send('<script>window.location.href="'+frontend_redirect_url+'";</script>');
 			//res.redirect(303, config.reactFrontend + '/auth?token='+token.id_token+'&id='+user_details.metro_id+'&email='+user_details.email+'&type=BUYER&country=hungary&vat=10886861-2-44');
 
-            // sql = "SELECT * FROM public.tbl_users where email = '"+user_details.email +"'";
-            // clientDB.query(sql, function(err, result) {
-            //     if (err) {
-            //         res.redirect(303, config.reactFrontend + '/auth?error=User not Exist')
-            //     } else{
-            //         if(result.rowCount == 0){
-            //         	res.redirect(303, config.reactFrontend + '/auth?error=User not Exist');
-            //         }else{
-            //             res.redirect(303, config.reactFrontend + '/auth?token='+token.id_token+'&id='+user_details.metro_id+'&email='+user_details.email+'&type=SUPPLIER&country=HUNGERY&vat=10886861-2-44');
-            //         }				
-            //     }	
-            // });
+            sql = "SELECT * FROM public.tbl_buyer_details where buyer_emailid = '"+user_details.email +"'";
+            clientDB.query(sql, function(err, result) {
+                if (err) {
+                    // res.redirect(303, config.reactFrontend + '/auth?error=User not Exist');
+                    res.send('<script>window.location.href="'+config.reactFrontend + '/auth?error=User not Exist'+'";</script>');
+                } else{
+                    if(result.rowCount == 0){
+                    	// res.redirect(303, config.reactFrontend + '/auth?error=User not Exist');
+                        res.send('<script>window.location.href="'+config.reactFrontend + '/auth?error=User not Exist' + '";</script>');
+                    }else{
+                        console.log(result.rows)
+                        console.log(result.rows[0].first_name)
+                        console.log(result.rows[0].last_name)
+                        var frontend_redirect_url = config.reactFrontend + '/auth?token='+token.id_token+'&id='+user_details.metro_id+'&email='+user_details.email+'&type=BUYER&country='+ result.rows[0].country_name +'&name=' + result.rows[0].first_name + ' ' + result.rows[0].last_name;
+                        res.send('<script>window.location.href="'+frontend_redirect_url+'";</script>');
+                    }				
+                }	
+            });
         }).catch( err => {
             console.log(err);
         });
