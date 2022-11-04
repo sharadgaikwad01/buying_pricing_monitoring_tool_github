@@ -137,8 +137,9 @@ const DownloadArticliesModal = ({ open, handleModal, supllierNumberOptions }) =>
                                         options={supllierNumberOptions}
                                         className='is-invalid select-custom'
                                         classNamePrefix="react-select"
+                                        isMulti
                                         value={supllierNumberOptions.find((c) => c.value === value)}
-                                        onChange={(val) => onChange(val.value)}
+                                        onChange={(val) => onChange(console.log(val))}
                                         theme={(theme) => ({
                                             ...theme,
                                             borderRadius: '4px',
