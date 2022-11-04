@@ -8,7 +8,7 @@ import { Badge, UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 const MySwal = withReactContent(Swal)
-
+import { nodeBackend } from '@utils'
 // const status = {
 //   1: { title: 'Open', color: 'light-warning' },
 //   2: { title: 'Closed', color: 'light-success' },

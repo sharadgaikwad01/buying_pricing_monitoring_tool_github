@@ -1,7 +1,7 @@
 // ** React Imports
 // ** Third Party Components
 import { useState } from 'react'
-
+import { nodeBackend } from '@utils'
 import { User, Briefcase, Mail, Calendar, DollarSign, X } from 'react-feather'
 
 import axios from 'axios'
@@ -35,7 +35,6 @@ const AddNewModal = ({ open, handleModal, supllierNumberOptions, setsupplierInpu
 
   const SupplierInputSchema = yup.object().shape({
     new_price: yup.number().required().positive().integer(),
-    reason: yup.string().required(),
     supplier_number: yup.string().required(),
     article_number: yup.string().required()
   })
@@ -56,7 +55,7 @@ const AddNewModal = ({ open, handleModal, supllierNumberOptions, setsupplierInpu
     
     axios({
       method: "post",
-      url: "http://10.16.148.18:81/add_supplier_input",
+      url: `${nodeBackend}/add_supplier_input`,
       data: { new_price, reason, supplier_number, article_number, country, vat_number }
     })
       .then(function (success) {
@@ -66,7 +65,7 @@ const AddNewModal = ({ open, handleModal, supllierNumberOptions, setsupplierInpu
         if (success.data.status) {
           return MySwal.fire({
             title: 'Done!',
-            text: 'File has been downloaded!',
+            text: 'Request has been added successfully',
             icon: 'success',
             customClass: {
               confirmButton: 'btn btn-primary'
@@ -101,7 +100,7 @@ const AddNewModal = ({ open, handleModal, supllierNumberOptions, setsupplierInpu
   const handleSupplierNumberFilter = async (value) => {
     setarticleOptions([{ value: '', label: '' }])
     const supplierNumber = value.value
-    await axios.get(`http://10.16.148.18:81/getArticlesBySupplierNumber`, { params: { supplierNumber, country, vat_number} }).then((res) => {
+    await axios.get(`${nodeBackend}/getArticlesBySupplierNumber`, { params: { supplierNumber, country, vat_number} }).then((res) => {
       setarticleOptions(res.data.data.articleOptions)
     })
   } 

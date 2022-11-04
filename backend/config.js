@@ -10,6 +10,10 @@ CONFIG.db_name      = process.env.DB_NAME       || 'PSQL-BUYING_TOOL_DEV';
 CONFIG.db_user      = process.env.DB_USER       || 'postgres';
 CONFIG.db_password  = process.env.DB_PASSWORD   || 'metroservices1$';
 
+CONFIG.reactFrontend        = 'http://10.16.148.18';
+CONFIG.nodebackend  = 'http://10.16.148.18:81';
+
+
 CONFIG.session_encryption  = process.env.SESSION_ENCRPTION || 'SECRET_2022';
 CONFIG.session_expiration  = process.env.SESSION_EXPIRATION || 8 * 3600 * 1000;
 CONFIG.Allow_Origin = process.env.Allow_Origin || '';

@@ -1,7 +1,7 @@
 import { Fragment, useState, useEffect } from 'react'
 import Select from 'react-select'
 
-import { selectThemeColors } from '@utils'
+import { selectThemeColors, nodeBackend } from '@utils'
 import axios from 'axios'
 
 // ** Add New Modal Component
@@ -9,7 +9,7 @@ import Flatpickr from 'react-flatpickr'
 import AddBuyerInputModal from './AddBuyerInputModal'
 import ReactPaginate from 'react-paginate'
 import DataTable from 'react-data-table-component'
-import { Download, Search, ChevronDown, Share, Printer, FileText, File, Grid, Copy, Plus, Upload, Edit, Trash } from 'react-feather'
+import { Download, Search, ChevronDown, Share, Printer, FileText, File, Grid, Copy, Plus, Upload, Edit, Trash, Check } from 'react-feather'
 
 import '@styles/react/libs/tables/react-dataTable-component.scss'
 import '@styles/react/libs/flatpickr/flatpickr.scss'
@@ -32,12 +32,23 @@ import {
   Badge
 } from 'reactstrap'
 
+
+import Swal from 'sweetalert2'
+import withReactContent from 'sweetalert2-react-content'
+const MySwal = withReactContent(Swal)
+
+const statusOptions = [
+  { value: 'open', label: 'Open' },
+  { value: 'closed', label: 'Closed' }
+]
+
 const BuyerInput = props => {
   const country = localStorage.getItem('country')
 
   const [supplierInputsData, setsupplierInputsData] = useState([])
   const [searchSupplierNumber, setSupplierNumber] = useState('')
   const [searchRequestedDate, setSearchRequestedDate] = useState('')
+  const [searchStatus, setSearchStatus] = useState('')
 
   const [editBuyerModal, setBuyerInputModal] = useState(false)
 
@@ -56,7 +67,9 @@ const BuyerInput = props => {
     if (user_type === 'SUPPLIER') {
       props.history.push('/home')
     }
-    await axios.get(`http://10.16.148.18:81/buyer_input`, { params: { searchSupplierNumber, searchRequestedDate, country } }).then((res) => {
+
+    await axios.get(`${nodeBackend}/buyer_input`, { params: { searchSupplierNumber, searchRequestedDate, country } }).then((res) => {
+
       setsupplierInputsData(res.data.data.supplierInputs)
       setsupllierNumberOptions(res.data.data.supplierIDOptions)
     })
@@ -135,8 +148,9 @@ const BuyerInput = props => {
   }
 
   const handleDownloadCSV = async () => {
-    const supplier_number = data.supplier_number
-    await axios.get(`http://10.16.148.18:81/buyer_article_details`, { params: { supplier_number } }).then((res) => {
+
+    await axios.get(`${nodeBackend}/buyer_article_details`, { params: { country } }).then((res) => {
+
       downloadCSV(res.data.data)
     })
   }
@@ -146,7 +160,7 @@ const BuyerInput = props => {
     const searchSupplierNumber = e.value
     setSupplierNumber(searchSupplierNumber)
 
-    await axios.get(`http://10.16.148.18:81/buyer_input`, { params: { searchSupplierNumber, searchRequestedDate } }).then((res) => {
+    await axios.get(`${nodeBackend}/buyer_input`, { params: { searchSupplierNumber, searchRequestedDate, country } }).then((res) => {
       setsupplierInputsData(res.data.data.supplierInputs)
       setsupllierNumberOptions(res.data.data.supplierIDOptions)
     })
@@ -172,7 +186,17 @@ const BuyerInput = props => {
     })
     const searchRequestedDate = arr[0]
     setSearchRequestedDate(searchRequestedDate)
-    await axios.get(`http://10.16.148.18:81/buyer_input`, { params: { searchSupplierNumber, searchRequestedDate } }).then((res) => {
+    await axios.get(`${nodeBackend}/buyer_input`, { params: { searchSupplierNumber, searchRequestedDate, country } }).then((res) => {
+      setsupplierInputsData(res.data.data.supplierInputs)
+      setsupllierNumberOptions(res.data.data.supplierIDOptions)
+    })
+  }
+
+  // ** Function to handle status filter
+  const handleStatusFilter = async (e) => {
+    const searchStatus = e.value
+    setSearchStatus(searchStatus)
+    await axios.get(`${nodeBackend}/buyer_input`, { params: { searchSupplierNumber, searchRequestedDate, searchStatus, country } }).then((res) => {
       setsupplierInputsData(res.data.data.supplierInputs)
       setsupllierNumberOptions(res.data.data.supplierIDOptions)
     })
@@ -180,9 +204,132 @@ const BuyerInput = props => {
 
   // ** Function to handle edit
   const handleEdit = async (e, row) => {
-    e.preventDefault()
     setRowData(row)
     setBuyerInputModal(!editBuyerModal)
+
+  }
+
+  const handleClosedAction = (e, row) => {
+    const id = row.row_id
+    e.preventDefault()
+    MySwal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, Close it!',
+      customClass: {
+        confirmButton: 'btn btn-primary',
+        cancelButton: 'btn btn-outline-danger ms-1'
+      },
+      buttonsStyling: false
+    }).then(function (result) {
+      if (result.value) {
+        axios({
+          method: "post",
+          url: `${nodeBackend}/closed_supplier_input`,
+          data: { id, country}
+        })
+          .then(function (success) {
+            //handle success        
+            if (success.data.status) { 
+              setsupplierInputsData(success.data.data.supplierInputs) 
+              return MySwal.fire({
+                title: 'Done!',
+                text: 'Request has been closed successfully',
+                icon: 'success',
+                customClass: {
+                  confirmButton: 'btn btn-primary'
+                },
+                buttonsStyling: false
+              })
+            } else {
+              return MySwal.fire({
+                title: 'Error',
+                text: 'Something went wrong. Please try again later',
+                icon: 'error',
+                customClass: {
+                  confirmButton: 'btn btn-primary'
+                },
+                buttonsStyling: false
+              })
+            }
+          })
+          .catch(function () {
+            return MySwal.fire({
+              title: 'Error',
+              text: 'Something went wrong. Please try again later',
+              icon: 'error',
+              customClass: {
+                confirmButton: 'btn btn-primary'
+              },
+              buttonsStyling: false
+            })
+          })
+      }
+    })
+
+  }
+
+  const handleClosedAction = (e, row) => {
+    const id = row.row_id
+    e.preventDefault()
+    MySwal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, Close it!',
+      customClass: {
+        confirmButton: 'btn btn-primary',
+        cancelButton: 'btn btn-outline-danger ms-1'
+      },
+      buttonsStyling: false
+    }).then(function (result) {
+      if (result.value) {
+        axios({
+          method: "post",
+          url: `${nodeBackend}/closed_supplier_input`,
+          data: { id, country}
+        })
+          .then(function (success) {
+            //handle success        
+            if (success.data.status) { 
+              setsupplierInputsData(success.data.data.supplierInputs) 
+              return MySwal.fire({
+                title: 'Done!',
+                text: 'Request has been closed successfully',
+                icon: 'success',
+                customClass: {
+                  confirmButton: 'btn btn-primary'
+                },
+                buttonsStyling: false
+              })
+            } else {
+              return MySwal.fire({
+                title: 'Error',
+                text: 'Something went wrong. Please try again later',
+                icon: 'error',
+                customClass: {
+                  confirmButton: 'btn btn-primary'
+                },
+                buttonsStyling: false
+              })
+            }
+          })
+          .catch(function () {
+            return MySwal.fire({
+              title: 'Error',
+              text: 'Something went wrong. Please try again later',
+              icon: 'error',
+              customClass: {
+                confirmButton: 'btn btn-primary'
+              },
+              buttonsStyling: false
+            })
+          })
+      }
+    })
   }
 
   const columns = [
@@ -199,11 +346,14 @@ const BuyerInput = props => {
       allowOverflow: true,
       cell: (row) => {
         return (
-          <div className='d-flex'>
-            <Edit size={15} onClick={(e) => handleEdit(e, row)} className="editTableIcon text-info" />
-          </div>
+          row.action_status === 'open' ? <div className='d-flex'><Edit size={15} onClick={(e) => handleEdit(e, row)} className="editTableIcon text-info" /><Check size={15} onClick={(e) => handleClosedAction(e, row)} className="deleteTableIcon text-success ms-1" /></div> : "-"
         )
       }
+    },
+    {
+      name: 'Row Id',
+      omit:true,
+      selector: row => row.row_id
     },
     {
       name: 'Supplier No.',
@@ -329,10 +479,10 @@ const BuyerInput = props => {
       name: 'Price Finalize Date',
       sortable: true,
       width: 'auto',
-      selector: row => row.negotiate_final_price,
+      selector: row => row.price_increase_communicated_date,
       cell: row => {
         return (
-          row.negotiate_final_price ? row.negotiate_final_price : "-"
+          row.price_increase_communicated_date ? row.price_increase_communicated_date : "-"
         )
       }
     },
@@ -398,6 +548,23 @@ const BuyerInput = props => {
                 options={{
                   dateFormat: 'Y-m-d'
                 }}
+              />
+            </Col>
+            <Col className='col-auto'>
+              <Label className='form-label' for='status'>
+                Status:
+              </Label>
+              <Select
+                theme={selectThemeColors}
+                className='react-select'
+                classNamePrefix='select'
+                defaultValue={statusOptions[1]}
+                name='status'
+                options={statusOptions}
+                value={statusOptions.filter(function (option) {
+                  return option.value === searchStatus
+                })}
+                onChange={handleStatusFilter}
               />
             </Col>
           </Row>

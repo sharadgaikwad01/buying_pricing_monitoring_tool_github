@@ -1,11 +1,17 @@
 // ** React Imports
 // ** Third Party Components
-// import { useState } from 'react'
+
+import { useState, useEffect } from 'react'
+import { nodeBackend } from '@utils'
 
 import { User, Briefcase, Mail, Calendar, DollarSign, X } from 'react-feather'
 
 import axios from 'axios'
 import Select from 'react-select'
+import Flatpickr from 'react-flatpickr'
+
+import Flatpickr from 'react-flatpickr'
+
 
 // ** Reactstrap Imports
 import { Modal, Input, Label, Button, ModalHeader, ModalBody, InputGroup, InputGroupText, FormFeedback, Form } from 'reactstrap'
@@ -26,39 +32,151 @@ const AddBuyerInputModal = ({ open, handleModal, rowData }) => {
   // ** State
   // const [Picker, setPicker] = useState('')
   const country = localStorage.getItem('country')
-  const vat_number = localStorage.getItem('vat')
+
+
+  const [rowId, setRowId] = useState('')
+
   // ** Custom close btn
   const CloseBtn = <X className='cursor-pointer' size={15} onClick={handleModal} />
 
   const SupplierInputSchema = yup.object().shape({
-    new_price: yup.number().required().positive().integer(),
-    reason: yup.string().required()
+
+    final_price: yup.number().required().positive().integer(),
+    comment: yup.string().required()
+
   })
   // ** Hooks
   const {
     control,
+
+    setValue,
+
     handleSubmit,
     formState: { errors }
   } = useForm({ mode: 'onChange', resolver: yupResolver(SupplierInputSchema) })
 
+
+  useEffect(async () => {
+    if (rowData) {
+      await setRowId(rowData.row_id)      
+      setValue('row_id', rowData.row_id)
+    }
+  }, [rowData])
+
+
   const onSubmit = data => {
-    const new_price = data.new_price
-    const reason = data.reason
+    console.log(data)
+    const finalize_date_arr = []
+    const effective_date_arr = []
+    const row_id = data.row_id
+    const final_price = data.final_price
+    const comment = data.comment
+    const price_finalize_date = data.price_finalize_date
+    const price_effective_date = data.price_effective_date
+
+    price_finalize_date.map(i => {
+      const date = new Date(i)
+
+      const year = date.getFullYear()
+
+      let month = (1 + date.getMonth()).toString()
+      month = month.length > 1 ? month : `0${month}`
+
+      let day = date.getDate().toString()
+      day = day.length > 1 ? day : `0${day}`
+
+      finalize_date_arr.push(`${year}-${month}-${day}`)
+      return true
+    })
+    const finalize_date = finalize_date_arr[0]
+
+    price_effective_date.map(i => {
+      const date = new Date(i)
+
+      const year = date.getFullYear()
+
+      let month = (1 + date.getMonth()).toString()
+      month = month.length > 1 ? month : `0${month}`
+
+      let day = date.getDate().toString()
+      day = day.length > 1 ? day : `0${day}`
+
+      effective_date_arr.push(`${year}-${month}-${day}`)
+      return true
+    })
+    const effective_date = effective_date_arr[0]
+
+  useEffect(async () => {
+    if (rowData) {
+      await setRowId(rowData.row_id)      
+      setValue('row_id', rowData.row_id)
+    }
+  }, [rowData])
+
+  const onSubmit = data => {
+    console.log(data)
+    const finalize_date_arr = []
+    const effective_date_arr = []
+    const row_id = data.row_id
+    const final_price = data.final_price
+    const comment = data.comment
+    const price_finalize_date = data.price_finalize_date
+    const price_effective_date = data.price_effective_date
+
+    price_finalize_date.map(i => {
+      const date = new Date(i)
+
+      const year = date.getFullYear()
+
+      let month = (1 + date.getMonth()).toString()
+      month = month.length > 1 ? month : `0${month}`
+
+      let day = date.getDate().toString()
+      day = day.length > 1 ? day : `0${day}`
+
+      finalize_date_arr.push(`${year}-${month}-${day}`)
+      return true
+    })
+    const finalize_date = finalize_date_arr[0]
+
+    price_effective_date.map(i => {
+      const date = new Date(i)
+
+      const year = date.getFullYear()
+
+      let month = (1 + date.getMonth()).toString()
+      month = month.length > 1 ? month : `0${month}`
+
+      let day = date.getDate().toString()
+      day = day.length > 1 ? day : `0${day}`
+
+      effective_date_arr.push(`${year}-${month}-${day}`)
+      return true
+    })
+    const effective_date = effective_date_arr[0]
+
 
     handleModal(false)
     
     axios({
       method: "post",
-      url: "http://10.16.148.18:81/add_supplier_input",
-      data: { new_price, reason, country, vat_number }
+<<<<<<< Updated upstream
+
+=======
+>>>>>>> Stashed changes
+      url: `${nodeBackend}/update_buyer_input`,
+      data: { row_id, final_price, comment, finalize_date, effective_date, country}
     })
       .then(function (success) {
         //handle success 
-        console.log(success.data.data)
         if (success.data.status) {
           return MySwal.fire({
             title: 'Done!',
-            text: 'File has been downloaded!',
+            text: 'Request has been updated',
+<<<<<<< Updated upstream
+
+=======
+>>>>>>> Stashed changes
             icon: 'success',
             customClass: {
               confirmButton: 'btn btn-primary'
@@ -90,8 +208,10 @@ const AddBuyerInputModal = ({ open, handleModal, rowData }) => {
       })
   }
 
-  console.log(rowData)
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
   return (
     <Modal
       isOpen={open}
@@ -101,40 +221,147 @@ const AddBuyerInputModal = ({ open, handleModal, rowData }) => {
       contentClassName='pt-0'
     >
       <ModalHeader className='mb-1' toggle={handleModal} close={CloseBtn} tag='div'>
-        <h5 className='modal-title'>New Record</h5>
+<<<<<<< Updated upstream
+
+=======
+>>>>>>> Stashed changes
+        <h5 className='modal-title'>Update Record</h5>
       </ModalHeader>
       <ModalBody className='flex-grow-1'>
         <Form onSubmit={handleSubmit(onSubmit)}>
+        <input type="hidden" name="row_id" value={rowId} />
           <div className='mb-1'>
-            <Label className='form-label' for='new_Price'>
-              New Price
+            <Label className='form-label' for='final_price'>
+              Final Price
+<<<<<<< Updated upstream
+
+=======
+>>>>>>> Stashed changes
             </Label>
             <InputGroup>
               <InputGroupText>
                 €
               </InputGroupText>
               <Controller
-                id='new_price'
-                name='new_price'
+<<<<<<< Updated upstream
+
+                id='final_price'
+                name='final_price'
                 defaultValue=''
                 control={control}
-                render={({ field }) => <Input type="number"{...field} placeholder='e.g. 65' invalid={errors.new_price && true} />}
+                render={({ field }) => <Input type="number"{...field} placeholder='e.g. 65' invalid={errors.final_price && true} />}
               />
-              {errors.new_price && <FormFeedback>{"New Price is a required field"}</FormFeedback>}
+              {errors.final_price && <FormFeedback>{"Final Price is a required field"}</FormFeedback>}
             </InputGroup>
           </div>
           <div className='mb-1'>
-            <Label className='form-label' for='reason'>
-              Reason for price increase
+            <Label className='form-label' for='price_finalize_date'>
+              Price Finalize Date
+            </Label>
+            <InputGroup>
+              <Controller
+                id='default-picker1'
+                name='price_finalize_date'
+                defaultValue=''
+                control={control}
+                render={({ field }) => <Flatpickr { ...field }
+                        className='form-control'
+                        options={{
+                          dateFormat: 'Y-m-d'
+                        }}
+                      />}
+              />
+              {errors.price_finalize_date && <FormFeedback>{"Price Finalize Date is a required field"}</FormFeedback>}
+            </InputGroup>
+          </div>
+          <div className='mb-1'>
+            <Label className='form-label' for='price_effective_date'>
+              Price Effective Date
+            </Label>
+            <InputGroup>
+              <Controller
+                id='default-picker'
+                name='price_effective_date'
+                defaultValue=''
+                control={control}
+                render={({ field }) => <Flatpickr { ...field }
+                        className='form-control'
+                        options={{
+                          dateFormat: 'Y-m-d'
+                        }}
+                      />}
+              />
+              {errors.price_effective_date && <FormFeedback>{"Price Effective Date is a required field"}</FormFeedback>}
+            </InputGroup>
+          </div>
+          <div className='mb-1'>
+=======
+                id='final_price'
+                name='final_price'
+                defaultValue=''
+                control={control}
+                render={({ field }) => <Input type="number"{...field} placeholder='e.g. 65' invalid={errors.final_price && true} />}
+              />
+              {errors.final_price && <FormFeedback>{"Final Price is a required field"}</FormFeedback>}
+            </InputGroup>
+          </div>
+          <div className='mb-1'>
+            <Label className='form-label' for='price_finalize_date'>
+              Price Finalize Date
+            </Label>
+            <InputGroup>
+              <Controller
+                id='default-picker1'
+                name='price_finalize_date'
+                defaultValue=''
+                control={control}
+                render={({ field }) => <Flatpickr { ...field }
+                        className='form-control'
+                        options={{
+                          dateFormat: 'Y-m-d'
+                        }}
+                      />}
+              />
+              {errors.price_finalize_date && <FormFeedback>{"Price Finalize Date is a required field"}</FormFeedback>}
+            </InputGroup>
+          </div>
+          <div className='mb-1'>
+            <Label className='form-label' for='price_effective_date'>
+              Price Effective Date
+            </Label>
+            <InputGroup>
+              <Controller
+                id='default-picker'
+                name='price_effective_date'
+                defaultValue=''
+                control={control}
+                render={({ field }) => <Flatpickr { ...field }
+                        className='form-control'
+                        options={{
+                          dateFormat: 'Y-m-d'
+                        }}
+                      />}
+              />
+              {errors.price_effective_date && <FormFeedback>{"Price Effective Date is a required field"}</FormFeedback>}
+            </InputGroup>
+          </div>
+          <div className='mb-1'>
+>>>>>>> Stashed changes
+            <Label className='form-label' for='comment'>
+              Comment
             </Label>
             <Controller
-              id='reason'
-              name='reason'
+              id='comment'
+              name='comment'
               defaultValue=''
               control={control}
-              render={({ field }) => <Input type='textarea' rows='5' {...field} placeholder='Reason' invalid={errors.reason && true} />}
+              render={({ field }) => <Input type='textarea' rows='5' {...field} placeholder='Comment' invalid={errors.comment && true} />}
             />
-            {errors.reason && <FormFeedback>{"Reason is a required field"}</FormFeedback>}
+            {errors.comment && <FormFeedback>{"Comment is a required field"}</FormFeedback>}
+<<<<<<< Updated upstream
+
+=======
+>>>>>>> Stashed changes
           </div>
           <Button className='me-1' color='primary' type='submit'>
             Submit

@@ -6,7 +6,7 @@ import { User, Briefcase, Mail, Calendar, DollarSign, X } from 'react-feather'
 
 import axios from 'axios'
 import Select from 'react-select'
-
+import { nodeBackend } from '@utils'
 // ** Reactstrap Imports
 import { Modal, Input, Label, Button, ModalHeader, ModalBody, InputGroup, InputGroupText, FormFeedback, Form } from 'reactstrap'
 
@@ -22,22 +22,10 @@ import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 const MySwal = withReactContent(Swal)
 
-const EditSupplierRequestModal = ({ open, handleModal, rowData, supllierNumberOptions }) => {
+const EditSupplierRequestModal = ({ open, handleModal, rowData, supllierNumberOptions, setsupplierInputsData }) => {
   // ** State
   // const [Picker, setPicker] = useState('')
   const [articleOptions, setarticleOptions] = useState([])
-
-  console.log("================ ")
-    console.log(rowData)
-
-  useEffect(async () => {
-    console.log("================ ")
-    console.log(rowData)
-    const supplierNumber = rowData.suppl_no
-    await axios.get(`http://10.16.148.18:81/getArticlesBySupplierNumber`, { params: { supplierNumber } }).then((res) => {
-      setarticleOptions(res.data.data.articleOptions)
-    })
-  }, [rowData])
 
   const country = localStorage.getItem('country')
   const vat_number = localStorage.getItem('vat')
@@ -52,7 +40,8 @@ const EditSupplierRequestModal = ({ open, handleModal, rowData, supllierNumberOp
     new_price: yup.number().required().positive().integer(),
     reason: yup.string().required(),
     supplier_number: yup.string().required(),
-    article_number: yup.string().required()
+    article_number: yup.string().required(),
+    row_id: yup.string()
   })
 
   const {
@@ -66,18 +55,21 @@ const EditSupplierRequestModal = ({ open, handleModal, rowData, supllierNumberOp
     if (rowData) {
       console.log(rowData)
       const supplierNumber = rowData.suppl_no
+      await setRowId(rowData.row_id)
       await setNewPrice(rowData.new_price)
-      await setReason(rowData.request_date)
+      await setReason(rowData.price_change_reason)
       await setSupplierNumber(rowData.suppl_no)
       await setArticleNumber(rowData.art_no)
-      await setRowId(rowData.row_id)
+
+      
+      setValue('row_id', rowData.row_id)
 
       setValue('new_price', rowData.new_price, { shouldValidate: true })
-      setValue('reason', rowData.request_date, { shouldValidate: true })
+      setValue('reason', rowData.price_change_reason, { shouldValidate: true })
       setValue('supplier_number', rowData.suppl_no, { shouldValidate: true })
       setValue('article_number', rowData.art_no, { shouldValidate: true })
 
-      await axios.get(`http://10.16.148.18:81/getArticlesBySupplierNumber`, { params: { supplierNumber, country, vat_number } }).then((res) => {
+      await axios.get(`${nodeBackend}/getArticlesBySupplierNumber`, { params: { supplierNumber, country, vat_number } }).then((res) => {
         setarticleOptions(res.data.data.articleOptions)
       })
     }
@@ -89,7 +81,6 @@ const EditSupplierRequestModal = ({ open, handleModal, rowData, supllierNumberOp
   // ** Hooks  
 
   const onSubmit = data => {
-
     const new_price = data.new_price
     const reason = data.reason
     const supplier_number = data.supplier_number
@@ -100,11 +91,14 @@ const EditSupplierRequestModal = ({ open, handleModal, rowData, supllierNumberOp
 
     axios({
       method: "post",
-      url: "http://10.16.148.18:81/update_supplier_input",
-      data: { row_id, new_price, reason, supplier_number, article_number }
+
+      url: `${nodeBackend}/update_supplier_input`,
+      data: { row_id, new_price, reason, supplier_number, article_number, country, vat_number}
+
     }).then(function (success) {
       //handle success        
       if (success.data.status) {
+        setsupplierInputsData(success.data.data.supplierInputs) 
         return MySwal.fire({
           title: 'Done!',
           text: 'Records has been updated successfully.',
@@ -141,7 +135,8 @@ const EditSupplierRequestModal = ({ open, handleModal, rowData, supllierNumberOp
   const handleSupplierNumberFilter = async (value) => {
     const supplierNumber = value.value
     setValue('article_number', '', { shouldValidate: true })
-    await axios.get(`http://10.16.148.18:81/getArticlesBySupplierNumber`, { params: { supplierNumber } }).then((res) => {
+    await axios.get(`${nodeBackend}/getArticlesBySupplierNumber`, { params: { supplierNumber, country, vat_number } }).then((res) => {
+      console.log(res.data)
       setarticleOptions(res.data.data.articleOptions)
     })
   }
@@ -159,7 +154,9 @@ const EditSupplierRequestModal = ({ open, handleModal, rowData, supllierNumberOp
       </ModalHeader>
       <ModalBody className='flex-grow-1'>
         <Form onSubmit={handleSubmit(onSubmit)}>
-          <input type="hidden" name="row_id" defaultValue={rowId} />
+
+        <input type="hidden" name="row_id" value={rowId} />
+
           <div className='mb-1'>
             <Label className='form-label' for='supplier_number'>
               Supplier Number
@@ -170,6 +167,7 @@ const EditSupplierRequestModal = ({ open, handleModal, rowData, supllierNumberOp
               control={control}
               render={({ field: { onChange } }) => (
                 <Select
+                  isDisabled={ true }
                   options={supllierNumberOptions}
                   className='is-invalid'
                   value={supllierNumberOptions.find((c) => c.value === supplierNumber)}
@@ -187,8 +185,10 @@ const EditSupplierRequestModal = ({ open, handleModal, rowData, supllierNumberOp
               name="article_number"
               id="article_number"
               control={control}
+              isReadOnly={true}
               render={({ field: { onChange } }) => (
                 <Select
+                  isDisabled={ true }
                   options={articleOptions}
                   className='is-invalid'
                   value={articleOptions.find((c) => c.value === articleNumber)}
@@ -224,7 +224,7 @@ const EditSupplierRequestModal = ({ open, handleModal, rowData, supllierNumberOp
               name='reason'
               defaultValue=''
               control={control}
-              render={({ field }) => <Input type='textarea' rows='5' {...field} placeholder='Reason' value={reason} onChange={e => { setReason(e.target.value); setValue('reason', e.target.value, { shouldValidate: true }) }} invalid={errors.reason && true} />}
+              render={({ field }) => <Input type='textarea' rows='5' {...field} placeholder='Reason' value={reason} onChange={e1 => { setReason(e1.target.value); setValue('reason', e1.target.value, { shouldValidate: true }) }} invalid={errors.reason && true} />}
             />
             {errors.reason && <FormFeedback>{"Reason is a required field"}</FormFeedback>}
           </div>

@@ -4,7 +4,7 @@ import { User, Briefcase, Mail, Calendar, DollarSign, X } from 'react-feather'
 
 import axios from 'axios'
 import Select from 'react-select'
-
+import { nodeBackend } from '@utils'
 // ** Reactstrap Imports
 import { Modal, Input, Label, Button, ModalHeader, ModalBody, InputGroup, InputGroupText, FormFeedback, Form } from 'reactstrap'
 
@@ -93,7 +93,7 @@ const AddNewModalUser = ({ open, handleModal, rowData, setUsersInputsData }) => 
     handleModal(false)
     axios({
       method: "post",
-      url: "http://10.16.148.18:81/add_user_input",
+      url: `${nodeBackend}/add_user_input`,
       data: { user_name, email, emp_id, user_role, user_type, user_id }
     })
       .then(async function (success) {

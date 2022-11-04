@@ -27,7 +27,7 @@ Issuer.discover('https://idam.metrosystems.net') // => Promise
         client_id: 'BUYING_PRICING_MONITORING_TOOL',
         client_secret: 'wFq9MLAW4n',
         realm_id: 'BUY_PRI_M_T',
-        redirect_uris: ['http://10.16.148.18:81/api/v1/callback'],
+        redirect_uris: [config.nodebackend + '/api/v1/callback'],
         response_types: ['code'],
     }); // => Client
 }).catch( err => {
@@ -41,23 +41,25 @@ router.use((req, res, next) => {
         return
     }
     const params = client.callbackParams(req)
-    client.callback('http://10.16.148.18:81/api/v1/callback', params, { code_verifier }) // => Promise
+    client.callback(config.nodebackend+'/api/v1/callback', params, { code_verifier }) // => Promise
         .then(token => {
 			let user_details = token.claims();
             console.log('received and validated tokens %j', token);
             console.log('validated ID Token claims %j', token.claims());
-            var frontend_redirect_url = 'http://10.16.148.18:82/auth?token='+token.id_token+'&id='+user_details.metro_id+'&email='+user_details.email+'&type=SUPPLIER&country=HUNGARY&vat=10886861-2-44'
+
+            var frontend_redirect_url = config.reactFrontend + '/auth?token='+token.id_token+'&id='+user_details.metro_id+'&email='+user_details.email+'&type=BUYER&country=HUNGARY&vat=10886861-2-44'
             res.send('<script>window.location.href="'+frontend_redirect_url+'";</script>');
-			//res.redirect(303, 'http://10.16.148.18:82/auth?token='+token.id_token+'&id='+user_details.metro_id+'&email='+user_details.email+'&type=BUYER&country=hungary&vat=10886861-2-44');
+			//res.redirect(303, config.reactFrontend + '/auth?token='+token.id_token+'&id='+user_details.metro_id+'&email='+user_details.email+'&type=BUYER&country=hungary&vat=10886861-2-44');
+
             // sql = "SELECT * FROM public.tbl_users where email = '"+user_details.email +"'";
             // clientDB.query(sql, function(err, result) {
             //     if (err) {
-            //         res.redirect(303, 'http://localhost:3000/auth?error=User not Exist')
+            //         res.redirect(303, config.reactFrontend + '/auth?error=User not Exist')
             //     } else{
             //         if(result.rowCount == 0){
-            //         	res.redirect(303, 'http://localhost:3000/auth?error=User not Exist');
+            //         	res.redirect(303, config.reactFrontend + '/auth?error=User not Exist');
             //         }else{
-            //             res.redirect(303, //'http://localhost:3000/auth?token='+token.id_token+'&id='+user_details.metro_id+'&email='+user_details.email+'&type=SUPPLIER&country=HUNGERY&vat=10886861-2-44');
+            //             res.redirect(303, config.reactFrontend + '/auth?token='+token.id_token+'&id='+user_details.metro_id+'&email='+user_details.email+'&type=SUPPLIER&country=HUNGERY&vat=10886861-2-44');
             //         }				
             //     }	
             // });

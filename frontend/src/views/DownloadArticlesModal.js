@@ -8,7 +8,7 @@ import axios from 'axios'
 import { Modal, Input, Label, Button, ModalHeader, ModalBody, InputGroup, InputGroupText, Row, Col, FormFeedback, Form } from 'reactstrap'
 
 import Select from 'react-select'
-
+import { nodeBackend } from '@utils'
 // ** Styles
 import '@styles/react/libs/flatpickr/flatpickr.scss'
 
@@ -90,7 +90,7 @@ const DownloadArticliesModal = ({ open, handleModal, supllierNumberOptions }) =>
 
     const onSubmit = async (data) => {
         const supplier_number = data.supplier_number
-        await axios.get(`http://10.16.148.18:81/supplier_article_details`, { params: { supplier_number, country, vat_number } }).then((res) => {
+        await axios.get(`${nodeBackend}/supplier_article_details`, { params: { supplier_number, country, vat_number } }).then((res) => {
             console.log(res.data)
             if (res.data.data.length > 0) {
                 downloadCSV(res.data.data)

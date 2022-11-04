@@ -3,9 +3,8 @@
 import { Fragment, useState, forwardRef, useEffect } from 'react'
 import Select from 'react-select'
 
-import { selectThemeColors } from '@utils'
+import { selectThemeColors, nodeBackend } from '@utils'
 import axios from 'axios'
-
 // ** Add New Modal Component
 import Flatpickr from 'react-flatpickr'
 import AddNewModal from './AddNewModal'
@@ -42,8 +41,8 @@ import withReactContent from 'sweetalert2-react-content'
 const MySwal = withReactContent(Swal)
 
 const statusOptions = [
-  { value: 'Open', label: 'Open' },
-  { value: 'Closed', label: 'Closed' }
+  { value: 'open', label: 'Open' },
+  { value: 'closed', label: 'Closed' }
 ]
 
 const BootstrapCheckbox = forwardRef((props, ref) => (
@@ -58,6 +57,8 @@ const Home = props => {
   const vat_number = localStorage.getItem('vat')
 
   const [supplierInputsData, setsupplierInputsData] = useState([])
+  const [supplierInputCount, setSupplierInputCount] = useState([])
+  
 
   const [searchSupplierNumber, setSupplierNumber] = useState('')
   const [searchArticleNumber, setArticleNumber] = useState('')
@@ -100,10 +101,16 @@ const Home = props => {
     if (user_type === 'BUYER') {
       props.history.push('/buyer_input')
     }
-    await axios.get(`http://10.16.148.18:81/supplier_input`, { params: { searchSupplierNumber, searchArticleNumber, searchRequestedDate, searchStatus, country, vat_number } }).then((res) => {
-      setsupplierInputsData(res.data.data.supplierInputs)
-      setsupllierNumberOptions(res.data.data.supplierIDOptions)
-      setarticleOptions(res.data.data.articleOptions)
+
+    await axios.get(`${nodeBackend}/supplier_input`, { params: { searchSupplierNumber, searchArticleNumber, searchRequestedDate, searchStatus, country, vat_number } }).then((res) => {
+      if (res.data.data) {
+        setsupplierInputsData(res.data.data.supplierInputs)
+        setsupllierNumberOptions(res.data.data.supplierIDOptions)
+        setarticleOptions(res.data.data.articleOptions)
+
+        setSupplierInputCount(res.data.data.supplierInputCount)
+      }      
+
     })
   }, [])
 
@@ -183,10 +190,11 @@ const Home = props => {
   const handleSupplierNumberFilter = async (e) => {
     const searchSupplierNumber = e.value
     setSupplierNumber(searchSupplierNumber)
-    await axios.get(`http://10.16.148.18:81/supplier_input`, { params: { searchSupplierNumber, searchArticleNumber, searchRequestedDate, searchStatus, country, vat_number } }).then((res) => {
+    await axios.get(`${nodeBackend}/supplier_input`, { params: { searchSupplierNumber, searchArticleNumber, searchRequestedDate, searchStatus, country, vat_number } }).then((res) => {
       setsupplierInputsData(res.data.data.supplierInputs)
       setsupllierNumberOptions(res.data.data.supplierIDOptions)
       setarticleOptions(res.data.data.articleOptions)
+      setSupplierInputCount(res.data.data.supplierInputCount)
     })
 
   }
@@ -195,10 +203,13 @@ const Home = props => {
   const handleArticleFilter = async (e) => {
     const searchArticleNumber = e.value
     setArticleNumber(searchArticleNumber)
-    await axios.get(`http://10.16.148.18:81/supplier_input`, { params: { searchSupplierNumber, searchArticleNumber, searchRequestedDate, searchStatus, country, vat_number } }).then((res) => {
+
+    await axios.get(`${nodeBackend}/supplier_input`, { params: { searchSupplierNumber, searchArticleNumber, searchRequestedDate, searchStatus, country, vat_number } }).then((res) => {
+
       setsupplierInputsData(res.data.data.supplierInputs)
       setsupllierNumberOptions(res.data.data.supplierIDOptions)
       setarticleOptions(res.data.data.articleOptions)
+      setSupplierInputCount(res.data.data.supplierInputCount)
     })
 
   }
@@ -222,10 +233,13 @@ const Home = props => {
     })
     const searchRequestedDate = arr[0]
     setSearchRequestedDate(searchRequestedDate)
-    await axios.get(`http://10.16.148.18:81/supplier_input`, { params: { searchSupplierNumber, searchArticleNumber, searchRequestedDate, searchStatus, country, vat_number } }).then((res) => {
+
+    await axios.get(`${nodeBackend}/supplier_input`, { params: { searchSupplierNumber, searchArticleNumber, searchRequestedDate, searchStatus, country, vat_number } }).then((res) => {
+
       setsupplierInputsData(res.data.data.supplierInputs)
       setsupllierNumberOptions(res.data.data.supplierIDOptions)
       setarticleOptions(res.data.data.articleOptions)
+      setSupplierInputCount(res.data.data.supplierInputCount)
     })
   }
 
@@ -233,10 +247,13 @@ const Home = props => {
   const handleStatusFilter = async (e) => {
     const searchStatus = e.value
     setSearchStatus(searchStatus)
-    await axios.get(`http://10.16.148.18:81/supplier_input`, { params: { searchSupplierNumber, searchArticleNumber, searchRequestedDate, searchStatus, country, vat_number } }).then((res) => {
+
+    await axios.get(`${nodeBackend}/supplier_input`, { params: { searchSupplierNumber, searchArticleNumber, searchRequestedDate, searchStatus, country, vat_number } }).then((res) => {
+
       setsupplierInputsData(res.data.data.supplierInputs)
       setsupllierNumberOptions(res.data.data.supplierIDOptions)
       setarticleOptions(res.data.data.articleOptions)
+      setSupplierInputCount(res.data.data.supplierInputCount)
     })
   }
 
@@ -265,12 +282,13 @@ const Home = props => {
       if (result.value) {
         axios({
           method: "post",
-          url: "http://10.16.148.18:81/delete_supplier_input",
-          data: { id }
+          url: `${nodeBackend}/delete_supplier_input`,
+          data: { id, country, vat_number}
         })
           .then(function (success) {
             //handle success        
             if (success.data.status) {
+              setsupplierInputsData(success.data.data.supplierInputs) 
               return MySwal.fire({
                 title: 'Done!',
                 text: 'Record has been deleted successfully',
@@ -329,10 +347,7 @@ const Home = props => {
       width: '100px',
       cell: (row) => {
         return (
-          <div className='d-flex'>
-            <Edit size={15} onClick={(e) => handleEdit(e, row)} className="editTableIcon text-info" />
-            <Trash size={15} onClick={(e) => handleDelete(e, row)} className="deleteTableIcon text-danger ms-1" />
-          </div>
+          row.action_status === 'open' ? <div className='d-flex'> <Edit size={15} onClick={() => handleEdit(row)} className="editTableIcon text-info" /> <Trash size={15} onClick={(e) => handleDelete(e, row)} className="deleteTableIcon text-danger ms-1" /> </div> : "-"
         )
       }
     },
@@ -344,7 +359,7 @@ const Home = props => {
     {
       name: 'Supplier Number',
       sortable: true,
-      width: '150px',
+      width: '100px',
       selector: row => row.suppl_no
     },
     {
@@ -468,6 +483,13 @@ const Home = props => {
                 onChange={handleSupplierNumberFilter}
               />
             </Col>
+
+            <Col className='col-auto'>
+
+              <Badge color='primary' pill>{supplierInputCount}</Badge>
+
+            </Col>
+            
             <Col className='col-auto'>
               <Label className='form-label' for='city'>
                 Article Number:
@@ -501,7 +523,7 @@ const Home = props => {
               />
             </Col>
             <Col className='col-auto'>
-              <Label className='form-label' for='salary'>
+              <Label className='form-label' for='status'>
                 Status:
               </Label>
               <Select
@@ -534,15 +556,12 @@ const Home = props => {
               data={dataToRender()}
             />
           </div>
-
-
         </CardBody>
-
       </Card>
       <AddNewModal open={modal} handleModal={handleModal} supllierNumberOptions={supllierNumberOptions} setsupplierInputsData={setsupplierInputsData} />
       <UploadArticliesModal open={uploadArticleModal} handleModal={handleUploadArticleModal} setsupplierInputsData={setsupplierInputsData} />
       <DownloadArticliesModal open={supplierInputModal} handleModal={downloadArticleModal} supllierNumberOptions={supllierNumberOptions} />
-      <EditSupplierRequestModal open={editSupplierModal} handleModal={handleEdit} rowData={rowData} supllierNumberOptions={supllierNumberOptions} />
+      <EditSupplierRequestModal open={editSupplierModal} handleModal={handleEdit} rowData={rowData} supllierNumberOptions={supllierNumberOptions} setsupplierInputsData={setsupplierInputsData}/>
     </Fragment>
   )
 }

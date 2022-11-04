@@ -19,7 +19,7 @@ module.exports = function(app, con) {
 					supplierIDOptions.push(option);
 				});
 				data.supplierIDOptions = supplierIDOptions;
-            }			
+            }
 		});	
 
         var condition  = '';
@@ -28,13 +28,17 @@ module.exports = function(app, con) {
             condition = condition + " AND suppl_no = '" +req.query.searchSupplierNumber+"'"
         }
 
-        if (req.query.searchArticleNumber != '' && req.query.searchArticleNumber != undefined){
-            condition = condition +" AND art_no = '" +req.query.searchArticleNumber+"'"
+
+        if (req.query.searchRequestedDate != '' && req.query.searchRequestedDate != undefined){
+            condition = condition +" AND request_date = '" +req.query.searchRequestedDate+"'"
         }
 
-        var query = "SELECT row_id, suppl_no, suppl_name, art_no, art_name_tl, current_price, new_price, price_difference_perc, to_char(request_date, 'YYYY-MM-dd') as request_date, price_change_reason, action_status, to_char(negotiate_final_price, 'YYYY-MM-dd') as negotiate_final_price, to_char(price_increase_effective_date, 'YYYY-MM-dd') as price_increase_effective_date FROM public.vw_request_details where country_name='"+req.query.country+"' AND new_price IS NOT NULL AND request_date IS NOT NULL " + condition;
+		if (req.query.searchStatus != '' && req.query.searchStatus != undefined){
+            condition = condition + " AND action_status = '" +req.query.searchStatus+"'"
+        }
 
-		console.log("buyer query ===================")
+        var query = "SELECT row_id, suppl_no, suppl_name, art_no, art_name_tl, current_price, new_price, price_difference_perc, to_char(request_date, 'YYYY-MM-dd') as request_date, price_change_reason, action_status, negotiate_final_price, to_char(price_increase_communicated_date, 'YYYY-MM-dd') as price_increase_communicated_date, to_char(price_increase_effective_date, 'YYYY-MM-dd') as price_increase_effective_date FROM public.vw_request_details where country_name='"+req.query.country+"' AND new_price IS NOT NULL AND request_date IS NOT NULL " + condition;
+
 		console.log(query)
 		
         await con.query(query, function(err, result) {
@@ -48,5 +52,78 @@ module.exports = function(app, con) {
             }			
 		});
     });
+
+
+	app.post('/update_buyer_input', async function(req, res){
+		console.log(req.body)
+		var data = {};
+
+		var query = "call public.usp_update_requestdetails(record_id=>"+req.body.row_id+", in_negotiate_price=>"+req.body.final_price+", in_finalize_date=>'"+req.body.finalize_date+"', in_effective_date=>'"+req.body.effective_date+"',in_metro_comment =>'"+req.body.comment+"')";
+
+		console.log(query)
+
+		await con.query(query, async function(err, result) {
+			if (err) {
+				console.log(err)
+				res.json({ status: false });
+				return;
+			} else{				
+				var query = "SELECT row_id, suppl_no, suppl_name, art_no, art_name_tl, current_price, new_price, price_difference_perc, to_char(request_date, 'YYYY-MM-dd') as request_date, price_change_reason, action_status, negotiate_final_price, to_char(price_increase_communicated_date, 'YYYY-MM-dd') as price_increase_communicated_date, to_char(price_increase_effective_date, 'YYYY-MM-dd') as price_increase_effective_date FROM public.vw_request_details where country_name='"+req.body.country+"' AND new_price IS NOT NULL AND request_date IS NOT NULL ";
+				
+				await con.query(query, function(err, result) {
+					if (err) {
+						res.json({ status: false });
+						return;
+					} else{
+						data.supplierInputs = result.rows
+						res.json({ status: true, data: data });
+						return;
+					}			
+				});
+            }			
+		});
+	});
+
+	app.post('/closed_supplier_input', async function(req, res){
+		var data = {};
+		var query = "call public.usp_update_requestdetails (record_id=>"+req.body.id +", in_action_status => 'closed')";
+
+		await con.query(query, async function(err, result) {
+			if (err) {
+				console.log(err)
+				res.json({ status: false });
+				return;
+			} else{				
+				var query = "SELECT row_id, suppl_no, suppl_name, art_no, art_name_tl, current_price, new_price, price_difference_perc, to_char(request_date, 'YYYY-MM-dd') as request_date, price_change_reason, action_status, negotiate_final_price, to_char(price_increase_communicated_date, 'YYYY-MM-dd') as price_increase_communicated_date, to_char(price_increase_effective_date, 'YYYY-MM-dd') as price_increase_effective_date FROM public.vw_request_details where country_name='"+req.body.country+"' AND new_price IS NOT NULL AND request_date IS NOT NULL ";
+				
+				await con.query(query, function(err, result) {
+					if (err) {
+						console.log(err)
+						res.json({ status: false });
+						return;
+					} else{
+						data.supplierInputs = result.rows
+						res.json({ status: true, data: data });
+						return;
+					}			
+				});
+            }			
+		});
+	});
+
+	app.post('/buyer_article_details', async function(req, res){
+		var query = "SELECT row_id, suppl_no, suppl_name, art_no, art_name_tl, current_price, new_price, price_difference_perc, to_char(request_date, 'YYYY-MM-dd') as request_date, price_change_reason, action_status, negotiate_final_price, to_char(price_increase_communicated_date, 'YYYY-MM-dd') as price_increase_communicated_date, to_char(price_increase_effective_date, 'YYYY-MM-dd') as price_increase_effective_date FROM public.vw_request_details where country_name='"+req.body.country+"' AND new_price IS NOT NULL AND request_date IS NOT NULL ";
+		
+		await con.query(query, function(err, result) {
+			if (err) {
+				res.json({ status: false });
+				return;
+			} else{
+				res.json({ status: true, data: result });
+				return;
+			}			
+		});
+	});
+
 
 }

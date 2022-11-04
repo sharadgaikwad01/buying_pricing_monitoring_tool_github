@@ -3,7 +3,7 @@
 import { Fragment, useState, forwardRef, useEffect } from 'react'
 import Select from 'react-select'
 
-import { selectThemeColors } from '@utils'
+import { selectThemeColors, nodeBackend } from '@utils'
 import axios from 'axios'
 
 // ** Add New Modal Component
@@ -86,7 +86,7 @@ const Home = () => {
    
 
   useEffect(async () => {
-    await axios.get(`http://10.16.148.18:81/users`, { params: { searchName, UserType, searchRole } }).then((res) => {
+    await axios.get(`${nodeBackend}/users`, { params: { searchName, UserType, searchRole } }).then((res) => {
       console.log(res.data.data.users)
       setUsersInputsData(res.data.data.users)  
     })
@@ -165,7 +165,7 @@ const Home = () => {
   const handleNameFilter = async (e) => {
     const search_Name = e.value
     setsearchName(search_Name)
-    await axios.get(`http://10.16.148.18:81/users`, { params: { searchName, UserType, searchRole } }).then((res) => {
+    await axios.get(`${nodeBackend}/users`, { params: { searchName, UserType, searchRole } }).then((res) => {
       setUsersInputsData(res.data.data.users)
     })
   }
@@ -175,7 +175,7 @@ const Home = () => {
   const handleUserTypeFilter = async (e) => {
     const UserType = e.value
     setUserType(UserType)
-    await axios.get(`http://10.16.148.18:81/users`, { params: { searchName, UserType, searchRole } }).then((res) => {
+    await axios.get(`${nodeBackend}/users`, { params: { searchName, UserType, searchRole } }).then((res) => {
       setUsersInputsData(res.data.data.users)
     })
   }
@@ -183,7 +183,7 @@ const Home = () => {
   const handleRoleFilter = async (e) => {
     const searchRole = e.value
     setsearchRole(searchRole)
-    await axios.get(`http://10.16.148.18:81/users`, { params: { searchName, UserType, searchRole } }).then((res) => {
+    await axios.get(`${nodeBackend}/users`, { params: { searchName, UserType, searchRole } }).then((res) => {
       setUsersInputsData(res.data.data.users)
     })
   }
@@ -218,7 +218,7 @@ const Home = () => {
       if (result.value) {
         axios({
           method: "post",
-          url: "http://10.16.148.18:81/delete_user_input",
+          url: `${nodeBackend}/delete_user_input`,
           data: { id }
         })
           .then(function (success) {

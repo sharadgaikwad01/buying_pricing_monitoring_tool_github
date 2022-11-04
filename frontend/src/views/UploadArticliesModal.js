@@ -1,9 +1,11 @@
 import { User, Briefcase, Mail, Calendar, DollarSign, X } from 'react-feather'
 
+import { nodeBackend } from '@utils'
+
 import { useState } from 'react'
 
 import axios from 'axios'
-
+// import { nodeBackend } from '@utils'
 // ** Reactstrap Imports
 import { Modal, Input, Label, Button, ModalHeader, ModalBody, InputGroup, InputGroupText, Row, Col } from 'reactstrap'
 
@@ -50,15 +52,12 @@ const UploadArticliesModal = ({ open, handleModal, setsupplierInputsData }) => {
 
     await axios({
       method: "post",
-      url: "http://10.16.148.18:81/upload_supplier_input",
+      url: `${nodeBackend}/upload_supplier_input`,
       data: { supplier_inputs, country, vat_number }
     })
       .then(function (success) {
         //handle success    
         setsupplierInputsData(success.data.data.supplierInputs)
-
-        console.log(success.data)
-
         if (success.data.status) {
           return MySwal.fire({
             title: 'Done!',
