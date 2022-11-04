@@ -49,13 +49,8 @@ export const formatDateToMonthShort = (value, toTimeForCurrentDay = true) => {
  *  ? e.g. If you are using cookies to store the application please update this function
  */
 export const isUserLoggedIn = () => localStorage.getItem('userData')
-<<<<<<< Updated upstream
 export const nodeBackend =  "http://localhost:8080"
 export const reactFrontend =  "http://localhost:3000"
-=======
-export const nodeBackend =  "http://10.16.148.18:81"
-export const reactFrontend =  "http://10.16.148.18"
->>>>>>> Stashed changes
 export const getUserData = () => JSON.parse(localStorage.getItem('userData'))
 
 /**

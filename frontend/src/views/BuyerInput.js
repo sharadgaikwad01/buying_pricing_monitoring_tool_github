@@ -268,68 +268,6 @@ const BuyerInput = props => {
           })
       }
     })
-
-  }
-
-  const handleClosedAction = (e, row) => {
-    const id = row.row_id
-    e.preventDefault()
-    MySwal.fire({
-      title: 'Are you sure?',
-      text: "You won't be able to revert this!",
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Yes, Close it!',
-      customClass: {
-        confirmButton: 'btn btn-primary',
-        cancelButton: 'btn btn-outline-danger ms-1'
-      },
-      buttonsStyling: false
-    }).then(function (result) {
-      if (result.value) {
-        axios({
-          method: "post",
-          url: `${nodeBackend}/closed_supplier_input`,
-          data: { id, country}
-        })
-          .then(function (success) {
-            //handle success        
-            if (success.data.status) { 
-              setsupplierInputsData(success.data.data.supplierInputs) 
-              return MySwal.fire({
-                title: 'Done!',
-                text: 'Request has been closed successfully',
-                icon: 'success',
-                customClass: {
-                  confirmButton: 'btn btn-primary'
-                },
-                buttonsStyling: false
-              })
-            } else {
-              return MySwal.fire({
-                title: 'Error',
-                text: 'Something went wrong. Please try again later',
-                icon: 'error',
-                customClass: {
-                  confirmButton: 'btn btn-primary'
-                },
-                buttonsStyling: false
-              })
-            }
-          })
-          .catch(function () {
-            return MySwal.fire({
-              title: 'Error',
-              text: 'Something went wrong. Please try again later',
-              icon: 'error',
-              customClass: {
-                confirmButton: 'btn btn-primary'
-              },
-              buttonsStyling: false
-            })
-          })
-      }
-    })
   }
 
   const columns = [

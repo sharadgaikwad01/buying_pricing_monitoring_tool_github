@@ -12,9 +12,6 @@ export default class Auth extends Component {
         const vat = searchParams.get("vat")
         const name = searchParams.get("name")
 
-        const name = searchParams.get("name")
-
-
         if (searchParams.has('id') && searchParams.has('token') && searchParams.has('email') && searchParams.has('type') && searchParams.has('country')) {
 
             localStorage.setItem("id", id)

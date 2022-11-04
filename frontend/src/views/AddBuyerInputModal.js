@@ -10,9 +10,6 @@ import axios from 'axios'
 import Select from 'react-select'
 import Flatpickr from 'react-flatpickr'
 
-import Flatpickr from 'react-flatpickr'
-
-
 // ** Reactstrap Imports
 import { Modal, Input, Label, Button, ModalHeader, ModalBody, InputGroup, InputGroupText, FormFeedback, Form } from 'reactstrap'
 
@@ -55,56 +52,6 @@ const AddBuyerInputModal = ({ open, handleModal, rowData }) => {
     formState: { errors }
   } = useForm({ mode: 'onChange', resolver: yupResolver(SupplierInputSchema) })
 
-
-  useEffect(async () => {
-    if (rowData) {
-      await setRowId(rowData.row_id)      
-      setValue('row_id', rowData.row_id)
-    }
-  }, [rowData])
-
-
-  const onSubmit = data => {
-    console.log(data)
-    const finalize_date_arr = []
-    const effective_date_arr = []
-    const row_id = data.row_id
-    const final_price = data.final_price
-    const comment = data.comment
-    const price_finalize_date = data.price_finalize_date
-    const price_effective_date = data.price_effective_date
-
-    price_finalize_date.map(i => {
-      const date = new Date(i)
-
-      const year = date.getFullYear()
-
-      let month = (1 + date.getMonth()).toString()
-      month = month.length > 1 ? month : `0${month}`
-
-      let day = date.getDate().toString()
-      day = day.length > 1 ? day : `0${day}`
-
-      finalize_date_arr.push(`${year}-${month}-${day}`)
-      return true
-    })
-    const finalize_date = finalize_date_arr[0]
-
-    price_effective_date.map(i => {
-      const date = new Date(i)
-
-      const year = date.getFullYear()
-
-      let month = (1 + date.getMonth()).toString()
-      month = month.length > 1 ? month : `0${month}`
-
-      let day = date.getDate().toString()
-      day = day.length > 1 ? day : `0${day}`
-
-      effective_date_arr.push(`${year}-${month}-${day}`)
-      return true
-    })
-    const effective_date = effective_date_arr[0]
 
   useEffect(async () => {
     if (rowData) {
@@ -160,10 +107,6 @@ const AddBuyerInputModal = ({ open, handleModal, rowData }) => {
     
     axios({
       method: "post",
-<<<<<<< Updated upstream
-
-=======
->>>>>>> Stashed changes
       url: `${nodeBackend}/update_buyer_input`,
       data: { row_id, final_price, comment, finalize_date, effective_date, country}
     })
@@ -173,10 +116,6 @@ const AddBuyerInputModal = ({ open, handleModal, rowData }) => {
           return MySwal.fire({
             title: 'Done!',
             text: 'Request has been updated',
-<<<<<<< Updated upstream
-
-=======
->>>>>>> Stashed changes
             icon: 'success',
             customClass: {
               confirmButton: 'btn btn-primary'
@@ -208,10 +147,6 @@ const AddBuyerInputModal = ({ open, handleModal, rowData }) => {
       })
   }
 
-<<<<<<< Updated upstream
-
-=======
->>>>>>> Stashed changes
   return (
     <Modal
       isOpen={open}
@@ -221,10 +156,6 @@ const AddBuyerInputModal = ({ open, handleModal, rowData }) => {
       contentClassName='pt-0'
     >
       <ModalHeader className='mb-1' toggle={handleModal} close={CloseBtn} tag='div'>
-<<<<<<< Updated upstream
-
-=======
->>>>>>> Stashed changes
         <h5 className='modal-title'>Update Record</h5>
       </ModalHeader>
       <ModalBody className='flex-grow-1'>
@@ -233,18 +164,12 @@ const AddBuyerInputModal = ({ open, handleModal, rowData }) => {
           <div className='mb-1'>
             <Label className='form-label' for='final_price'>
               Final Price
-<<<<<<< Updated upstream
-
-=======
->>>>>>> Stashed changes
             </Label>
             <InputGroup>
               <InputGroupText>
                 €
               </InputGroupText>
               <Controller
-<<<<<<< Updated upstream
-
                 id='final_price'
                 name='final_price'
                 defaultValue=''
@@ -295,58 +220,6 @@ const AddBuyerInputModal = ({ open, handleModal, rowData }) => {
             </InputGroup>
           </div>
           <div className='mb-1'>
-=======
-                id='final_price'
-                name='final_price'
-                defaultValue=''
-                control={control}
-                render={({ field }) => <Input type="number"{...field} placeholder='e.g. 65' invalid={errors.final_price && true} />}
-              />
-              {errors.final_price && <FormFeedback>{"Final Price is a required field"}</FormFeedback>}
-            </InputGroup>
-          </div>
-          <div className='mb-1'>
-            <Label className='form-label' for='price_finalize_date'>
-              Price Finalize Date
-            </Label>
-            <InputGroup>
-              <Controller
-                id='default-picker1'
-                name='price_finalize_date'
-                defaultValue=''
-                control={control}
-                render={({ field }) => <Flatpickr { ...field }
-                        className='form-control'
-                        options={{
-                          dateFormat: 'Y-m-d'
-                        }}
-                      />}
-              />
-              {errors.price_finalize_date && <FormFeedback>{"Price Finalize Date is a required field"}</FormFeedback>}
-            </InputGroup>
-          </div>
-          <div className='mb-1'>
-            <Label className='form-label' for='price_effective_date'>
-              Price Effective Date
-            </Label>
-            <InputGroup>
-              <Controller
-                id='default-picker'
-                name='price_effective_date'
-                defaultValue=''
-                control={control}
-                render={({ field }) => <Flatpickr { ...field }
-                        className='form-control'
-                        options={{
-                          dateFormat: 'Y-m-d'
-                        }}
-                      />}
-              />
-              {errors.price_effective_date && <FormFeedback>{"Price Effective Date is a required field"}</FormFeedback>}
-            </InputGroup>
-          </div>
-          <div className='mb-1'>
->>>>>>> Stashed changes
             <Label className='form-label' for='comment'>
               Comment
             </Label>
@@ -358,10 +231,6 @@ const AddBuyerInputModal = ({ open, handleModal, rowData }) => {
               render={({ field }) => <Input type='textarea' rows='5' {...field} placeholder='Comment' invalid={errors.comment && true} />}
             />
             {errors.comment && <FormFeedback>{"Comment is a required field"}</FormFeedback>}
-<<<<<<< Updated upstream
-
-=======
->>>>>>> Stashed changes
           </div>
           <Button className='me-1' color='primary' type='submit'>
             Submit
@@ -374,5 +243,4 @@ const AddBuyerInputModal = ({ open, handleModal, rowData }) => {
     </Modal>
   )
 }
-
 export default AddBuyerInputModal
