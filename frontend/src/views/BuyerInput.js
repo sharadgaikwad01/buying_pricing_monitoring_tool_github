@@ -1,5 +1,6 @@
 import { Fragment, useState, useEffect } from 'react'
 import Select from 'react-select'
+import { Link } from 'react-router-dom'
 
 import { selectThemeColors, nodeBackend } from '@utils'
 import axios from 'axios'
@@ -288,7 +289,7 @@ const BuyerInput = props => {
       selector: row => row.suppl_no,
       cell: row => {
         return (
-          row.suppl_no ? row.suppl_no : "-"
+          row.suppl_no ? <Link to={`/view/${row.suppl_no}`}>{`${row.suppl_no}`}</Link> : "-"
         )
       }
     },
