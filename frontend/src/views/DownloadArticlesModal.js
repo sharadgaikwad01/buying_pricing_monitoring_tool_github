@@ -1,6 +1,11 @@
 // ** Third Party Components
 import Flatpickr from 'react-flatpickr'
+
+import React, { useState } from "react"
+
 import { User, Briefcase, Mail, Calendar, DollarSign, X } from 'react-feather'
+
+import { MultiSelect } from "react-multi-select-component"
 
 import axios from 'axios'
 
@@ -24,6 +29,8 @@ const DownloadArticliesModal = ({ open, handleModal, supllierNumberOptions }) =>
 
     const country = localStorage.getItem('country')
     const vat_number = localStorage.getItem('vat')
+
+    const [selected, setSelected] = useState([])
 
     function convertArrayOfObjectsToCSV(array) {
         let result
@@ -79,7 +86,7 @@ const DownloadArticliesModal = ({ open, handleModal, supllierNumberOptions }) =>
     }
 
     const SupplierInputSchema = yup.object().shape({
-        supplier_number: yup.string().required()
+        supplier_number: yup.array().min(1, "").required()
     })
 
     const {
@@ -89,7 +96,10 @@ const DownloadArticliesModal = ({ open, handleModal, supllierNumberOptions }) =>
     } = useForm({ mode: 'onChange', resolver: yupResolver(SupplierInputSchema) })
 
     const onSubmit = async (data) => {
-        const supplier_number = data.supplier_number
+        const supplier_number = []
+        for (const value of data.supplier_number) {
+            supplier_number.push(parseInt(value.value, 10))
+        }
         await axios.get(`${nodeBackend}/supplier_article_details`, { params: { supplier_number, country, vat_number } }).then((res) => {
             console.log(res.data)
             if (res.data.data.length > 0) {
@@ -108,6 +118,11 @@ const DownloadArticliesModal = ({ open, handleModal, supllierNumberOptions }) =>
             }
         })
     }
+
+    const handleChange = async (val) => {
+        await setSelected(val)
+    }
+    
 
     // ** Custom close btn
     const CloseBtn = <X className='cursor-pointer' size={15} onClick={handleModal} />
@@ -132,24 +147,12 @@ const DownloadArticliesModal = ({ open, handleModal, supllierNumberOptions }) =>
                             <Controller
                                 name="supplier_number"
                                 control={control}
-                                render={({ field: { onChange, value } }) => (
-                                    <Select
+                                render={({ field: { onChange } }) => (
+                                    <MultiSelect
                                         options={supllierNumberOptions}
-                                        className='is-invalid select-custom'
-                                        classNamePrefix="react-select"
-                                        isMulti
-                                        value={supllierNumberOptions.find((c) => c.value === value)}
-                                        onChange={(val) => onChange(console.log(val))}
-                                        theme={(theme) => ({
-                                            ...theme,
-                                            borderRadius: '4px',
-                                            height: "20px",
-                                            maxHeight: "30px",
-                                            colors: {
-                                                ...theme.colors,
-                                                primary: "#003B7E"
-                                            }
-                                        })}
+                                        value={selected}
+                                        onChange={(val) => onChange(val, handleChange(val))}
+                                        labelledBy="Select"
                                     />
                                 )}
                             />

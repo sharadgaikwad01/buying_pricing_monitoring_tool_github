@@ -895,3 +895,8 @@ input.form-control{
     padding: 0 !important;
     margin: 0 !important;
 }
+
+.invalid-feedback {
+    margin-top: 0.25rem;
+    display: flex;
+}

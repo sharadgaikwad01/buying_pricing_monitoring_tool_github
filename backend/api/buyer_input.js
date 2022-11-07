@@ -24,20 +24,23 @@ module.exports = function(app, con) {
 
         var condition  = '';
 
+		console.log(req.query)
+
         if (req.query.searchSupplierNumber != ''){
             condition = condition + " AND suppl_no = '" +req.query.searchSupplierNumber+"'"
         }
 
 
         if (req.query.searchRequestedDate != '' && req.query.searchRequestedDate != undefined){
-            condition = condition +" AND request_date = '" +req.query.searchRequestedDate+"'"
+			var searchRequestedDate = req.query.searchRequestedDate.split(' ')
+            condition = condition = condition + " AND request_date BETWEEN '" +searchRequestedDate[0]+"' and '" +searchRequestedDate[2]+"'" 
         }
 
 		if (req.query.searchStatus != '' && req.query.searchStatus != undefined){
             condition = condition + " AND action_status = '" +req.query.searchStatus+"'"
         }
 
-        var query = "SELECT row_id, suppl_no, suppl_name, art_no, art_name_tl, current_price, new_price, price_difference_perc, to_char(request_date, 'YYYY-MM-dd') as request_date, price_change_reason, action_status, negotiate_final_price, to_char(price_increase_communicated_date, 'YYYY-MM-dd') as price_increase_communicated_date, to_char(price_increase_effective_date, 'YYYY-MM-dd') as price_increase_effective_date FROM public.vw_request_details where country_name='"+req.query.country+"' AND new_price IS NOT NULL AND request_date IS NOT NULL " + condition;
+        var query = "SELECT row_id, suppl_no, suppl_name, art_no, art_name_tl, current_price, new_price, price_difference_perc, to_char(request_date, 'dd-mm-YYYY') as request_date, price_change_reason, action_status, negotiate_final_price, to_char(price_increase_communicated_date, 'dd-mm-YYYY') as price_increase_communicated_date, to_char(price_increase_effective_date, 'dd-mm-YYYY') as price_increase_effective_date FROM public.vw_request_details where country_name='"+req.query.country+"' AND new_price IS NOT NULL AND request_date IS NOT NULL " + condition;
 
 		console.log(query)
 		
@@ -68,7 +71,7 @@ module.exports = function(app, con) {
 				res.json({ status: false });
 				return;
 			} else{				
-				var query = "SELECT row_id, suppl_no, suppl_name, art_no, art_name_tl, current_price, new_price, price_difference_perc, to_char(request_date, 'YYYY-MM-dd') as request_date, price_change_reason, action_status, negotiate_final_price, to_char(price_increase_communicated_date, 'YYYY-MM-dd') as price_increase_communicated_date, to_char(price_increase_effective_date, 'YYYY-MM-dd') as price_increase_effective_date FROM public.vw_request_details where country_name='"+req.body.country+"' AND new_price IS NOT NULL AND request_date IS NOT NULL ";
+				var query = "SELECT row_id, suppl_no, suppl_name, art_no, art_name_tl, current_price, new_price, price_difference_perc, to_char(request_date, 'dd-mm-YYYY') as request_date, price_change_reason, action_status, negotiate_final_price, to_char(price_increase_communicated_date, 'dd-mm-YYYY') as price_increase_communicated_date, to_char(price_increase_effective_date, 'dd-mm-YYYY') as price_increase_effective_date FROM public.vw_request_details where country_name='"+req.body.country+"' AND new_price IS NOT NULL AND request_date IS NOT NULL ";
 				
 				await con.query(query, function(err, result) {
 					if (err) {
@@ -94,7 +97,7 @@ module.exports = function(app, con) {
 				res.json({ status: false });
 				return;
 			} else{				
-				var query = "SELECT row_id, suppl_no, suppl_name, art_no, art_name_tl, current_price, new_price, price_difference_perc, to_char(request_date, 'YYYY-MM-dd') as request_date, price_change_reason, action_status, negotiate_final_price, to_char(price_increase_communicated_date, 'YYYY-MM-dd') as price_increase_communicated_date, to_char(price_increase_effective_date, 'YYYY-MM-dd') as price_increase_effective_date FROM public.vw_request_details where country_name='"+req.body.country+"' AND new_price IS NOT NULL AND request_date IS NOT NULL ";
+				var query = "SELECT row_id, suppl_no, suppl_name, art_no, art_name_tl, current_price, new_price, price_difference_perc, to_char(request_date, 'dd-mm-YYYY') as request_date, price_change_reason, action_status, negotiate_final_price, to_char(price_increase_communicated_date, 'dd-mm-YYYY') as price_increase_communicated_date, to_char(price_increase_effective_date, 'dd-mm-YYYY') as price_increase_effective_date FROM public.vw_request_details where country_name='"+req.body.country+"' AND new_price IS NOT NULL AND request_date IS NOT NULL ";
 				
 				await con.query(query, function(err, result) {
 					if (err) {
@@ -112,7 +115,7 @@ module.exports = function(app, con) {
 	});
 
 	app.post('/buyer_article_details', async function(req, res){
-		var query = "SELECT row_id, suppl_no, suppl_name, art_no, art_name_tl, current_price, new_price, price_difference_perc, to_char(request_date, 'YYYY-MM-dd') as request_date, price_change_reason, action_status, negotiate_final_price, to_char(price_increase_communicated_date, 'YYYY-MM-dd') as price_increase_communicated_date, to_char(price_increase_effective_date, 'YYYY-MM-dd') as price_increase_effective_date FROM public.vw_request_details where country_name='"+req.body.country+"' AND new_price IS NOT NULL AND request_date IS NOT NULL ";
+		var query = "SELECT row_id, suppl_no, suppl_name, art_no, art_name_tl, current_price, new_price, price_difference_perc, to_char(request_date, 'dd-mm-YYYY') as request_date, price_change_reason, action_status, negotiate_final_price, to_char(price_increase_communicated_date, 'dd-mm-YYYY') as price_increase_communicated_date, to_char(price_increase_effective_date, 'dd-mm-YYYY') as price_increase_effective_date FROM public.vw_request_details where country_name='"+req.body.country+"' AND new_price IS NOT NULL AND request_date IS NOT NULL ";
 		
 		await con.query(query, function(err, result) {
 			if (err) {

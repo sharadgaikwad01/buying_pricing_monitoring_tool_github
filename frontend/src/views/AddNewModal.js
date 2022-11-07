@@ -2,6 +2,7 @@
 // ** Third Party Components
 import { useState } from 'react'
 import { nodeBackend } from '@utils'
+import Flatpickr from 'react-flatpickr'
 import { User, Briefcase, Mail, Calendar, DollarSign, X } from 'react-feather'
 
 import axios from 'axios'
@@ -36,7 +37,8 @@ const AddNewModal = ({ open, handleModal, supllierNumberOptions, setsupplierInpu
   const SupplierInputSchema = yup.object().shape({
     new_price: yup.number().required().positive().integer(),
     supplier_number: yup.string().required(),
-    article_number: yup.string().required()
+    article_number: yup.string().required(),
+    price_effective_date: yup.array().required()
   })
   // ** Hooks
   const {
@@ -46,17 +48,37 @@ const AddNewModal = ({ open, handleModal, supllierNumberOptions, setsupplierInpu
   } = useForm({ mode: 'onChange', resolver: yupResolver(SupplierInputSchema) })
 
   const onSubmit = data => {
+    console.log(data)
     const new_price = data.new_price
     const reason = data.reason
     const supplier_number = data.supplier_number
     const article_number = data.article_number
+    const effective_date = data.price_effective_date
+
+    const effective_date_arr = []
+
+    effective_date.map(i => {
+      const date = new Date(i)
+
+      const year = date.getFullYear()
+
+      let month = (1 + date.getMonth()).toString()
+      month = month.length > 1 ? month : `0${month}`
+
+      let day = date.getDate().toString()
+      day = day.length > 1 ? day : `0${day}`
+
+      effective_date_arr.push(`${day}-${month}-${year}`)
+      return true
+    })
+    const price_effective_date = effective_date_arr[0]
 
     handleModal(false)
     
     axios({
       method: "post",
       url: `${nodeBackend}/add_supplier_input`,
-      data: { new_price, reason, supplier_number, article_number, country, vat_number }
+      data: { new_price, reason, supplier_number, article_number, country, vat_number, price_effective_date }
     })
       .then(function (success) {
         //handle success 
@@ -189,6 +211,30 @@ const AddNewModal = ({ open, handleModal, supllierNumberOptions, setsupplierInpu
                 render={({ field }) => <Input type="number"{...field} placeholder='e.g. 65' invalid={errors.new_price && true} />}
               />
               {errors.new_price && <FormFeedback>{"New Price is a required field"}</FormFeedback>}
+            </InputGroup>
+          </div>
+          <div className='mb-1'>
+            <Label className='form-label' for='price_effective_date'>
+              Price Effective Date
+            </Label>
+            <InputGroup>
+            <InputGroupText>
+              <Calendar size={15} />
+            </InputGroupText>
+              <Controller
+                id='default-picker'
+                name='price_effective_date'
+                defaultValue=''
+                control={control}                
+                render={({ field: { onChange } }) => <Flatpickr
+                        className='form-control'
+                        onChange={(val) => onChange(val)}
+                        options={{
+                          dateFormat: 'd-m-Y'
+                        }}
+                      />}
+              />
+              {errors.price_effective_date && <FormFeedback>{"Price Effective Date is a required field"}</FormFeedback>}
             </InputGroup>
           </div>
           <div className='mb-1'>

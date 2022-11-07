@@ -32,22 +32,20 @@ const AddBuyerInputModal = ({ open, handleModal, rowData }) => {
 
 
   const [rowId, setRowId] = useState('')
+  const [articleNumber, setArticleNumber] = useState('')
+  const [articleDescription, setArticleDescription] = useState('')
 
   // ** Custom close btn
   const CloseBtn = <X className='cursor-pointer' size={15} onClick={handleModal} />
 
   const SupplierInputSchema = yup.object().shape({
-
     final_price: yup.number().required().positive().integer(),
     comment: yup.string().required()
-
   })
   // ** Hooks
   const {
     control,
-
     setValue,
-
     handleSubmit,
     formState: { errors }
   } = useForm({ mode: 'onChange', resolver: yupResolver(SupplierInputSchema) })
@@ -55,13 +53,17 @@ const AddBuyerInputModal = ({ open, handleModal, rowData }) => {
 
   useEffect(async () => {
     if (rowData) {
-      await setRowId(rowData.row_id)      
+      await setArticleNumber(rowData.art_no)
+      await setArticleDescription(rowData.art_name_tl)
+      await setRowId(rowData.row_id)
+      
+      setValue('article_number', rowData.art_no)
+      setValue('article_description', rowData.art_name_tl)    
       setValue('row_id', rowData.row_id)
     }
   }, [rowData])
 
   const onSubmit = data => {
-    console.log(data)
     const finalize_date_arr = []
     const effective_date_arr = []
     const row_id = data.row_id
@@ -81,7 +83,7 @@ const AddBuyerInputModal = ({ open, handleModal, rowData }) => {
       let day = date.getDate().toString()
       day = day.length > 1 ? day : `0${day}`
 
-      finalize_date_arr.push(`${year}-${month}-${day}`)
+      finalize_date_arr.push(`${day}-${month}-${year}`)
       return true
     })
     const finalize_date = finalize_date_arr[0]
@@ -97,7 +99,7 @@ const AddBuyerInputModal = ({ open, handleModal, rowData }) => {
       let day = date.getDate().toString()
       day = day.length > 1 ? day : `0${day}`
 
-      effective_date_arr.push(`${year}-${month}-${day}`)
+      effective_date_arr.push(`${day}-${month}-${year}`)
       return true
     })
     const effective_date = effective_date_arr[0]
@@ -161,6 +163,34 @@ const AddBuyerInputModal = ({ open, handleModal, rowData }) => {
       <ModalBody className='flex-grow-1'>
         <Form onSubmit={handleSubmit(onSubmit)}>
         <input type="hidden" name="row_id" value={rowId} />
+        <div className='mb-1'>
+            <Label className='form-label' for='article_number'>
+              Final Price
+            </Label>
+            <InputGroup>
+              <Controller
+                id='article_number'
+                name='article_number'
+                defaultValue=''
+                control={control}
+                render={({ field }) => <Input type="number"{...field} value={articleNumber} readOnly  />}
+              />
+            </InputGroup>
+          </div>
+          <div className='mb-1'>
+            <Label className='form-label' for='article_description'>
+              Article Description
+            </Label>
+            <InputGroup>
+              <Controller
+                id='article_description'
+                name='article_description'
+                defaultValue=''
+                control={control}
+                render={({ field }) => <Input type="text"{...field} value={articleDescription} readOnly />}
+              />
+            </InputGroup>
+          </div>
           <div className='mb-1'>
             <Label className='form-label' for='final_price'>
               Final Price

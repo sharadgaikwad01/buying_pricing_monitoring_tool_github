@@ -13,7 +13,7 @@ import EditSupplierRequestModal from './EditSupplierRequestModal'
 import UploadArticliesModal from './UploadArticliesModal'
 import ReactPaginate from 'react-paginate'
 import DataTable from 'react-data-table-component'
-import { Download, Search, ChevronDown, Share, Printer, FileText, File, Grid, Copy, Plus, Upload, Edit, Trash } from 'react-feather'
+import { Download, Search, ChevronDown, Share, Printer, FileText, File, Grid, Copy, Plus, Upload, Edit, Trash, RefreshCcw } from 'react-feather'
 
 import '@styles/react/libs/tables/react-dataTable-component.scss'
 import '@styles/react/libs/flatpickr/flatpickr.scss'
@@ -53,6 +53,11 @@ const BootstrapCheckbox = forwardRef((props, ref) => (
 
 const Home = props => {
   // ** States
+
+  const [Picker, setPicker] = useState('')
+  const [searchRequestedDate, setSearchRequestedDate] = useState('')
+
+  
   const country = localStorage.getItem('country')
   const vat_number = localStorage.getItem('vat')
 
@@ -62,7 +67,7 @@ const Home = props => {
 
   const [searchSupplierNumber, setSupplierNumber] = useState('')
   const [searchArticleNumber, setArticleNumber] = useState('')
-  const [searchRequestedDate, setSearchRequestedDate] = useState('')
+  
   const [searchStatus, setSearchStatus] = useState('')
 
   const [modal, setModal] = useState(false)
@@ -214,10 +219,10 @@ const Home = props => {
 
   }
 
-  // ** Function to handle date filter
-  const handleRequestedDateFilter = async (date) => {
+  // ** Function to handle date filter  
+  const handleDateFilter = async (range) => {
     const arr = []
-    date.map(i => {
+    range.map(i => {
       const date = new Date(i)
 
       const year = date.getFullYear()
@@ -228,18 +233,22 @@ const Home = props => {
       let day = date.getDate().toString()
       day = day.length > 1 ? day : `0${day}`
 
-      arr.push(`${year}-${month}-${day}`)
+      arr.push(`${day}-${month}-${year}`)
       return true
     })
-    const searchRequestedDate = arr[0]
+
+    const searchRequestedDate = `${arr[0]} to ${arr[1]}`
+    setPicker(range)
+
     setSearchRequestedDate(searchRequestedDate)
 
     await axios.get(`${nodeBackend}/supplier_input`, { params: { searchSupplierNumber, searchArticleNumber, searchRequestedDate, searchStatus, country, vat_number } }).then((res) => {
-
-      setsupplierInputsData(res.data.data.supplierInputs)
-      setsupllierNumberOptions(res.data.data.supplierIDOptions)
-      setarticleOptions(res.data.data.articleOptions)
-      setSupplierInputCount(res.data.data.supplierInputCount)
+      if (res.data.data) {
+        setsupplierInputsData(res.data.data.supplierInputs) 
+        setsupllierNumberOptions(res.data.data.supplierIDOptions)
+        setarticleOptions(res.data.data.articleOptions)
+        setSupplierInputCount(res.data.data.supplierInputCount)
+      }      
     })
   }
 
@@ -329,28 +338,27 @@ const Home = props => {
     downloadCSV(supplierInputsData)
   }
 
+  const handleRefresh = async () => {
+    await setSupplierNumber("")
+    await setArticleNumber("")
+    await setSearchRequestedDate("")
+    await setSearchStatus("")
+
+    const searchSupplierNumber = ''
+    const searchArticleNumber = ''
+    const searchRequestedDate = ''
+    const searchStatus = ''
+
+    await axios.get(`${nodeBackend}/supplier_input`, { params: { searchSupplierNumber, searchArticleNumber, searchRequestedDate, searchStatus, country, vat_number } }).then((res) => {
+
+      setsupplierInputsData(res.data.data.supplierInputs)
+      setsupllierNumberOptions(res.data.data.supplierIDOptions)
+      setarticleOptions(res.data.data.articleOptions)
+      setSupplierInputCount(res.data.data.supplierInputCount)
+    })
+  }
+
   const columns = [
-    {
-      name: '#',
-      cell: (row, index) => index + 1,
-      width: '50px',
-      maxWidth: '60px',
-      center: 'yes',
-      style: {
-        align: 'center'
-      }
-    },
-    {
-      name: 'Actions',
-      allowOverflow: true,
-      center: 'yes',
-      width: '100px',
-      cell: (row) => {
-        return (
-          row.action_status === 'open' ? <div className='d-flex'> <Edit size={15} onClick={() => handleEdit(row)} className="editTableIcon text-info" /> <Trash size={15} onClick={(e) => handleDelete(e, row)} className="deleteTableIcon text-danger ms-1" /> </div> : "-"
-        )
-      }
-    },
     {
       name: 'Row Id',
       omit:true,
@@ -378,35 +386,18 @@ const Home = props => {
       name: 'New Price',
       sortable: true,
       width: '100px',
-      selector: row => row.new_price
+      selector: row => row.new_price,
+      cell: row => {
+        return (
+          row.new_price ? `€ ${row.new_price}` : "-"
+        )
+      }
     },
     {
       name: 'Request Date',
       sortable: true,
       width: 'auto',
       selector: row => row.request_date
-    },
-    {
-      name: 'Final Price',
-      sortable: true,
-      width: '120px',
-      selector: row => row.negotiate_final_price,
-      cell: row => {
-        return (
-          row.negotiate_final_price ? row.negotiate_final_price : "-"
-        )
-      }
-    },
-    {
-      name: 'Price Finalize Date',
-      sortable: true,
-      width: 'auto',
-      selector: row => row.price_increase_communicated_date,
-      cell: row => {
-        return (
-          row.price_increase_communicated_date ? row.price_increase_communicated_date : "-"
-        )
-      }
     },
     {
       name: 'Price Effective Date',
@@ -420,13 +411,46 @@ const Home = props => {
       }
     },
     {
+      name: 'Final Price',
+      sortable: true,
+      width: '120px',
+      selector: row => row.negotiate_final_price,
+      cell: row => {
+        return (
+          row.negotiate_final_price ? `€ ${row.negotiate_final_price}` : "-"
+        )
+      }
+    },
+    {
+      name: 'Price Finalize Date',
+      sortable: true,
+      width: 'auto',
+      selector: row => row.price_increase_communicated_date,
+      cell: row => {
+        return (
+          row.price_increase_communicated_date ? row.price_increase_communicated_date : "-"
+        )
+      }
+    },    
+    {
       name: 'Status',
       sortable: true,
       minWidth: '100px',
       selector: row => row.action_status,
       cell: row => {
         return (
-          row.action_status === 'open' ? <Badge color='primary' pill>{row.action_status}</Badge> : <Badge color='success' pill>{row.action_status}</Badge>
+          row.action_status === 'open' ? <Badge color='primary' pill>Open</Badge> : <Badge color='success' pill>Closed</Badge>
+        )
+      }
+    },
+    {
+      name: 'Actions',
+      allowOverflow: true,
+      center: 'yes',
+      width: '100px',
+      cell: (row) => {
+        return (
+          row.action_status === 'open' ? <div className='d-flex'> <Edit size={15} onClick={() => handleEdit(row)} className="editTableIcon text-info" /> <Trash size={15} onClick={(e) => handleDelete(e, row)} className="deleteTableIcon text-danger ms-1" /> </div> : "-"
         )
       }
     }
@@ -435,23 +459,24 @@ const Home = props => {
     <Fragment>
       <Card className='pageBox supplier-screen'>
         <CardHeader className='flex-md-row flex-column align-items-center align-items-start border-bottom'>
-          <CardTitle tag='h2'>Inflation Price Data</CardTitle>
+          <CardTitle tag='h2'>List of Assortment</CardTitle>
           <div className='d-flex mt-md-0 mt-1'>
             <Button.Ripple className='ms-1 btn-icon' color='primary' onClick={handleModal}>
               <Plus size={16} />
-              <span className='align-middle ms-25'>Add New Input</span>
+              <span className='align-middle ms-25'>Add Single Article Input</span>
             </Button.Ripple>
             <Button.Ripple className='ms-1' outline color='warning' onClick={downloadArticleModal}>
               <Download size={14} />
-              <span className='align-middle ms-25'>Articles</span>
+              <span className='align-middle ms-25'>Multiple Article Inputs</span>
             </Button.Ripple>
             <Button.Ripple className='ms-1' outline color='info' onClick={handleUploadArticleModal}>
               <Upload size={14} />
-              <span className='align-middle ms-25'>Upload Articles</span>
+              <span className='align-middle ms-25'>Upload Multiple Article Inputs</span>
             </Button.Ripple>
             <UncontrolledButtonDropdown className='ms-1'>
               <DropdownToggle color='primary' caret outline>
                 <Download size={15} />
+                <span className='align-middle ms-25'>Assortment Download</span>
               </DropdownToggle>
               <DropdownMenu>
                 <DropdownItem className='w-100' onClick={() => handleDownloadCSV()}>
@@ -514,12 +539,11 @@ const Home = props => {
               </Label>
               <Flatpickr
                 className='form-control'
-                value={searchRequestedDate}
-                onChange={date => handleRequestedDateFilter(date)}
-                id='default-picker' placeholder='DD/MM/YYYY'
-                options={{
-                  dateFormat: 'Y-m-d'
-                }}
+                id='date'
+                value={Picker}
+                placeholder='d-m-Y to d-m-Y'
+                options={{ mode: 'range', dateFormat: 'd-m-Y' }}
+                onChange={date => handleDateFilter(date)}
               />
             </Col>
             <Col className='col-auto'>
@@ -538,6 +562,12 @@ const Home = props => {
                 })}
                 onChange={handleStatusFilter}
               />
+            </Col>
+            <Col className='col-auto'>
+
+            <Button.Ripple className='ms-1 btn-icon' color='primary' onClick={handleRefresh}>
+              <RefreshCcw size={16} />
+            </Button.Ripple>
             </Col>
           </Row>
 

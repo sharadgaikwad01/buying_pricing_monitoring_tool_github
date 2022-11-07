@@ -38,7 +38,6 @@ const EditSupplierRequestModal = ({ open, handleModal, rowData, supllierNumberOp
 
   const SupplierInputSchema = yup.object().shape({
     new_price: yup.number().required().positive().integer(),
-    reason: yup.string().required(),
     supplier_number: yup.string().required(),
     article_number: yup.string().required(),
     row_id: yup.string()

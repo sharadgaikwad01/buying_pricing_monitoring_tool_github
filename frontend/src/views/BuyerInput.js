@@ -45,6 +45,7 @@ const statusOptions = [
 const BuyerInput = props => {
   const country = localStorage.getItem('country')
 
+  const [Picker, setPicker] = useState('')
   const [supplierInputsData, setsupplierInputsData] = useState([])
   const [searchSupplierNumber, setSupplierNumber] = useState('')
   const [searchRequestedDate, setSearchRequestedDate] = useState('')
@@ -167,10 +168,9 @@ const BuyerInput = props => {
 
   }
 
-  // ** Function to handle date filter
-  const handleRequestedDateFilter = async (date) => {
+  const handleDateFilter = async (range) => {
     const arr = []
-    date.map(i => {
+    range.map(i => {
       const date = new Date(i)
 
       const year = date.getFullYear()
@@ -181,14 +181,19 @@ const BuyerInput = props => {
       let day = date.getDate().toString()
       day = day.length > 1 ? day : `0${day}`
 
-      arr.push(`${year}-${month}-${day}`)
+      arr.push(`${day}-${month}-${year}`)
       return true
     })
-    const searchRequestedDate = arr[0]
+
+    const searchRequestedDate = `${arr[0]} to ${arr[1]}`
+    setPicker(range)
+
     setSearchRequestedDate(searchRequestedDate)
     await axios.get(`${nodeBackend}/buyer_input`, { params: { searchSupplierNumber, searchRequestedDate, country } }).then((res) => {
-      setsupplierInputsData(res.data.data.supplierInputs)
-      setsupllierNumberOptions(res.data.data.supplierIDOptions)
+      if (res.data.data) {
+        setsupplierInputsData(res.data.data.supplierInputs)
+        setsupllierNumberOptions(res.data.data.supplierIDOptions)
+      }      
     })
   }
 
@@ -271,23 +276,6 @@ const BuyerInput = props => {
   }
 
   const columns = [
-    {
-      name: '#',
-      center: 'yes',
-      width: '50px',
-      cell: (row, index) => index + 1
-    },
-    {
-      name: 'Actions',
-      center: 'yes',
-      width: '80px',
-      allowOverflow: true,
-      cell: (row) => {
-        return (
-          row.action_status === 'open' ? <div className='d-flex'><Edit size={15} onClick={(e) => handleEdit(e, row)} className="editTableIcon text-info" /><Check size={15} onClick={(e) => handleClosedAction(e, row)} className="deleteTableIcon text-success ms-1" /></div> : "-"
-        )
-      }
-    },
     {
       name: 'Row Id',
       omit:true,
@@ -391,14 +379,15 @@ const BuyerInput = props => {
           row.price_change_reason ? row.price_change_reason : "-"
         )
       }
-    },
+    },    
     {
-      name: 'Status',
-      width: 'auto',
-      sortable: row => row.action_status,
+      name: 'Price Effective Date',
+      sortable: true,
+      minWidth: 'auto',
+      selector: row => row.price_increase_effective_date,
       cell: row => {
         return (
-          row.action_status === 'open' ? <Badge color='primary' pill>{row.action_status}</Badge> : <Badge color='success' pill>{row.action_status}</Badge>
+          row.price_increase_effective_date ? row.price_increase_effective_date : "-"
         )
       }
     },
@@ -423,15 +412,25 @@ const BuyerInput = props => {
           row.price_increase_communicated_date ? row.price_increase_communicated_date : "-"
         )
       }
-    },
+    },    
     {
-      name: 'Price Effective Date',
-      sortable: true,
-      minWidth: 'auto',
-      selector: row => row.price_increase_effective_date,
+      name: 'Status',
+      width: 'auto',
+      sortable: row => row.action_status,
       cell: row => {
         return (
-          row.price_increase_effective_date ? row.price_increase_effective_date : "-"
+          row.action_status === 'open' ? <Badge color='primary' pill>{row.action_status}</Badge> : <Badge color='success' pill>{row.action_status}</Badge>
+        )
+      }
+    },
+    {
+      name: 'Actions',
+      center: 'yes',
+      width: '80px',
+      allowOverflow: true,
+      cell: (row) => {
+        return (
+          row.action_status === 'open' ? <div className='d-flex'><Edit size={15} onClick={(e) => handleEdit(e, row)} className="editTableIcon text-info" /><Check size={15} onClick={(e) => handleClosedAction(e, row)} className="deleteTableIcon text-success ms-1" /></div> : "-"
         )
       }
     }
@@ -440,10 +439,11 @@ const BuyerInput = props => {
     <Fragment>
       <Card className='pageBox buyer-screen'>
         <CardHeader className='flex-md-row flex-column align-md-items-center align-items-start border-bottom'>
-          <CardTitle tag='h2'>Inflation Price Data</CardTitle>
+          <CardTitle tag='h2'>List of Assortment</CardTitle>
           <UncontrolledButtonDropdown className='ms-2'>
             <DropdownToggle color='primary' caret outline>
               <Download size={15} />
+              <span className='align-middle ms-25'>Assortment Download</span>
             </DropdownToggle>
             <DropdownMenu>
               <DropdownItem className='w-100' onClick={() => handleDownloadCSV()}>
@@ -456,10 +456,6 @@ const BuyerInput = props => {
         <CardBody>
           <Row className='mb-50 g-1 filter-row filter-buyer'>
             <Col className='col-auto'>
-              {/* <Label className='form-label' for='name'>
-                Supplier Name:
-              </Label>
-              <Input id='name' placeholder='Bruce Wayne' value={searchName} onChange={handleNameFilter} /> */}
               <Label className='form-label'>Supplier Number</Label>
               <Select
                 theme={selectThemeColors}
@@ -480,12 +476,11 @@ const BuyerInput = props => {
               </Label>
               <Flatpickr
                 className='form-control'
-                value={searchRequestedDate}
-                onChange={date => handleRequestedDateFilter(date)}
-                id='default-picker'
-                options={{
-                  dateFormat: 'Y-m-d'
-                }}
+                id='date'
+                value={Picker}
+                placeholder='d-m-Y to d-m-Y'
+                options={{ mode: 'range', dateFormat: 'd-m-Y' }}
+                onChange={date => handleDateFilter(date)}
               />
             </Col>
             <Col className='col-auto'>
