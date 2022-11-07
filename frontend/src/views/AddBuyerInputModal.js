@@ -30,7 +30,7 @@ const AddBuyerInputModal = ({ open, handleModal, rowData }) => {
   // const [Picker, setPicker] = useState('')
   const country = localStorage.getItem('country')
 
-
+  const [newPrice, setNewPrice] = useState('')
   const [rowId, setRowId] = useState('')
   const [articleNumber, setArticleNumber] = useState('')
   const [articleDescription, setArticleDescription] = useState('')
@@ -39,8 +39,20 @@ const AddBuyerInputModal = ({ open, handleModal, rowData }) => {
   const CloseBtn = <X className='cursor-pointer' size={15} onClick={handleModal} />
 
   const SupplierInputSchema = yup.object().shape({
-    final_price: yup.number().required().positive().integer(),
-    comment: yup.string().required()
+    comment: yup.string().required(),
+    new_price: yup.number().required().positive().integer(),
+    final_price: yup.number()
+      .typeError("you must specify a number")
+      .notRequired()
+      .when("new_price", (new_price, SupplierInputSchema) => {
+        return SupplierInputSchema.test({
+          test: (final_price) => {
+            if (!final_price) return true
+            return final_price <= new_price
+          },
+          message: "Final Price Amount should be less than New Price"
+        })
+      })
   })
   // ** Hooks
   const {
@@ -55,10 +67,13 @@ const AddBuyerInputModal = ({ open, handleModal, rowData }) => {
     if (rowData) {
       await setArticleNumber(rowData.art_no)
       await setArticleDescription(rowData.art_name_tl)
+      await setNewPrice(rowData.new_price)
       await setRowId(rowData.row_id)
-      
+
       setValue('article_number', rowData.art_no)
-      setValue('article_description', rowData.art_name_tl)    
+      setValue('article_description', rowData.art_name_tl)
+      setValue('current_price', rowData.current_price)
+      setValue('new_price', rowData.new_price)
       setValue('row_id', rowData.row_id)
     }
   }, [rowData])
@@ -83,7 +98,7 @@ const AddBuyerInputModal = ({ open, handleModal, rowData }) => {
       let day = date.getDate().toString()
       day = day.length > 1 ? day : `0${day}`
 
-      finalize_date_arr.push(`${day}-${month}-${year}`)
+      finalize_date_arr.push(`${year}-${month}-${day}`)
       return true
     })
     const finalize_date = finalize_date_arr[0]
@@ -99,18 +114,18 @@ const AddBuyerInputModal = ({ open, handleModal, rowData }) => {
       let day = date.getDate().toString()
       day = day.length > 1 ? day : `0${day}`
 
-      effective_date_arr.push(`${day}-${month}-${year}`)
+      effective_date_arr.push(`${year}-${month}-${day}`)
       return true
     })
     const effective_date = effective_date_arr[0]
 
 
     handleModal(false)
-    
+
     axios({
       method: "post",
       url: `${nodeBackend}/update_buyer_input`,
-      data: { row_id, final_price, comment, finalize_date, effective_date, country}
+      data: { row_id, final_price, comment, finalize_date, effective_date, country }
     })
       .then(function (success) {
         //handle success 
@@ -162,8 +177,8 @@ const AddBuyerInputModal = ({ open, handleModal, rowData }) => {
       </ModalHeader>
       <ModalBody className='flex-grow-1'>
         <Form onSubmit={handleSubmit(onSubmit)}>
-        <input type="hidden" name="row_id" value={rowId} />
-        <div className='mb-1'>
+          <input type="hidden" name="row_id" value={rowId} />
+          <div className='mb-1'>
             <Label className='form-label' for='article_number'>
               Final Price
             </Label>
@@ -173,7 +188,7 @@ const AddBuyerInputModal = ({ open, handleModal, rowData }) => {
                 name='article_number'
                 defaultValue=''
                 control={control}
-                render={({ field }) => <Input type="number"{...field} value={articleNumber} readOnly  />}
+                render={({ field }) => <Input type="number"{...field} value={articleNumber} readOnly />}
               />
             </InputGroup>
           </div>
@@ -192,6 +207,23 @@ const AddBuyerInputModal = ({ open, handleModal, rowData }) => {
             </InputGroup>
           </div>
           <div className='mb-1'>
+            <Label className='form-label' for='new_Price'>
+              New Price
+            </Label>
+            <InputGroup>
+              <InputGroupText>
+                €
+              </InputGroupText>
+              <Controller
+                id='new_price'
+                name='new_price'
+                control={control}
+                render={({ field }) => <Input type="number"{...field} placeholder='e.g. 65' value={newPrice} onChange={e => { setNewPrice(e.target.value); setValue('new_price', e.target.value, { shouldValidate: true }) }} invalid={errors.new_price && true} />}
+              />
+              {errors.new_price && <FormFeedback>{"New Price is a required field"}</FormFeedback>}
+            </InputGroup>
+          </div>
+          <div className='mb-1'>
             <Label className='form-label' for='final_price'>
               Final Price
             </Label>
@@ -206,7 +238,7 @@ const AddBuyerInputModal = ({ open, handleModal, rowData }) => {
                 control={control}
                 render={({ field }) => <Input type="number"{...field} placeholder='e.g. 65' invalid={errors.final_price && true} />}
               />
-              {errors.final_price && <FormFeedback>{"Final Price is a required field"}</FormFeedback>}
+              {errors.final_price && <FormFeedback>{errors.final_price.message}</FormFeedback>}
             </InputGroup>
           </div>
           <div className='mb-1'>
@@ -219,12 +251,12 @@ const AddBuyerInputModal = ({ open, handleModal, rowData }) => {
                 name='price_finalize_date'
                 defaultValue=''
                 control={control}
-                render={({ field }) => <Flatpickr { ...field }
-                        className='form-control'
-                        options={{
-                          dateFormat: 'Y-m-d'
-                        }}
-                      />}
+                render={({ field }) => <Flatpickr {...field}
+                  className='form-control'
+                  options={{
+                    dateFormat: 'Y-m-d'
+                  }}
+                />}
               />
               {errors.price_finalize_date && <FormFeedback>{"Price Finalize Date is a required field"}</FormFeedback>}
             </InputGroup>
@@ -239,12 +271,12 @@ const AddBuyerInputModal = ({ open, handleModal, rowData }) => {
                 name='price_effective_date'
                 defaultValue=''
                 control={control}
-                render={({ field }) => <Flatpickr { ...field }
-                        className='form-control'
-                        options={{
-                          dateFormat: 'Y-m-d'
-                        }}
-                      />}
+                render={({ field }) => <Flatpickr {...field}
+                  className='form-control'
+                  options={{
+                    dateFormat: 'Y-m-d'
+                  }}
+                />}
               />
               {errors.price_effective_date && <FormFeedback>{"Price Effective Date is a required field"}</FormFeedback>}
             </InputGroup>

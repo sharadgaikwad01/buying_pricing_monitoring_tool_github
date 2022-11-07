@@ -1,6 +1,7 @@
 // ** React Imports
 // ** Third Party Components
 import { useState, useEffect } from 'react'
+import Flatpickr from 'react-flatpickr'
 
 import { User, Briefcase, Mail, Calendar, DollarSign, X } from 'react-feather'
 
@@ -212,6 +213,30 @@ const EditSupplierRequestModal = ({ open, handleModal, rowData, supllierNumberOp
                 render={({ field }) => <Input type="number"{...field} placeholder='e.g. 65' value={newPrice} onChange={e => { setNewPrice(e.target.value); setValue('new_price', e.target.value, { shouldValidate: true }) }} invalid={errors.new_price && true} />}
               />
               {errors.new_price && <FormFeedback>{"New Price is a required field"}</FormFeedback>}
+            </InputGroup>
+          </div>
+          <div className='mb-1'>
+            <Label className='form-label' for='price_effective_date'>
+              Price Effective Date
+            </Label>
+            <InputGroup>
+            <InputGroupText>
+              <Calendar size={15} />
+            </InputGroupText>
+              <Controller
+                id='default-picker'
+                name='price_effective_date'
+                defaultValue=''
+                control={control}                
+                render={({ field: { onChange } }) => <Flatpickr
+                        className='form-control'
+                        onChange={(val) => onChange(val)}
+                        options={{
+                          dateFormat: 'd-m-Y'
+                        }}
+                      />}
+              />
+              {errors.price_effective_date && <FormFeedback>{"Price Effective Date is a required field"}</FormFeedback>}
             </InputGroup>
           </div>
           <div className='mb-1'>

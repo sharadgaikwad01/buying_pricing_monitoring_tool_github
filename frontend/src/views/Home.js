@@ -233,7 +233,7 @@ const Home = props => {
       let day = date.getDate().toString()
       day = day.length > 1 ? day : `0${day}`
 
-      arr.push(`${day}-${month}-${year}`)
+      arr.push(`${year}-${month}-${day}`)
       return true
     })
 
@@ -343,6 +343,7 @@ const Home = props => {
     await setArticleNumber("")
     await setSearchRequestedDate("")
     await setSearchStatus("")
+    await setPicker("")
 
     const searchSupplierNumber = ''
     const searchArticleNumber = ''
@@ -390,6 +391,17 @@ const Home = props => {
       cell: row => {
         return (
           row.new_price ? `€ ${row.new_price}` : "-"
+        )
+      }
+    },
+    {
+      name: 'Reason',
+      sortable: true,
+      width: '100px',
+      selector: row => row.price_change_reason,
+      cell: row => {
+        return (
+          row.price_change_reason ? row.price_change_reason : "-"
         )
       }
     },

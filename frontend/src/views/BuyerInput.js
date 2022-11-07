@@ -10,7 +10,7 @@ import Flatpickr from 'react-flatpickr'
 import AddBuyerInputModal from './AddBuyerInputModal'
 import ReactPaginate from 'react-paginate'
 import DataTable from 'react-data-table-component'
-import { Download, Search, ChevronDown, Share, Printer, FileText, File, Grid, Copy, Plus, Upload, Edit, Trash, Check } from 'react-feather'
+import { Download, Search, ChevronDown, Share, Printer, FileText, File, Grid, Copy, Plus, Upload, Edit, Trash, Check, RefreshCcw} from 'react-feather'
 
 import '@styles/react/libs/tables/react-dataTable-component.scss'
 import '@styles/react/libs/flatpickr/flatpickr.scss'
@@ -182,7 +182,7 @@ const BuyerInput = props => {
       let day = date.getDate().toString()
       day = day.length > 1 ? day : `0${day}`
 
-      arr.push(`${day}-${month}-${year}`)
+      arr.push(`${year}-${month}-${day}`)
       return true
     })
 
@@ -276,6 +276,24 @@ const BuyerInput = props => {
     })
   }
 
+  const handleRefresh = async () => {
+    await setSupplierNumber("")
+    await setSearchRequestedDate("")
+    await setSearchStatus("")
+    await setPicker("")
+
+    const searchSupplierNumber = ''
+    const searchRequestedDate = ''
+    const searchStatus = ''
+
+    await axios.get(`${nodeBackend}/buyer_input`, { params: { searchSupplierNumber, searchRequestedDate, searchStatus, country } }).then((res) => {
+      if (res.data.data) {
+        setsupplierInputsData(res.data.data.supplierInputs)
+        setsupllierNumberOptions(res.data.data.supplierIDOptions)
+      }
+    })
+  }
+
   const columns = [
     {
       name: 'Row Id',
@@ -333,7 +351,7 @@ const BuyerInput = props => {
       selector: row => row.current_price,
       cell: row => {
         return (
-          row.current_price ? row.current_price : "-"
+          row.current_price ? `€ ${row.current_price}` : "-"
         )
       }
     },
@@ -344,7 +362,7 @@ const BuyerInput = props => {
       selector: row => row.new_price,
       cell: row => {
         return (
-          row.new_price ? row.new_price : "-"
+          row.new_price ? `€ ${row.new_price}` : "-"
         )
       }
     },
@@ -355,7 +373,7 @@ const BuyerInput = props => {
       selector: row => row.price_difference_perc,
       cell: row => {
         return (
-          row.price_difference_perc ? row.price_difference_perc : "-"
+          row.price_difference_perc ? `${row.price_difference_perc}%` : "-"
         )
       }
     },
@@ -500,6 +518,11 @@ const BuyerInput = props => {
                 })}
                 onChange={handleStatusFilter}
               />
+            </Col>
+            <Col className='col-auto'>
+              <Button.Ripple className='ms-1 btn-icon' color='primary' onClick={handleRefresh}>
+                <RefreshCcw size={16} />
+              </Button.Ripple>
             </Col>
           </Row>
           <div className='react-dataTable my-1'>

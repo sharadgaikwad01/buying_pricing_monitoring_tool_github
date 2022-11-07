@@ -96,10 +96,11 @@ const DownloadArticliesModal = ({ open, handleModal, supllierNumberOptions }) =>
     } = useForm({ mode: 'onChange', resolver: yupResolver(SupplierInputSchema) })
 
     const onSubmit = async (data) => {
-        const supplier_number = []
+        let supplier_string = ''
         for (const value of data.supplier_number) {
-            supplier_number.push(parseInt(value.value, 10))
+            supplier_string = `${supplier_string}, '${value.value}'` 
         }
+        const supplier_number = supplier_string.substring(1)
         await axios.get(`${nodeBackend}/supplier_article_details`, { params: { supplier_number, country, vat_number } }).then((res) => {
             console.log(res.data)
             if (res.data.data.length > 0) {

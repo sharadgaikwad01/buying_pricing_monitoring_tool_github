@@ -68,7 +68,7 @@ const AddNewModal = ({ open, handleModal, supllierNumberOptions, setsupplierInpu
       let day = date.getDate().toString()
       day = day.length > 1 ? day : `0${day}`
 
-      effective_date_arr.push(`${day}-${month}-${year}`)
+      effective_date_arr.push(`${year}-${month}-${day}`)
       return true
     })
     const price_effective_date = effective_date_arr[0]
