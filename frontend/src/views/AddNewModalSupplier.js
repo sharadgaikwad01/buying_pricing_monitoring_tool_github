@@ -76,6 +76,17 @@ const AddNewModalSupplier = ({ open, handleModal, rowData }) => {
       }
     },
     {
+      name: 'Artical Desc',
+      sortable: true,
+      minWidth: 'auto',
+      selector: row => row.art_name_tl,
+      cell: row => {
+        return (
+          row.art_name_tl ? row.art_name_tl : "-"
+        )
+      }
+    },
+    {
       name: 'Price Increase By Seller',
       sortable: true,
       minWidth: 'auto',
