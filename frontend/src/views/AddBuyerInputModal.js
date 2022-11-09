@@ -25,7 +25,7 @@ import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 const MySwal = withReactContent(Swal)
 
-const AddBuyerInputModal = ({ open, handleModal, rowData }) => {
+const AddBuyerInputModal = ({ open, handleModal, rowData, setsupplierInputsData }) => {
   // ** State
   // const [Picker, setPicker] = useState('')
   const country = localStorage.getItem('country')
@@ -157,6 +157,7 @@ const AddBuyerInputModal = ({ open, handleModal, rowData }) => {
       .then(function (success) {
         //handle success 
         if (success.data.status) {
+          setsupplierInputsData(success.data.data.supplierInputs)
           return MySwal.fire({
             title: 'Done!',
             text: 'Request has been updated',

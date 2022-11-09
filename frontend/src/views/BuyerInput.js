@@ -308,7 +308,7 @@ const BuyerInput = props => {
       selector: row => row.suppl_no,
       cell: row => {
         return (
-          row.suppl_no ? <Link to={`/view?sup=${row.suppl_no}`}>{`${row.suppl_no}`}</Link> : "-"
+          row.suppl_no ? <Link to={`/view/${row.bdm_global_umbrella_no}`}>{`${row.suppl_no}`}</Link> : "-"
         )
       }
     },
@@ -543,7 +543,7 @@ const BuyerInput = props => {
           </div>
         </CardBody>
       </Card>
-      <AddBuyerInputModal open={editBuyerModal} handleModal={handleEdit} rowData={rowData} />
+      <AddBuyerInputModal open={editBuyerModal} handleModal={handleEdit} rowData={rowData} setsupplierInputsData={setsupplierInputsData} />
     </Fragment>
   )
 }

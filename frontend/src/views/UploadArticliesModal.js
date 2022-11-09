@@ -41,7 +41,6 @@ const UploadArticliesModal = ({ open, handleModal, setsupplierInputsData }) => {
       data: { supplier_inputs, country, vat_number }
     })
       .then(function (success) {
-        //handle success    
         setsupplierInputsData(success.data.data.supplierInputs)
         if (success.data.status) {
           return MySwal.fire({
@@ -116,9 +115,22 @@ const UploadArticliesModal = ({ open, handleModal, setsupplierInputsData }) => {
           const fileData = event.target.result
           const wb = read(fileData, { type: 'binary', cellDates: true, dateNF:'yyyy-mm-dd;@'})
           wb.SheetNames.forEach(function (sheetName) {
-            const rowObj = utils.sheet_to_row_object_array(wb.Sheets[sheetName], { header: 0, raw: false, dateNF: 'yyyy-mm-dd' })
+            const rowObj = utils.sheet_to_row_object_array(wb.Sheets[sheetName], { header: 1, raw: false, blankrows: false, dateNF: 'yyyy-mm-dd' })
+            const customHeadingsData = rowObj.map((item) => ({
+                country_name : item[0],
+                vat_no : item[1],
+                suppl_no : item[2],
+                art_no : item[3],
+                art_name : item[4],
+                umbrella_name : item[5],
+                new_price : item[6],
+                price_change_reason : item[7],
+                price_increase_effective_date : item[8]
+              }
+            ))
+            customHeadingsData.shift()
             handleModal(false)
-            uploadFile(rowObj)
+            uploadFile(customHeadingsData)
           })
         }
       }

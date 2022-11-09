@@ -228,10 +228,14 @@ module.exports = function(app, con) {
 		var len = supplier_inputs.length;		
 		var sucess_count = 0;
 		var error_count = 0;
+		console.log(supplier_inputs)
 		async.waterfall([
 			function(callback)
 			{
 				supplier_inputs.forEach(async function(value, key) {
+					console.log(value)
+					console.log(value.new_price)
+					console.log(value['new_price'])
 					if(value.new_price && value.new_price != 'null' && value.new_price != undefined && value.new_price != null ){
 						if (value.new_price > 0) {
 							sql=`CALL public."usp_addNewRequest"('` + value.art_no + `','` +value.suppl_no +`','`+ value.country_name +`',`+ value.new_price +`,'` + value.price_change_reason + `','`+ value.price_increase_effective_date +`');`;

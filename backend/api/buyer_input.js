@@ -40,10 +40,7 @@ module.exports = function(app, con) {
             condition = condition + " AND action_status = '" +req.query.searchStatus+"'"
         }
 
-        var query = "SELECT row_id, suppl_no, suppl_name, art_no, art_name_tl, current_price, new_price, frmt_new_price, price_difference_perc, to_char(request_date, 'dd-mm-YYYY') as request_date, price_change_reason, action_status, negotiate_final_price, to_char(price_increase_communicated_date, 'dd-mm-YYYY') as price_increase_communicated_date, to_char(price_increase_effective_date, 'dd-mm-YYYY') as price_increase_effective_date, stratbuyer_name FROM public.vw_buyer_details where country_name='"+req.query.country+"' AND buyer_emailid='"+req.query.email+"' AND new_price IS NOT NULL AND request_date IS NOT NULL " + condition;
-
-		console.log("query===========")
-		console.log(query)
+        var query = "SELECT row_id, bdm_global_umbrella_no, suppl_no, suppl_name, art_no, art_name_tl, current_price, new_price, frmt_new_price, price_difference_perc, to_char(request_date, 'dd-mm-YYYY') as request_date, price_change_reason, action_status, negotiate_final_price, to_char(price_increase_communicated_date, 'dd-mm-YYYY') as price_increase_communicated_date, to_char(price_increase_effective_date, 'dd-mm-YYYY') as price_increase_effective_date, stratbuyer_name FROM public.vw_buyer_details where country_name='"+req.query.country+"' AND buyer_emailid='"+req.query.email+"' AND new_price IS NOT NULL AND request_date IS NOT NULL " + condition;
 		
         await con.query(query, function(err, result) {
 			if (err) {
@@ -72,7 +69,7 @@ module.exports = function(app, con) {
 				res.json({ status: false });
 				return;
 			} else{				
-				var query = "SELECT row_id, suppl_no, suppl_name, art_no, art_name_tl, current_price, new_price, frmt_new_price, price_difference_perc, to_char(request_date, 'dd-mm-YYYY') as request_date, price_change_reason, action_status, negotiate_final_price, to_char(price_increase_communicated_date, 'dd-mm-YYYY') as price_increase_communicated_date, to_char(price_increase_effective_date, 'dd-mm-YYYY') as price_increase_effective_date, stratbuyer_name FROM public.vw_buyer_details where country_name='"+req.query.country+"' AND buyer_emailid='"+req.query.email+"' AND new_price IS NOT NULL AND request_date IS NOT NULL ";
+				var query = "SELECT row_id, suppl_no, suppl_name, art_no, art_name_tl, current_price, new_price, frmt_new_price, price_difference_perc, to_char(request_date, 'dd-mm-YYYY') as request_date, price_change_reason, action_status, negotiate_final_price, to_char(price_increase_communicated_date, 'dd-mm-YYYY') as price_increase_communicated_date, to_char(price_increase_effective_date, 'dd-mm-YYYY') as price_increase_effective_date, stratbuyer_name FROM public.vw_buyer_details where country_name='"+req.body.country+"' AND buyer_emailid='"+req.body.email+"' AND new_price IS NOT NULL AND request_date IS NOT NULL ";
 				
 				await con.query(query, function(err, result) {
 					if (err) {
@@ -98,7 +95,7 @@ module.exports = function(app, con) {
 				res.json({ status: false });
 				return;
 			} else{				
-				var query = "SELECT row_id, suppl_no, suppl_name, art_no, art_name_tl, current_price, new_price, frmt_new_price, price_difference_perc, to_char(request_date, 'dd-mm-YYYY') as request_date, price_change_reason, action_status, negotiate_final_price, to_char(price_increase_communicated_date, 'dd-mm-YYYY') as price_increase_communicated_date, to_char(price_increase_effective_date, 'dd-mm-YYYY') as price_increase_effective_date, stratbuyer_name FROM public.vw_buyer_details where country_name='"+req.query.country+"' AND buyer_emailid='"+req.query.email+"' AND new_price IS NOT NULL AND request_date IS NOT NULL ";
+				var query = "SELECT row_id, suppl_no, suppl_name, art_no, art_name_tl, current_price, new_price, frmt_new_price, price_difference_perc, to_char(request_date, 'dd-mm-YYYY') as request_date, price_change_reason, action_status, negotiate_final_price, to_char(price_increase_communicated_date, 'dd-mm-YYYY') as price_increase_communicated_date, to_char(price_increase_effective_date, 'dd-mm-YYYY') as price_increase_effective_date, stratbuyer_name FROM public.vw_buyer_details where country_name='"+req.body.country+"' AND buyer_emailid='"+req.body.email+"' AND new_price IS NOT NULL AND request_date IS NOT NULL ";
 				
 				await con.query(query, function(err, result) {
 					if (err) {
@@ -116,7 +113,7 @@ module.exports = function(app, con) {
 	});
 
 	app.post('/buyer_article_details', async function(req, res){
-		var query = "SELECT row_id, suppl_no, suppl_name, art_no, art_name_tl, current_price, new_price, frmt_new_price, price_difference_perc, to_char(request_date, 'dd-mm-YYYY') as request_date, price_change_reason, action_status, negotiate_final_price, to_char(price_increase_communicated_date, 'dd-mm-YYYY') as price_increase_communicated_date, to_char(price_increase_effective_date, 'dd-mm-YYYY') as price_increase_effective_date, stratbuyer_name FROM public.vw_buyer_details where country_name='"+req.query.country+"' AND buyer_emailid='"+req.query.email+"' AND new_price IS NOT NULL AND request_date IS NOT NULL ";
+		var query = "SELECT row_id, suppl_no, suppl_name, art_no, art_name_tl, current_price, new_price, frmt_new_price, price_difference_perc, to_char(request_date, 'dd-mm-YYYY') as request_date, price_change_reason, action_status, negotiate_final_price, to_char(price_increase_communicated_date, 'dd-mm-YYYY') as price_increase_communicated_date, to_char(price_increase_effective_date, 'dd-mm-YYYY') as price_increase_effective_date, stratbuyer_name FROM public.vw_buyer_details where country_name='"+req.body.country+"' AND buyer_emailid='"+req.body.email+"' AND new_price IS NOT NULL AND request_date IS NOT NULL ";
 		
 		await con.query(query, function(err, result) {
 			if (err) {
@@ -130,9 +127,8 @@ module.exports = function(app, con) {
 	});
 
 	app.get('/buyer_supplier_details', async function(req, res){
-		// var query = "SELECT row_id,country_name,bdm_global_umbrella_no,bdm_global_umbrella_name,suppl_no,suppl_name,suppl_name_tl,vat_no,art_no,art_name,art_name_tl,current_price,request_date,new_price,price_change_reason,suppl_updated_datetime,suppl_updated_by,negotiate_final_price,internal_metro_comment,price_increase_communicated_date,price_increase_effective_date,buyer_name,buyer_updated_datetime,price_increase_perc,agreed_price_increase_perc,price_difference,price_difference_perc,action_status,record_insert_date,is_deleted FROM vw_request_details where suppl_no='"+ req.body.suppl_no +"'";
 
-		var query = "SELECT row_id, suppl_no, suppl_name, art_no, art_name_tl, current_price, new_price, price_difference_perc, bdm_global_umbrella_no, price_change_reason, action_status, negotiate_final_price, bdm_global_umbrella_name FROM public.vw_request_details where suppl_no='"+req.query.suppl_no+"' AND request_date IS NOT NULL ";
+		var query = "SELECT bdm_global_umbrella_no, bdm_global_umbrella_name FROM public.vw_request_details where bdm_global_umbrella_no='"+req.query.bdm_global_umbrella_no+"' AND request_date IS NOT NULL ";
 		console.log(query);
 		await con.query(query, async function(err, result) {
 			if (err) {
@@ -152,15 +148,12 @@ module.exports = function(app, con) {
 						return;
 					}			
 				});
-				console.log(result.rows);
 			}			
 		});
 	});
 
 	app.get('/buyer_supplier_details_list', async function(req, res){
-		// var query = "SELECT row_id,country_name,bdm_global_umbrella_no,bdm_global_umbrella_name,suppl_no,suppl_name,suppl_name_tl,vat_no,art_no,art_name,art_name_tl,current_price,request_date,new_price,price_change_reason,suppl_updated_datetime,suppl_updated_by,negotiate_final_price,internal_metro_comment,price_increase_communicated_date,price_increase_effective_date,buyer_name,buyer_updated_datetime,price_increase_perc,agreed_price_increase_perc,price_difference,price_difference_perc,action_status,record_insert_date,is_deleted FROM vw_request_details where suppl_no='"+ req.body.suppl_no +"'";
 		var query = "SELECT row_id, suppl_no, suppl_name, art_no, art_name_tl, price_difference_perc, agreed_price_increase_perc, action_status, bdm_global_umbrella_no, bdm_global_umbrella_name FROM public.vw_request_details where country_name='"+req.query.countryname+"'";
-		console.log(query);
 		await con.query(query, async function(err, result) {
 			if (err) {
 				res.json({ status: false });
