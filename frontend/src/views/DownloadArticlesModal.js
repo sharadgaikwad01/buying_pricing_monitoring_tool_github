@@ -25,10 +25,14 @@ import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 const MySwal = withReactContent(Swal)
 
+import { utils, writeFile } from 'xlsx'
+
 const DownloadArticliesModal = ({ open, handleModal, supllierNumberOptions }) => {
 
     const country = localStorage.getItem('country')
     const vat_number = localStorage.getItem('vat')
+    const [fileName] = useState('export')
+    const [fileFormat] = useState('xlsx')
 
     const [selected, setSelected] = useState([])
 
@@ -104,9 +108,15 @@ const DownloadArticliesModal = ({ open, handleModal, supllierNumberOptions }) =>
         await axios.get(`${nodeBackend}/supplier_article_details`, { params: { supplier_number, country, vat_number } }).then((res) => {
             console.log(res.data)
             if (res.data.data.length > 0) {
-                downloadCSV(res.data.data)
+                
+                const name = fileName.length ? `${fileName}.${fileFormat}` : `excel-sheet.${fileFormat}`
+                const wb = utils.json_to_sheet(res.data.data)
+                const wbout = utils.book_new()
+                utils.book_append_sheet(wbout, wb, 'test')
+                writeFile(wbout, name)
             } else {
                 handleModal(false)
+                downloadCSV(res.data.data)
                 MySwal.fire({
                     title: 'Error',
                     text: 'There is no article details available for this supplier number',

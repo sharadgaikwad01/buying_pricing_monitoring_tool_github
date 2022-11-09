@@ -35,12 +35,14 @@ const EditSupplierRequestModal = ({ open, handleModal, rowData, supllierNumberOp
   const [reason, setReason] = useState('')
   const [supplierNumber, setSupplierNumber] = useState('')
   const [articleNumber, setArticleNumber] = useState('')
+  const [priceIncreaseEffectiveDate, setPriceIncreaseEffectiveDate] = useState('')
   const [rowId, setRowId] = useState('')
 
   const SupplierInputSchema = yup.object().shape({
     new_price: yup.number().required().positive().integer(),
     supplier_number: yup.string().required(),
     article_number: yup.string().required(),
+    price_effective_date: yup.array().required(),
     row_id: yup.string()
   })
 
@@ -61,13 +63,21 @@ const EditSupplierRequestModal = ({ open, handleModal, rowData, supllierNumberOp
       await setSupplierNumber(rowData.suppl_no)
       await setArticleNumber(rowData.art_no)
 
-      
-      setValue('row_id', rowData.row_id)
+      const finatEffectiveDate = []
+      if (rowData.price_increase_effective_date) {
+        const dateE = rowData.price_increase_effective_date.split("-")
+        const dateS = `${dateE[2]}/${dateE[1]}/${dateE[0]}`
+        finatEffectiveDate.push(new Date(dateS))
+      }
 
+      setPriceIncreaseEffectiveDate(finatEffectiveDate)
+
+      setValue('row_id', rowData.row_id)
       setValue('new_price', rowData.new_price, { shouldValidate: true })
       setValue('reason', rowData.price_change_reason, { shouldValidate: true })
       setValue('supplier_number', rowData.suppl_no, { shouldValidate: true })
       setValue('article_number', rowData.art_no, { shouldValidate: true })
+      setValue('price_effective_date', finatEffectiveDate, { shouldValidate: true })
 
       await axios.get(`${nodeBackend}/getArticlesBySupplierNumber`, { params: { supplierNumber, country, vat_number } }).then((res) => {
         setarticleOptions(res.data.data.articleOptions)
@@ -81,11 +91,33 @@ const EditSupplierRequestModal = ({ open, handleModal, rowData, supllierNumberOp
   // ** Hooks  
 
   const onSubmit = data => {
+    console.log(data)
     const new_price = data.new_price
     const reason = data.reason
     const supplier_number = data.supplier_number
     const article_number = data.article_number
     const row_id = data.row_id
+    const effective_date = data.price_effective_date
+
+    console.log(effective_date)
+
+    const effective_date_arr = []
+
+    effective_date.map(i => {
+      const date = new Date(i)
+
+      const year = date.getFullYear()
+
+      let month = (1 + date.getMonth()).toString()
+      month = month.length > 1 ? month : `0${month}`
+
+      let day = date.getDate().toString()
+      day = day.length > 1 ? day : `0${day}`
+
+      effective_date_arr.push(`${year}-${month}-${day}`)
+      return true
+    })
+    const price_effective_date = effective_date_arr[0]
 
     handleModal(false)
 
@@ -93,7 +125,7 @@ const EditSupplierRequestModal = ({ open, handleModal, rowData, supllierNumberOp
       method: "post",
 
       url: `${nodeBackend}/update_supplier_input`,
-      data: { row_id, new_price, reason, supplier_number, article_number, country, vat_number}
+      data: { row_id, new_price, reason, supplier_number, article_number, price_effective_date, country, vat_number}
 
     }).then(function (success) {
       //handle success        
@@ -200,24 +232,24 @@ const EditSupplierRequestModal = ({ open, handleModal, rowData, supllierNumberOp
           </div>
           <div className='mb-1'>
             <Label className='form-label' for='new_Price'>
-              New Price
+            Requested Price
             </Label>
             <InputGroup>
               <InputGroupText>
-                €
+                Ft
               </InputGroupText>
               <Controller
                 id='new_price'
                 name='new_price'
                 control={control}
-                render={({ field }) => <Input type="number"{...field} placeholder='e.g. 65' value={newPrice} onChange={e => { setNewPrice(e.target.value); setValue('new_price', e.target.value, { shouldValidate: true }) }} invalid={errors.new_price && true} />}
+                render={({ field }) => <Input type="number"{...field} placeholder='e.g. 65.00' value={newPrice} onChange={e => { setNewPrice(e.target.value); setValue('new_price', e.target.value, { shouldValidate: true }) }} invalid={errors.new_price && true} />}
               />
-              {errors.new_price && <FormFeedback>{"New Price is a required field"}</FormFeedback>}
+              {errors.new_price && <FormFeedback>{"Requested Price is a required field"}</FormFeedback>}
             </InputGroup>
           </div>
           <div className='mb-1'>
             <Label className='form-label' for='price_effective_date'>
-              Price Effective Date
+              Requested Price Effective Date
             </Label>
             <InputGroup>
             <InputGroupText>
@@ -230,7 +262,8 @@ const EditSupplierRequestModal = ({ open, handleModal, rowData, supllierNumberOp
                 control={control}                
                 render={({ field: { onChange } }) => <Flatpickr
                         className='form-control'
-                        onChange={(val) => onChange(val)}
+                        value={priceIncreaseEffectiveDate}
+                        onChange={(val) => onChange(val, setValue('price_effective_date', val, { shouldValidate: true }))}
                         options={{
                           dateFormat: 'd-m-Y'
                         }}

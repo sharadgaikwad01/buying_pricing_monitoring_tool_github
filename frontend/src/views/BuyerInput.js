@@ -45,6 +45,7 @@ const statusOptions = [
 
 const BuyerInput = props => {
   const country = localStorage.getItem('country')
+  const email = localStorage.getItem('email')
 
   const [Picker, setPicker] = useState('')
   const [supplierInputsData, setsupplierInputsData] = useState([])
@@ -70,7 +71,7 @@ const BuyerInput = props => {
       props.history.push('/home')
     }
 
-    await axios.get(`${nodeBackend}/buyer_input`, { params: { searchSupplierNumber, searchRequestedDate, country } }).then((res) => {
+    await axios.get(`${nodeBackend}/buyer_input`, { params: { searchSupplierNumber, searchRequestedDate, country, email } }).then((res) => {
 
       setsupplierInputsData(res.data.data.supplierInputs)
       setsupllierNumberOptions(res.data.data.supplierIDOptions)
@@ -151,7 +152,7 @@ const BuyerInput = props => {
 
   const handleDownloadCSV = async () => {
 
-    await axios.get(`${nodeBackend}/buyer_article_details`, { params: { country } }).then((res) => {
+    await axios.get(`${nodeBackend}/buyer_article_details`, { params: { country, email} }).then((res) => {
 
       downloadCSV(res.data.data)
     })
@@ -162,7 +163,7 @@ const BuyerInput = props => {
     const searchSupplierNumber = e.value
     setSupplierNumber(searchSupplierNumber)
 
-    await axios.get(`${nodeBackend}/buyer_input`, { params: { searchSupplierNumber, searchRequestedDate, country } }).then((res) => {
+    await axios.get(`${nodeBackend}/buyer_input`, { params: { searchSupplierNumber, searchRequestedDate, country, email } }).then((res) => {
       setsupplierInputsData(res.data.data.supplierInputs)
       setsupllierNumberOptions(res.data.data.supplierIDOptions)
     })
@@ -190,7 +191,7 @@ const BuyerInput = props => {
     setPicker(range)
 
     setSearchRequestedDate(searchRequestedDate)
-    await axios.get(`${nodeBackend}/buyer_input`, { params: { searchSupplierNumber, searchRequestedDate, country } }).then((res) => {
+    await axios.get(`${nodeBackend}/buyer_input`, { params: { searchSupplierNumber, searchRequestedDate, country, email } }).then((res) => {
       if (res.data.data) {
         setsupplierInputsData(res.data.data.supplierInputs)
         setsupllierNumberOptions(res.data.data.supplierIDOptions)
@@ -202,7 +203,7 @@ const BuyerInput = props => {
   const handleStatusFilter = async (e) => {
     const searchStatus = e.value
     setSearchStatus(searchStatus)
-    await axios.get(`${nodeBackend}/buyer_input`, { params: { searchSupplierNumber, searchRequestedDate, searchStatus, country } }).then((res) => {
+    await axios.get(`${nodeBackend}/buyer_input`, { params: { searchSupplierNumber, searchRequestedDate, searchStatus, country, email } }).then((res) => {
       setsupplierInputsData(res.data.data.supplierInputs)
       setsupllierNumberOptions(res.data.data.supplierIDOptions)
     })
@@ -234,7 +235,7 @@ const BuyerInput = props => {
         axios({
           method: "post",
           url: `${nodeBackend}/closed_supplier_input`,
-          data: { id, country}
+          data: { id, country, email}
         })
           .then(function (success) {
             //handle success        
@@ -286,7 +287,7 @@ const BuyerInput = props => {
     const searchRequestedDate = ''
     const searchStatus = ''
 
-    await axios.get(`${nodeBackend}/buyer_input`, { params: { searchSupplierNumber, searchRequestedDate, searchStatus, country } }).then((res) => {
+    await axios.get(`${nodeBackend}/buyer_input`, { params: { searchSupplierNumber, searchRequestedDate, searchStatus, country, email } }).then((res) => {
       if (res.data.data) {
         setsupplierInputsData(res.data.data.supplierInputs)
         setsupllierNumberOptions(res.data.data.supplierIDOptions)
@@ -351,18 +352,18 @@ const BuyerInput = props => {
       selector: row => row.current_price,
       cell: row => {
         return (
-          row.current_price ? `€ ${row.current_price}` : "-"
+          row.current_price ? `${row.current_price}` : "-"
         )
       }
     },
     {
-      name: 'New Price',
+      name: 'Requested Price',
       sortable: true,
       minWidth: 'auto',
-      selector: row => row.new_price,
+      selector: row => row.frmt_new_price,
       cell: row => {
         return (
-          row.new_price ? `€ ${row.new_price}` : "-"
+          row.frmt_new_price ? `${row.frmt_new_price}` : "-"
         )
       }
     },
@@ -449,7 +450,7 @@ const BuyerInput = props => {
       allowOverflow: true,
       cell: (row) => {
         return (
-          row.action_status === 'open' ? <div className='d-flex'><Edit size={15} onClick={(e) => handleEdit(e, row)} className="editTableIcon text-info" /><Check size={15} onClick={(e) => handleClosedAction(e, row)} className="deleteTableIcon text-success ms-1" /></div> : "-"
+          row.negotiate_final_price && row.price_increase_communicated_date && row.action_status === 'open' ? <div className='d-flex'><Edit size={15} onClick={(e) => handleEdit(e, row)} className="editTableIcon text-info" /><Check size={15} onClick={(e) => handleClosedAction(e, row)} className="deleteTableIcon text-success ms-1" /></div> : row.action_status === 'open' ? <div className='d-flex'><Edit size={15} onClick={(e) => handleEdit(e, row)} className="editTableIcon text-info" /></div> : "-" 
         )
       }
     }

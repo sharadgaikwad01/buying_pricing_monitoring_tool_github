@@ -197,25 +197,25 @@ const AddNewModal = ({ open, handleModal, supllierNumberOptions, setsupplierInpu
           </div>
           <div className='mb-1'>
             <Label className='form-label' for='new_Price'>
-              New Price
+              Requested Price
             </Label>
             <InputGroup>
               <InputGroupText>
-                €
+                Ft
               </InputGroupText>
               <Controller
                 id='new_price'
                 name='new_price'
                 defaultValue=''
                 control={control}
-                render={({ field }) => <Input type="number"{...field} placeholder='e.g. 65' invalid={errors.new_price && true} />}
+                render={({ field }) => <Input type="number"{...field} placeholder='e.g. 65.00' invalid={errors.new_price && true} />}
               />
-              {errors.new_price && <FormFeedback>{"New Price is a required field"}</FormFeedback>}
+              {errors.new_price && <FormFeedback>{"Requested Price is a required field"}</FormFeedback>}
             </InputGroup>
           </div>
           <div className='mb-1'>
             <Label className='form-label' for='price_effective_date'>
-              Price Effective Date
+              Requested Price Effective Date
             </Label>
             <InputGroup>
             <InputGroupText>
@@ -234,7 +234,7 @@ const AddNewModal = ({ open, handleModal, supllierNumberOptions, setsupplierInpu
                         }}
                       />}
               />
-              {errors.price_effective_date && <FormFeedback>{"Price Effective Date is a required field"}</FormFeedback>}
+              {errors.price_effective_date && <FormFeedback>{"Requested Price Effective Date is a required field"}</FormFeedback>}
             </InputGroup>
           </div>
           <div className='mb-1'>
@@ -248,7 +248,7 @@ const AddNewModal = ({ open, handleModal, supllierNumberOptions, setsupplierInpu
               control={control}
               render={({ field }) => <Input type='textarea' rows='5' {...field} placeholder='Reason' invalid={errors.reason && true} />}
             />
-            {errors.reason && <FormFeedback>{"Reason is a required field"}</FormFeedback>}
+            {errors.reason && <FormFeedback>{"Reason for price increase is a required field"}</FormFeedback>}
           </div>
           <Button className='me-1' color='primary' type='submit'>
             Submit

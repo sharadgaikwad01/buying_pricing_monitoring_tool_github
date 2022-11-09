@@ -31,16 +31,19 @@ const AddBuyerInputModal = ({ open, handleModal, rowData }) => {
   const country = localStorage.getItem('country')
 
   const [newPrice, setNewPrice] = useState('')
+  const [finalPrice, setFinalPrice] = useState('')
   const [rowId, setRowId] = useState('')
   const [articleNumber, setArticleNumber] = useState('')
   const [articleDescription, setArticleDescription] = useState('')
+  const [priceIncreaseEffectiveDate, setPriceIncreaseEffectiveDate] = useState('')
 
   // ** Custom close btn
   const CloseBtn = <X className='cursor-pointer' size={15} onClick={handleModal} />
 
   const SupplierInputSchema = yup.object().shape({
     comment: yup.string().required(),
-    new_price: yup.number().required().positive().integer(),
+    new_price: yup.number().required().positive(),
+    price_effective_date: yup.array().required(),
     final_price: yup.number()
       .typeError("you must specify a number")
       .notRequired()
@@ -50,7 +53,7 @@ const AddBuyerInputModal = ({ open, handleModal, rowData }) => {
             if (!final_price) return true
             return final_price <= new_price
           },
-          message: "Final Price Amount should be less than New Price"
+          message: "Final Price Amount should be less than Requested Price"
         })
       })
   })
@@ -65,20 +68,33 @@ const AddBuyerInputModal = ({ open, handleModal, rowData }) => {
 
   useEffect(async () => {
     if (rowData) {
+      console.log(rowData)
       await setArticleNumber(rowData.art_no)
       await setArticleDescription(rowData.art_name_tl)
       await setNewPrice(rowData.new_price)
+      await setFinalPrice(rowData.negotiate_final_price)
       await setRowId(rowData.row_id)
+
+      const finatEffectiveDate = []
+      if (rowData.price_increase_effective_date) {
+        const dateE = rowData.price_increase_effective_date.split("-")
+        const dateS = `${dateE[2]}/${dateE[1]}/${dateE[0]}`
+        finatEffectiveDate.push(new Date(dateS))
+      }
+
+      setPriceIncreaseEffectiveDate(finatEffectiveDate)
 
       setValue('article_number', rowData.art_no)
       setValue('article_description', rowData.art_name_tl)
-      setValue('current_price', rowData.current_price)
       setValue('new_price', rowData.new_price)
+      setValue('final_price', rowData.negotiate_final_price)
       setValue('row_id', rowData.row_id)
+      setValue('price_effective_date', finatEffectiveDate, { shouldValidate: true })
     }
   }, [rowData])
 
   const onSubmit = data => {
+    console.log(data)
     const finalize_date_arr = []
     const effective_date_arr = []
     const row_id = data.row_id
@@ -208,19 +224,19 @@ const AddBuyerInputModal = ({ open, handleModal, rowData }) => {
           </div>
           <div className='mb-1'>
             <Label className='form-label' for='new_Price'>
-              New Price
+              Requested Price
             </Label>
             <InputGroup>
               <InputGroupText>
-                €
+                Ft
               </InputGroupText>
               <Controller
                 id='new_price'
                 name='new_price'
                 control={control}
-                render={({ field }) => <Input type="number"{...field} placeholder='e.g. 65' value={newPrice} onChange={e => { setNewPrice(e.target.value); setValue('new_price', e.target.value, { shouldValidate: true }) }} invalid={errors.new_price && true} />}
+                render={({ field }) => <Input type="number"{...field} placeholder='e.g. 65.00' value={newPrice} onChange={e => { setNewPrice(e.target.value); setValue('new_price', e.target.value, { shouldValidate: true }) }} invalid={errors.new_price && true} />}
               />
-              {errors.new_price && <FormFeedback>{"New Price is a required field"}</FormFeedback>}
+              {errors.new_price && <FormFeedback>{"Requested Price is a required field"}</FormFeedback>}
             </InputGroup>
           </div>
           <div className='mb-1'>
@@ -229,14 +245,14 @@ const AddBuyerInputModal = ({ open, handleModal, rowData }) => {
             </Label>
             <InputGroup>
               <InputGroupText>
-                €
+                Ft
               </InputGroupText>
               <Controller
                 id='final_price'
                 name='final_price'
                 defaultValue=''
                 control={control}
-                render={({ field }) => <Input type="number"{...field} placeholder='e.g. 65' invalid={errors.final_price && true} />}
+                render={({ field }) => <Input type="number"{...field} placeholder='e.g. 65.00' value={finalPrice} onChange={e => { setFinalPrice(e.target.value); setValue('final_price', e.target.value, { shouldValidate: true }) }} invalid={errors.final_price && true} />}
               />
               {errors.final_price && <FormFeedback>{errors.final_price.message}</FormFeedback>}
             </InputGroup>
@@ -266,17 +282,22 @@ const AddBuyerInputModal = ({ open, handleModal, rowData }) => {
               Price Effective Date
             </Label>
             <InputGroup>
+            <InputGroupText>
+              <Calendar size={15} />
+            </InputGroupText>
               <Controller
                 id='default-picker'
                 name='price_effective_date'
                 defaultValue=''
-                control={control}
-                render={({ field }) => <Flatpickr {...field}
-                  className='form-control'
-                  options={{
-                    dateFormat: 'Y-m-d'
-                  }}
-                />}
+                control={control}                
+                render={({ field: { onChange } }) => <Flatpickr
+                        className='form-control'
+                        value={priceIncreaseEffectiveDate}
+                        onChange={(val) => onChange(val, setValue('price_effective_date', val, { shouldValidate: true }))}
+                        options={{
+                          dateFormat: 'd-m-Y'
+                        }}
+                      />}
               />
               {errors.price_effective_date && <FormFeedback>{"Price Effective Date is a required field"}</FormFeedback>}
             </InputGroup>
@@ -290,7 +311,7 @@ const AddBuyerInputModal = ({ open, handleModal, rowData }) => {
               name='comment'
               defaultValue=''
               control={control}
-              render={({ field }) => <Input type='textarea' rows='5' {...field} placeholder='Comment' invalid={errors.comment && true} />}
+              render={({ field }) => <Input type='textarea' rows='3' {...field} placeholder='Comment' invalid={errors.comment && true} />}
             />
             {errors.comment && <FormFeedback>{"Comment is a required field"}</FormFeedback>}
           </div>

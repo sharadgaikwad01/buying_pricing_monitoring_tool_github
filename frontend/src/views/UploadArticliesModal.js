@@ -16,6 +16,8 @@ import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 const MySwal = withReactContent(Swal)
 
+import { read, utils } from 'xlsx'
+
 const UploadArticliesModal = ({ open, handleModal, setsupplierInputsData }) => {
   const country = localStorage.getItem('country')
   const vat_number = localStorage.getItem('vat')
@@ -31,25 +33,8 @@ const UploadArticliesModal = ({ open, handleModal, setsupplierInputsData }) => {
     setFile(e.target.files[0])
   }
 
-  const csvFileToArray = async(string) => {
-    const csvHeader = string.slice(0, string.indexOf("\n")).split(",")
-    const csvRows = string.slice(string.indexOf("\n") + 1).split("\n")
-
-    const supplier_inputs = csvRows.map(i => {
-      const values = i.split(",")
-      
-      const obj = csvHeader.reduce((object, header, index) => {
-        if (values[index]) {
-          object[header.replace('\r', '').replace('"', '')] = values[index].replace('\r', '')
-        }
-        
-        return object
-      }, {})
-      return obj
-    })
-
-    handleModal(false)
-
+  async function uploadFile(data) {
+    const supplier_inputs = data
     await axios({
       method: "post",
       url: `${nodeBackend}/upload_supplier_input`,
@@ -61,7 +46,7 @@ const UploadArticliesModal = ({ open, handleModal, setsupplierInputsData }) => {
         if (success.data.status) {
           return MySwal.fire({
             title: 'Done!',
-            text: 'File has been uploaded!',
+            text: `${success.data.sucess_count} Records has been uploaded`,
             icon: 'success',
             customClass: {
               confirmButton: 'btn btn-primary'
@@ -91,18 +76,52 @@ const UploadArticliesModal = ({ open, handleModal, setsupplierInputsData }) => {
           buttonsStyling: false
         })
       })
+  }
 
+  const csvFileToArray = async (string) => {
+    const csvHeader = string.slice(0, string.indexOf("\n")).split(",")
+    const csvRows = string.slice(string.indexOf("\n") + 1).split("\n")
+
+    const supplier_inputs = csvRows.map(i => {
+      const values = i.split(",")
+
+      const obj = csvHeader.reduce((object, header, index) => {
+        if (values[index]) {
+          object[header.replace('\r', '').replace('"', '')] = values[index].replace('\r', '')
+        }
+
+        return object
+      }, {})
+      return obj
+    })
+    handleModal(false)    
+    uploadFile(supplier_inputs)
   }
 
   const handleOnSubmit = (e) => {
     e.preventDefault()
     if (file) {
-      fileReader.onload = function (event) {
-        const csvOutput = event.target.result
-        csvFileToArray(csvOutput)
-        console.log()
+      const filename = file.name.split(".")
+      if (filename[1] === 'csv') {
+        fileReader.onload = function (event) {
+          const csvOutput = event.target.result
+          console.log(csvOutput)
+          csvFileToArray(csvOutput)
+        }
+        fileReader.readAsText(file)
       }
-      fileReader.readAsText(file)
+      if (filename[1] === 'xlsx') {
+        fileReader.readAsBinaryString(file)
+        fileReader.onload = function (event) {
+          const fileData = event.target.result
+          const wb = read(fileData, { type: 'binary', cellDates: true, dateNF:'yyyy-mm-dd;@'})
+          wb.SheetNames.forEach(function (sheetName) {
+            const rowObj = utils.sheet_to_row_object_array(wb.Sheets[sheetName], { header: 0, raw: false, dateNF: 'yyyy-mm-dd' })
+            handleModal(false)
+            uploadFile(rowObj)
+          })
+        }
+      }
     }
   }
 
@@ -122,7 +141,7 @@ const UploadArticliesModal = ({ open, handleModal, setsupplierInputsData }) => {
             <Label className='form-label' for='inputFile'>
               Upload file
             </Label>
-            <Input type='file' id='inputFile' name='supplier_input_file' accept={".csv"} onChange={handleOnChange} />
+            <Input type='file' id='inputFile' name='supplier_input_file' accept={".csv, .xlsx"} onChange={handleOnChange} />
           </Col>
         </Row>
         <div className='d-flex justify-content-center'>

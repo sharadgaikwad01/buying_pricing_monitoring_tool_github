@@ -384,13 +384,13 @@ const Home = props => {
       selector: row => row.art_name
     },
     {
-      name: 'New Price',
+      name: 'Requested Price',
       sortable: true,
       width: '100px',
-      selector: row => row.new_price,
+      selector: row => row.frmt_new_price,
       cell: row => {
         return (
-          row.new_price ? `€ ${row.new_price}` : "-"
+          row.frmt_new_price ? `${row.frmt_new_price}` : "-"
         )
       }
     },
@@ -429,7 +429,7 @@ const Home = props => {
       selector: row => row.negotiate_final_price,
       cell: row => {
         return (
-          row.negotiate_final_price ? `€ ${row.negotiate_final_price}` : "-"
+          row.negotiate_final_price ? `${row.negotiate_final_price}` : "-"
         )
       }
     },
@@ -462,7 +462,7 @@ const Home = props => {
       width: '100px',
       cell: (row) => {
         return (
-          row.action_status === 'open' ? <div className='d-flex'> <Edit size={15} onClick={() => handleEdit(row)} className="editTableIcon text-info" /> <Trash size={15} onClick={(e) => handleDelete(e, row)} className="deleteTableIcon text-danger ms-1" /> </div> : "-"
+          !row.negotiate_final_price && !row.price_increase_communicated_date && row.action_status === 'open' ? <div className='d-flex'> <Edit size={15} onClick={() => handleEdit(row)} className="editTableIcon text-info" /> <Trash size={15} onClick={(e) => handleDelete(e, row)} className="deleteTableIcon text-danger ms-1" /> </div> : "-"
         )
       }
     }
