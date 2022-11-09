@@ -705,6 +705,7 @@ table.dataTable th{
     font-size: 1.4rem;
     letter-spacing: 0.04px;
     color: #00A4C7;
+    cursor: pointer;
 }
 .incr-infla-badge{
     border-radius: 4px;
@@ -716,7 +717,7 @@ table.dataTable th{
     font-weight: 600;
 }
 .incr-infla-1{
-    background: #198754 0% 0% no-repeat padding-box;
+    background: #12995a 0% 0% no-repeat padding-box;
 }
 .incr-infla-2{
     background: #FDCA53 0% 0% no-repeat padding-box;
@@ -727,6 +728,9 @@ table.dataTable th{
 }
 .incr-infla-4{
     background: #E52D12 0% 0% no-repeat padding-box;
+}
+.incr-infla-5{
+    background: #7bd3aa 0% 0% no-repeat padding-box;
 }
 .country-info-left{
     display: contents;
