@@ -36,6 +36,7 @@ const AddBuyerInputModal = ({ open, handleModal, rowData }) => {
   const [articleNumber, setArticleNumber] = useState('')
   const [articleDescription, setArticleDescription] = useState('')
   const [priceIncreaseEffectiveDate, setPriceIncreaseEffectiveDate] = useState('')
+  const [priceFinalliseDate, setPriceFinalliseDate] = useState('')
 
   // ** Custom close btn
   const CloseBtn = <X className='cursor-pointer' size={15} onClick={handleModal} />
@@ -75,6 +76,15 @@ const AddBuyerInputModal = ({ open, handleModal, rowData }) => {
       await setFinalPrice(rowData.negotiate_final_price)
       await setRowId(rowData.row_id)
 
+      const priceFinalliseDateArr = []
+      if (rowData.price_increase_communicated_date) {
+        const dateE = rowData.price_increase_communicated_date.split("-")
+        const dateS = `${dateE[2]}/${dateE[1]}/${dateE[0]}`
+        priceFinalliseDateArr.push(new Date(dateS))
+      }
+
+      setPriceFinalliseDate(priceFinalliseDateArr)
+
       const finatEffectiveDate = []
       if (rowData.price_increase_effective_date) {
         const dateE = rowData.price_increase_effective_date.split("-")
@@ -90,6 +100,7 @@ const AddBuyerInputModal = ({ open, handleModal, rowData }) => {
       setValue('final_price', rowData.negotiate_final_price)
       setValue('row_id', rowData.row_id)
       setValue('price_effective_date', finatEffectiveDate, { shouldValidate: true })
+      setValue('price_finalize_date', priceFinalliseDateArr, { shouldValidate: true })
     }
   }, [rowData])
 
@@ -267,12 +278,14 @@ const AddBuyerInputModal = ({ open, handleModal, rowData }) => {
                 name='price_finalize_date'
                 defaultValue=''
                 control={control}
-                render={({ field }) => <Flatpickr {...field}
-                  className='form-control'
-                  options={{
-                    dateFormat: 'Y-m-d'
-                  }}
-                />}
+                render={({ field: { onChange } }) => <Flatpickr
+                        className='form-control'
+                        value={priceFinalliseDate}
+                        onChange={(val) => onChange(val, setValue('price_finalize_date', val, { shouldValidate: true }))}
+                        options={{
+                          dateFormat: 'd-m-Y'
+                        }}
+                      />}
               />
               {errors.price_finalize_date && <FormFeedback>{"Price Finalize Date is a required field"}</FormFeedback>}
             </InputGroup>
