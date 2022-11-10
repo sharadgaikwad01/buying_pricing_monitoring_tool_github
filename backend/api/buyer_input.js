@@ -6,7 +6,6 @@ module.exports = function(app, con) {
 		var data = {};
 		var supplierIDOptions = [];
 		var articleOptions = [];
-
 		var getUniqueSupplierIdQuery = "select distinct t1.suppl_no from vw_suppl_info t1 where country_name='"+req.query.country+"'";
 
 		await con.query(getUniqueSupplierIdQuery, function(err, result) {
@@ -128,14 +127,15 @@ module.exports = function(app, con) {
 
 	app.get('/buyer_supplier_details', async function(req, res){
 
-		var query = "SELECT bdm_global_umbrella_no, bdm_global_umbrella_name FROM public.vw_request_details where bdm_global_umbrella_no='"+req.query.bdm_global_umbrella_no+"' AND request_date IS NOT NULL ";
+		var query = "SELECT bdm_global_umbrella_no, stratbuyer_name, bdm_global_umbrella_name FROM public.vw_request_details where bdm_global_umbrella_no='"+req.query.bdm_global_umbrella_no+"' AND request_date IS NOT NULL ";
 		console.log(query);
 		await con.query(query, async function(err, result) {
 			if (err) {
 				res.json({ status: false });
 				return;
 			} else{
-				var query1 = "select * from vw_buyer_dashboard";
+				var query1 = "select * from vw_buyer_dashboard WHERE country_name!='"+req.query.country+"'";
+				// var query1 = "select * from vw_buyer_dashboard";
 				await con.query(query1, function(err1, result1) {
 					if (err1) {
 						console.log(err1)
@@ -143,7 +143,6 @@ module.exports = function(app, con) {
 						return;
 					} else{
 						console.log(result1)
-						//data.supplierInputs = result.rows
 						res.json({ status: true, data: result.rows, response: result1.rows });
 						return;
 					}			

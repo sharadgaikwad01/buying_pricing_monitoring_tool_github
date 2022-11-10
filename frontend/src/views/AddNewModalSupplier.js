@@ -76,7 +76,7 @@ const AddNewModalSupplier = ({ open, handleModal, rowData }) => {
       }
     },
     {
-      name: 'Artical Desc',
+      name: 'Artical Description',
       sortable: true,
       minWidth: 'auto',
       selector: row => row.art_name_tl,
@@ -87,7 +87,7 @@ const AddNewModalSupplier = ({ open, handleModal, rowData }) => {
       }
     },
     {
-      name: 'Price Increase By Seller',
+      name: 'Price Increase in %',
       sortable: true,
       minWidth: 'auto',
       selector: row => row.price_difference_perc,
@@ -98,7 +98,7 @@ const AddNewModalSupplier = ({ open, handleModal, rowData }) => {
       }
     },
     {
-      name: 'Aggreed Price',
+      name: 'Agreed Price in %',
       sortable: true,
       width: 'auto',
       selector: row => row.agreed_price_increase_perc,

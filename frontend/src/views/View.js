@@ -24,6 +24,10 @@ import {
     Badge
 } from 'reactstrap'
 
+import Swal from 'sweetalert2'
+import withReactContent from 'sweetalert2-react-content'
+const MySwal = withReactContent(Swal)
+
 const View = () => {
 
     const { id } = useParams()
@@ -34,6 +38,7 @@ const View = () => {
     const [modal, setModal] = useState(false)
     const handleModal = () => setModal(!modal)
     const [Supplierno, setSupplierno] = useState('')
+    const [Category, setCategory] = useState('')
     const [rowData, setRowData] = useState([])
     const [countries, setcountries] = useState([])
 
@@ -47,6 +52,18 @@ const View = () => {
             setRowData(res.data.data)
         })
     }
+    const handleEditError = async (e) => {
+        e.preventDefault()
+        return MySwal.fire({
+            title: 'Error',
+            text: 'Data not found',
+            icon: 'error',
+            customClass: {
+              confirmButton: 'btn btn-primary'
+            },
+            buttonsStyling: false
+          })
+    }
     useEffect(async () => {
         await axios.get(`${nodeBackend}/buyer_supplier_details`, { params: { bdm_global_umbrella_no, country } }).then((res) => {
             if (res.data.data) {
@@ -54,6 +71,7 @@ const View = () => {
                 if (res.data.data[0]) {
                     setSuppliername(res.data.data[0].bdm_global_umbrella_name)
                     setSupplierno(res.data.data[0].bdm_global_umbrella_no)
+                    setCategory(res.data.data[0].stratbuyer_name)
                 }
                 if (res.data.response) {
                     setcountries(res.data.response)
@@ -75,7 +93,7 @@ const View = () => {
                         <Col className='mb-1 col-auto'>
                             <Col className="row g-0">
                                 <Col className="col-auto d-flex align-items-center">
-                                    <Label htmlFor="select_supplier" className="me-50">Global Umbrella name</Label>
+                                    <Label htmlFor="select_supplier" className="me-50">Global Umbrella name: </Label>
                                 </Col>
                                 <Col className="col-auto">
                                     <Col className="box-select server_data">
@@ -88,11 +106,24 @@ const View = () => {
                         <Col className='mb-1 col-auto'>
                             <Col className="row g-0">
                                 <Col className="col-auto d-flex align-items-center">
-                                    <Label htmlFor="select_supplier" className="me-50">Global Umbrella No</Label>
+                                    <Label htmlFor="select_supplier" className="me-50">Global Umbrella No: </Label>
                                 </Col>
                                 <Col className="col-auto">
                                     <Col className="box-select server_data">
                                         <Col className="server_data_label">{Supplierno}</Col>
+                                    </Col>
+                                </Col>
+                            </Col>
+                        </Col>
+                        
+                        <Col className='mb-1 col-auto'>
+                            <Col className="row g-0">
+                                <Col className="col-auto d-flex align-items-center">
+                                    <Label htmlFor="select_supplier" className="me-50">Category: </Label>
+                                </Col>
+                                <Col className="col-auto">
+                                    <Col className="box-select server_data">
+                                        <Col className="server_data_label">{Category}</Col>
                                     </Col>
                                 </Col>
                             </Col>
@@ -119,7 +150,7 @@ const View = () => {
                                                 <span className="incr-infla-badge incr-infla-5 mb-2">{row.agreed_price_increase_perc === null ? 0 : row.agreed_price_increase_perc}%</span>
                                             </Col>
 
-                                            <Col onClick={(e) => (row.article_count > 0 ? handleEdit(e, row.country_name) : '')} className="sku-info d-flex justify-content-end align-bottom align-items-baseline align-items-end align-items">
+                                            <Col onClick={(e) => (row.article_count > 0 ? handleEdit(e, row.country_name) : handleEditError(e))} className="sku-info d-flex justify-content-end align-bottom align-items-baseline align-items-end align-items">
                                                 {row.article_count ? row.article_count : 0} SKU
                                             </Col>
                                         </Col>
