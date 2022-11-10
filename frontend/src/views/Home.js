@@ -335,7 +335,24 @@ const Home = props => {
   }
 
   const handleDownloadCSV = async () => {
-    downloadCSV(supplierInputsData)
+    const csvdata = supplierInputsData
+    csvdata.forEach(function (item) {
+      delete item.row_id
+      delete item.frmt_new_price
+    })
+    const finalcsvdata = csvdata.map(item => ({
+      "Supplier Number": item.suppl_no,
+      "Article Number": item.art_no,
+      "Article Description": item.art_name,
+      "Requested Price": item.new_price,
+      "Requested Date": item.request_date,
+      "Final Price": item.negotiate_final_price,
+      "Price Finalize Date": item.price_increase_communicated_date,
+      "Price Effective Date": item.price_increase_effective_date,
+      "Article Status": item.action_status,
+      "Price change Reason": item.price_change_reason
+    }))
+    downloadCSV(finalcsvdata)
   }
 
   const handleRefresh = async () => {

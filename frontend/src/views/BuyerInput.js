@@ -115,7 +115,7 @@ const BuyerInput = props => {
 
     const columnDelimiter = ','
     const lineDelimiter = '\n'
-    const keys = Object.keys(data[0])
+    const keys = Object.keys(array[0])
 
     result = ''
     result += keys.join(columnDelimiter)
@@ -154,10 +154,29 @@ const BuyerInput = props => {
   }
 
   const handleDownloadCSV = async () => {
-
     await axios.get(`${nodeBackend}/buyer_article_details`, { params: { country, email} }).then((res) => {
-
-      downloadCSV(res.data.data)
+      const csvdata = res.data.data
+      csvdata.forEach(function (item) {
+        delete item.row_id
+        delete item.frmt_new_price
+      })
+      const finalcsvdata = csvdata.map(item => ({
+        "Supplier Number": item.suppl_no,
+        "Supplier Name":item.suppl_name,
+        "Article Number": item.art_no,
+        "Article Description": item.art_name_tl,
+        "Current Price":item.current_price,
+        "Requested Price": item.new_price,
+        "Price Increase in %":item.price_difference_perc,
+        "Requested Date": item.request_date,
+        "Price change Reason": item.price_change_reason,
+        "Article Status": item.action_status,
+        "Final Price": item.negotiate_final_price,
+        "Price Finalize Date": item.price_increase_communicated_date,
+        "Price Effective Date": item.price_increase_effective_date,
+        "Category Name":item.stratbuyer_name
+      }))
+      downloadCSV(finalcsvdata)
     })
   }
 
@@ -171,7 +190,6 @@ const BuyerInput = props => {
       setsupllierNumberOptions(res.data.data.supplierIDOptions)
       setCategoryOptions(res.data.data.categoryOptions)
     })
-
   }
 
   const handleDateFilter = async (range) => {
@@ -229,7 +247,6 @@ const BuyerInput = props => {
   const handleEdit = async (e, row) => {
     setRowData(row)
     setBuyerInputModal(!editBuyerModal)
-
   }
 
   const handleClosedAction = (e, row) => {
@@ -354,7 +371,7 @@ const BuyerInput = props => {
       }
     },
     {
-      name: 'Art. Desp',
+      name: 'Art. Desc.',
       sortable: true,
       minWidth: 'auto',
       selector: row => row.art_name_tl,
