@@ -3,7 +3,6 @@ import { User, Briefcase, Mail, Calendar, DollarSign, X, ChevronDown } from 'rea
 import { Modal, Badge, Input, Label, Button, ModalHeader, ModalBody, InputGroup, InputGroupText, FormFeedback, Form } from 'reactstrap'
 
 // ** Styles
-
 import DataTable from 'react-data-table-component'
 import '@styles/react/libs/tables/react-dataTable-component.scss'
 import '@styles/react/libs/flatpickr/flatpickr.scss'
