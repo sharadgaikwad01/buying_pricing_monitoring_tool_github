@@ -227,7 +227,7 @@ const AddNewModal = ({ open, handleModal, supllierNumberOptions, setsupplierInpu
                 defaultValue=''
                 control={control}                
                 render={({ field: { onChange } }) => <Flatpickr
-                        className='form-control'
+                        className='form-control flat-picker-input-custom'
                         onChange={(val) => onChange(val)}
                         options={{
                           dateFormat: 'd-m-Y'

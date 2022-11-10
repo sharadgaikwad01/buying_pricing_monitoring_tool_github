@@ -904,3 +904,7 @@ input.form-control{
     margin-top: 0.25rem;
     display: flex;
 }
+.flat-picker-input-custom {
+    width: 80% !important;
+    max-width: unset !important;
+}

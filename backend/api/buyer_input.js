@@ -5,7 +5,12 @@ module.exports = function(app, con) {
     app.get('/buyer_input', async function(req, res){
 		var data = {};
 		var supplierIDOptions = [];
+<<<<<<< Updated upstream
 		var articleOptions = [];
+=======
+		var categoryOptions = [];
+
+>>>>>>> Stashed changes
 		var getUniqueSupplierIdQuery = "select distinct t1.suppl_no from vw_suppl_info t1 where country_name='"+req.query.country+"'";
 
 		await con.query(getUniqueSupplierIdQuery, function(err, result) {
@@ -21,14 +26,26 @@ module.exports = function(app, con) {
             }
 		});	
 
-        var condition  = '';
+		var getUniqueCatQuery = "select distinct stratbuyer_name,buyer_emailid,country_name from public.tbl_buyer_details where country_name='"+req.query.country+"' AND buyer_emailid='"+req.query.email+"'";
 
-		console.log(req.query)
+		await con.query(getUniqueCatQuery, function(err, result) {
+			if (err) {
+				res.json({ status: false });
+				return;
+			} else{		
+				result.rows.forEach(function(value, key) {
+					option = { value: value.stratbuyer_name, label: value.stratbuyer_name }
+					categoryOptions.push(option);
+				});
+				data.categoryOptions = categoryOptions;
+            }
+		});
+
+        var condition  = '';
 
         if (req.query.searchSupplierNumber != ''){
             condition = condition + " AND suppl_no = '" +req.query.searchSupplierNumber+"'"
         }
-
 
         if (req.query.searchRequestedDate != '' && req.query.searchRequestedDate != undefined){
 			var searchRequestedDate = req.query.searchRequestedDate.split(' ')
@@ -39,7 +56,13 @@ module.exports = function(app, con) {
             condition = condition + " AND action_status = '" +req.query.searchStatus+"'"
         }
 
-        var query = "SELECT row_id, bdm_global_umbrella_no, suppl_no, suppl_name, art_no, art_name_tl, current_price, new_price, frmt_new_price, price_difference_perc, to_char(request_date, 'dd-mm-YYYY') as request_date, price_change_reason, action_status, negotiate_final_price, to_char(price_increase_communicated_date, 'dd-mm-YYYY') as price_increase_communicated_date, to_char(price_increase_effective_date, 'dd-mm-YYYY') as price_increase_effective_date, stratbuyer_name FROM public.vw_buyer_details where country_name='"+req.query.country+"' AND buyer_emailid='"+req.query.email+"' AND new_price IS NOT NULL AND request_date IS NOT NULL " + condition;
+		if (req.query.searchCategory != '' && req.query.searchCategory != undefined){
+            condition = condition + " AND stratbuyer_name = '" +req.query.searchCategory+"'"
+        }
+
+        var query = "SELECT row_id, bdm_global_umbrella_no, suppl_no, suppl_name, art_no, art_name_tl, current_price, new_price, frmt_new_price, price_difference_perc, to_char(request_date, 'dd-mm-YYYY') as request_date, price_change_reason, action_status, frmt_negotiate_final_price, negotiate_final_price, to_char(price_increase_communicated_date, 'dd-mm-YYYY') as price_increase_communicated_date, to_char(price_increase_effective_date, 'dd-mm-YYYY') as price_increase_effective_date, stratbuyer_name FROM public.vw_buyer_details where country_name='"+req.query.country+"' AND buyer_emailid='"+req.query.email+"' AND new_price IS NOT NULL AND request_date IS NOT NULL " + condition;
+
+		console.log(query)
 		
         await con.query(query, function(err, result) {
 			if (err) {

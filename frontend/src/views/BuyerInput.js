@@ -52,10 +52,11 @@ const BuyerInput = props => {
   const [searchSupplierNumber, setSupplierNumber] = useState('')
   const [searchRequestedDate, setSearchRequestedDate] = useState('')
   const [searchStatus, setSearchStatus] = useState('')
-
+  const [searchCategory, setSearchCategory] = useState('')
   const [editBuyerModal, setBuyerInputModal] = useState(false)
 
   const [currentPage, setCurrentPage] = useState(0)
+  
 
   // ** Function to handle Pagination
   const handlePagination = page => {
@@ -63,6 +64,7 @@ const BuyerInput = props => {
   }
 
   const [supllierNumberOptions, setsupllierNumberOptions] = useState([])
+  const [categoryOptions, setCategoryOptions] = useState([])
   const [rowData, setRowData] = useState([])
 
   useEffect(async () => {
@@ -71,10 +73,11 @@ const BuyerInput = props => {
       props.history.push('/home')
     }
 
-    await axios.get(`${nodeBackend}/buyer_input`, { params: { searchSupplierNumber, searchRequestedDate, country, email } }).then((res) => {
-
+    await axios.get(`${nodeBackend}/buyer_input`, { params: { searchSupplierNumber, searchRequestedDate, searchStatus, searchCategory, country, email } }).then((res) => {
+      console.log(res.data.data.categoryOptions)
       setsupplierInputsData(res.data.data.supplierInputs)
       setsupllierNumberOptions(res.data.data.supplierIDOptions)
+      setCategoryOptions(res.data.data.categoryOptions)
     })
   }, [])
 
@@ -163,9 +166,10 @@ const BuyerInput = props => {
     const searchSupplierNumber = e.value
     setSupplierNumber(searchSupplierNumber)
 
-    await axios.get(`${nodeBackend}/buyer_input`, { params: { searchSupplierNumber, searchRequestedDate, country, email } }).then((res) => {
+    await axios.get(`${nodeBackend}/buyer_input`, { params: { searchSupplierNumber, searchRequestedDate, searchStatus, searchCategory, country, email } }).then((res) => {
       setsupplierInputsData(res.data.data.supplierInputs)
       setsupllierNumberOptions(res.data.data.supplierIDOptions)
+      setCategoryOptions(res.data.data.categoryOptions)
     })
 
   }
@@ -191,10 +195,11 @@ const BuyerInput = props => {
     setPicker(range)
 
     setSearchRequestedDate(searchRequestedDate)
-    await axios.get(`${nodeBackend}/buyer_input`, { params: { searchSupplierNumber, searchRequestedDate, country, email } }).then((res) => {
+    await axios.get(`${nodeBackend}/buyer_input`, { params: { searchSupplierNumber, searchRequestedDate, searchStatus, searchCategory, country, email } }).then((res) => {
       if (res.data.data) {
         setsupplierInputsData(res.data.data.supplierInputs)
         setsupllierNumberOptions(res.data.data.supplierIDOptions)
+        setCategoryOptions(res.data.data.categoryOptions)
       }      
     })
   }
@@ -203,9 +208,20 @@ const BuyerInput = props => {
   const handleStatusFilter = async (e) => {
     const searchStatus = e.value
     setSearchStatus(searchStatus)
-    await axios.get(`${nodeBackend}/buyer_input`, { params: { searchSupplierNumber, searchRequestedDate, searchStatus, country, email } }).then((res) => {
+    await axios.get(`${nodeBackend}/buyer_input`, { params: { searchSupplierNumber, searchRequestedDate, searchStatus, searchCategory, country, email } }).then((res) => {
       setsupplierInputsData(res.data.data.supplierInputs)
       setsupllierNumberOptions(res.data.data.supplierIDOptions)
+      setCategoryOptions(res.data.data.categoryOptions)
+    })
+  }
+
+  const handleCategoryFilter = async (e) => {
+    const searchCategory = e.value
+    setSearchCategory(searchCategory)
+    await axios.get(`${nodeBackend}/buyer_input`, { params: { searchSupplierNumber, searchRequestedDate, searchStatus, searchCategory, country, email } }).then((res) => {
+      setsupplierInputsData(res.data.data.supplierInputs)
+      setsupllierNumberOptions(res.data.data.supplierIDOptions)
+      setCategoryOptions(res.data.data.categoryOptions)
     })
   }
 
@@ -282,15 +298,18 @@ const BuyerInput = props => {
     await setSearchRequestedDate("")
     await setSearchStatus("")
     await setPicker("")
+    await setSearchCategory("")
 
     const searchSupplierNumber = ''
     const searchRequestedDate = ''
     const searchStatus = ''
+    const searchCategory = ''
 
-    await axios.get(`${nodeBackend}/buyer_input`, { params: { searchSupplierNumber, searchRequestedDate, searchStatus, country, email } }).then((res) => {
+    await axios.get(`${nodeBackend}/buyer_input`, { params: { searchSupplierNumber, searchRequestedDate, searchStatus, searchCategory, country, email } }).then((res) => {
       if (res.data.data) {
         setsupplierInputsData(res.data.data.supplierInputs)
         setsupllierNumberOptions(res.data.data.supplierIDOptions)
+        setCategoryOptions(res.data.data.categoryOptions)
       }
     })
   }
@@ -415,10 +434,10 @@ const BuyerInput = props => {
       name: 'Final Price',
       sortable: true,
       width: 'auto',
-      selector: row => row.negotiate_final_price,
+      selector: row => row.frmt_negotiate_final_price,
       cell: row => {
         return (
-          row.negotiate_final_price ? row.negotiate_final_price : "-"
+          row.frmt_negotiate_final_price ? row.frmt_negotiate_final_price : "-"
         )
       }
     },
@@ -459,7 +478,7 @@ const BuyerInput = props => {
     <Fragment>
       <Card className='pageBox buyer-screen'>
         <CardHeader className='flex-md-row flex-column align-md-items-center align-items-start border-bottom'>
-          <CardTitle tag='h2'>List of Assortment</CardTitle>
+          <CardTitle tag='h2'>List of Assortments</CardTitle>
           <UncontrolledButtonDropdown className='ms-2'>
             <DropdownToggle color='primary' caret outline>
               <Download size={15} />
@@ -521,6 +540,23 @@ const BuyerInput = props => {
               />
             </Col>
             <Col className='col-auto'>
+              <Label className='form-label' for='status'>
+                Category:
+              </Label>
+              <Select
+                theme={selectThemeColors}
+                className='react-select'
+                classNamePrefix='select'
+                defaultValue={categoryOptions[1]}
+                name='status'
+                options={categoryOptions}
+                value={categoryOptions.filter(function (option) {
+                  return option.value === searchCategory
+                })}
+                onChange={handleCategoryFilter}
+              />
+            </Col>
+            <Col className='col-auto d-flex align-items-end'>
               <Button.Ripple className='ms-1 btn-icon' color='primary' onClick={handleRefresh}>
                 <RefreshCcw size={16} />
               </Button.Ripple>

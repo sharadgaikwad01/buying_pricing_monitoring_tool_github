@@ -261,7 +261,7 @@ const EditSupplierRequestModal = ({ open, handleModal, rowData, supllierNumberOp
                 defaultValue=''
                 control={control}                
                 render={({ field: { onChange } }) => <Flatpickr
-                        className='form-control'
+                        className='form-control flat-picker-input-custom'
                         value={priceIncreaseEffectiveDate}
                         onChange={(val) => onChange(val, setValue('price_effective_date', val, { shouldValidate: true }))}
                         options={{

@@ -274,13 +274,16 @@ const AddBuyerInputModal = ({ open, handleModal, rowData, setsupplierInputsData 
               Price Finalize Date
             </Label>
             <InputGroup>
+            <InputGroupText>
+              <Calendar size={15} />
+            </InputGroupText>
               <Controller
                 id='default-picker1'
                 name='price_finalize_date'
                 defaultValue=''
                 control={control}
                 render={({ field: { onChange } }) => <Flatpickr
-                        className='form-control'
+                        className='form-control flat-picker-input-custom'
                         value={priceFinalliseDate}
                         onChange={(val) => onChange(val, setValue('price_finalize_date', val, { shouldValidate: true }))}
                         options={{
@@ -305,7 +308,7 @@ const AddBuyerInputModal = ({ open, handleModal, rowData, setsupplierInputsData 
                 defaultValue=''
                 control={control}                
                 render={({ field: { onChange } }) => <Flatpickr
-                        className='form-control'
+                        className='form-control flat-picker-input-custom'
                         value={priceIncreaseEffectiveDate}
                         onChange={(val) => onChange(val, setValue('price_effective_date', val, { shouldValidate: true }))}
                         options={{

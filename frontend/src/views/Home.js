@@ -506,7 +506,7 @@ const Home = props => {
                 Supplier Name:
               </Label>
               <Input id='name' placeholder='Bruce Wayne' value={searchName} onChange={handleNameFilter} /> */}
-              <Label className='form-label'>Supplier Number</Label>
+              <Label className='form-label'>Supplier Number <Badge color='primary' pill>{supplierInputCount}</Badge></Label>
               <Select
                 theme={selectThemeColors}
                 className='react-select'
@@ -519,12 +519,6 @@ const Home = props => {
                 })}
                 onChange={handleSupplierNumberFilter}
               />
-            </Col>
-
-            <Col className='col-auto'>
-
-              <Badge color='primary' pill>{supplierInputCount}</Badge>
-
             </Col>
             
             <Col className='col-auto'>
@@ -575,7 +569,7 @@ const Home = props => {
                 onChange={handleStatusFilter}
               />
             </Col>
-            <Col className='col-auto'>
+            <Col className='col-auto d-flex align-items-end'>
 
             <Button.Ripple className='ms-1 btn-icon' color='primary' onClick={handleRefresh}>
               <RefreshCcw size={16} />
