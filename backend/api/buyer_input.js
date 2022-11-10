@@ -5,12 +5,7 @@ module.exports = function(app, con) {
     app.get('/buyer_input', async function(req, res){
 		var data = {};
 		var supplierIDOptions = [];
-<<<<<<< Updated upstream
-		var articleOptions = [];
-=======
 		var categoryOptions = [];
-
->>>>>>> Stashed changes
 		var getUniqueSupplierIdQuery = "select distinct t1.suppl_no from vw_suppl_info t1 where country_name='"+req.query.country+"'";
 
 		await con.query(getUniqueSupplierIdQuery, function(err, result) {
