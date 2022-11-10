@@ -56,7 +56,7 @@ const View = () => {
         e.preventDefault()
         return MySwal.fire({
             title: 'Error',
-            text: 'Data not found',
+            text: 'There are no records to display',
             icon: 'error',
             customClass: {
               confirmButton: 'btn btn-primary'
