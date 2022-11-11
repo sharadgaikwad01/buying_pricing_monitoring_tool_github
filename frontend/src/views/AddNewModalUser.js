@@ -52,32 +52,23 @@ const AddNewModalUser = ({ open, handleModal, rowData, setUsersInputsData }) => 
 
   useEffect(async () => {
     // setUsersData(rowData)
-    if (rowData.user_name) {
       await setNameValue(rowData.user_name)
       setValue('user_name', rowData.user_name, { shouldValidate:true })
-    }
 
-    if (rowData.email) {
       await setEmailValue(rowData.email)
       setValue('email', rowData.email)
-    }
 
-    if (rowData.user_type) {
       await setUserTypeValue(rowData.user_type)
       setValue('user_type', rowData.user_type)
-    }
-    if (rowData.user_role) {
+
       await setUserRoleValue(rowData.user_role)
       setValue('user_role', rowData.user_role)
-    } 
-    if (rowData.metro_id) {
+
       await setUserEmpIdValue(rowData.metro_id)
       setValue('emp_id', rowData.metro_id)
-    }
-    if (rowData.row_id) {
+
       await setUserIdValue(rowData.row_id)
       setValue('user_id', rowData.row_id)
-    }
     // setEmailValue(rowData.email)
   }, [rowData])
   const CloseBtn = <X className='cursor-pointer' size={15} onClick={handleModal} />

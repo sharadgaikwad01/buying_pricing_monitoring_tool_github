@@ -53,32 +53,21 @@ const AddNewModalBuyer = ({ open, handleModal, rowData, setUsersInputsData }) =>
 
   useEffect(async () => {
     // setUsersData(rowData)
-    if (rowData.first_name) {
+      console.log(rowData)
       await setFNameValue(rowData.first_name)
       setValue('first_name', rowData.first_name, { shouldValidate:true })
-    }
-    if (rowData.last_name) {
+    
       await setLNameValue(rowData.last_name)
       setValue('last_name', rowData.last_name, { shouldValidate:true })
-    }
-
-    if (rowData.buyer_emailid) {
+    
       await setEmailValue(rowData.buyer_emailid)
       setValue('buyer_emailid', rowData.buyer_emailid)
-    }
-
-    if (rowData.active_status) {
+    
       await setActiveStatus(rowData.active_status)
       setValue('active_status', rowData.active_status)
-    } 
-    // if (rowData.metro_id) {
-    //   await setUserEmpIdValue(rowData.metro_id)
-    //   setValue('emp_id', rowData.metro_id)
-    // }
-    if (rowData.row_id) {
+
       await setUserIdValue(rowData.row_id)
       setValue('user_id', rowData.row_id)
-    }
     // setEmailValue(rowData.email)
   }, [rowData])
   const CloseBtn = <X className='cursor-pointer' size={15} onClick={handleModal} />

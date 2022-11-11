@@ -16,7 +16,8 @@ module.exports = function(app, con) {
         if (req.query.Status != ''){
             condition = condition +" AND active_status = '" +req.query.Status+"'"
         }
-        var query = "SELECT * FROM public.tbl_buyer_details where buyer_emailid IS NOT NULL" + condition;
+        var query = "SELECT first_name, last_name, buyer_emailid, dept_name, country_name,string_agg(stratbuyer_name,', ') stratbuyer_name FROM public.tbl_buyer_details where buyer_emailid IS NOT NULL" + condition + " group by first_name, last_name, buyer_emailid, dept_name, country_name";
+		// var query="Select distinct first_name, last_name, buyer_emailid, dept_name, country_name"
         await con.query(query, function(err, result) {
 			if (err) {
 				res.json({ status: false });

@@ -73,7 +73,6 @@ const Buyers = props => {
   // const downloadArticleModal = () => setSupplierInputModal(!supplierInputModal)
   const [UserData] = useState({first_name:'', last_name:'',  buyer_emailid:'', row_id:'', stratbuyer_name:'', country_name: ''})
   // const handleUploadArticleModal = () => setUploadArticleModal(!uploadArticleModal)
-
   // ** Function to handle Pagination
   const handlePagination = page => {
     setCurrentPage(page.selected)
@@ -82,7 +81,6 @@ const Buyers = props => {
     props.history.push('/users')
   }
    
-
   useEffect(async () => {
     await axios.get(`${nodeBackend}/buyers`, { params: { searchName, Status } }).then((res) => {
       console.log(res.data.data)
