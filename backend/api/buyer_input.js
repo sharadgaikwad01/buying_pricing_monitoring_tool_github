@@ -143,8 +143,7 @@ module.exports = function(app, con) {
 	});
 
 	app.get('/buyer_supplier_details', async function(req, res){
-
-		var query = "SELECT bdm_global_umbrella_no, stratbuyer_name, bdm_global_umbrella_name FROM public.vw_request_details where bdm_global_umbrella_no='"+req.query.bdm_global_umbrella_no+"' AND request_date IS NOT NULL ";
+		var query = "SELECT bdm_global_umbrella_no, stratbuyer_name, bdm_global_umbrella_name FROM public.vw_request_details where suppl_no='"+req.query.suppl_no+"' AND request_date IS NOT NULL ";
 		console.log(query);
 		await con.query(query, async function(err, result) {
 			if (err) {

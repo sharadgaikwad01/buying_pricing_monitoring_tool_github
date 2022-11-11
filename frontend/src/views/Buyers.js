@@ -8,7 +8,7 @@ import axios from 'axios'
 
 // ** Add New Modal Component
 import Flatpickr from 'react-flatpickr'
-import AddNewModalUser from './AddNewModalUser'
+import AddNewModalBuyer from './AddNewModalBuyer'
 // import DownloadArticliesModal from './DownloadArticlesModal'
 // import UploadArticliesModal from './UploadArticliesModal'
 import ReactPaginate from 'react-paginate'
@@ -40,14 +40,9 @@ import {
 
 const MySwal = withReactContent(Swal)
 
-const RoleOptions = [
-  { value: 'Admin', label: 'Admin' },
-  { value: 'User', label: 'User' }
-]
-
-const user_typeOptions = [
-  { value: 'buyer', label: 'Buyer' },
-  { value: 'supplier', label: 'Supplier' }
+const user_statusOptions = [
+  { value: 'active', label: 'Active' },
+  { value: 'inactive', label: 'InActive' }
 ]
 
 const BootstrapCheckbox = forwardRef((props, ref) => (
@@ -56,15 +51,15 @@ const BootstrapCheckbox = forwardRef((props, ref) => (
   </div>
 ))
 
-const Home = props => {
+const Buyers = props => {
   // ** States
 
   const [UsersInputsData, setUsersInputsData] = useState([])
   const [searchName, setsearchName] = useState('')
   const [rowData, setRowData] = useState([])
   // const [searchRequestedDate, setSearchRequestedDate] = useState('')
-  const [UserType, setUserType] = useState('')
-  const [searchRole, setsearchRole] = useState('')
+  const [Status, setStatus] = useState('')
+  // const [searchRole, setsearchRole] = useState('')
 
   const [modal, setModal] = useState(false)
   // 
@@ -76,7 +71,7 @@ const Home = props => {
   // ** Function to handle Modal toggle
   const handleModal = () => setModal(!modal)
   // const downloadArticleModal = () => setSupplierInputModal(!supplierInputModal)
-  const [UserData] = useState({user_name:'', email:'',  emp_id:'', row_id:'', user_type:'', user_role: ''})
+  const [UserData] = useState({first_name:'', last_name:'',  buyer_emailid:'', row_id:'', stratbuyer_name:'', country_name: ''})
   // const handleUploadArticleModal = () => setUploadArticleModal(!uploadArticleModal)
 
   // ** Function to handle Pagination
@@ -84,14 +79,14 @@ const Home = props => {
     setCurrentPage(page.selected)
   }
   const handlebuyers = () => {
-    props.history.push('/buyers')
+    props.history.push('/users')
   }
    
 
   useEffect(async () => {
-    await axios.get(`${nodeBackend}/users`, { params: { searchName, UserType, searchRole } }).then((res) => {
-      console.log(res.data.data.users)
-      setUsersInputsData(res.data.data.users)  
+    await axios.get(`${nodeBackend}/buyers`, { params: { searchName, Status } }).then((res) => {
+      console.log(res.data.data)
+      setUsersInputsData(res.data.data)  
     })
   }, [])
 
@@ -122,10 +117,7 @@ const Home = props => {
       containerClassName='pagination react-paginate separated-pagination pagination-sm justify-content-end pe-1 mt-1'
     />
   )
-
   // ** Converts table to CSV
-  
-
   // ** Downloads CSV
   // function downloadCSV(array) {
   //   const link = document.createElement('a')
@@ -146,26 +138,19 @@ const Home = props => {
   const handleNameFilter = async (e) => {
     const searchName = e.target.value
     setsearchName(searchName)
-    await axios.get(`${nodeBackend}/users`, { params: { searchName, UserType, searchRole } }).then((res) => {
-      setUsersInputsData(res.data.data.users)
+    console.log(searchName)
+    await axios.get(`${nodeBackend}/buyers`, { params: { searchName, Status } }).then((res) => {
+      setUsersInputsData(res.data.data)
     })
   }
 
 
   // ** Function to handle status filter
-  const handleUserTypeFilter = async (e) => {
-    const UserType = e.value
-    setUserType(UserType)
-    await axios.get(`${nodeBackend}/users`, { params: { searchName, UserType, searchRole } }).then((res) => {
-      setUsersInputsData(res.data.data.users)
-    })
-  }
-  
-  const handleRoleFilter = async (e) => {
-    const searchRole = e.value
-    setsearchRole(searchRole)
-    await axios.get(`${nodeBackend}/users`, { params: { searchName, UserType, searchRole } }).then((res) => {
-      setUsersInputsData(res.data.data.users)
+  const handleStatusFilter = async (e) => {
+    const Status = e.value
+    setStatus(Status)
+    await axios.get(`${nodeBackend}/buyers`, { params: { searchName, Status } }).then((res) => {
+      setUsersInputsData(res.data.data)
     })
   }
 
@@ -263,121 +248,89 @@ const Home = props => {
       }
     },
     {
-      name: 'User name',
+      name: 'Full name',
       // width: "10",
       sortable: true,
-      selector: row => row.user_name
+      selector: row => `${row.first_name} ${row.last_name}`
     },
     {
       name: 'Email',
       // width: "auto",
       sortable: true,
-      selector: row => row.email
+      selector: row => row.buyer_emailid
     },
     {
-      name: 'Emp. ID',
+      name: 'Department',
       // width: "auto",
       sortable: true,
-      selector: row => row.metro_id
+      selector: row => row.dept_name
     },
     {
-      name: 'User Type',
+      name: 'Category',
+      // width: "auto",
       sortable: true,
-      selector: row => row.user_type,
+      selector: row => row.stratbuyer_name
+    },
+    {
+      name: 'Country',
+      // width: "auto",
+      sortable: true,
+      selector: row => row.country_name
+    },
+    {
+      name: 'Status',
+      sortable: true,
+      selector: row => row.active_status,
       cell: row => {
          return (
-          row.user_type === 'BUYER' ? <Badge color='success' pill>{row.user_type}</Badge> : <Badge color='primary' pill>{row.user_type}</Badge>
+          row.active_status === 'Active' ? <Badge color='success' pill>{row.active_status}</Badge> : <Badge color='primary' pill>{row.active_status}</Badge>
             // row.user_type === 'BUYER' ? `<span class="badge badge-success">${row.user_type}</span>` : `<span class="badge badge-success">${row.user_type}</span>`
          )
       }
-    },
-    {
-      name: 'User Role',
-      sortable: true,
-      selector: row => row.user_role,
-      cell: row => {
-         return (
-          row.user_role === 'Admin' ? <Badge color='success' pill>{row.user_role}</Badge> : <Badge color='warning' pill>{row.user_role}</Badge>
-            // row.user_type === 'BUYER' ? `<span class="badge badge-success">${row.user_type}</span>` : `<span class="badge badge-success">${row.user_type}</span>`
-         )
-      }
-    },
-    {
-      name: 'country',
-      sortable: true,
-      selector: row => row.country
-    }  
+    }
   ]
 
   return (
     <Fragment>
       <Card className='pageBox user-screen'>
         <CardHeader className='flex-md-row flex-column align-md-items-center align-items-start border-bottom'>
-          <CardTitle tag='h2'>Users Data</CardTitle>
+          <CardTitle tag='h2'>Buyers Data</CardTitle>
           <div className='d-flex mt-md-0 mt-1'>
             <Button.Ripple className='ms-2 btn-icon' color='primary' onClick={handleAdd}>
               <Plus size={16} />
-              <span className='align-middle ms-25'>Add New User</span>
+              <span className='align-middle ms-25'>Add New Buyer</span>
             </Button.Ripple>
             <Button.Ripple className='ms-2' outline color='warning' onClick={handlebuyers}>
               <Download size={14} />
-              <span className='align-middle ms-25'>All Buyers</span>
+              <span className='align-middle ms-25'>All Users</span>
             </Button.Ripple>
-            {/* <UncontrolledButtonDropdown className='ms-2'>
-              <DropdownToggle color='primary' caret outline>
-                <Download size={15} />
-              </DropdownToggle>
-              <DropdownMenu>
-                <DropdownItem className='w-100' onClick={() => downloadCSV(data)}>
-                  <FileText size={15} />
-                  <span className='align-middle ms-50'>CSV</span>
-                </DropdownItem>                
-              </DropdownMenu>
-            </UncontrolledButtonDropdown> */}
+           
           </div>
         </CardHeader>
         <CardBody>
           <Row className='g-1 filter-row'>
             <Col className='mb-1 col-auto'>
                <Label className='form-label' for='name'>
-                User Name:
+                Buyer Name:
               </Label>
-              <Input className='form-control' type='text' id='name' placeholder='User Name' value={searchName} onChange={handleNameFilter} /> 
-            </Col>
-            
-            <Col className='mb-1 col-auto'>
-              <Label className='form-label' for='user_role'>
-                Role:
-              </Label>
-              <Select
-                theme={selectThemeColors}
-                className='react-select'
-                classNamePrefix='select'
-                defaultValue={RoleOptions[1]}
-                name='user_role'
-                options={RoleOptions}
-                value={RoleOptions.filter(function(option) {
-                  return option.value === searchRole
-                })}
-                onChange={handleRoleFilter}
-              />
+              <Input className='form-control' type='text' id='name' placeholder='Buyer Name' value={searchName} onChange={handleNameFilter} /> 
             </Col>
 
              <Col className='mb-1 col-auto'>
               <Label className='form-label' for='user_type'>
-                User Type:
+                Status:
               </Label>
               <Select
                 theme={selectThemeColors}
                 className='react-select'
                 classNamePrefix='select'
-                defaultValue={user_typeOptions[1]}
+                defaultValue={user_statusOptions[1]}
                 name='user_type'
-                options={user_typeOptions}
-                value={user_typeOptions.filter(function(option) {
-                  return option.value === UserType
+                options={user_statusOptions}
+                value={user_statusOptions.filter(function(option) {
+                  return option.value === Status
                 })}
-                onChange={handleUserTypeFilter}
+                onChange={handleStatusFilter}
               />
             </Col>
           </Row>
@@ -400,8 +353,8 @@ const Home = props => {
           </Row>
         </CardBody>       
       </Card>
-      <AddNewModalUser open={modal} handleModal={handleModal} rowData={rowData} setUsersInputsData={setUsersInputsData} />
+      <AddNewModalBuyer open={modal} handleModal={handleModal} rowData={rowData} setUsersInputsData={setUsersInputsData} />
     </Fragment>
   )
 }
-export default Home
+export default Buyers
