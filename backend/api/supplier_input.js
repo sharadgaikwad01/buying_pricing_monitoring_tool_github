@@ -8,8 +8,8 @@ module.exports = function(app, con) {
 		var data = {};
 		var supplierIDOptions = [];
 		var articleOptions = [];
-
-		console.log(req.query)
+		
+		sendEmail()
 
 		var getUniqueSupplierIdQuery = "select distinct t1.suppl_no from vw_suppl_info t1 where country_name='"+req.query.country+"' AND vat_no='"+req.query.vat_number+"'";
 
@@ -97,7 +97,7 @@ module.exports = function(app, con) {
 				res.json({ status: false });
 				return;
 			};
-
+			console.log(result)
 			var query = "SELECT row_id, suppl_no, art_no, art_name, new_price, frmt_new_price, to_char(request_date, 'dd-mm-YYYY') as request_date, negotiate_final_price, to_char(price_increase_communicated_date, 'dd-mm-YYYY') as price_increase_communicated_date, to_char(price_increase_effective_date, 'dd-mm-YYYY') as price_increase_effective_date, action_status, price_change_reason FROM public.vw_request_details where country_name='"+req.body.country+"' AND vat_no='"+req.body.vat_number+"' AND new_price IS NOT NULL AND request_date IS NOT NULL ORDER BY request_date DESC";
 
 
@@ -274,8 +274,8 @@ module.exports = function(app, con) {
 	});
 
     var sendEmail = async function() {
-		var user_email = "sharad.gaikwad02@metro-gsc.in"
-		var password = "Metro"
+		var user_email = "rahul.sailwal@metro-gsc.in"
+		var password = ""
 
 		// Create the transporter with the required configuration for Outlook
 		var transporter = nodemailer.createTransport({
