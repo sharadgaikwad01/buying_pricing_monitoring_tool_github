@@ -29,6 +29,7 @@ const AddBuyerInputModal = ({ open, handleModal, rowData, setsupplierInputsData 
   // ** State
   // const [Picker, setPicker] = useState('')
   const country = localStorage.getItem('country')
+  const email = localStorage.getItem('email') 
 
   const [newPrice, setNewPrice] = useState('')
   const [finalPrice, setFinalPrice] = useState('')
@@ -152,11 +153,12 @@ const AddBuyerInputModal = ({ open, handleModal, rowData, setsupplierInputsData 
     axios({
       method: "post",
       url: `${nodeBackend}/update_buyer_input`,
-      data: { row_id, final_price, comment, finalize_date, effective_date, country }
+      data: { row_id, final_price, comment, finalize_date, effective_date, country, email}
     })
       .then(function (success) {
         //handle success 
         if (success.data.status) {
+          console.log(success.data)
           setsupplierInputsData(success.data.data.supplierInputs)
           return MySwal.fire({
             title: 'Done!',
