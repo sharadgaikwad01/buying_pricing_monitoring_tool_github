@@ -65,6 +65,8 @@ module.exports = function(app, con) {
 				return;
 			} else{
 				data.supplierInputs = result.rows
+				console.log("data==============")
+				console.log(data)
                 res.json({ status: true, data: data });
 				return;
             }			
@@ -153,11 +155,9 @@ module.exports = function(app, con) {
 				var query1 = "select * from vw_buyer_dashboard";
 				await con.query(query1, function(err1, result1) {
 					if (err1) {
-						console.log(err1)
 						res.json({ status: true, data: result.rows, response: "" });
 						return;
 					} else{
-						console.log(result1)
 						res.json({ status: true, data: result.rows, response: result1.rows });
 						return;
 					}			

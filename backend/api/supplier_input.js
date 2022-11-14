@@ -204,17 +204,15 @@ module.exports = function(app, con) {
 		var data = {};
 		var articleOptions = [];
 
-		var getUniqueArticleQuery = "select country_name, vat_no, suppl_no, art_no, art_name, umbrella_name, '' as new_price, '' as price_change_reason, '' as price_increase_effective_date from vw_artinfo_without_request where vat_no='"+req.query.vat_number +"' and country_name='"+req.query.country +"' AND SUPPL_NO = '"+req.query.supplierNumber +"' and is_duplicate is null ";
+		var getUniqueArticleQuery = "select distinct art.art_no, art.art_name from tbl_article art inner join tbl_supplier suppl ON art.suppl_no = suppl.suppl_no and art.umbrella_no = suppl.umbrella_no and art.country_name = suppl.country_name Where suppl.suppl_no='"+req.query.supplierNumber+"' and suppl.country_name ='"+req.query.country+"' and suppl.vat_no ='"+req.query.vat_number+"'"
 
-		console.log(getUniqueArticleQuery)
-		
 		await con.query(getUniqueArticleQuery, function(err, result) {
 			if (err) {
 				res.json({ status: false });
 				return;
 			} else{
 				result.rows.forEach(function(value, key) {
-					option = { value: value.art_no, label: value.art_no +" - "+ value.art_name_tl}
+					option = { value: value.art_no, label: value.art_no +" - "+ value.art_name}
 					articleOptions.push(option);
 				});
 				data.articleOptions = articleOptions;
@@ -235,9 +233,6 @@ module.exports = function(app, con) {
 			function(callback)
 			{
 				supplier_inputs.forEach(async function(value, key) {
-					console.log(value)
-					console.log(value.new_price)
-					console.log(value['new_price'])
 					if(value.new_price && value.new_price != 'null' && value.new_price != undefined && value.new_price != null ){
 						if (value.new_price > 0) {
 							sql=`CALL public."usp_addNewRequest"('` + value.art_no + `','` +value.suppl_no +`','`+ value.country_name +`',`+ value.new_price +`,'` + value.price_change_reason + `','`+ value.price_increase_effective_date +`');`;
