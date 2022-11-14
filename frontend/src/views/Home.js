@@ -130,7 +130,7 @@ const Home = props => {
       nextLabel=''
       forcePage={currentPage}
       onPageChange={page => handlePagination(page)}
-      pageCount={Math.ceil(dataToRender().length / 7) || 1}
+      pageCount={Math.ceil(dataToRender().length / 50) || 1}
       breakLabel='...'
       pageRangeDisplayed={2}
       marginPagesDisplayed={2}
@@ -600,7 +600,7 @@ const Home = props => {
               pagination
               selectableRowsNoSelectAll
               columns={columns}
-              paginationPerPage={7}
+              paginationPerPage={50}
               className='react-dataTable'
               sortIcon={<ChevronDown size={10} />}
               paginationDefaultPage={currentPage + 1}

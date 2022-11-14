@@ -13,6 +13,8 @@ module.exports = function(app, con) {
 
 		var getUniqueSupplierIdQuery = "select distinct t1.suppl_no from vw_suppl_info t1 where country_name='"+req.query.country+"' AND vat_no='"+req.query.vat_number+"'";
 
+		console.log(getUniqueSupplierIdQuery)
+
 		await con.query(getUniqueSupplierIdQuery, function(err, result) {
 			if (err) {
 				res.json({ status: false });
@@ -28,6 +30,8 @@ module.exports = function(app, con) {
 		});
 		if(req.query.searchSupplierNumber != ''){
 			var getUniqueArticleQuery = "select distinct art.art_no, art.art_name from tbl_article art inner join tbl_supplier suppl ON art.suppl_no = suppl.suppl_no and art.umbrella_no = suppl.umbrella_no and art.country_name = suppl.country_name Where suppl.suppl_no='"+req.query.searchSupplierNumber+"' and suppl.country_name ='"+req.query.country+"' and suppl.vat_no ='"+req.query.vat_number+"'";
+
+			console.log(getUniqueArticleQuery)
 
 			await con.query(getUniqueArticleQuery, function(err, result) {
 				if (err) {
@@ -118,9 +122,7 @@ module.exports = function(app, con) {
 
 	app.get('/supplier_article_details', async function(req, res){
 
-		var query = "select art.country_name, vat_no, art.suppl_no, art_no, art_name, umbrella_name, '' as new_price, '' as price_change_reason, '' as price_increase_effective_date from tbl_article art inner join tbl_supplier suppl ON art.suppl_no = suppl.suppl_no and art.umbrella_no = suppl.umbrella_no and art.country_name = suppl.country_name Where suppl.suppl_no IN ("+req.query.supplier_number +") and suppl.country_name ='"+req.query.country +"' and suppl.vat_no ='"+req.query.vat_number +"'";
-
-		console.log(query);
+		var query = "select country_name, vat_no, suppl_no, art_no, art_name, umbrella_name, '' as new_price, '' as price_change_reason, '' as price_increase_effective_date from vw_artinfo_without_request where vat_no='"+req.query.vat_number +"' and country_name='"+req.query.country +"' AND SUPPL_NO IN ("+req.query.supplier_number +") and is_duplicate is null ";
 
 		await con.query(query, function(err, result) {
 			if (err) {
@@ -202,17 +204,17 @@ module.exports = function(app, con) {
 		var data = {};
 		var articleOptions = [];
 
-		var getUniqueArticleQuery = "select distinct art.art_no, art.art_name from tbl_article art inner join tbl_supplier suppl ON art.suppl_no = suppl.suppl_no and art.umbrella_no = suppl.umbrella_no and art.country_name = suppl.country_name Where suppl.suppl_no='"+req.query.supplierNumber+"' and suppl.country_name ='"+req.query.country+"' and suppl.vat_no ='"+req.query.vat_number+"'";
+		var getUniqueArticleQuery = "select country_name, vat_no, suppl_no, art_no, art_name, umbrella_name, '' as new_price, '' as price_change_reason, '' as price_increase_effective_date from vw_artinfo_without_request where vat_no='"+req.query.vat_number +"' and country_name='"+req.query.country +"' AND SUPPL_NO = '"+req.query.supplierNumber +"' and is_duplicate is null ";
 
-		console.log(getUniqueArticleQuery);
-
+		console.log(getUniqueArticleQuery)
+		
 		await con.query(getUniqueArticleQuery, function(err, result) {
 			if (err) {
 				res.json({ status: false });
 				return;
 			} else{
 				result.rows.forEach(function(value, key) {
-					option = { value: value.art_no, label: value.art_no +" - "+ value.art_name}
+					option = { value: value.art_no, label: value.art_no +" - "+ value.art_name_tl}
 					articleOptions.push(option);
 				});
 				data.articleOptions = articleOptions;

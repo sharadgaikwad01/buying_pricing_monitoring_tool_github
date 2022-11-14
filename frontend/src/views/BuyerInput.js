@@ -92,7 +92,7 @@ const BuyerInput = props => {
       nextLabel=''
       forcePage={currentPage}
       onPageChange={page => handlePagination(page)}
-      pageCount={Math.ceil(dataToRender().length / 7) || 1}
+      pageCount={Math.ceil(dataToRender().length / 50) || 1}
       breakLabel='...'
       pageRangeDisplayed={2}
       marginPagesDisplayed={2}
@@ -344,7 +344,7 @@ const BuyerInput = props => {
       selector: row => row.suppl_no,
       cell: row => {
         return (
-          row.suppl_no ? <Link to={`/view/${row.bdm_global_umbrella_no}`}>{`${row.suppl_no}`}</Link> : "-"
+          row.suppl_no ? <Link to={`/view/${row.suppl_no}`}>{`${row.suppl_no}`}</Link> : "-"
         )
       }
     },

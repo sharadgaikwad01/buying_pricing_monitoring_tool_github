@@ -2,40 +2,34 @@ const http = require('http');
 var nodemailer = require('nodemailer');
 //=========== MonthEnd API Module ===================
 module.exports = function(app, con) {
-    app.get('/users', async function(req, res){
+    app.get('/buyers', async function(req, res){
 		var data = {};
         // var query = "SELECT * FROM public.tbl_users where action_status='Open'" + condition;
-
 		var condition  = '';
-
         if (req.query.searchName != ''){
-            condition = condition + " AND name LIKE '%" +req.query.searchName+"%'"
+            condition = condition + " AND first_name LIKE '%" +req.query.searchName+"%'"
         }
+		// if (req.query.searchName != ''){
+        //     condition = condition + " AND last_name LIKE %'" +req.query.searchName+"'%"
+        // }
 
-        if (req.query.UserType != ''){
-            condition = condition +" AND user_type = '" +req.query.UserType+"'"
+        if (req.query.Status != ''){
+            condition = condition +" AND active_status = '" +req.query.Status+"'"
         }
-
-        if (req.query.searchRole != ''){
-            condition = condition + " AND user_role = '" +req.query.searchRole+"'"
-        }
-        var query = "SELECT * FROM public.tbl_users where email IS NOT NULL" + condition;
-        console.log(query)
-        console.log(req.query);
-
+        var query = "SELECT first_name, last_name, buyer_emailid, dept_name, country_name,string_agg(stratbuyer_name,', ') stratbuyer_name FROM public.tbl_buyer_details where buyer_emailid IS NOT NULL" + condition + " group by first_name, last_name, buyer_emailid, dept_name, country_name";
+		// var query="Select distinct first_name, last_name, buyer_emailid, dept_name, country_name"
         await con.query(query, function(err, result) {
 			if (err) {
 				res.json({ status: false });
 				return;
 			} else{
-				data.users = result.rows
-                res.json({ status: true, data: data });
+                res.json({ status: true, data: result.rows });
 				return;
             }			
 		});
     });
 
-	app.post('/add_user_input', function(req, res){
+	app.post('/add_buyer_input', function(req, res){
 		// var role = 'Admin';
 		var data = {};
 		// usp_addNewUser('id','user_name','email','emp_id','user_role')
@@ -53,7 +47,7 @@ module.exports = function(app, con) {
 			};	
 		});
 		
-		var query = "SELECT * FROM public.tbl_users";
+		var query = "SELECT * FROM public.tbl_buyer_details";
         con.query(query, function(err, result) {
 			if (err) {
 				res.json({ status: true });
@@ -66,8 +60,8 @@ module.exports = function(app, con) {
 		});
     });
 
-	app.get('/edit_user_input', async function(req, res){
-		var query = "SELECT * FROM public.tbl_users where id = '"+req.query.id +"'";
+	app.get('/edit_buyer_input', async function(req, res){
+		var query = "SELECT * FROM public.tbl_buyer_details where id = '"+req.query.id +"'";
 		console.log(query);
 		await con.query(query, function(err, result) {
 			if (err) {
@@ -80,8 +74,8 @@ module.exports = function(app, con) {
 		});
 	});
 
-	app.get('/user_input', async function(req, res){
-		var query = "SELECT * FROM public.tbl_users where email = '"+req.query.email +"'";
+	app.get('/buyer_input', async function(req, res){
+		var query = "SELECT * FROM public.tbl_buyer_details where buyer_emailid = '"+req.query.email +"'";
 		console.log(query);
 		
 		await con.query(query, function(err, result) {
@@ -97,8 +91,8 @@ module.exports = function(app, con) {
 		});
 	});
 
-	app.post('/delete_user_input', async function(req, res){
-		var query = "DELETE FROM public.tbl_users where id = '"+req.body.id +"'";
+	app.post('/delete_buyer_input', async function(req, res){
+		var query = "DELETE FROM public.tbl_buyer_details where id = '"+req.body.id +"'";
 		console.log(query);
 		await con.query(query, function(err, result) {
 			if (err) {

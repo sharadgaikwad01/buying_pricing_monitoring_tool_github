@@ -10,7 +10,8 @@ const { Pool, Client } = require('pg')
 //=========== API modules ===================
 var auth = require('./api/auth');
 var supplierInput = require('./api/supplier_input')
-var users = require('./api/usersModal')
+var usersModal = require('./api/usersModal')
+var buyerModal = require('./api/buyerModal')
 var buyerInput = require('./api/buyer_input')
 
 //=========== Create server ===================
@@ -107,7 +108,8 @@ client.query('SELECT NOW()', (err, res) => {
 app.use("/", auth)
 // app.use("/", auth)
 supplierInput(app, client);
-users(app, client);
+usersModal(app, client);
+buyerModal(app, client);
 buyerInput(app, client);
 
 app.listen(config.port, () => {
