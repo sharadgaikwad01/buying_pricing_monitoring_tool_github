@@ -31,7 +31,7 @@ const View = () => {
 
     const { id } = useParams()
     
-    const bdm_global_umbrella_no = id
+    const suppl_no = id
     const country = localStorage.getItem('country')
     const [Suppliername, setSuppliername] = useState('')
     const [modal, setModal] = useState(false)
@@ -64,7 +64,7 @@ const View = () => {
           })
     }
     useEffect(async () => {
-        await axios.get(`${nodeBackend}/buyer_supplier_details`, { params: { bdm_global_umbrella_no, country } }).then((res) => {
+        await axios.get(`${nodeBackend}/buyer_supplier_details`, { params: { suppl_no, country } }).then((res) => {
             if (res.data.data) {
                 console.log(res.data.data[0])
                 if (res.data.data[0]) {

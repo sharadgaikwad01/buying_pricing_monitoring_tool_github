@@ -23,22 +23,23 @@ import { useState, useEffect } from 'react'
 const MySwal = withReactContent(Swal)
 
 
-const AddNewModalUser = ({ open, handleModal, rowData, setUsersInputsData }) => {
+const AddNewModalBuyer = ({ open, handleModal, rowData, setUsersInputsData }) => {
   // const [UserData, setUsersData] = useState({user_name:'', email:'', user_id:'', emp_id:'', row_id:''})
-  const [NameValue, setNameValue] = useState('')
+  const [LNameValue, setLNameValue] = useState('')
+  const [FNameValue, setFNameValue] = useState('')
   const [EmailValue, setEmailValue] = useState('')
-  const [UserTypeValue, setUserTypeValue] = useState('')
-  const [UserRoleValue, setUserRoleValue] = useState('')
-  const [UserEmpIdValue, setUserEmpIdValue] = useState('')
+  // const [UserTypeValue, setUserTypeValue] = useState('')
+  const [ActiveStatus, setActiveStatus] = useState('')
   const [UserIdValue, setUserIdValue] = useState(0)
 
   const validationSchema = yup.object().shape({
-    user_name: yup.string().required(),
-    email: yup.string().required().email(),
+    first_name: yup.string().required(),
+    last_name: yup.string().required(),
+    buyer_emailid: yup.string().required().email(),
     // emp_id: yup.string().required().test('len', 'Must be exactly 8 characters', val => val.length === 8),
-    emp_id: yup.string().required(),
-    user_role: yup.string().required(),
-    user_type: yup.string().required()
+    // emp_id: yup.string().required(),
+    // user_role: yup.string().required(),
+    active_status: yup.string().required()
   })
 
   const {
@@ -52,20 +53,18 @@ const AddNewModalUser = ({ open, handleModal, rowData, setUsersInputsData }) => 
 
   useEffect(async () => {
     // setUsersData(rowData)
-      await setNameValue(rowData.user_name)
-      setValue('user_name', rowData.user_name, { shouldValidate:true })
-
-      await setEmailValue(rowData.email)
-      setValue('email', rowData.email)
-
-      await setUserTypeValue(rowData.user_type)
-      setValue('user_type', rowData.user_type)
-
-      await setUserRoleValue(rowData.user_role)
-      setValue('user_role', rowData.user_role)
-
-      await setUserEmpIdValue(rowData.metro_id)
-      setValue('emp_id', rowData.metro_id)
+      console.log(rowData)
+      await setFNameValue(rowData.first_name)
+      setValue('first_name', rowData.first_name, { shouldValidate:true })
+    
+      await setLNameValue(rowData.last_name)
+      setValue('last_name', rowData.last_name, { shouldValidate:true })
+    
+      await setEmailValue(rowData.buyer_emailid)
+      setValue('buyer_emailid', rowData.buyer_emailid)
+    
+      await setActiveStatus(rowData.active_status)
+      setValue('active_status', rowData.active_status)
 
       await setUserIdValue(rowData.row_id)
       setValue('user_id', rowData.row_id)
@@ -74,18 +73,19 @@ const AddNewModalUser = ({ open, handleModal, rowData, setUsersInputsData }) => 
   const CloseBtn = <X className='cursor-pointer' size={15} onClick={handleModal} />
 
   const onSubmit = data => {
-    const user_name = data.user_name
-    const email = data.email
-    const emp_id = data.emp_id
-    const user_role = data.user_role
-    const user_type = data.user_type
+    const first_name = data.first_name
+    const last_name = data.last_name
+    const buyer_emailid = data.buyer_emailid
+    // const emp_id = data.emp_id
+    // const user_role = data.user_role
+    const active_status = data.active_status
     const user_id = data.user_id
 
     handleModal(false)
     axios({
       method: "post",
-      url: `${nodeBackend}/add_user_input`,
-      data: { user_name, email, emp_id, user_role, user_type, user_id }
+      url: `${nodeBackend}/add_buyer_input`,
+      data: { first_name, last_name, buyer_emailid, emp_id, active_status, user_id }
     })
       .then(async function (success) {
         //handle success        
@@ -94,7 +94,7 @@ const AddNewModalUser = ({ open, handleModal, rowData, setUsersInputsData }) => 
           if (user_id) {
             return MySwal.fire({
               title: 'Done!',
-              text: 'User Updated Successfully!',
+              text: 'Buyer Updated Successfully!',
               icon: 'success',
               customClass: {
                 confirmButton: 'btn btn-primary'
@@ -104,7 +104,7 @@ const AddNewModalUser = ({ open, handleModal, rowData, setUsersInputsData }) => 
           } else {
             return MySwal.fire({
               title: 'Done!',
-              text: 'User Created Successfully!',
+              text: 'Buyer Created Successfully!',
               icon: 'success',
               customClass: {
                 confirmButton: 'btn btn-primary'
@@ -112,12 +112,7 @@ const AddNewModalUser = ({ open, handleModal, rowData, setUsersInputsData }) => 
               buttonsStyling: false
             })
           }
-          
-          
-          // // axios.get(`http://10.16.148.18:81/users`, { params: { searchName, searchStatus, searchRole } }).then((res) => {
-          // //   console.log(res.data.data)
-          // setUsersInputsData(res.data.data.users)  
-          // })
+      
         } else {
           return MySwal.fire({
             title: 'Error',
@@ -143,14 +138,9 @@ const AddNewModalUser = ({ open, handleModal, rowData, setUsersInputsData }) => 
       })
   }
 
-  const RoleOptions = [
-    { value: 'Admin', label: 'Admin' },
-    { value: 'User', label: 'User' }
-  ]
-
-  const user_typeOptions = [
-    { value: 'buyer', label: 'Buyer' },
-    { value: 'supplier', label: 'Supplier' }
+  const active_statusOptions = [
+    { value: 'active', label: 'Active' },
+    { value: 'inactive', label: 'InActive' }
   ]
 
   return (
@@ -166,55 +156,51 @@ const AddNewModalUser = ({ open, handleModal, rowData, setUsersInputsData }) => 
       </ModalHeader>
       <ModalBody className='flex-grow-1'>
         <Form onSubmit={handleSubmit(onSubmit)} onReset={reset}>
+
           <div className='mb-1'>
-            <Label className='form-label' for='user_role'>
-              Role
-            </Label>
-            <Controller  className="select-custom-wrap"
-              name="user_role"
-              control={control}
-              render={({ field: { onChange, value } }) => (
-                <Select
-                  options={RoleOptions}
-                  className='is-invalid select-custom'
-                  classNamePrefix="react-select"
-                  value={RoleOptions.find((c) => c.value === value)}
-                  onChange={(val) => { onChange(val.value); setValue('user_role', val.value) } }
-                />
-              )}
-            />
-            {errors["user_role"] && <FormFeedback>{'Role is a required field'}</FormFeedback>}
-          </div>
-          
-          <div className='mb-1'>
-            <Label className='form-label' for='name'>
-              Name
+            <Label className='form-label' for='first_name'>
+              First Name
             </Label>
             <InputGroup>
               <Controller
-                id='user_name'
-                name='user_name'
+                id='first_name'
+                name='first_name'
                 defaultValue=''
                 control={control}
-                render={({ field }) => <Input type="text"{...field} placeholder='user_name' value={NameValue} onChange={(e) => { setNameValue(e.target.value); setValue('user_name', e.target.value) } }  invalid={errors.user_name && true} />}
+                render={({ field }) => <Input type="text"{...field} placeholder='first name' value={FNameValue} onChange={(e) => { setFNameValue(e.target.value); setValue('first_name', e.target.value) } }  invalid={errors.first_name && true} />}
               />
-              {errors.user_name && <FormFeedback>{"Name is a required field"}</FormFeedback>}
+              {errors.user_name && <FormFeedback>{"First Name is a required field"}</FormFeedback>}
             </InputGroup>
           </div>
 
           <div className='mb-1'>
-            <Label className='form-label' for='email'>
+            <Label className='form-label' for='last_name'>
+              Last Name
+            </Label>
+            <InputGroup>
+              <Controller
+                id='last_name'
+                name='last_name'
+                defaultValue=''
+                control={control}
+                render={({ field }) => <Input type="text"{...field} placeholder='last name' value={LNameValue} onChange={(e) => { setLNameValue(e.target.value); setValue('last_name', e.target.value) } }  invalid={errors.last_name && true} />}
+              />
+              {errors.user_name && <FormFeedback>{"Last Name is a required field"}</FormFeedback>}
+            </InputGroup>
+          </div>
+
+          <div className='mb-1'>
+            <Label className='form-label' for='buyer_emailid'>
               Email
             </Label>
             <InputGroup>
               
               <Controller
-                id='email'
-                name='email'
+                id='buyer_emailid'
+                name='buyer_emailid'
                 defaultValue=''
-                
                 control={control}
-                render={({ field }) => <Input type="text"{...field} placeholder='Email' value={EmailValue} onChange={(e) => { setEmailValue(e.target.value); setValue('email', e.target.value) } }  invalid={errors.email && true} />}
+                render={({ field }) => <Input type="text"{...field} placeholder='Email' value={EmailValue} onChange={(e) => { setEmailValue(e.target.value); setValue('buyer_emailid', e.target.value) } }  invalid={errors.buyer_emailid && true} />}
               />
               <Controller
                 id='user_id'
@@ -228,40 +214,23 @@ const AddNewModalUser = ({ open, handleModal, rowData, setUsersInputsData }) => 
           </div>
 
           <div className='mb-1'>
-            <Label className='form-label' for='emp_id'>
-              Employee ID
-            </Label>
-            <InputGroup>
-              <Controller
-                id='emp_id'
-                name='emp_id'
-                defaultValue=''
-                control={control}
-                render={({ field }) => <Input type="text"{...field} placeholder='Employee ID' value={UserEmpIdValue} invalid={errors.emp_id && true} />}
-              />
-              {errors.emp_id && <FormFeedback>{"Employee ID is a required & must be 8 Digit"}</FormFeedback>}
-            </InputGroup>
-          </div>
-
-          <div className='mb-1'>
-            <Label className='form-label' for='user_type'>
-              User type
+            <Label className='form-label' for='active_status'>
+              Status
             </Label>
             <Controller className="select-custom-wrap"
-              name="user_type"
+              name="active_status"
               control={control}
               render={({ field: { onChange, value } }) => (
                 <Select
-                  options={user_typeOptions}
+                  options={active_statusOptions}
                   className='is-invalid select-custom'
                   classNamePrefix="react-select"
-                  value={user_typeOptions.find((c) => c.value === value)}
-                  onChange={(val) => onChange(val.value)}
-                  
+                  value={active_statusOptions.find((c) => c.value === value)}
+                  onChange={(val) => { onChange(val.value); setValue('active_status', val.value) }}
                 />
               )}
             />
-            {errors["user_type"] && <FormFeedback>{'User type is a required field'}</FormFeedback>}
+            {errors["active_status"] && <FormFeedback>{'Status is a required field'}</FormFeedback>}
           </div>
           
           <Button className='me-1' color='primary' type='submit'>
@@ -276,4 +245,4 @@ const AddNewModalUser = ({ open, handleModal, rowData, setUsersInputsData }) => 
   )
 }
 
-export default AddNewModalUser
+export default AddNewModalBuyer
