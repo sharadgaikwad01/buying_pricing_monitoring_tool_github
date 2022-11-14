@@ -151,7 +151,7 @@ module.exports = function(app, con) {
 				res.json({ status: false });
 				return;
 			} else{
-				var query1 = "select * from vw_buyer_dashboard WHERE country_name!='"+req.query.country+"'";
+				var query1 = "select * from vw_buyer_dashboard";
 				await con.query(query1, function(err1, result1) {
 					if (err1) {
 						console.log(err1)
