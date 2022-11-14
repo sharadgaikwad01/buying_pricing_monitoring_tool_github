@@ -239,7 +239,7 @@ const AddNewModal = ({ open, handleModal, supllierNumberOptions, setsupplierInpu
           </div>
           <div className='mb-1'>
             <Label className='form-label' for='reason'>
-              Reason for price increase
+              Reason for price Change
             </Label>
             <Controller
               id='reason'

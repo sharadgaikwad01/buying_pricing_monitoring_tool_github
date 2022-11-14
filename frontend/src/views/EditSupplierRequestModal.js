@@ -133,7 +133,7 @@ const EditSupplierRequestModal = ({ open, handleModal, rowData, supllierNumberOp
         setsupplierInputsData(success.data.data.supplierInputs) 
         return MySwal.fire({
           title: 'Done!',
-          text: 'Records has been updated successfully.',
+          text: 'Record has been updated successfully.',
           icon: 'success',
           customClass: {
             confirmButton: 'btn btn-primary'
@@ -274,7 +274,7 @@ const EditSupplierRequestModal = ({ open, handleModal, rowData, supllierNumberOp
           </div>
           <div className='mb-1'>
             <Label className='form-label' for='reason'>
-              Reason for price increase
+              Reason for price Change
             </Label>
             <Controller
               id='reason'

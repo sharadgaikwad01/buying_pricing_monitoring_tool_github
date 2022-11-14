@@ -45,7 +45,7 @@ const UploadArticliesModal = ({ open, handleModal, setsupplierInputsData }) => {
         if (success.data.status) {
           return MySwal.fire({
             title: 'Done!',
-            text: `${success.data.sucess_count} Records has been uploaded`,
+            text: success.data.sucess_count > 1 ? `${success.data.sucess_count} Records has been uploaded` : `${success.data.sucess_count} Record has been uploaded`,
             icon: 'success',
             customClass: {
               confirmButton: 'btn btn-primary'

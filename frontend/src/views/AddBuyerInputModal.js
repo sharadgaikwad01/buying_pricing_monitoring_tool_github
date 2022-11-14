@@ -210,7 +210,7 @@ const AddBuyerInputModal = ({ open, handleModal, rowData, setsupplierInputsData 
           <input type="hidden" name="row_id" value={rowId} />
           <div className='mb-1'>
             <Label className='form-label' for='article_number'>
-              Final Price
+              Article number
             </Label>
             <InputGroup>
               <Controller
@@ -248,7 +248,7 @@ const AddBuyerInputModal = ({ open, handleModal, rowData, setsupplierInputsData 
                 id='new_price'
                 name='new_price'
                 control={control}
-                render={({ field }) => <Input type="number"{...field} placeholder='e.g. 65.00' value={newPrice} onChange={e => { setNewPrice(e.target.value); setValue('new_price', e.target.value, { shouldValidate: true }) }} invalid={errors.new_price && true} />}
+                render={({ field }) => <Input type="number"{...field} placeholder='e.g. 65.00' readOnly value={newPrice} onChange={e => { setNewPrice(e.target.value); setValue('new_price', e.target.value, { shouldValidate: true }) }} invalid={errors.new_price && true} />}
               />
               {errors.new_price && <FormFeedback>{"Requested Price is a required field"}</FormFeedback>}
             </InputGroup>

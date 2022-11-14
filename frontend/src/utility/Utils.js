@@ -49,11 +49,11 @@ export const formatDateToMonthShort = (value, toTimeForCurrentDay = true) => {
  *  ? e.g. If you are using cookies to store the application please update this function
  */
 export const isUserLoggedIn = () => localStorage.getItem('userData')
-export const nodeBackend =  "https://pp-api-bpmt.metro.de"
-export const reactFrontend =  "https://pp-bpmt.metro.de"
+// export const nodeBackend =  "https://pp-api-bpmt.metro.de"
+// export const reactFrontend =  "https://pp-bpmt.metro.de"
 
-/* export const nodeBackend =  "http://localhost:8080"
-export const reactFrontend =  "http://localhost:3000" */
+export const nodeBackend =  "http://localhost:8080"
+export const reactFrontend =  "http://localhost:3000"
 
 export const getUserData = () => JSON.parse(localStorage.getItem('userData'))
 

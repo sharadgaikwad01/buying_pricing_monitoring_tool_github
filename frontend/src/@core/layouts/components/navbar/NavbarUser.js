@@ -34,7 +34,7 @@ const NavbarUser = props => {
       const result = `${user_name} / Vat ID: ${vat_number}`
       setUserDetails(result)
     } else {
-      setUserDetails(user_type)
+      setUserDetails('')
     }
   }, [])
 

@@ -527,11 +527,11 @@ const BuyerInput = props => {
               />
             </Col>
             <Col className='col-auto'>
-              <Label className='form-label' for='date'>
+              <Label className='form-label ' for='date'>
                 Requested Date:
               </Label>
               <Flatpickr
-                className='form-control'
+                className='form-control date-range-select'
                 id='date'
                 value={Picker}
                 placeholder='d-m-Y to d-m-Y'
