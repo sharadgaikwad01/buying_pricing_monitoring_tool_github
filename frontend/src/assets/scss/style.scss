@@ -205,9 +205,9 @@ nav .navbar-header{
 .footer-logo{
     max-width: 200px;
 }
-.navbar-brand{
-    margin: 0 10px;
-}
+// .navbar-brand{
+//     margin: 0 10px;
+// }
 .horizontal-menu .header-navbar.navbar-fixed, footer{
 background:unset !important;
     backdrop-filter: blur(12px) saturate(180%);
@@ -907,4 +907,18 @@ input.form-control{
 .flat-picker-input-custom {
     width: 80% !important;
     max-width: unset !important;
+}
+.float-left{
+    // float: right !important;
+    // text-align: right;
+    // margin-left: 250px;
+    // margin-top: 10px;
+    // background-color: red;
+}
+.navbar-header  {
+    width: 100%;
+}
+ul.navbar-nav {
+    display: flex;
+    justify-content: space-between;
 }

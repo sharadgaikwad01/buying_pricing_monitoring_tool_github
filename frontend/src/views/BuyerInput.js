@@ -517,12 +517,12 @@ const BuyerInput = props => {
                 theme={selectThemeColors}
                 className='react-select'
                 classNamePrefix='select'
-                defaultValue={supllierNumberOptions[1]}
+                defaultValue={supllierNumberOptions ? supllierNumberOptions[1] : supllierNumberOptions}
                 name='supplier_number'
                 options={supllierNumberOptions}
-                value={supllierNumberOptions.filter(function (option) {
+                value={supllierNumberOptions ? supllierNumberOptions.filter(function (option) {
                   return option.value === searchSupplierNumber
-                })}
+                }) : ''}
                 onChange={handleSupplierNumberFilter}
               />
             </Col>
@@ -564,12 +564,12 @@ const BuyerInput = props => {
                 theme={selectThemeColors}
                 className='react-select'
                 classNamePrefix='select'
-                defaultValue={categoryOptions[1]}
+                defaultValue={categoryOptions ? categoryOptions[1] : categoryOptions}
                 name='status'
                 options={categoryOptions}
-                value={categoryOptions.filter(function (option) {
+                value={categoryOptions ? categoryOptions.filter(function (option) {
                   return option.value === searchCategory
-                })}
+                }) : ''}
                 onChange={handleCategoryFilter}
               />
             </Col>

@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 
 import { reactFrontend } from '@utils'
 
-import { useState, useEffect } from 'react'
+import { useEffect } from 'react'
 
 // ** Custom Components
 import Avatar from '@components/avatar'
@@ -24,10 +24,10 @@ import { UncontrolledDropdown, DropdownMenu, DropdownToggle, DropdownItem } from
 const UserDropdown = () => {
   // ** State
   const user_email = localStorage.getItem('email')
-  const vat_number = localStorage.getItem('vat')
+  // const vat_number = localStorage.getItem('vat')
   const user_name = localStorage.getItem('name')
 
-  const [userDetails, setUserDetails] = useState([])
+  // const [userDetails, setUserDetails] = useState([])
 
   //** Vars
   //const userAvatar = (userData && userData.avatar) || defaultAvatar
@@ -40,19 +40,21 @@ const UserDropdown = () => {
   useEffect(async () => {
     const user_type = localStorage.getItem("type")
     if (user_type === 'SUPPLIER') {
-      const result = `${user_type} / ${vat_number} / ${user_name}`
-      setUserDetails(result)
+      // const result = `${user_type} / ${vat_number} / ${user_name}`
+      // setUserDetails(result)
     } else {
-      setUserDetails(user_type)
+      // setUserDetails(user_type)
     }
   }, [])
 
   return (
     <UncontrolledDropdown tag='li' className='dropdown-user nav-item'>
+      {/* <span className='user-status float-left'>{userDetails}</span> */}
       <DropdownToggle href='/' tag='a' className='nav-link dropdown-user-link' onClick={e => e.preventDefault()}>
+      
         <div className='user-nav d-sm-flex d-none'>
           <span className='user-name fw-bold'>{user_email}</span>
-            <span className='user-status'>{userDetails}</span>
+            
         </div>        
         <Avatar color='light-primary' content={user_name} initials />
       </DropdownToggle>

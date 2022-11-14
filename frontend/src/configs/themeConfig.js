@@ -3,7 +3,7 @@
 //Template config options
 const themeConfig = {
   app: {
-    appName: 'Buying Pricing',
+    appName: 'Buying Price',
     appName1: 'Monitoring Tool',
     appLogoImage: require('@src/assets/images/logo/logom.png').default
   },
