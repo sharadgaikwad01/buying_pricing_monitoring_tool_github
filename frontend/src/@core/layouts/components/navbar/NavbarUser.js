@@ -50,24 +50,16 @@ const NavbarUser = props => {
                   <h4 className='brand-text mb-0'>{themeConfig.app.appName}<br /><span className='text-warning'> {themeConfig.app.appName1}</span></h4>
                 </Link>
               </NavItem>
-
               <NavItem>
-                
               <span className='user-status float-left'>{userDetails}</span>
-      
               </NavItem>
               <NavItem>
-              <UserDropdown />
+              <ul className='nav navbar-nav align-items-center ms-auto mr-15'>
+                <UserDropdown />
+              </ul>
               </NavItem>
-              
-
             </ul>
-         
           </div>
-{/*           
-      <ul className='nav navbar-nav align-items-center ms-auto'>
-       
-      </ul> */}
     </Fragment>
   )
 }

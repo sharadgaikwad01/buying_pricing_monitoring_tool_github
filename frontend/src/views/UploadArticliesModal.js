@@ -153,7 +153,7 @@ const UploadArticliesModal = ({ open, handleModal, setsupplierInputsData }) => {
             <Label className='form-label' for='inputFile'>
               Upload file
             </Label>
-            <Input type='file' id='inputFile' name='supplier_input_file' accept={".csv, .xlsx"} onChange={handleOnChange} />
+            <Input type='file' required id='inputFile' name='supplier_input_file' accept={".csv, .xlsx"} onChange={handleOnChange} />
           </Col>
         </Row>
         <div className='d-flex justify-content-center'>

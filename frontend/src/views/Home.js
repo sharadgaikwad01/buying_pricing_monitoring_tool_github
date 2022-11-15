@@ -130,7 +130,7 @@ const Home = props => {
       nextLabel=''
       forcePage={currentPage}
       onPageChange={page => handlePagination(page)}
-      pageCount={Math.ceil(dataToRender().length / 50) || 1}
+      pageCount={Math.ceil(dataToRender().length / 7) || 1}
       breakLabel='...'
       pageRangeDisplayed={2}
       marginPagesDisplayed={2}
@@ -510,7 +510,7 @@ const Home = props => {
               <DropdownMenu>
                 <DropdownItem className='w-100' onClick={() => handleDownloadCSV()}>
                   <FileText size={15} />
-                  <span className='align-middle ms-50'>CSV</span>
+                  <span className='align-middle ms7'>CSV</span>
                 </DropdownItem>
               </DropdownMenu>
             </UncontrolledButtonDropdown>
@@ -600,7 +600,7 @@ const Home = props => {
               pagination
               selectableRowsNoSelectAll
               columns={columns}
-              paginationPerPage={50}
+              paginationPerPage={7}
               className='react-dataTable'
               sortIcon={<ChevronDown size={10} />}
               paginationDefaultPage={currentPage + 1}
