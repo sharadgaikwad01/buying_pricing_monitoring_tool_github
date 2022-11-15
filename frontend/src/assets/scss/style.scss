@@ -908,17 +908,19 @@ input.form-control{
     width: 80% !important;
     max-width: unset !important;
 }
-.float-left{
-    // float: right !important;
-    // text-align: right;
-    // margin-left: 250px;
-    // margin-top: 10px;
-    // background-color: red;
-}
+
 .navbar-header  {
     width: 100%;
 }
 ul.navbar-nav {
     display: flex;
     justify-content: space-between;
+}
+.date-range-select{
+    min-width: 195px;
+}
+[dir] .flatpickr-calendar .flatpickr-day.inRange, [dir] .flatpickr-calendar .flatpickr-day.inRange:hover{
+    background: rgba(0, 59, 126, 0.2) !important;
+    border: 0 !important;
+    box-shadow:  unset !important;
 }
