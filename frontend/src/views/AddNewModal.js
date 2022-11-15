@@ -1,6 +1,6 @@
 // ** React Imports
 // ** Third Party Components
-import { useState } from 'react'
+import { useState, useEffect} from 'react'
 import { nodeBackend } from '@utils'
 import Flatpickr from 'react-flatpickr'
 import { User, Briefcase, Mail, Calendar, DollarSign, X } from 'react-feather'
@@ -30,6 +30,20 @@ const AddNewModal = ({ open, handleModal, supllierNumberOptions, setsupplierInpu
   const vat_number = localStorage.getItem('vat')
 
   const [articleOptions, setarticleOptions] = useState([])
+
+  const [newPrice, setNewPrice] = useState('')
+  const [reason, setReason] = useState('')
+  const [supplierNumber, setSupplierNumber] = useState('')
+  const [articleNumber, setArticleNumber] = useState('')
+  const [priceIncreaseEffectiveDate, setPriceIncreaseEffectiveDate] = useState([])
+
+  useEffect(async () => {
+    await setNewPrice('')
+    await setReason('')
+    await setSupplierNumber('')
+    await setArticleNumber('')
+    await setPriceIncreaseEffectiveDate('')
+  }, [])
 
   // ** Custom close btn
   const CloseBtn = <X className='cursor-pointer' size={15} onClick={handleModal} />
@@ -147,12 +161,12 @@ const AddNewModal = ({ open, handleModal, supllierNumberOptions, setsupplierInpu
             <Controller className="select-custom-wrap"
               name="supplier_number"
               control={control}
-              render={({ field: { onChange, value } }) => (
+              render={({ field: { onChange } }) => (
                 <Select
                   options={supllierNumberOptions}
                   className='is-invalid select-custom'
                   classNamePrefix="react-select"
-                  value={supllierNumberOptions.find((c) => c.value === value)}
+                  value={supllierNumberOptions.find((c) => c.value === supplierNumber)}
                   onChange={(val) => { handleSupplierNumberFilter(val); onChange(val.value) } }
                   theme={(theme) => ({
                     ...theme,
@@ -175,12 +189,12 @@ const AddNewModal = ({ open, handleModal, supllierNumberOptions, setsupplierInpu
             <Controller className="select-custom-wrap"
               name="article_number"
               control={control}
-              render={({ field: { onChange, value } }) => (
+              render={({ field: { onChange } }) => (
                 <Select
                   options={articleOptions}
                   className='is-invalid select-custom'
                   classNamePrefix="react-select"
-                  value={articleOptions.find((c) => c.value === value)}
+                  value={articleOptions.find((c) => c.value === articleNumber)}
                   onChange={(val) => onChange(val.value)}
                   theme={(theme) => ({
                     ...theme,
@@ -197,7 +211,7 @@ const AddNewModal = ({ open, handleModal, supllierNumberOptions, setsupplierInpu
           </div>
           <div className='mb-1'>
             <Label className='form-label' for='new_Price'>
-              Requested Price
+            Requested Price
             </Label>
             <InputGroup>
               <InputGroupText>
@@ -206,9 +220,8 @@ const AddNewModal = ({ open, handleModal, supllierNumberOptions, setsupplierInpu
               <Controller
                 id='new_price'
                 name='new_price'
-                defaultValue=''
                 control={control}
-                render={({ field }) => <Input type="number"{...field} placeholder='e.g. 65.00' invalid={errors.new_price && true} />}
+                render={({ field }) => <Input type="number"{...field} placeholder='e.g. 65.00' value={newPrice} onChange={val => { setNewPrice(val.value) }} invalid={errors.new_price && true} />}
               />
               {errors.new_price && <FormFeedback>{"Requested Price is a required field"}</FormFeedback>}
             </InputGroup>
@@ -229,6 +242,7 @@ const AddNewModal = ({ open, handleModal, supllierNumberOptions, setsupplierInpu
                 render={({ field: { onChange } }) => <Flatpickr
                         className='form-control flat-picker-input-custom'
                         onChange={(val) => onChange(val)}
+                        value={priceIncreaseEffectiveDate}
                         options={{
                           dateFormat: 'd-m-Y'
                         }}
@@ -246,9 +260,9 @@ const AddNewModal = ({ open, handleModal, supllierNumberOptions, setsupplierInpu
               name='reason'
               defaultValue=''
               control={control}
-              render={({ field }) => <Input type='textarea' rows='5' {...field} placeholder='Reason' invalid={errors.reason && true} />}
+              render={({ field }) => <Input type='textarea' rows='5' {...field} placeholder='Reason' value={reason} onChange={val => { setReason(val.value) }} invalid={errors.reason && true} />}
             />
-            {errors.reason && <FormFeedback>{"Reason for price increase is a required field"}</FormFeedback>}
+            {errors.reason && <FormFeedback>{"Reason is a required field"}</FormFeedback>}
           </div>
           <Button className='me-1' color='primary' type='submit'>
             Submit
