@@ -361,7 +361,7 @@ const Home = props => {
     await setSearchRequestedDate("")
     await setSearchStatus("")
     await setPicker("")
-
+    // document.querySelector(this).classList.toggle("down")
     const searchSupplierNumber = ''
     const searchArticleNumber = ''
     const searchRequestedDate = ''
