@@ -3,6 +3,9 @@
 # dependencies
 /node_modules
 /config.js
+/yarn.lock
+/package.json
+/package-lock.json
 
 .docz
 .eslintcache

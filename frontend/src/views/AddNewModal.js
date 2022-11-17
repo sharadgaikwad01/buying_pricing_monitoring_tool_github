@@ -57,6 +57,7 @@ const AddNewModal = ({ open, handleModal, supllierNumberOptions, setsupplierInpu
   // ** Hooks
   const {
     control,
+    setValue,
     handleSubmit,
     formState: { errors }
   } = useForm({ mode: 'onChange', resolver: yupResolver(SupplierInputSchema) })
@@ -221,7 +222,7 @@ const AddNewModal = ({ open, handleModal, supllierNumberOptions, setsupplierInpu
                 id='new_price'
                 name='new_price'
                 control={control}
-                render={({ field }) => <Input type="number"{...field} placeholder='e.g. 65.00' value={newPrice} onChange={val => { setNewPrice(val.value) }} invalid={errors.new_price && true} />}
+                render={({ field }) => <Input type="number"{...field} placeholder='e.g. 65.00' value={newPrice} onChange={e => { setNewPrice(e.target.value); setValue('new_price', e.target.value, { shouldValidate: true }) }} invalid={errors.new_price && true} />}
               />
               {errors.new_price && <FormFeedback>{"Requested Price is a required field"}</FormFeedback>}
             </InputGroup>
@@ -260,7 +261,7 @@ const AddNewModal = ({ open, handleModal, supllierNumberOptions, setsupplierInpu
               name='reason'
               defaultValue=''
               control={control}
-              render={({ field }) => <Input type='textarea' rows='5' {...field} placeholder='Reason' value={reason} onChange={val => { setReason(val.value) }} invalid={errors.reason && true} />}
+              render={({ field }) => <Input type='textarea' rows='5' {...field} placeholder='Reason' value={reason} onChange={e => { setReason(e.target.value);  setValue('reason', e.target.value, { shouldValidate: true }) }} invalid={errors.reason && true} />}
             />
             {errors.reason && <FormFeedback>{"Reason is a required field"}</FormFeedback>}
           </div>
