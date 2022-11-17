@@ -26,7 +26,7 @@ const LoginCover = () => {
     <div className='auth-wrapper auth-cover'>
       <Row className='auth-inner m-0'>
         <Link className='brand-logo' to='/' onClick={e => e.preventDefault()}>
-          <img src="logo/metro-logo.png" height="40"/>
+          <img src="logo/metro-logo.png" className='img-fluid'/>
         </Link>
         <Col className='d-none d-lg-flex align-items-center p-5' lg='8' sm='12'>
           <div className='w-100 d-lg-flex align-items-center justify-content-center px-5'>

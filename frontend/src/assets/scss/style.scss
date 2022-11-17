@@ -43,12 +43,9 @@ label {
     padding: 10px !important;
     background-color: #f2f5f7;
 }
-.brand-logo img{
+.brand-logo img, .navbar-brand img{
     max-width: 160px;
-}
-.navbar-brand img{
-    max-width: 160px;
-    /* align-items: center; */
+    height: auto !important;
 }
 .horizontal-menu .header-navbar.navbar-horizontal ul#main-menu-navigation > li.active > a{
     background: #003b7e;
