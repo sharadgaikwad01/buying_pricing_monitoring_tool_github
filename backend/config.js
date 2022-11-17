@@ -11,7 +11,8 @@ CONFIG.db_user      = process.env.DB_USER       || 'postgres';
 CONFIG.db_password  = process.env.DB_PASSWORD   || 'metroservices1$';
 
 CONFIG.reactFrontend        = 'http://localhost:3000';
-CONFIG.nodebackend  = 'http://localhost:8080'; 
+
+CONFIG.nodebackend  = 'http://localhost:8080';
 
 // CONFIG.reactFrontend        = 'https://pp-bpmt.metro.de';
 // CONFIG.nodebackend  = 'https://pp-api-bpmt.metro.de';
