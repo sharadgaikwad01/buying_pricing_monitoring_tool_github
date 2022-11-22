@@ -25,7 +25,7 @@ module.exports = function(app, con) {
             }
 		});
 		if(req.query.searchSupplierNumber != ''){
-			var getUniqueArticleQuery = "select DISTINCT art_no, art_name from vw_artinfo_without_request  Where suppl_no='"+req.query.searchSupplierNumber+"' and country_name ='"+req.query.country+"' and vat_no ='"+req.query.vat_number+"'";
+			var getUniqueArticleQuery = "select DISTINCT art_no, art_name from vw_artinfo_with_request  Where suppl_no='"+req.query.searchSupplierNumber+"' and country_name ='"+req.query.country+"' and vat_no ='"+req.query.vat_number+"'";
 
 			console.log(getUniqueArticleQuery)
 
