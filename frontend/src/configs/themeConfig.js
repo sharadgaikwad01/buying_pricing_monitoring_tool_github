@@ -4,7 +4,7 @@
 const themeConfig = {
   app: {
     appName: 'Buying Price',
-    appName1: 'Monitoring Tool',
+    appName1: 'Application',
     appLogoImage: require('@src/assets/images/logo/logom.png').default
   },
   layout: {

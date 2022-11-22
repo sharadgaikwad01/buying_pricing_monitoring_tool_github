@@ -24,10 +24,10 @@ Issuer.discover('https://idam-pp.metrosystems.net/') // => Promise
   .then((idam) => {
     console.log('Discovered issuer %s %O', idam.issuer, idam.metadata);
     client = new idam.Client({
-        client_id: 'BUYING_PRICE_MONITORING_TOOL',
-        client_secret: 'ObICscz61Q',
-        realm_id: 'BUYING_PRICE',
-        redirect_uris: [config.nodebackend + '/api/v1/callback'],
+        client_id: 'BUYING_PRICE_MONITORING_TOOL_S',
+        client_secret: 'n3ln4fPSo6',
+        realm_id: 'BUYING_PS',
+        redirect_uris: [config.nodebackend + '/api/v2/callback'],
         response_types: ['code'],
     }); // => Client
 }).catch( err => {
@@ -41,21 +41,19 @@ router.use((req, res, next) => {
         return
     }
     const params = client.callbackParams(req)
-    client.callback(config.nodebackend+'/api/v1/callback', params, { code_verifier }) // => Promise
+    client.callback(config.nodebackend+'/api/v2/callback', params, { code_verifier }) // => Promise
         .then(token => {
 			let user_details = token.claims();
             sql = "SELECT * FROM public.tbl_buyer_details where buyer_emailid = '"+user_details.email +"'";
             console.log(sql)
             clientDB.query(sql, function(err, result) {
                 if (err) {
-                    // res.redirect(303, config.reactFrontend + '/auth?error=User not Exist');
                     res.send('<script>window.location.href="'+config.reactFrontend + '/auth?error=User not Exist'+'";</script>');
                 } else{
                     if(result.rowCount == 0){
-                    	// res.redirect(303, config.reactFrontend + '/auth?error=User not Exist');
                         res.send('<script>window.location.href="'+config.reactFrontend + '/auth?error=User not Exist' + '";</script>');
                     }else{
-                        var frontend_redirect_url = config.reactFrontend + '/auth?token='+token.id_token+'&id='+user_details.metro_id+'&email='+user_details.email+'&type=BUYER&country='+ result.rows[0].country_name +'&name=' + result.rows[0].first_name + ' ' + result.rows[0].last_name;
+                        var frontend_redirect_url = config.reactFrontend + '/auth?token='+token.id_token+'&id='+user_details.metro_id+'&email='+user_details.email+'&type=SUPPLIER&country='+ result.rows[0].country_name +'&name=' + result.rows[0].first_name + ' ' + result.rows[0].last_name;
                         res.send('<script>window.location.href="'+frontend_redirect_url+'";</script>');
                     }				
                 }	
@@ -66,23 +64,21 @@ router.use((req, res, next) => {
     next()
 })
 
-router.get('/api/v1/callback', (req, res, next) => {  
+router.get('/api/v2/callback', (req, res, next) => {  
     // res.send("callback")  
 })
 
-router.get('/api/v1/login', (req, res, next) => {
+router.get('/api/v2/login', (req, res, next) => {
     if (client == undefined) {
         res.send("Authorization provider is unavailable");
         next()
         return
     }
     authUrl = client.authorizationUrl({
-        scope: `openid realm_id=${'BUYING_PRICE'}`,
+        scope: `openid realm_id=${'BUYING_PS'}`,
         code_challenge,
         code_challenge_method: 'S256',
     });
-   
-	// res.redirect(303, authUrl);
     res.send('<script>window.location.href="'+authUrl+'";</script>');
     next()
     

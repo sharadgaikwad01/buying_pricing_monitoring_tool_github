@@ -137,9 +137,9 @@ const DownloadArticliesModal = ({ open, handleModal, supllierNumberOptions }) =>
             } else {
                 handleModal(false)
                 MySwal.fire({
-                    title: 'Error',
+                    title: 'Info!',
                     text: 'There is no article details available for this supplier number',
-                    icon: 'error',
+                    icon: 'info',
                     customClass: {
                         confirmButton: 'btn btn-primary'
                     },
