@@ -120,6 +120,8 @@ module.exports = function(app, con) {
 
 		var query = "select country_name, vat_no, suppl_no, art_no, art_name, umbrella_name, '' as new_price, '' as price_change_reason, '' as price_increase_effective_date from vw_artinfo_without_request where vat_no='"+req.query.vat_number +"' and country_name='"+req.query.country +"' AND SUPPL_NO IN ("+req.query.supplier_number +") and is_duplicate is null ";
 
+		console.log(query);
+
 		await con.query(query, function(err, result) {
 			if (err) {
 				console.log(err);
@@ -136,8 +138,6 @@ module.exports = function(app, con) {
 
 		var data = {};
 		var query = "call public.usp_update_requestdetails (record_id=>"+req.body.id +", in_is_deleted=> true)";
-
-
 		console.log(query);
 
 		await con.query(query, function(err, result) {
@@ -145,8 +145,27 @@ module.exports = function(app, con) {
 				console.log(err)
 				res.json({ status: false });
 				return;
-			} else{				
-				var query = "SELECT row_id, suppl_no, art_no, art_name, new_price, frmt_new_price, to_char(request_date, 'dd-mm-YYYY') as request_date, negotiate_final_price, to_char(price_increase_communicated_date, 'dd-mm-YYYY') as price_increase_communicated_date, to_char(price_increase_effective_date, 'dd-mm-YYYY') as price_increase_effective_date, action_status, price_change_reason FROM public.vw_request_details where country_name='"+req.body.country+"' AND vat_no='"+req.body.vat_number+"' AND new_price IS NOT NULL AND request_date IS NOT NULL ORDER BY row_id DESC";
+			} else{
+				var condition  = '';
+
+				if (req.body.searchSupplierNumber != ''){
+					condition = condition + " AND suppl_no = '" +req.body.searchSupplierNumber+"'"
+				}
+
+				if (req.body.searchArticleNumber != '' && req.body.searchArticleNumber != undefined){
+					condition = condition +" AND art_no = '" +req.body.searchArticleNumber+"'"
+				}
+
+				if (req.body.searchRequestedDate != ''){
+					var searchRequestedDate = req.body.searchRequestedDate.split(' ')
+					condition = condition + " AND request_date BETWEEN '" +searchRequestedDate[0]+"' and '" +searchRequestedDate[2]+"'" 
+				}
+
+				if (req.body.searchStatus != ''){
+					condition = condition + " AND action_status = '" +req.body.searchStatus+"'"
+				}
+
+				var query = "SELECT row_id, suppl_no, art_no, art_name, new_price, frmt_new_price, to_char(request_date, 'dd-mm-YYYY') as request_date, negotiate_final_price, to_char(price_increase_communicated_date, 'dd-mm-YYYY') as price_increase_communicated_date, to_char(price_increase_effective_date, 'dd-mm-YYYY') as price_increase_effective_date, action_status, price_change_reason FROM public.vw_request_details where country_name='"+req.body.country+"' AND vat_no='"+req.body.vat_number+"' AND new_price IS NOT NULL AND request_date IS NOT NULL " + condition + " ORDER BY row_id DESC";
 
 				console.log(query);
 				
@@ -178,7 +197,26 @@ module.exports = function(app, con) {
 				res.json({ status: false });
 				return;
 			} else{				
-				var query = "SELECT row_id, suppl_no, art_no, art_name, new_price, frmt_new_price, to_char(request_date, 'dd-mm-YYYY') as request_date, negotiate_final_price, to_char(price_increase_communicated_date, 'dd-mm-YYYY') as price_increase_communicated_date, to_char(price_increase_effective_date, 'dd-mm-YYYY') as price_increase_effective_date, action_status, price_change_reason FROM public.vw_request_details where country_name='"+req.body.country+"' AND vat_no='"+req.body.vat_number+"' AND new_price IS NOT NULL AND request_date IS NOT NULL ORDER BY row_id DESC";
+				var condition  = '';
+
+				if (req.body.searchSupplierNumber != ''){
+					condition = condition + " AND suppl_no = '" +req.body.searchSupplierNumber+"'"
+				}
+
+				if (req.body.searchArticleNumber != '' && req.body.searchArticleNumber != undefined){
+					condition = condition +" AND art_no = '" +req.body.searchArticleNumber+"'"
+				}
+
+				if (req.body.searchRequestedDate != ''){
+					var searchRequestedDate = req.body.searchRequestedDate.split(' ')
+					condition = condition + " AND request_date BETWEEN '" +searchRequestedDate[0]+"' and '" +searchRequestedDate[2]+"'" 
+				}
+
+				if (req.body.searchStatus != ''){
+					condition = condition + " AND action_status = '" +req.body.searchStatus+"'"
+				}
+
+				var query = "SELECT row_id, suppl_no, art_no, art_name, new_price, frmt_new_price, to_char(request_date, 'dd-mm-YYYY') as request_date, negotiate_final_price, to_char(price_increase_communicated_date, 'dd-mm-YYYY') as price_increase_communicated_date, to_char(price_increase_effective_date, 'dd-mm-YYYY') as price_increase_effective_date, action_status, price_change_reason FROM public.vw_request_details where country_name='"+req.body.country+"' AND vat_no='"+req.body.vat_number+"' AND new_price IS NOT NULL AND request_date IS NOT NULL " + condition + " ORDER BY row_id DESC";
 
 				console.log(query)
 				
@@ -202,6 +240,7 @@ module.exports = function(app, con) {
 
 		var getUniqueArticleQuery = "select DISTINCT art_no, art_name from vw_artinfo_without_request  Where suppl_no='"+req.query.supplierNumber+"' and country_name ='"+req.query.country+"' and vat_no ='"+req.query.vat_number+"'"
 
+		console.log("getUniqueArticleQuery=========")
 		console.log(getUniqueArticleQuery)
 
 		await con.query(getUniqueArticleQuery, function(err, result) {
@@ -269,7 +308,7 @@ module.exports = function(app, con) {
 	});
 
     var sendEmail = async function() {
-		var user_email = "rahul.sailwal@metro-gsc.in"
+		var user_email = "workflow-hyperautomation@metro-gsc.in"
 		var password = ""
 
 		// Create the transporter with the required configuration for Outlook
@@ -277,7 +316,6 @@ module.exports = function(app, con) {
 		    host: "viruswall.mgi.de", 	// hostname
 		    secureConnection: false, 		// TLS requires secureConnection to be false
 		    port: 25,
-            secure: false,
 		    auth: {
 		        user: user_email,
 		        pass: password

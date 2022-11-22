@@ -43,7 +43,6 @@ const AddBuyerInputModal = ({ open, handleModal, rowData, setsupplierInputsData 
   const CloseBtn = <X className='cursor-pointer' size={15} onClick={handleModal} />
 
   const SupplierInputSchema = yup.object().shape({
-    comment: yup.string().required(),
     new_price: yup.number().required().positive(),
     price_effective_date: yup.array().required(),
     final_price: yup.number()
