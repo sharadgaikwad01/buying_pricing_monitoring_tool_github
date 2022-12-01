@@ -71,7 +71,7 @@ const Buyers = props => {
   // ** Function to handle Modal toggle
   const handleModal = () => setModal(!modal)
   // const downloadArticleModal = () => setSupplierInputModal(!supplierInputModal)
-  const [UserData] = useState({first_name:'', last_name:'',  buyer_emailid:'', row_id:'', stratbuyer_name:'', country_name: ''})
+  const [UserData] = useState({first_name:'', dept_name:'',  buyer_emailid:'', row_id:'', stratbuyer_name:'', country_name: ''})
   // const handleUploadArticleModal = () => setUploadArticleModal(!uploadArticleModal)
   // ** Function to handle Pagination
   const handlePagination = page => {
@@ -230,7 +230,8 @@ const Buyers = props => {
       name: 'Sr. No',
       width: "80px",
       sortable: true,
-      selector: row => row.row_id
+      cell: (row, index) => index + 1
+      // selector: row => row.row_id
     },
     {
       name: 'Actions',
@@ -281,7 +282,8 @@ const Buyers = props => {
       selector: row => row.active_status,
       cell: row => {
          return (
-          row.active_status === 'Active' ? <Badge color='success' pill>{row.active_status}</Badge> : <Badge color='primary' pill>{row.active_status}</Badge>
+          row.active_status === 'Active' ? <Badge color='success' pill>Active</Badge> : <Badge color='success' pill>Active</Badge>
+          // row.active_status === 'Active' ? <Badge color='success' pill>{row.active_status}</Badge> : <Badge color='primary' pill>{row.active_status}</Badge>
             // row.user_type === 'BUYER' ? `<span class="badge badge-success">${row.user_type}</span>` : `<span class="badge badge-success">${row.user_type}</span>`
          )
       }

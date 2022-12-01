@@ -25,7 +25,7 @@ const MySwal = withReactContent(Swal)
 
 const AddNewModalBuyer = ({ open, handleModal, rowData, setUsersInputsData }) => {
   // const [UserData, setUsersData] = useState({user_name:'', email:'', user_id:'', emp_id:'', row_id:''})
-  const [LNameValue, setLNameValue] = useState('')
+  const [DepartmentValue, setDepartmentValue] = useState('')
   const [FNameValue, setFNameValue] = useState('')
   const [EmailValue, setEmailValue] = useState('')
   // const [UserTypeValue, setUserTypeValue] = useState('')
@@ -55,10 +55,10 @@ const AddNewModalBuyer = ({ open, handleModal, rowData, setUsersInputsData }) =>
     // setUsersData(rowData)
       console.log(rowData)
       await setFNameValue(rowData.first_name)
-      setValue('first_name', rowData.first_name, { shouldValidate:true })
+      setValue('first_name', `${rowData.first_name} ${rowData.last_name}`, { shouldValidate:true })
     
-      await setLNameValue(rowData.last_name)
-      setValue('last_name', rowData.last_name, { shouldValidate:true })
+      await setDepartmentValue(rowData.dept_name)
+      setValue('dept_name', rowData.dept_name, { shouldValidate:true })
     
       await setEmailValue(rowData.buyer_emailid)
       setValue('buyer_emailid', rowData.buyer_emailid)
@@ -74,7 +74,7 @@ const AddNewModalBuyer = ({ open, handleModal, rowData, setUsersInputsData }) =>
 
   const onSubmit = data => {
     const first_name = data.first_name
-    const last_name = data.last_name
+    const dept_name = data.dept_name
     const buyer_emailid = data.buyer_emailid
     // const emp_id = data.emp_id
     // const user_role = data.user_role
@@ -85,7 +85,7 @@ const AddNewModalBuyer = ({ open, handleModal, rowData, setUsersInputsData }) =>
     axios({
       method: "post",
       url: `${nodeBackend}/add_buyer_input`,
-      data: { first_name, last_name, buyer_emailid, emp_id, active_status, user_id }
+      data: { first_name, dept_name, buyer_emailid, emp_id, active_status, user_id }
     })
       .then(async function (success) {
         //handle success        
@@ -159,7 +159,7 @@ const AddNewModalBuyer = ({ open, handleModal, rowData, setUsersInputsData }) =>
 
           <div className='mb-1'>
             <Label className='form-label' for='first_name'>
-              First Name
+              Full Name
             </Label>
             <InputGroup>
               <Controller
@@ -167,25 +167,25 @@ const AddNewModalBuyer = ({ open, handleModal, rowData, setUsersInputsData }) =>
                 name='first_name'
                 defaultValue=''
                 control={control}
-                render={({ field }) => <Input type="text"{...field} placeholder='first name' value={FNameValue} onChange={(e) => { setFNameValue(e.target.value); setValue('first_name', e.target.value) } }  invalid={errors.first_name && true} />}
+                render={({ field }) => <Input type="text"{...field} placeholder='Full name' value={FNameValue} onChange={(e) => { setFNameValue(e.target.value); setValue('first_name', e.target.value) } }  invalid={errors.first_name && true} />}
               />
               {errors.user_name && <FormFeedback>{"First Name is a required field"}</FormFeedback>}
             </InputGroup>
           </div>
-
+          
           <div className='mb-1'>
-            <Label className='form-label' for='last_name'>
-              Last Name
+            <Label className='form-label' for='dept_name'>
+              Department
             </Label>
             <InputGroup>
               <Controller
-                id='last_name'
-                name='last_name'
+                id='dept_name'
+                name='dept_name'
                 defaultValue=''
                 control={control}
-                render={({ field }) => <Input type="text"{...field} placeholder='last name' value={LNameValue} onChange={(e) => { setLNameValue(e.target.value); setValue('last_name', e.target.value) } }  invalid={errors.last_name && true} />}
+                render={({ field }) => <Input type="text"{...field} placeholder='Department' value={DepartmentValue} onChange={(e) => { setDepartmentValue(e.target.value); setValue('dept_name', e.target.value) } }  invalid={errors.dept_name && true} />}
               />
-              {errors.user_name && <FormFeedback>{"Last Name is a required field"}</FormFeedback>}
+              {errors.user_name && <FormFeedback>{"Department is a required field"}</FormFeedback>}
             </InputGroup>
           </div>
 
