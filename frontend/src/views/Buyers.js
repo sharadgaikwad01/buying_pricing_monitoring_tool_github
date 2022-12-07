@@ -67,11 +67,12 @@ const Buyers = props => {
   // const [uploadArticleModal, setUploadArticleModal] = useState(false)
 
   const [currentPage, setCurrentPage] = useState(0)
+  const [articalNumberOptions, setarticalNumberOptions] = useState([])
   // const [rowData, setrowData] = useState([])
   // ** Function to handle Modal toggle
   const handleModal = () => setModal(!modal)
   // const downloadArticleModal = () => setSupplierInputModal(!supplierInputModal)
-  const [UserData] = useState({first_name:'', dept_name:'',  buyer_emailid:'', row_id:'', stratbuyer_name:'', country_name: ''})
+  const [UserData] = useState({first_name:'', dept_name:'',  buyer_emailid:'', row_id:'', stratbuyer_name:'', country_name: '', active_status: ''})
   // const handleUploadArticleModal = () => setUploadArticleModal(!uploadArticleModal)
   // ** Function to handle Pagination
   const handlePagination = page => {
@@ -83,8 +84,9 @@ const Buyers = props => {
    
   useEffect(async () => {
     await axios.get(`${nodeBackend}/buyers`, { params: { searchName, Status } }).then((res) => {
-      console.log(res.data.data)
+     
       setUsersInputsData(res.data.data)  
+      setarticalNumberOptions(res.data.options)  
     })
   }, [])
 
@@ -115,28 +117,12 @@ const Buyers = props => {
       containerClassName='pagination react-paginate separated-pagination pagination-sm justify-content-end pe-1 mt-1'
     />
   )
-  // ** Converts table to CSV
-  // ** Downloads CSV
-  // function downloadCSV(array) {
-  //   const link = document.createElement('a')
-  //   let csv = convertArrayOfObjectsToCSV(array)
-  //   if (csv === null) return
-  //   const filename = 'export.csv'
 
-  //   if (!csv.match(/^data:text\/csv/i)) {
-  //     csv = `data:text/csv;charset=utf-8,${csv}`
-  //   }
-
-  //   link.setAttribute('href', encodeURI(csv))
-  //   link.setAttribute('download', filename)
-  //   link.click()
-  // }
 
   // ** Function to handle supplier filter
   const handleNameFilter = async (e) => {
     const searchName = e.target.value
     setsearchName(searchName)
-    console.log(searchName)
     await axios.get(`${nodeBackend}/buyers`, { params: { searchName, Status } }).then((res) => {
       setUsersInputsData(res.data.data)
     })
@@ -231,7 +217,6 @@ const Buyers = props => {
       width: "80px",
       sortable: true,
       cell: (row, index) => index + 1
-      // selector: row => row.row_id
     },
     {
       name: 'Actions',
@@ -248,31 +233,26 @@ const Buyers = props => {
     },
     {
       name: 'Full name',
-      // width: "10",
       sortable: true,
       selector: row => `${row.first_name} ${row.last_name}`
     },
     {
       name: 'Email',
-      // width: "auto",
       sortable: true,
       selector: row => row.buyer_emailid
     },
     {
       name: 'Department',
-      // width: "auto",
       sortable: true,
       selector: row => row.dept_name
     },
     {
       name: 'Category',
-      // width: "auto",
       sortable: true,
       selector: row => row.stratbuyer_name
     },
     {
       name: 'Country',
-      // width: "auto",
       sortable: true,
       selector: row => row.country_name
     },
@@ -284,7 +264,6 @@ const Buyers = props => {
          return (
           row.active_status === 'Active' ? <Badge color='success' pill>Active</Badge> : <Badge color='success' pill>Active</Badge>
           // row.active_status === 'Active' ? <Badge color='success' pill>{row.active_status}</Badge> : <Badge color='primary' pill>{row.active_status}</Badge>
-            // row.user_type === 'BUYER' ? `<span class="badge badge-success">${row.user_type}</span>` : `<span class="badge badge-success">${row.user_type}</span>`
          )
       }
     }
@@ -353,7 +332,7 @@ const Buyers = props => {
           </Row>
         </CardBody>       
       </Card>
-      <AddNewModalBuyer open={modal} handleModal={handleModal} rowData={rowData} setUsersInputsData={setUsersInputsData} />
+      <AddNewModalBuyer open={modal} handleModal={handleModal} rowData={rowData} articalNumberOptions={articalNumberOptions} setUsersInputsData={setUsersInputsData} />
     </Fragment>
   )
 }
