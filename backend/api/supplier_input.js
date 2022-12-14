@@ -64,12 +64,10 @@ module.exports = function(app, con) {
             condition = condition + " AND action_status = '" +req.query.searchStatus+"'"
         }
 
-
         var query = "SELECT row_id, suppl_no, art_no, art_name, new_price, frmt_new_price, to_char(request_date, 'dd-mm-YYYY') as request_date, negotiate_final_price, to_char(price_increase_communicated_date, 'dd-mm-YYYY') as price_increase_communicated_date, to_char(price_increase_effective_date, 'dd-mm-YYYY') as price_increase_effective_date, action_status, price_change_reason FROM public.vw_request_details where country_name='"+req.query.country+"' AND vat_no='"+req.query.vat_number+"' AND new_price IS NOT NULL AND request_date IS NOT NULL " + condition + " ORDER BY row_id DESC";
 
 		console.log(query)
 
-		
         await con.query(query, function(err, result) {
 			if (err) {
 				console.log(err)
@@ -77,8 +75,6 @@ module.exports = function(app, con) {
 				return;
 			} else{
 				data.supplierInputs = result.rows
-				console.log("I am here 2")
-				console.log(data)
                 res.json({ status: true, data: data });
 				return;
             }			
@@ -136,8 +132,6 @@ module.exports = function(app, con) {
 
 		var data = {};
 		var query = "call public.usp_update_requestdetails (record_id=>"+req.body.id +", in_is_deleted=> true)";
-
-
 		console.log(query);
 
 		await con.query(query, function(err, result) {
@@ -268,36 +262,32 @@ module.exports = function(app, con) {
 		]);
 	});
 
-    var sendEmail = async function() {
-		var user_email = "rahul.sailwal@metro-gsc.in"
-		var password = ""
-
+    var sendEmail = async function () {
 		// Create the transporter with the required configuration for Outlook
 		var transporter = nodemailer.createTransport({
-		    host: "viruswall.mgi.de", 	// hostname
-		    secureConnection: false, 		// TLS requires secureConnection to be false
-		    port: 25,
-            secure: false,
-		    auth: {
-		        user: user_email,
-		        pass: password
-		    }
+			host: 'viruswall.mgi.de',
+			port: 25,
+			secureConnection: false,
+			auth: {
+				user: 'workflow-hyperautomation@metro-gsc.in',
+				pass: ''
+			}
 		});
 
 		// setup e-mail data, even with unicode symbols
 		var mailOptions = {
-		    from: user_email, 	// sender address (who sends)
-		    to: 'sharad.gaikwad02@metro-gsc.in', 	// list of receivers (who receives)
-		    subject: 'this is subject', 	// Subject line
-		    html: 'this is body' 	// html body
+			from: 'workflow-hyperautomation@metro-gsc.in', 	// sender address (who sends)
+			to: 'sharad.gaikwad02@metro-gsc.in', 	// list of receivers (who receives)
+			subject: 'this is subject', 	// Subject line
+			html: 'this is body' 	// html body
 		};
 
 		// send mail with defined transport object
-		await transporter.sendMail(mailOptions, function(error, info){
-		    if(error){
-		        return console.log(error);
-		    }
-		    console.log('Message sent: ' + info.response);
+		await transporter.sendMail(mailOptions, function (error, info) {
+			if (error) {
+				return console.log(error);
+			}
+			console.log('Message sent: ' + info.response);
 		});
 	}
 }

@@ -44,11 +44,6 @@ router.use((req, res, next) => {
     client.callback(config.nodebackend+'/api/v1/callback', params, { code_verifier }) // => Promise
         .then(token => {
 			let user_details = token.claims();
-<<<<<<< HEAD
-
-=======
-            console.log(user_details)
->>>>>>> 351b5d50f8e6c01661b78930ef5744773170bf5b
             sql = "SELECT * FROM public.tbl_buyer_details where buyer_emailid = '"+user_details.email +"'";
             console.log(sql)
             clientDB.query(sql, function(err, result) {

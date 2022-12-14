@@ -106,6 +106,7 @@ const Home = props => {
     if (user_type === 'BUYER') {
       props.history.push('/buyer_input')
     }
+    console.log(nodeBackend)
 
     await axios.get(`${nodeBackend}/supplier_input`, { params: { searchSupplierNumber, searchArticleNumber, searchRequestedDate, searchStatus, country, vat_number } }).then((res) => {
       if (res.data.data) {

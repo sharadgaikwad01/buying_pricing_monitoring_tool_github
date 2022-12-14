@@ -18,13 +18,17 @@ var buyerInput = require('./api/buyer_input')
 var app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
+console.log(config.reactFrontend)
+console.log("config.nodebackend=============================")
+console.log(config.nodebackend)
 //app.use(cors());
 var corsOptions = {
 	"methods": "GET, POST, PUT, PATCH, DELETE, OPTIONS",
 	"preflightContinue": false,
 	credentials: true,
 	origin: function (origin, callback){
-		console.log("Origin is: " + origin);
+		console.log("Origin is ======================: " + origin);
 		if (origin == config.reactFrontend ) return callback(null, true);
 		if (true) {
 			return callback(null, true);
