@@ -92,32 +92,6 @@ const View = () => {
                         <Col className='mb-1 col-auto'>
                             <Col className="row g-0">
                                 <Col className="col-auto d-flex align-items-center">
-                                    <Label htmlFor="select_supplier" className="me-50">Global Umbrella name: </Label>
-                                </Col>
-                                <Col className="col-auto">
-                                    <Col className="box-select server_data">
-                                        <Col className="server_data_label">{Suppliername}</Col>
-                                    </Col>
-                                </Col>
-                            </Col>
-                        </Col>
-
-                        <Col className='mb-1 col-auto'>
-                            <Col className="row g-0">
-                                <Col className="col-auto d-flex align-items-center">
-                                    <Label htmlFor="select_supplier" className="me-50">Global Umbrella No: </Label>
-                                </Col>
-                                <Col className="col-auto">
-                                    <Col className="box-select server_data">
-                                        <Col className="server_data_label">{Supplierno}</Col>
-                                    </Col>
-                                </Col>
-                            </Col>
-                        </Col>
-                        
-                        <Col className='mb-1 col-auto'>
-                            <Col className="row g-0">
-                                <Col className="col-auto d-flex align-items-center">
                                     <Label htmlFor="select_supplier" className="me-50">Category: </Label>
                                 </Col>
                                 <Col className="col-auto">

@@ -293,7 +293,7 @@ const Home = props => {
         axios({
           method: "post",
           url: `${nodeBackend}/delete_supplier_input`,
-          data: { id, country, vat_number}
+          data: { id, country, vat_number, searchSupplierNumber, searchArticleNumber, searchRequestedDate, searchStatus}
         })
           .then(function (success) {
             //handle success        
@@ -615,7 +615,7 @@ const Home = props => {
       <AddNewModal open={modal} handleModal={handleModal} supllierNumberOptions={supllierNumberOptions} setsupplierInputsData={setsupplierInputsData} />
       <UploadArticliesModal open={uploadArticleModal} handleModal={handleUploadArticleModal} setsupplierInputsData={setsupplierInputsData} />
       <DownloadArticliesModal open={supplierInputModal} handleModal={downloadArticleModal} supllierNumberOptions={supllierNumberOptions} />
-      <EditSupplierRequestModal open={editSupplierModal} handleModal={handleEdit} rowData={rowData} supllierNumberOptions={supllierNumberOptions} setsupplierInputsData={setsupplierInputsData}/>
+      <EditSupplierRequestModal open={editSupplierModal} handleModal={handleEdit} rowData={rowData} supllierNumberOptions={supllierNumberOptions} setsupplierInputsData={setsupplierInputsData} searchSupplierNumber = {searchSupplierNumber} searchArticleNumber = {searchArticleNumber} searchRequestedDate = {searchRequestedDate} searchStatus = {searchStatus} />
     </Fragment>
   )
 }

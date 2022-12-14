@@ -23,7 +23,7 @@ import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 const MySwal = withReactContent(Swal)
 
-const EditSupplierRequestModal = ({ open, handleModal, rowData, supllierNumberOptions, setsupplierInputsData }) => {
+const EditSupplierRequestModal = ({ open, handleModal, rowData, supllierNumberOptions, setsupplierInputsData, searchSupplierNumber, searchArticleNumber, searchRequestedDate, searchStatus }) => {
   // ** State
   // const [Picker, setPicker] = useState('')
   const [articleOptions, setarticleOptions] = useState([])
@@ -125,7 +125,7 @@ const EditSupplierRequestModal = ({ open, handleModal, rowData, supllierNumberOp
       method: "post",
 
       url: `${nodeBackend}/update_supplier_input`,
-      data: { row_id, new_price, reason, supplier_number, article_number, price_effective_date, country, vat_number}
+      data: { row_id, new_price, reason, supplier_number, article_number, price_effective_date, country, vat_number, searchSupplierNumber, searchArticleNumber, searchRequestedDate, searchStatus}
 
     }).then(function (success) {
       //handle success        

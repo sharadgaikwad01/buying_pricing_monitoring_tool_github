@@ -17,8 +17,10 @@ const NavbarUser = props => {
   const { skin, setSkin } = props
   const vat_number = localStorage.getItem('vat')
   const user_name = localStorage.getItem('name')
+  const user_type = localStorage.getItem('type')
   
   const [userDetails, setUserDetails] = useState([])
+  const [applicationName, setApplicationName] = useState('')
 
   // ** Function to toggle Theme (Light/Dark)
   const ThemeToggler = () => {
@@ -29,12 +31,13 @@ const NavbarUser = props => {
     }
   }
   useEffect(async () => {
-    const user_type = localStorage.getItem("type")
     if (user_type === 'SUPPLIER') {
       const result = `${user_name} / Vat ID: ${vat_number}`
       setUserDetails(result)
+      setApplicationName("Application")
     } else {
       setUserDetails('')
+      setApplicationName("Monitoring Tool")
     }
   }, [])
 
@@ -47,7 +50,7 @@ const NavbarUser = props => {
                   <span className='brand-logo'>
                     <img src={themeConfig.app.appLogoImage} alt='logo' />
                   </span>
-                  <h4 className='brand-text mb-0'>{themeConfig.app.appName}<br /><span className='text-warning'> {themeConfig.app.appName1}</span></h4>
+                  <h4 className='brand-text mb-0'>{themeConfig.app.appName}<br /><span className='text-warning'>{applicationName}</span></h4>
                 </Link>
               </NavItem>
               <NavItem>
