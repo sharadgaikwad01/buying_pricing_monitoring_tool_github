@@ -119,7 +119,7 @@ const View = () => {
                                         </Col>
                                         <Col className="col-auto">
                                             <Col className="incr-infla d-flex justify-content-end">
-                                                <span className="incr-infla-badge incr-infla-3 mb-2">{row.requested_price_increase_perc === null ? 0 : Math.round(row.requested_price_increase_perc)}%</span>
+                                                <span className="incr-infla-badge incr-infla-3 mb-2 me-1">{row.requested_price_increase_perc === null ? 0 : Math.round(row.requested_price_increase_perc)}%</span>
                                                 <span className="incr-infla-badge incr-infla-5 mb-2">{row.agreed_price_increase_perc === null ? 0 : Math.round(row.agreed_price_increase_perc)}%</span>
                                             </Col>
 
