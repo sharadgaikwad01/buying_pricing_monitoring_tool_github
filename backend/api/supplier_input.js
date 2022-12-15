@@ -69,7 +69,6 @@ module.exports = function(app, con) {
 
 		console.log(query)
 
-		
         await con.query(query, function(err, result) {
 			if (err) {
 				console.log(err)
@@ -77,8 +76,6 @@ module.exports = function(app, con) {
 				return;
 			} else{
 				data.supplierInputs = result.rows
-				console.log("I am here 2")
-				console.log(data)
                 res.json({ status: true, data: data });
 				return;
             }			
@@ -324,18 +321,18 @@ module.exports = function(app, con) {
 
 		// setup e-mail data, even with unicode symbols
 		var mailOptions = {
-		    from: user_email, 	// sender address (who sends)
-		    to: 'sharad.gaikwad02@metro-gsc.in', 	// list of receivers (who receives)
-		    subject: 'this is subject', 	// Subject line
-		    html: 'this is body' 	// html body
+			from: 'workflow-hyperautomation@metro-gsc.in', 	// sender address (who sends)
+			to: 'sharad.gaikwad02@metro-gsc.in', 	// list of receivers (who receives)
+			subject: 'this is subject', 	// Subject line
+			html: 'this is body' 	// html body
 		};
 
 		// send mail with defined transport object
-		await transporter.sendMail(mailOptions, function(error, info){
-		    if(error){
-		        return console.log(error);
-		    }
-		    console.log('Message sent: ' + info.response);
+		await transporter.sendMail(mailOptions, function (error, info) {
+			if (error) {
+				return console.log(error);
+			}
+			console.log('Message sent: ' + info.response);
 		});
 	}
 }
