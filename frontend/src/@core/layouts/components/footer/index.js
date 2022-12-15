@@ -1,4 +1,5 @@
 // ** Icons Import
+import themeConfig from '@configs/themeConfig'
 const Footer = () => {
   return (
     <p className='clearfix mb-0'>
@@ -12,7 +13,7 @@ const Footer = () => {
       <span className='float-md-end d-none d-md-block fw-bolder'>
         <span className='d-none d-sm-inline-block'>Powered By: &nbsp;</span>
            
-          <img src="logo/BSC_Main_Logo.png" className="footer-logo light-mode-logo custom-size-image" />
+          <img src={themeConfig.app.appLogoImagefooter} className="footer-logo light-mode-logo custom-size-image" />
           {/* <img src="logo/BSC_Main_Logo_White.png" className="footer-logo dark-mode-logo" /> */}
       </span>
     </p>
