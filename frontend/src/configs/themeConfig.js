@@ -5,7 +5,8 @@ const themeConfig = {
   app: {
     appName: 'Buying Price',
     appName1: 'Application',
-    appLogoImage: require('@src/assets/images/logo/logom.png').default
+    appLogoImage: require('@src/assets/images/logo/logobpmt.png').default,
+    appLogoImagefooter: require('@src/assets/images/logo/logom.png').default
   },
   layout: {
     isRTL: false,
