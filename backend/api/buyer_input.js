@@ -170,7 +170,7 @@ module.exports = function(app, con) {
 	});
 
 	app.get('/buyer_supplier_details_list', async function(req, res){
-		var query = "SELECT row_id, suppl_no, suppl_name, art_no, art_name_tl, price_difference_perc, agreed_price_increase_perc, action_status, bdm_global_umbrella_no, bdm_global_umbrella_name FROM public.vw_request_details where country_name='"+req.query.countryname+"'";
+		var query = "SELECT row_id, suppl_no, suppl_name, art_no, art_name_tl, price_difference_perc, agreed_price_increase_perc, action_status, bdm_global_umbrella_no, bdm_global_umbrella_name FROM public.vw_request_details where country_name='"+req.query.countryname+"' ORDER by action_status ASC";
 		await con.query(query, async function(err, result) {
 			if (err) {
 				res.json({ status: false });
