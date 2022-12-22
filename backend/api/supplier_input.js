@@ -235,7 +235,7 @@ module.exports = function(app, con) {
 		var data = {};
 		var articleOptions = [];
 
-		var getUniqueArticleQuery = "select DISTINCT art_no, art_name from vw_artinfo_without_request  Where suppl_no='"+req.query.supplierNumber+"' and country_name ='"+req.query.country+"' and vat_no ='"+req.query.vat_number+"'"
+		var getUniqueArticleQuery = "select DISTINCT art_no, art_name from vw_artinfo_with_request  Where suppl_no='"+req.query.supplierNumber+"' and country_name ='"+req.query.country+"' and vat_no ='"+req.query.vat_number+"'"
 
 		console.log("getUniqueArticleQuery=========")
 		console.log(getUniqueArticleQuery)
@@ -273,10 +273,6 @@ module.exports = function(app, con) {
 		
 							con.query(sql, function(err, result) {
 								if (err) {
-									if (err.message = 'Duplicate entry'){
-										res.json({ status: false, message: "Duplicate entry" });
-										return;
-									}
 									error_count++;
 								} else {
 									sucess_count++;
@@ -285,7 +281,7 @@ module.exports = function(app, con) {
 						}
 					}
 				});
-				callback(null,sucess_count)
+				callback(null,sucess_count, error_count)
 			},
 			function(callback){
 				var query = "SELECT row_id, suppl_no, art_no, art_name, new_price, frmt_new_price, to_char(request_date, 'dd-mm-YYYY') as request_date, negotiate_final_price, to_char(price_increase_communicated_date, 'dd-mm-YYYY') as price_increase_communicated_date, to_char(price_increase_effective_date, 'dd-mm-YYYY') as price_increase_effective_date, action_status, price_change_reason FROM public.vw_request_details where country_name='"+req.body.country+"' AND vat_no='"+req.body.vat_number+"' AND new_price IS NOT NULL AND request_date IS NOT NULL ORDER BY row_id DESC";
@@ -296,7 +292,7 @@ module.exports = function(app, con) {
 						return;
 					} else{
 						data.supplierInputs = result.rows
-						res.json({ status: true, data: data, sucess_count:sucess_count});
+						res.json({ status: true, data: data, sucess_count:sucess_count, error_count:error_count });
 						return;
 					}			
 				});
