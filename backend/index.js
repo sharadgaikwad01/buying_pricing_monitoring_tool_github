@@ -9,6 +9,7 @@ const { Pool, Client } = require('pg')
 
 //=========== API modules ===================
 var auth = require('./api/auth');
+var supplierAuth = require('./api/supplier_auth');
 var supplierInput = require('./api/supplier_input')
 var usersModal = require('./api/usersModal')
 var buyerModal = require('./api/buyerModal')
@@ -107,6 +108,7 @@ client.query('SELECT NOW()', (err, res) => {
 
 app.use("/", auth)
 // app.use("/", auth)
+app.use("/supplier", supplierAuth)
 supplierInput(app, client);
 usersModal(app, client);
 buyerModal(app, client);

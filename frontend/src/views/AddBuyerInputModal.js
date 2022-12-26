@@ -25,6 +25,8 @@ import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 const MySwal = withReactContent(Swal)
 
+import { currencies } from './countryCurrency'
+
 const AddBuyerInputModal = ({ open, handleModal, rowData, setsupplierInputsData }) => {
   // ** State
   // const [Picker, setPicker] = useState('')
@@ -241,7 +243,7 @@ const AddBuyerInputModal = ({ open, handleModal, rowData, setsupplierInputsData 
             </Label>
             <InputGroup>
               <InputGroupText>
-                Ft
+                {currencies[0][country]}
               </InputGroupText>
               <Controller
                 id='new_price'
@@ -258,7 +260,7 @@ const AddBuyerInputModal = ({ open, handleModal, rowData, setsupplierInputsData 
             </Label>
             <InputGroup>
               <InputGroupText>
-                Ft
+                {currencies[0][country]}
               </InputGroupText>
               <Controller
                 id='final_price'

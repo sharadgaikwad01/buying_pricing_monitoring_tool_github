@@ -150,6 +150,14 @@ const UploadArticliesModal = ({ open, handleModal, setsupplierInputsData }) => {
       <ModalBody className='flex-grow-1'>
         <Row className='mb-50'>
           <Col lg='12' md='6' className='mb-1'>
+            Note : While Uploading Article 
+          <ul>
+            <li>Date format for Requested Date should be "yyyy-mm-dd" eg. 2022-12-15</li>
+            <li>Requested Price Should be numeric value. eg. 20 or 20.00</li>
+          </ul>
+          </Col>
+          
+          <Col lg='12' md='6' className='mb-1'>
             <Label className='form-label' for='inputFile'>
               Upload file
             </Label>

@@ -1,6 +1,7 @@
 // ** React Imports
 // ** Third Party Components
 import { useState, useEffect} from 'react'
+import { currencies } from './countryCurrency'
 import { nodeBackend } from '@utils'
 import Flatpickr from 'react-flatpickr'
 import { User, Briefcase, Mail, Calendar, DollarSign, X } from 'react-feather'
@@ -49,7 +50,7 @@ const AddNewModal = ({ open, handleModal, supllierNumberOptions, setsupplierInpu
   const CloseBtn = <X className='cursor-pointer' size={15} onClick={handleModal} />
 
   const SupplierInputSchema = yup.object().shape({
-    new_price: yup.number().required().positive().integer(),
+    new_price: yup.number().required().positive(),
     supplier_number: yup.string().required(),
     article_number: yup.string().required(),
     price_effective_date: yup.array().required()
@@ -138,7 +139,9 @@ const AddNewModal = ({ open, handleModal, supllierNumberOptions, setsupplierInpu
     setarticleOptions([{ value: '', label: '' }])
     const supplierNumber = value.value
     await axios.get(`${nodeBackend}/getArticlesBySupplierNumber`, { params: { supplierNumber, country, vat_number} }).then((res) => {
-      setarticleOptions(res.data.data.articleOptions)
+      if (res.data.data) {
+        setarticleOptions(res.data.data.articleOptions)
+      }      
     })
   } 
 
@@ -216,7 +219,7 @@ const AddNewModal = ({ open, handleModal, supllierNumberOptions, setsupplierInpu
             </Label>
             <InputGroup>
               <InputGroupText>
-                Ft
+                {currencies[0][country]}
               </InputGroupText>
               <Controller
                 id='new_price'

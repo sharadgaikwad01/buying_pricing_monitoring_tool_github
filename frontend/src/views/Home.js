@@ -395,6 +395,17 @@ const Home = props => {
       selector: row => row.art_no
     },
     {
+      name: 'EAN Number',
+      sortable: true,
+      width: '130px',
+      selector: row => row.ean_no,
+      cell: row => {
+        return (
+          row.ean_no ? row.ean_no : "-"
+        )
+      }
+    },
+    {
       name: 'Article Description',
       sortable: true,
       width: 'auto',

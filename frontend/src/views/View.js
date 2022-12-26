@@ -54,9 +54,9 @@ const View = () => {
     const handleEditError = async (e) => {
         e.preventDefault()
         return MySwal.fire({
-            title: 'Error',
+            title: 'Info!',
             text: 'There are no records to display',
-            icon: 'error',
+            icon: 'info',
             customClass: {
               confirmButton: 'btn btn-primary'
             },
@@ -119,8 +119,8 @@ const View = () => {
                                         </Col>
                                         <Col className="col-auto">
                                             <Col className="incr-infla d-flex justify-content-end">
-                                                <span className="incr-infla-badge incr-infla-3 mb-2">{row.requested_price_increase_perc === null ? 0 : row.requested_price_increase_perc}%</span>
-                                                <span className="incr-infla-badge incr-infla-5 mb-2">{row.agreed_price_increase_perc === null ? 0 : row.agreed_price_increase_perc}%</span>
+                                                <span className="incr-infla-badge incr-infla-3 mb-2">{row.requested_price_increase_perc === null ? 0 : Math.round(row.requested_price_increase_perc)}%</span>
+                                                <span className="incr-infla-badge incr-infla-5 mb-2">{row.agreed_price_increase_perc === null ? 0 : Math.round(row.agreed_price_increase_perc)}%</span>
                                             </Col>
 
                                             <Col onClick={(e) => (row.article_count > 0 ? handleEdit(e, row.country_name) : handleEditError(e))} className="sku-info d-flex justify-content-end align-bottom align-items-baseline align-items-end align-items">

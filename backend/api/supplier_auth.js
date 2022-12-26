@@ -18,7 +18,6 @@ const clientDB = new Client({
 	port: config.db_port,
 })
 clientDB.connect();
-console.log(clientDB);
 
 Issuer.discover('https://idam-pp.metrosystems.net/') // => Promise
   .then((idam) => {
@@ -27,7 +26,7 @@ Issuer.discover('https://idam-pp.metrosystems.net/') // => Promise
         client_id: 'BUYING_PRICE_MONITORING_TOOL_S',
         client_secret: 'n3ln4fPSo6',
         realm_id: 'BUYING_PS',
-        redirect_uris: [config.nodebackend + '/api/v2/callback'],
+        redirect_uris: [config.nodebackend + '/supplier/api/v2/callback'],
         response_types: ['code'],
     }); // => Client
 }).catch( err => {
@@ -41,23 +40,14 @@ router.use((req, res, next) => {
         return
     }
     const params = client.callbackParams(req)
-    client.callback(config.nodebackend+'/api/v2/callback', params, { code_verifier }) // => Promise
+    client.callback(config.nodebackend+'/supplier/api/v2/callback', params, { code_verifier }) // => Promise
         .then(token => {
-			let user_details = token.claims();
-            sql = "SELECT * FROM public.tbl_buyer_details where buyer_emailid = '"+user_details.email +"'";
-            console.log(sql)
-            clientDB.query(sql, function(err, result) {
-                if (err) {
-                    res.send('<script>window.location.href="'+config.reactFrontend + '/auth?error=User not Exist'+'";</script>');
-                } else{
-                    if(result.rowCount == 0){
-                        res.send('<script>window.location.href="'+config.reactFrontend + '/auth?error=User not Exist' + '";</script>');
-                    }else{
-                        var frontend_redirect_url = config.reactFrontend + '/auth?token='+token.id_token+'&id='+user_details.metro_id+'&email='+user_details.email+'&type=SUPPLIER&country='+ result.rows[0].country_name +'&name=' + result.rows[0].first_name + ' ' + result.rows[0].last_name;
-                        res.send('<script>window.location.href="'+frontend_redirect_url+'";</script>');
-                    }				
-                }	
-            });
+            console.log("token=====")
+            console.log(token)
+
+            console.log("token=====")
+            console.log(token.claims())
+            
         }).catch( err => {
             console.log(err);
         });
@@ -65,7 +55,7 @@ router.use((req, res, next) => {
 })
 
 router.get('/api/v2/callback', (req, res, next) => {  
-    // res.send("callback")  
+    //res.send("callback")  
 })
 
 router.get('/api/v2/login', (req, res, next) => {
@@ -80,8 +70,7 @@ router.get('/api/v2/login', (req, res, next) => {
         code_challenge_method: 'S256',
     });
     res.send('<script>window.location.href="'+authUrl+'";</script>');
-    next()
-    
-}) 
+    next()    
+})
 
 module.exports = router

@@ -1,11 +1,7 @@
 // ** Third Party Components
-import Flatpickr from 'react-flatpickr'
-
 import React, { useState } from "react"
 
-import { User, Briefcase, Mail, Calendar, DollarSign, X } from 'react-feather'
-
-import { MultiSelect } from "react-multi-select-component"
+import { X } from 'react-feather'
 
 import axios from 'axios'
 
@@ -25,18 +21,16 @@ import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 const MySwal = withReactContent(Swal)
 
-import { utils, writeFile } from 'xlsx'
+const fileDownload = require('js-file-download')
 
 const DownloadArticliesModal = ({ open, handleModal, supllierNumberOptions }) => {
 
     const country = localStorage.getItem('country')
-    const vat_number = localStorage.getItem('vat')
-    const [fileName] = useState('export')
-    const [fileFormat] = useState('xlsx')
 
-    const [selected, setSelected] = useState([])
+    const [supplierNumber, setSupplierNumber] = useState('')
+
     const SupplierInputSchema = yup.object().shape({
-        supplier_number: yup.array().min(1, "").required()
+        supplier_number: yup.string().required()
     })
 
     const {
@@ -46,34 +40,19 @@ const DownloadArticliesModal = ({ open, handleModal, supllierNumberOptions }) =>
     } = useForm({ mode: 'onChange', resolver: yupResolver(SupplierInputSchema) })
 
     const onSubmit = async (data) => {
-        let supplier_string = ''
-        for (const value of data.supplier_number) {
-            supplier_string = `${supplier_string}, '${value.value}'` 
-        }
-        const supplier_number = supplier_string.substring(1)
-        await axios.get(`${nodeBackend}/supplier_article_details`, { params: { supplier_number, country, vat_number } }).then((res) => {
-            console.log(res.data)
-            if (res.data.data.length > 0) {
-                const customHeadingsData = res.data.data.map(item => ({
-                    "Country Name": item.country_name,
-                    "Vat Number": item.vat_no,
-                    "Supplier Number": item.suppl_no,
-                    "Article Number": item.art_no,
-                    "Article Name": item.art_name,
-                    "Umbrella Name": item.umbrella_name,
-                    "Requested New Price": item.new_price,
-                    "Price Change Reason": item.price_change_reason,
-                    "Price Effective Date": item.price_increase_effective_date
-                }))
-                const name = fileName.length ? `${fileName}.${fileFormat}` : `excel-sheet.${fileFormat}`
-                const wb = utils.json_to_sheet(customHeadingsData)
-                const wbout = utils.book_new()
-                utils.book_append_sheet(wbout, wb, 'test')
-                writeFile(wbout, name)
-                handleModal(false)
+        console.log(data)
+        const supplier_number = data.supplier_number
+        await axios.get(`${nodeBackend}/download_supplier_assoerment_pdf`, {
+            params: { supplier_number, country },
+            responseType: 'blob'
+        }).then(async (res) => {
+            handleModal(false)
+            console.log(res)
+            fileDownload(res.data, "download.pdf")
+            if (res.data.status) {
                 return MySwal.fire({
                     title: 'Done!',
-                    text: 'File has been downloaded!',
+                    text: 'Supplier Assortment PDF has been downloaded!',
                     icon: 'success',
                     customClass: {
                         confirmButton: 'btn btn-primary'
@@ -81,7 +60,6 @@ const DownloadArticliesModal = ({ open, handleModal, supllierNumberOptions }) =>
                     buttonsStyling: false
                 })
             } else {
-                handleModal(false)
                 MySwal.fire({
                     title: 'Info!',
                     text: 'There is no article details available for this supplier number',
@@ -96,9 +74,9 @@ const DownloadArticliesModal = ({ open, handleModal, supllierNumberOptions }) =>
     }
 
     const handleChange = async (val) => {
-        await setSelected(val)
+        await setSupplierNumber(val)
     }
-    
+
 
     // ** Custom close btn
     const CloseBtn = <X className='cursor-pointer' size={15} onClick={handleModal} />
@@ -111,7 +89,7 @@ const DownloadArticliesModal = ({ open, handleModal, supllierNumberOptions }) =>
             contentClassName='pt-0'
         >
             <ModalHeader className='mb-1' toggle={handleModal} close={CloseBtn} tag='div'>
-                <h5 className='modal-title'>Supplier Input</h5>
+                <h5 className='modal-title'>Download Assortment PDF</h5>
             </ModalHeader>
             <Form onSubmit={handleSubmit(onSubmit)}>
                 <ModalBody className='flex-grow-1'>
@@ -124,11 +102,12 @@ const DownloadArticliesModal = ({ open, handleModal, supllierNumberOptions }) =>
                                 name="supplier_number"
                                 control={control}
                                 render={({ field: { onChange } }) => (
-                                    <MultiSelect
+                                    <Select
                                         options={supllierNumberOptions}
-                                        value={selected}
-                                        onChange={(val) => onChange(val, handleChange(val))}
-                                        labelledBy="Select"
+                                        className='is-invalid select-custom'
+                                        classNamePrefix="react-select"
+                                        value={supllierNumberOptions.find((c) => c.value === supplierNumber)}
+                                        onChange={(val) => { onChange(val.value, handleChange(val)) }}
                                     />
                                 )}
                             />
@@ -137,7 +116,7 @@ const DownloadArticliesModal = ({ open, handleModal, supllierNumberOptions }) =>
                     </Row>
                     <div className='d-flex justify-content-center'>
                         <Button className='me-1' color='primary' type='submit'>
-                            Export Article Details
+                            Download
                         </Button>
                     </div>
                 </ModalBody>

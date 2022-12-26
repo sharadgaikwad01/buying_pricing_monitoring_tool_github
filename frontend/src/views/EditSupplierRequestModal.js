@@ -23,6 +23,8 @@ import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 const MySwal = withReactContent(Swal)
 
+import { currencies } from './countryCurrency'
+
 const EditSupplierRequestModal = ({ open, handleModal, rowData, supllierNumberOptions, setsupplierInputsData, searchSupplierNumber, searchArticleNumber, searchRequestedDate, searchStatus }) => {
   // ** State
   // const [Picker, setPicker] = useState('')
@@ -39,7 +41,7 @@ const EditSupplierRequestModal = ({ open, handleModal, rowData, supllierNumberOp
   const [rowId, setRowId] = useState('')
 
   const SupplierInputSchema = yup.object().shape({
-    new_price: yup.number().required().positive().integer(),
+    new_price: yup.number().required().positive(),
     supplier_number: yup.string().required(),
     article_number: yup.string().required(),
     price_effective_date: yup.array().required(),
@@ -55,7 +57,6 @@ const EditSupplierRequestModal = ({ open, handleModal, rowData, supllierNumberOp
 
   useEffect(async () => {
     if (rowData) {
-      console.log(rowData)
       const supplierNumber = rowData.suppl_no
       await setRowId(rowData.row_id)
       await setNewPrice(rowData.new_price)
@@ -79,8 +80,12 @@ const EditSupplierRequestModal = ({ open, handleModal, rowData, supllierNumberOp
       setValue('article_number', rowData.art_no, { shouldValidate: true })
       setValue('price_effective_date', finatEffectiveDate, { shouldValidate: true })
 
-      await axios.get(`${nodeBackend}/getArticlesBySupplierNumber`, { params: { supplierNumber, country, vat_number } }).then((res) => {
-        setarticleOptions(res.data.data.articleOptions)
+      const flag = '1'
+
+      await axios.get(`${nodeBackend}/getArticlesBySupplierNumber`, { params: { supplierNumber, country, vat_number, flag } }).then((res) => {
+        if (res.data.data) {
+          setarticleOptions(res.data.data.articleOptions)
+        }        
       })
     }
   }, [rowData])
@@ -91,15 +96,12 @@ const EditSupplierRequestModal = ({ open, handleModal, rowData, supllierNumberOp
   // ** Hooks  
 
   const onSubmit = data => {
-    console.log(data)
     const new_price = data.new_price
     const reason = data.reason
     const supplier_number = data.supplier_number
     const article_number = data.article_number
     const row_id = data.row_id
     const effective_date = data.price_effective_date
-
-    console.log(effective_date)
 
     const effective_date_arr = []
 
@@ -236,7 +238,7 @@ const EditSupplierRequestModal = ({ open, handleModal, rowData, supllierNumberOp
             </Label>
             <InputGroup>
               <InputGroupText>
-                Ft
+              {currencies[0][country]}
               </InputGroupText>
               <Controller
                 id='new_price'

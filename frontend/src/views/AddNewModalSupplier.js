@@ -138,7 +138,7 @@ const AddNewModalSupplier = ({ open, handleModal, rowData }) => {
               pagination
               selectableRowsNoSelectAll
               columns={columns}
-              paginationPerPage={50}
+              paginationPerPage={7}
               className='react-dataTable'
               sortIcon={<ChevronDown size={10} />}
               paginationDefaultPage={currentPage + 1}
