@@ -71,12 +71,20 @@ module.exports = function (app, con) {
 		}
 
 
+<<<<<<< HEAD
 		var query = "SELECT ean_no, row_id, suppl_no, art_no, art_name, new_price, frmt_new_price, to_char(request_date, 'dd-mm-YYYY') as request_date, negotiate_final_price, to_char(price_increase_communicated_date, 'dd-mm-YYYY') as price_increase_communicated_date, to_char(price_increase_effective_date, 'dd-mm-YYYY') as price_increase_effective_date, action_status, price_change_reason FROM public.vw_request_details where country_name='" + req.query.country + "' AND vat_no='" + req.query.vat_number + "' AND new_price IS NOT NULL AND request_date IS NOT NULL " + condition + " ORDER BY action_status ASC";
 
 		console.log(query)
 
 
 		await con.query(query, function (err, result) {
+=======
+        var query = "SELECT row_id, suppl_no, art_no, art_name, new_price, frmt_new_price, to_char(request_date, 'dd-mm-YYYY') as request_date, negotiate_final_price, to_char(price_increase_communicated_date, 'dd-mm-YYYY') as price_increase_communicated_date, to_char(price_increase_effective_date, 'dd-mm-YYYY') as price_increase_effective_date, action_status, price_change_reason FROM public.vw_request_details where country_name='"+req.query.country+"' AND vat_no='"+req.query.vat_number+"' AND new_price IS NOT NULL AND request_date IS NOT NULL " + condition + " ORDER BY action_status ASC";
+
+		console.log(query)
+
+        await con.query(query, function(err, result) {
+>>>>>>> ca282123257e55d675b92d684360c0e1237e13d8
 			if (err) {
 				console.log(err)
 				res.json({ status: false });
@@ -84,7 +92,11 @@ module.exports = function (app, con) {
 			} else {
 				console.log(result.rows)
 				data.supplierInputs = result.rows
+<<<<<<< HEAD
 				res.json({ status: true, data: data });
+=======
+                res.json({ status: true, data: data });
+>>>>>>> ca282123257e55d675b92d684360c0e1237e13d8
 				return;
 			}
 		});

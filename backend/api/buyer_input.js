@@ -73,7 +73,6 @@ module.exports = function(app, con) {
 
 
 	app.post('/update_buyer_input', async function(req, res){
-		console.log(req.body)
 		var data = {};
 
 		var query = "call public.usp_update_requestdetails(record_id=>"+req.body.row_id+", in_negotiate_price=>"+req.body.final_price+", in_finalize_date=>'"+req.body.finalize_date+"', in_effective_date=>'"+req.body.effective_date+"', in_metro_comment =>'"+req.body.comment+"')";
