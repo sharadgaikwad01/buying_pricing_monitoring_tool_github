@@ -51,7 +51,7 @@ const NavbarUser = props => {
                     <img src={themeConfig.app.appLogoImage} alt='logo' />
                   </span>
 
-                  <h4 className='brand-text mb-0 d-none'>{themeConfig.app.appName}<br /><span className='text-warning'>{applicationName}</span></h4>
+                  <h4 className='brand-text mb-0 d-none'>{themeConfig.app.appName}<br /></h4>
                 </Link>
               </NavItem>
               <NavItem>

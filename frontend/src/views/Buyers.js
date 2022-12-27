@@ -101,7 +101,7 @@ const Buyers = props => {
       nextLabel=''
       forcePage={currentPage}
       onPageChange={page => handlePagination(page)}
-      pageCount={Math.ceil(dataToRender().length / 7) || 1}
+      pageCount={Math.ceil(dataToRender().length / 10) || 1}
       breakLabel='...'
       pageRangeDisplayed={2}
       marginPagesDisplayed={2}
@@ -216,7 +216,8 @@ const Buyers = props => {
       name: 'Sr. No',
       width: "80px",
       sortable: true,
-      cell: (row, index) => index + 1
+      // cell: (row, index) => index + 1
+      cell: (row, index) => (currentPage * 10) + index + 1
     },
     {
       name: 'Actions',
@@ -320,7 +321,7 @@ const Buyers = props => {
                 pagination
                 selectableRowsNoSelectAll
                 columns={columns}
-                paginationPerPage={50}
+                paginationPerPage={10}
                 className='react-dataTable'
                 sortIcon={<ChevronDown size={10} />}
                 paginationDefaultPage={currentPage + 1}

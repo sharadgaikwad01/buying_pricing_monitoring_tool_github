@@ -15,6 +15,7 @@ const MySwal = withReactContent(Swal)
 
 const AddNewModalSupplier = ({ open, handleModal, rowData }) => {
   const [currentPage, setCurrentPage] = useState(0)
+
   // const [supplierInputsData, setsupplierInputsData] = useState([])
   const dataToRender = () => {
     return rowData
@@ -53,6 +54,13 @@ const AddNewModalSupplier = ({ open, handleModal, rowData }) => {
       selector: row => row.row_id
     },
     {
+      name: 'Sr. No',
+      width: "80px",
+      sortable: true,
+      cell: (row, index) => (currentPage * 10) + index + 1
+
+    },
+    {
       name: 'Supplier No.',
       sortable: true,
       width: 'auto',
@@ -71,6 +79,17 @@ const AddNewModalSupplier = ({ open, handleModal, rowData }) => {
       cell: row => {
         return (
           row.suppl_name ? row.suppl_name : "-"
+        )
+      }
+    },
+    {
+      name: 'Article No.',
+      sortable: true,
+      minWidth: 'auto',
+      selector: row => row.art_no,
+      cell: row => {
+        return (
+          row.art_no ? row.art_no : "-"
         )
       }
     },

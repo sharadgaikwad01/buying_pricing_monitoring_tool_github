@@ -145,7 +145,7 @@ module.exports = function(app, con) {
 	});
 
 	app.get('/buyer_supplier_details', async function(req, res){
-		var query = "SELECT bdm_global_umbrella_no, stratbuyer_name, bdm_global_umbrella_name FROM public.vw_request_details where suppl_no='"+req.query.suppl_no+"' AND request_date IS NOT NULL ";
+		var query = "SELECT bdm_global_umbrella_no, stratbuyer_name, bdm_global_umbrella_name, suppl_no FROM public.vw_request_details where suppl_no='"+req.query.suppl_no+"' AND request_date IS NOT NULL ";
 		console.log(query);
 		await con.query(query, async function(err, result) {
 			if (err) {
@@ -167,7 +167,7 @@ module.exports = function(app, con) {
 	});
 
 	app.get('/buyer_supplier_details_list', async function(req, res){
-		var query = "SELECT row_id, suppl_no, suppl_name, ean_no, art_no, art_name_tl, price_difference_perc, agreed_price_increase_perc, action_status, bdm_global_umbrella_no, bdm_global_umbrella_name FROM public.vw_request_details where country_name='"+req.query.countryname+"' AND suppl_no='"+req.query.suppl_no+"'";
+		var query = "SELECT row_id, suppl_no, suppl_name, ean_no, art_no, art_name_tl, price_difference_perc, agreed_price_increase_perc, action_status, bdm_global_umbrella_no, bdm_global_umbrella_name FROM public.vw_request_details where country_name='"+req.query.countryname+"' AND suppl_no='"+req.query.suppl_no+"'  ORDER by action_status ASC";
 		await con.query(query, async function(err, result) {
 			if (err) {
 				res.json({ status: false });

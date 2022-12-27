@@ -376,6 +376,17 @@ const BuyerInput = props => {
       }
     },
     {
+      name: 'EAN No.',
+      sortable: true,
+      minWidth: 'auto',
+      selector: row => row.ean_no,
+      cell: row => {
+        return (
+          row.ean_no ? row.ean_no : "-"
+        )
+      }
+    },
+    {
       name: 'Art. Desc.',
       sortable: true,
       minWidth: 'auto',
