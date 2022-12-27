@@ -3,16 +3,11 @@
 //Template config options
 const themeConfig = {
   app: {
-<<<<<<< HEAD
-    appName: '',
-    appName1: '',
-    appLogoImage: require('@src/assets/images/logo/tool_logo.png').default
-=======
+
     appName: 'Buying Price',
     appName1: 'Application',
     appLogoImage: require('@src/assets/images/logo/logobpmt.png').default,
     appLogoImagefooter: require('@src/assets/images/logo/logom.png').default
->>>>>>> ca282123257e55d675b92d684360c0e1237e13d8
   },
   layout: {
     isRTL: false,

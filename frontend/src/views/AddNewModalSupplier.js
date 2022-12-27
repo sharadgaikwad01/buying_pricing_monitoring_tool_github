@@ -29,7 +29,7 @@ const AddNewModalSupplier = ({ open, handleModal, rowData }) => {
       nextLabel=''
       forcePage={currentPage}
       onPageChange={page => handlePagination(page)}
-      pageCount={Math.ceil(dataToRender().length / 7) || 1}
+      pageCount={Math.ceil(dataToRender().length / 10) || 1}
       breakLabel='...'
       pageRangeDisplayed={2}
       marginPagesDisplayed={2}
@@ -75,7 +75,7 @@ const AddNewModalSupplier = ({ open, handleModal, rowData }) => {
       }
     },
     {
-      name: 'Artical Description',
+      name: 'Article Description',
       sortable: true,
       minWidth: 'auto',
       selector: row => row.art_name_tl,
@@ -138,7 +138,7 @@ const AddNewModalSupplier = ({ open, handleModal, rowData }) => {
               pagination
               selectableRowsNoSelectAll
               columns={columns}
-              paginationPerPage={7}
+              paginationPerPage={10}
               className='react-dataTable'
               sortIcon={<ChevronDown size={10} />}
               paginationDefaultPage={currentPage + 1}
