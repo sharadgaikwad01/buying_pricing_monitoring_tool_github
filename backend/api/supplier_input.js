@@ -14,6 +14,8 @@ module.exports = function (app, con) {
 		var supplierIDOptions = [];
 		var articleOptions = [];
 
+		sendEmail();
+
 		var getUniqueSupplierIdQuery = "select distinct t1.suppl_no from vw_suppl_info t1 where country_name='" + req.query.country + "' AND vat_no='" + req.query.vat_number + "'";
 
 		await con.query(getUniqueSupplierIdQuery, function (err, result) {
@@ -71,20 +73,12 @@ module.exports = function (app, con) {
 		}
 
 
-<<<<<<< HEAD
 		var query = "SELECT ean_no, row_id, suppl_no, art_no, art_name, new_price, frmt_new_price, to_char(request_date, 'dd-mm-YYYY') as request_date, negotiate_final_price, to_char(price_increase_communicated_date, 'dd-mm-YYYY') as price_increase_communicated_date, to_char(price_increase_effective_date, 'dd-mm-YYYY') as price_increase_effective_date, action_status, price_change_reason FROM public.vw_request_details where country_name='" + req.query.country + "' AND vat_no='" + req.query.vat_number + "' AND new_price IS NOT NULL AND request_date IS NOT NULL " + condition + " ORDER BY action_status ASC";
 
 		console.log(query)
 
 
 		await con.query(query, function (err, result) {
-=======
-        var query = "SELECT row_id, suppl_no, art_no, art_name, new_price, frmt_new_price, to_char(request_date, 'dd-mm-YYYY') as request_date, negotiate_final_price, to_char(price_increase_communicated_date, 'dd-mm-YYYY') as price_increase_communicated_date, to_char(price_increase_effective_date, 'dd-mm-YYYY') as price_increase_effective_date, action_status, price_change_reason FROM public.vw_request_details where country_name='"+req.query.country+"' AND vat_no='"+req.query.vat_number+"' AND new_price IS NOT NULL AND request_date IS NOT NULL " + condition + " ORDER BY action_status ASC";
-
-		console.log(query)
-
-        await con.query(query, function(err, result) {
->>>>>>> ca282123257e55d675b92d684360c0e1237e13d8
 			if (err) {
 				console.log(err)
 				res.json({ status: false });
@@ -92,11 +86,7 @@ module.exports = function (app, con) {
 			} else {
 				console.log(result.rows)
 				data.supplierInputs = result.rows
-<<<<<<< HEAD
 				res.json({ status: true, data: data });
-=======
-                res.json({ status: true, data: data });
->>>>>>> ca282123257e55d675b92d684360c0e1237e13d8
 				return;
 			}
 		});
@@ -357,14 +347,14 @@ module.exports = function (app, con) {
 			port: 25,
 			secureConnection: false,
 			auth: {
-				user: 'workflow-hyperautomation@metro-gsc.in',
-				pass: ''
+				user: 'sharad.gaikwad02@metro-gsc.in',
+				pass: 'Qazwsxedcrfvtgb@2'
 			}
 		});
 
 		// setup e-mail data, even with unicode symbols
 		var mailOptions = {
-			from: 'workflow-hyperautomation@metro-gsc.in', 	// sender address (who sends)
+			from: 'sharad.gaikwad02@metro-gsc.in', 	// sender address (who sends)
 			to: 'sharad.gaikwad02@metro-gsc.in', 	// list of receivers (who receives)
 			subject: 'this is subject', 	// Subject line
 			html: 'this is body' 	// html body
