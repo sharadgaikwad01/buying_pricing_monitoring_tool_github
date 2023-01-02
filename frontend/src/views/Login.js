@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { useSkin } from '@hooks/useSkin'
 import { Link } from 'react-router-dom'
 import { Facebook, Twitter, Mail, GitHub } from 'react-feather'
@@ -12,21 +13,33 @@ const LoginCover = () => {
 
   const illustration = skin === 'dark' ? 'login-v2-dark.svg' : 'login-v2.svg',
   source = require(`@src/assets/images/pages/${illustration}`).default
+
   
-  const auth_token = localStorage.getItem('token')
-  if (auth_token) {
-    window.location.replace(`${reactFrontend}/home`)
-  }
+  console.log("I am here 1  ========================= ")
+  useEffect(async () => {
+    console.log("I am here 2 ====== ")
+    const auth_token = localStorage.getItem('token')
+    if (auth_token) {
+      window.location.replace(`${reactFrontend}/home`)
+    } else {
+      console.log("I am here 3 ====== ")
+      window.location.replace(`${nodeBackend}/api/v1/login`)
+    }
+  }, [])
 
   const handleLogin = () => {
     window.location.replace(`${nodeBackend}/api/v1/login`)
+  }
+
+  const handleSupplierLogin = () => {
+    window.location.replace(`${nodeBackend}/supplier/api/v2/login`)
   }
 
   return (
     <div className='auth-wrapper auth-cover'>
       <Row className='auth-inner m-0'>
         <Link className='brand-logo' to='/' onClick={e => e.preventDefault()}>
-          <img src="logo/metro-logo.png" className='img-fluid'/>
+          <img src="logo/metro-logo.png" className='img-fluid' />
         </Link>
         <Col className='d-none d-lg-flex align-items-center p-5' lg='8' sm='12'>
           <div className='w-100 d-lg-flex align-items-center justify-content-center px-5'>
@@ -39,9 +52,12 @@ const LoginCover = () => {
               Welcome to Metro
             </CardTitle>
             <CardText className='mb-2'>Please sign-in to your account and start the adventure</CardText>
-            <Button color='primary' block onClick={handleLogin}>
-                Sign in
-              </Button>
+            <Button className='mb-1' color='primary' block onClick={handleLogin}>
+              Sign in
+            </Button>
+            <Button color='primary' block onClick={handleSupplierLogin}>
+              Supplier Sign in
+            </Button>
             <div className='divider my-2'>
               <div className='divider-text'></div>
             </div>

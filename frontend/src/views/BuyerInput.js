@@ -10,6 +10,7 @@ import Flatpickr from 'react-flatpickr'
 import AddBuyerInputModal from './AddBuyerInputModal'
 import ReactPaginate from 'react-paginate'
 import DataTable from 'react-data-table-component'
+import DownloadSupplierAssortmentsModal from './DownloadSupplierAssortmentsModal'
 import { Download, Search, ChevronDown, Share, Printer, FileText, File, Grid, Copy, Plus, Upload, Edit, Trash, Check, RefreshCcw} from 'react-feather'
 
 import '@styles/react/libs/tables/react-dataTable-component.scss'
@@ -56,12 +57,15 @@ const BuyerInput = props => {
   const [editBuyerModal, setBuyerInputModal] = useState(false)
 
   const [currentPage, setCurrentPage] = useState(0)
+
+  const [supplierInputModal, setSupplierInputModal] = useState(false)
   
 
   // ** Function to handle Pagination
   const handlePagination = page => {
     setCurrentPage(page.selected)
   }
+  const downloadArticleModal = () => setSupplierInputModal(!supplierInputModal)
 
   const [supllierNumberOptions, setsupllierNumberOptions] = useState([])
   const [categoryOptions, setCategoryOptions] = useState([])
@@ -74,10 +78,11 @@ const BuyerInput = props => {
     }
 
     await axios.get(`${nodeBackend}/buyer_input`, { params: { searchSupplierNumber, searchRequestedDate, searchStatus, searchCategory, country, email } }).then((res) => {
-      console.log(res.data.data.categoryOptions)
-      setsupplierInputsData(res.data.data.supplierInputs)
-      setsupllierNumberOptions(res.data.data.supplierIDOptions)
-      setCategoryOptions(res.data.data.categoryOptions)
+      if (res.data.data) {
+        setsupplierInputsData(res.data.data.supplierInputs)
+        setsupllierNumberOptions(res.data.data.supplierIDOptions)
+        setCategoryOptions(res.data.data.categoryOptions)
+      }      
     })
   }, [])
 
@@ -371,6 +376,17 @@ const BuyerInput = props => {
       }
     },
     {
+      name: 'EAN No.',
+      sortable: true,
+      minWidth: 'auto',
+      selector: row => row.ean_no,
+      cell: row => {
+        return (
+          row.ean_no ? row.ean_no : "-"
+        )
+      }
+    },
+    {
       name: 'Art. Desc.',
       sortable: true,
       minWidth: 'auto',
@@ -378,6 +394,17 @@ const BuyerInput = props => {
       cell: row => {
         return (
           row.art_name_tl ? row.art_name_tl : "-"
+        )
+      }
+    },
+    {
+      name: 'EAN No.',
+      sortable: true,
+      minWidth: 'auto',
+      selector: row => row.ean_no,
+      cell: row => {
+        return (
+          row.ean_no ? row.ean_no : "-"
         )
       }
     },
@@ -496,6 +523,10 @@ const BuyerInput = props => {
       <Card className='pageBox buyer-screen'>
         <CardHeader className='flex-md-row flex-column align-md-items-center align-items-start border-bottom'>
           <CardTitle tag='h2'>List of Assortments</CardTitle>
+          <Button.Ripple className='ms-1' outline color='warning' onClick={downloadArticleModal}>
+              <Download size={14} />
+              <span className='align-middle ms-25'>Download Assortment PDF</span>
+            </Button.Ripple>
           <UncontrolledButtonDropdown className='ms-2'>
             <DropdownToggle color='primary' caret outline>
               <Download size={15} />
@@ -596,6 +627,7 @@ const BuyerInput = props => {
           </div>
         </CardBody>
       </Card>
+      <DownloadSupplierAssortmentsModal open={supplierInputModal} handleModal={downloadArticleModal} supllierNumberOptions={supllierNumberOptions} />
       <AddBuyerInputModal open={editBuyerModal} handleModal={handleEdit} rowData={rowData} setsupplierInputsData={setsupplierInputsData} />
     </Fragment>
   )

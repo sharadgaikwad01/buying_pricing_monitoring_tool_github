@@ -15,6 +15,7 @@ const MySwal = withReactContent(Swal)
 
 const AddNewModalSupplier = ({ open, handleModal, rowData }) => {
   const [currentPage, setCurrentPage] = useState(0)
+
   // const [supplierInputsData, setsupplierInputsData] = useState([])
   const dataToRender = () => {
     return rowData
@@ -29,7 +30,7 @@ const AddNewModalSupplier = ({ open, handleModal, rowData }) => {
       nextLabel=''
       forcePage={currentPage}
       onPageChange={page => handlePagination(page)}
-      pageCount={Math.ceil(dataToRender().length / 7) || 1}
+      pageCount={Math.ceil(dataToRender().length / 10) || 1}
       breakLabel='...'
       pageRangeDisplayed={2}
       marginPagesDisplayed={2}
@@ -51,6 +52,13 @@ const AddNewModalSupplier = ({ open, handleModal, rowData }) => {
       name: 'Row Id',
       omit:true,
       selector: row => row.row_id
+    },
+    {
+      name: 'Sr. No',
+      width: "80px",
+      sortable: true,
+      cell: (row, index) => (currentPage * 10) + index + 1
+
     },
     {
       name: 'Supplier No.',
@@ -75,7 +83,18 @@ const AddNewModalSupplier = ({ open, handleModal, rowData }) => {
       }
     },
     {
-      name: 'Artical Description',
+      name: 'Article No.',
+      sortable: true,
+      minWidth: 'auto',
+      selector: row => row.art_no,
+      cell: row => {
+        return (
+          row.art_no ? row.art_no : "-"
+        )
+      }
+    },
+    {
+      name: 'Article Description',
       sortable: true,
       minWidth: 'auto',
       selector: row => row.art_name_tl,
@@ -138,7 +157,7 @@ const AddNewModalSupplier = ({ open, handleModal, rowData }) => {
               pagination
               selectableRowsNoSelectAll
               columns={columns}
-              paginationPerPage={50}
+              paginationPerPage={10}
               className='react-dataTable'
               sortIcon={<ChevronDown size={10} />}
               paginationDefaultPage={currentPage + 1}

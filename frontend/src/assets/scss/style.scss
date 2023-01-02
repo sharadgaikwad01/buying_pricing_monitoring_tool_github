@@ -684,7 +684,7 @@ table.dataTable th{
     border: 2px solid #00296725;
     border-radius: 4px;
     padding: .7rem;
-    min-width: 210px;
+    min-width: 250px;
 }
 .country-info-box .country-flag img{
     max-width: 2.4rem;
@@ -705,6 +705,11 @@ table.dataTable th{
     color: #00A4C7;
     cursor: pointer;
 }
+
+
+.incr-infla-badge:first-child{
+    margin-right: 5px;
+}
 .incr-infla-badge{
     border-radius: 4px;
     border: 1px solid #E2E2E2;
@@ -713,6 +718,8 @@ table.dataTable th{
     font-size: 1.2rem;
     min-width: 3em;
     font-weight: 600;
+    min-width: 70px;
+    text-align: center;
 }
 .incr-infla-1{
     background: #12995a 0% 0% no-repeat padding-box;
