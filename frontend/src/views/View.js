@@ -42,11 +42,13 @@ const View = () => {
     const [countries, setcountries] = useState([])
 
 
-    const handleEdit = async (e, countryname) => {
+    const handleEdit = async (e, countryname, suppl_no) => {
+
         e.preventDefault()
         handleModal()
         console.log(countryname)
-        await axios.get(`${nodeBackend}/buyer_supplier_details_list`, { params: { countryname } }).then((res) => {
+        console.log(suppl_no)
+        await axios.get(`${nodeBackend}/buyer_supplier_details_list`, { params: { suppl_no, countryname } }).then((res) => {
             console.log(res.data.data)
             setRowData(res.data.data)
         })
@@ -69,7 +71,7 @@ const View = () => {
                 console.log(res.data.data[0])
                 if (res.data.data[0]) {
                     setSuppliername(res.data.data[0].bdm_global_umbrella_name)
-                    setSupplierno(res.data.data[0].bdm_global_umbrella_no)
+                    setSupplierno(res.data.data[0].suppl_no)
                     setCategory(res.data.data[0].stratbuyer_name)
                 }
                 if (res.data.response) {
@@ -102,11 +104,11 @@ const View = () => {
                             </Col>
                         </Col>
                     </Row>
-                    <Row>
+                    <Row className='g-1'>
                         { countries.map((row, i) => (
                             <Col className="col-auto mt-1"  key={i}>
                                 <Col className="country-info-box">
-                                    <Col className="row">
+                                    <Col className="row d-flex justify-content-between">
                                         <Col className="col-auto align-self-end">
                                             <Col className="country-info-left">
                                                 <Col className="country-name">
@@ -123,7 +125,7 @@ const View = () => {
                                                 <span className="incr-infla-badge incr-infla-5 mb-2">{row.agreed_price_increase_perc === null ? 0 : Math.round(row.agreed_price_increase_perc)}%</span>
                                             </Col>
 
-                                            <Col onClick={(e) => (row.article_count > 0 ? handleEdit(e, row.country_name) : handleEditError(e))} className="sku-info d-flex justify-content-end align-bottom align-items-baseline align-items-end align-items">
+                                            <Col onClick={(e) => (row.article_count > 0 ? handleEdit(e, row.country_name, Supplierno) : handleEditError(e))} className="sku-info d-flex justify-content-end align-bottom align-items-baseline align-items-end align-items">
                                                 {row.article_count ? row.article_count : 0} SKU
                                             </Col>
                                         </Col>

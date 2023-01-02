@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { useSkin } from '@hooks/useSkin'
 import { Link } from 'react-router-dom'
 import { Facebook, Twitter, Mail, GitHub } from 'react-feather'
@@ -11,12 +12,20 @@ const LoginCover = () => {
   const { skin } = useSkin()
 
   const illustration = skin === 'dark' ? 'login-v2-dark.svg' : 'login-v2.svg',
-    source = require(`@src/assets/images/pages/${illustration}`).default
+  source = require(`@src/assets/images/pages/${illustration}`).default
 
-  const auth_token = localStorage.getItem('token')
-  if (auth_token) {
-    window.location.replace(`${reactFrontend}/home`)
-  }
+  
+  console.log("I am here 1  ========================= ")
+  useEffect(async () => {
+    console.log("I am here 2 ====== ")
+    const auth_token = localStorage.getItem('token')
+    if (auth_token) {
+      window.location.replace(`${reactFrontend}/home`)
+    } else {
+      console.log("I am here 3 ====== ")
+      window.location.replace(`${nodeBackend}/api/v1/login`)
+    }
+  }, [])
 
   const handleLogin = () => {
     window.location.replace(`${nodeBackend}/api/v1/login`)
