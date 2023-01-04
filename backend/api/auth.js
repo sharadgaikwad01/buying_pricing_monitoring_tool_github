@@ -45,29 +45,67 @@ router.use((req, res, next) => {
     const params = client.callbackParams(req)
     client.callback(config.nodebackend+'/api/v1/callback', params, { code_verifier }) // => Promise
         .then(token => {
-			let user_details = token.claims();
-            console.log("======================= user details ====================== ");
+			var country;
+            var salesLine;
+            var supplierNumber;
+            var vatNumber;
+            var supplierName;
+            var country_name;
+            
+            var user_details = jwt_decode(token.access_token);
+
             console.log(user_details);
-            console.log(token);
-            console.log(jwt_decode(token.access_token));
-            console.log("======================= user details close ====================== ");
-            sql = "SELECT * FROM public.tbl_buyer_details where buyer_emailid = '"+ user_details.email +"'";
+            
+            for (const [key, value] of Object.entries(user_details.authorization)) {
+                for (const [key1, value1] of Object.entries(value)) {
+                    if(key1 == 'BPMT_SUPPLIER')
+                    {
+                        for (const [key2, value2] of Object.entries(value1)) {
+                            country = value2.country[0];
+                            salesLine = value2.salesLine[0];
+                            supplierNumber = value2.supplierNumber[0];
+                        }
+                    }
+                }
+            }
+            supplierNumber = 21172;
+            country = 'ES';
+            sql = "select * from public.vw_suppl_info where suppl_no='"+supplierNumber+"' and country_code='"+country+"'";
+            console.log("sql========================")
             console.log(sql)
-            clientDB.query(sql, function(err, result) {
+            clientDB.query(sql, function(err, result) {                
                 if (err) {
                     // res.redirect(303, config.reactFrontend + '/auth?error=User not Exist');
                     res.send('<script>window.location.href="'+config.reactFrontend + '/auth?error=User not Exist'+'";</script>');
                 } else{
                     if(result.rowCount == 0){
-                    	// res.redirect(303, config.reactFrontend + '/auth?error=User not Exist');
+                        // res.redirect(303, config.reactFrontend + '/auth?error=User not Exist');
                         res.send('<script>window.location.href="'+config.reactFrontend + '/auth?error=User not Exist' + '";</script>');
                     }else{
-                        console.log(user_details);
-                        var frontend_redirect_url = config.reactFrontend + '/auth?token='+token.id_token+'&id='+user_details.metro_id+'&email='+user_details.email+'&type=BUYER&country='+ result.rows[0].country_name +'&name=' + result.rows[0].first_name + ' ' + result.rows[0].last_name;
+                        supplierName = result.rows[0].suppl_name;
+                        vatNumber = result.rows[0].vat_no;
+                        country_name = result.rows[0].country_name;
+                        var frontend_redirect_url = config.reactFrontend + '/auth?token='+token.id_token+'&id='+user_details.metro_id+'&email='+user_details.email+'&type=SUPPLIER&country='+ country_name +'&vat='+vatNumber+'&name=' + supplierName ;
                         res.send('<script>window.location.href="'+frontend_redirect_url+'";</script>');
                     }				
-                }	
+                }                
             });
+            // console.log(sql)
+            // clientDB.query(sql, function(err, result) {
+            //     if (err) {
+            //         // res.redirect(303, config.reactFrontend + '/auth?error=User not Exist');
+            //         res.send('<script>window.location.href="'+config.reactFrontend + '/auth?error=User not Exist'+'";</script>');
+            //     } else{
+            //         if(result.rowCount == 0){
+            //         	// res.redirect(303, config.reactFrontend + '/auth?error=User not Exist');
+            //             res.send('<script>window.location.href="'+config.reactFrontend + '/auth?error=User not Exist' + '";</script>');
+            //         }else{
+            //             console.log(user_details);
+            //             var frontend_redirect_url = config.reactFrontend + '/auth?token='+token.id_token+'&id='+user_details.metro_id+'&email='+user_details.email+'&type=BUYER&country='+ result.rows[0].country_name +'&name=' + result.rows[0].first_name + ' ' + result.rows[0].last_name;
+            //             res.send('<script>window.location.href="'+frontend_redirect_url+'";</script>');
+            //         }				
+            //     }	
+            // });
         }).catch( err => {
             console.log(err);
         });
@@ -96,5 +134,9 @@ router.get('/api/v1/login', (req, res, next) => {
     next()
     
 }) 
+
+function getVATNumberBySupplierIDandCountry(country, supplier_id) {
+
+}
 
 module.exports = router

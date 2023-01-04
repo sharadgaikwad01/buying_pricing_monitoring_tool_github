@@ -1,11 +1,11 @@
-import { useEffect } from 'react'
+//import { useEffect } from 'react'
 import { useSkin } from '@hooks/useSkin'
 import { Link } from 'react-router-dom'
 import { Facebook, Twitter, Mail, GitHub } from 'react-feather'
 import InputPasswordToggle from '@components/input-password-toggle'
 import { Row, Col, CardTitle, CardText, Form, Label, Input, Button } from 'reactstrap'
 import '@styles/react/pages/page-authentication.scss'
-import { nodeBackend, reactFrontend } from '@utils'
+import { nodeBackend } from '@utils'
 export const data = []
 
 const LoginCover = () => {
@@ -13,26 +13,9 @@ const LoginCover = () => {
 
   const illustration = skin === 'dark' ? 'login-v2-dark.svg' : 'login-v2.svg',
   source = require(`@src/assets/images/pages/${illustration}`).default
-
   
-  console.log("I am here 1  ========================= ")
-  useEffect(async () => {
-    console.log("I am here 2 ====== ")
-    const auth_token = localStorage.getItem('token')
-    if (auth_token) {
-      window.location.replace(`${reactFrontend}/home`)
-    } else {
-      console.log("I am here 3 ====== ")
-      window.location.replace(`${nodeBackend}/api/v1/login`)
-    }
-  }, [])
-
   const handleLogin = () => {
-    window.location.replace(`${nodeBackend}/api/v1/login`)
-  }
-
-  const handleSupplierLogin = () => {
-    window.location.replace(`${nodeBackend}/supplier/api/v2/login`)
+    window.location.replace(`${nodeBackend}/buyer/api/v2/login`)
   }
 
   return (
@@ -54,9 +37,6 @@ const LoginCover = () => {
             <CardText className='mb-2'>Please sign-in to your account and start the adventure</CardText>
             <Button className='mb-1' color='primary' block onClick={handleLogin}>
               Sign in
-            </Button>
-            <Button color='primary' block onClick={handleSupplierLogin}>
-              Supplier Sign in
             </Button>
             <div className='divider my-2'>
               <div className='divider-text'></div>
