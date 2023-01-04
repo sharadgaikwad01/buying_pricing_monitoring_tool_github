@@ -44,6 +44,14 @@ const Routes = [
     }
   },
   {
+    path: '/buyer_login',
+    component: lazy(() => import('../../views/BuyerLogin')),
+    layout: 'BlankLayout',
+    meta: {
+      authRoute: true
+    }
+  },
+  {
     path: '/notAuthorized',
     component: lazy(() => import('../../views/NotAuthorized')),
     layout: 'BlankLayout',

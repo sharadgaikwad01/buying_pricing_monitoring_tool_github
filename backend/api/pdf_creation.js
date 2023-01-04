@@ -1,51 +1,28 @@
 const fs = require("fs");
 const PDFDocument = require("pdfkit");
 const https = require('https');
-var async = require("async");
 
-async function createSupplierAssortments(assortment_details, path) {
+async function createSupplierAssortments(assortment_details, path, ) {
   let doc = new PDFDocument({ size: "A4", margin: 50 });
   var stream;
   var shouldReturn = false;
-  async.waterfall([
-    function (callback) {
-      generateHeader(doc);
-      console.log("step 1");
-      callback(null)
-    },
-    function (callback) {
-      generateCustomerInformation(doc, assortment_details);
-      console.log("step 2");
-      callback(null)
-    },
-    function (callback) {
-      generateAssortmentTable(doc, assortment_details);
-      console.log("step 3");
-      callback(null)
-    },
-    function (callback) {
-      generateFooter(doc);
-      console.log("step 4");
-      callback(null)
-    },
-    function (callback) {      
-      stream = doc.pipe(fs.createWriteStream(path));
-      doc.end();
-      console.log("step 5");
-      stream.on('finish', function() {
-        
-      });
-    }
-  ]); 
-  
+  await generateHeader(doc);
+  await generateCustomerInformation(doc, assortment_details);
+  await generateAssortmentTable(doc, assortment_details);
+  await generateFooter(doc);
+  stream = await doc.pipe(fs.createWriteStream(path));
+  doc.end();
+  stream.on('finish', function() {
+    console.log("Finish ========")
+  });
 }
 
 function generateHeader(doc) {
   doc
-    .image("logo.png", 50, 45, { height: 30, width: 150 })
+    .image("tool_logo.png", 50, 45, { height: 30, width: 150 })
     .fillColor("#444444")
     .fontSize(15)
-    .text("Buying Price Monitoring Tool.", 50, 80)
+    .text("", 50, 80)
     .fontSize(10)
     .text("Buyer Name", 200, 50, { align: "right" })
     .text("Category Manger", 200, 65, { align: "right" })

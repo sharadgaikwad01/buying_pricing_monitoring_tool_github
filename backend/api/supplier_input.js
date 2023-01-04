@@ -1,4 +1,5 @@
 const http = require('http');
+const Https = require('https');
 var nodemailer = require('nodemailer');
 var async = require("async");
 const fs = require('fs');
@@ -6,6 +7,7 @@ const PDFDocument = require('pdfkit');
 const { createSupplierAssortments } = require("./pdf_creation");
 const { dirname } = require('path');
 const appDir = dirname(require.main.filename);
+var path = require('path');
 
 //=========== MonthEnd API Module ===================
 module.exports = function (app, con) {
@@ -13,8 +15,6 @@ module.exports = function (app, con) {
 		var data = {};
 		var supplierIDOptions = [];
 		var articleOptions = [];
-
-		sendEmail();
 
 		var getUniqueSupplierIdQuery = "select distinct t1.suppl_no from vw_suppl_info t1 where country_name='" + req.query.country + "' AND vat_no='" + req.query.vat_number + "'";
 
@@ -72,32 +72,19 @@ module.exports = function (app, con) {
 			condition = condition + " AND action_status = '" + req.query.searchStatus + "'"
 		}
 
-
-<<<<<<< HEAD
 		var query = "SELECT ean_no, row_id, suppl_no, art_no, art_name, new_price, frmt_new_price, to_char(request_date, 'dd-mm-YYYY') as request_date, negotiate_final_price, to_char(price_increase_communicated_date, 'dd-mm-YYYY') as price_increase_communicated_date, to_char(price_increase_effective_date, 'dd-mm-YYYY') as price_increase_effective_date, action_status, price_change_reason FROM public.vw_request_details where country_name='" + req.query.country + "' AND vat_no='" + req.query.vat_number + "' AND new_price IS NOT NULL AND request_date IS NOT NULL " + condition + " ORDER BY action_status ASC";
 
 		console.log(query)
 
 
 		await con.query(query, function (err, result) {
-=======
-        var query = "SELECT row_id, suppl_no, art_no, art_name, new_price, frmt_new_price, to_char(request_date, 'dd-mm-YYYY') as request_date, negotiate_final_price, to_char(price_increase_communicated_date, 'dd-mm-YYYY') as price_increase_communicated_date, to_char(price_increase_effective_date, 'dd-mm-YYYY') as price_increase_effective_date, action_status, price_change_reason FROM public.vw_request_details where country_name='"+req.query.country+"' AND vat_no='"+req.query.vat_number+"' AND new_price IS NOT NULL AND request_date IS NOT NULL " + condition + " ORDER BY action_status ASC";
-
-		console.log(query)
-
-        await con.query(query, function(err, result) {
->>>>>>> c0dcb58dcbc3857087adaf1457a077e3d5661156
 			if (err) {
 				console.log(err)
 				res.json({ status: false });
 				return;
 			} else {
 				data.supplierInputs = result.rows
-<<<<<<< HEAD
 				res.json({ status: true, data: data });
-=======
-                res.json({ status: true, data: data });
->>>>>>> c0dcb58dcbc3857087adaf1457a077e3d5661156
 				return;
 			}
 		});
@@ -115,8 +102,8 @@ module.exports = function (app, con) {
 				res.json({ status: false });
 				return;
 			};
+			//sendEmail(to, subject, html)
 			var query = "SELECT ean_no, row_id, suppl_no, art_no, art_name, new_price, frmt_new_price, to_char(request_date, 'dd-mm-YYYY') as request_date, negotiate_final_price, to_char(price_increase_communicated_date, 'dd-mm-YYYY') as price_increase_communicated_date, to_char(price_increase_effective_date, 'dd-mm-YYYY') as price_increase_effective_date, action_status, price_change_reason FROM public.vw_request_details where country_name='" + req.body.country + "' AND vat_no='" + req.body.vat_number + "' AND new_price IS NOT NULL AND request_date IS NOT NULL ORDER BY action_status ASC";
-
 
 			console.log(query)
 
@@ -162,18 +149,11 @@ module.exports = function (app, con) {
 				return;
 			} else {
 				var assortment_details = result.rows
-				// var file_path = path.join(__dirname+'/supplier_assortments.pdf');
-				var file_path = './pdf/supplier_assortments_'+supplier_number+'.pdf';
-				await createSupplierAssortments(assortment_details, file_path, res);
-				// console.log("status========= "+status);
-				// console.log("file_path========= "+file_path);
-				// if (status) {
-				// 	res.download(file_path);
-				// 	return;
-				// } else {
-				// 	console.log("Else")
-				// }
-				return;
+				var file_path = path.join(__dirname+'/pdf/supplier_assortments_'+supplier_number+'.pdf');
+				var flag = await createSupplierAssortments(assortment_details, file_path, res);
+				var data =fs.readFileSync(file_path);
+				res.contentType("application/pdf");
+				res.send(data);
 			}
 		});
 	});
@@ -311,7 +291,6 @@ module.exports = function (app, con) {
 		var len = supplier_inputs.length;
 		var sucess_count = 0;
 		var error_count = 0;
-		console.log(supplier_inputs)
 		async.waterfall([
 			function (callback) {
 				supplier_inputs.forEach(async function (value, key) {
@@ -352,24 +331,21 @@ module.exports = function (app, con) {
 		]);
 	});
 
-	var sendEmail = async function () {
+	var sendEmail = async function (to, subject, html) {
 		// Create the transporter with the required configuration for Outlook
 		var transporter = nodemailer.createTransport({
-			host: 'viruswall.mgi.de',
-			port: 25,
+			host: "viruswall.mgi.de", // hostname
 			secureConnection: false,
-			auth: {
-				user: 'sharad.gaikwad02@metro-gsc.in',
-				pass: 'Qazwsxedcrfvtgb@2'
-			}
+			secure: false,
+			port: 25
 		});
 
 		// setup e-mail data, even with unicode symbols
 		var mailOptions = {
 			from: 'sharad.gaikwad02@metro-gsc.in', 	// sender address (who sends)
-			to: 'sharad.gaikwad02@metro-gsc.in', 	// list of receivers (who receives)
-			subject: 'this is subject', 	// Subject line
-			html: 'this is body' 	// html body
+			to: to, 	// list of receivers (who receives)
+			subject: subject, 	// Subject line
+			html: html 	// html body
 		};
 
 		// send mail with defined transport object
@@ -380,4 +356,5 @@ module.exports = function (app, con) {
 			console.log('Message sent: ' + info.response);
 		});
 	}
+	
 }

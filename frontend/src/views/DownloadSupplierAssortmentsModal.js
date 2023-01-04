@@ -45,9 +45,8 @@ const DownloadArticliesModal = ({ open, handleModal, supllierNumberOptions }) =>
             responseType: 'blob'
         }).then(async (res) => {
             handleModal(false)
-            console.log(res)
-           
-            if (res.data.status) {
+            fileDownload(res.data, "download.pdf")
+            if (res.data.size > 0) {
                 return MySwal.fire({
                     title: 'Done!',
                     text: 'Supplier Assortment PDF has been downloaded!',
@@ -60,7 +59,7 @@ const DownloadArticliesModal = ({ open, handleModal, supllierNumberOptions }) =>
             } else {
                 MySwal.fire({
                     title: 'Info!',
-                    text: 'There is no article details available for this supplier number',
+                    text: 'There is no article details available for this supplier number. Please try again later',
                     icon: 'info',
                     customClass: {
                         confirmButton: 'btn btn-primary'

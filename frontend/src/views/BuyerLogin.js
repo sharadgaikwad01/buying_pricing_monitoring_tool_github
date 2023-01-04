@@ -1,29 +1,30 @@
-//import { useEffect } from 'react'
+import { useEffect } from 'react'
 import { useSkin } from '@hooks/useSkin'
 import { Link } from 'react-router-dom'
 import { Facebook, Twitter, Mail, GitHub } from 'react-feather'
 import InputPasswordToggle from '@components/input-password-toggle'
 import { Row, Col, CardTitle, CardText, Form, Label, Input, Button } from 'reactstrap'
 import '@styles/react/pages/page-authentication.scss'
-import { nodeBackend } from '@utils'
+import { nodeBackend, reactFrontend } from '@utils'
 export const data = []
 
-const LoginCover = () => {
+const BuyerLogin = () => {
   const { skin } = useSkin()
 
   const illustration = skin === 'dark' ? 'login-v2-dark.svg' : 'login-v2.svg',
   source = require(`@src/assets/images/pages/${illustration}`).default
+
   useEffect(async () => {
     const auth_token = localStorage.getItem('token')
     if (auth_token) {
-      window.location.replace(`${reactFrontend}/home`)
+      window.location.replace(`${reactFrontend}/buyer_input`)
     } else {
-      window.location.replace(`${nodeBackend}/api/v1/login`)
+        window.location.replace(`${nodeBackend}/buyer/api/v2/login`)
     }
   }, [])
 
   const handleLogin = () => {
-    window.location.replace(`${nodeBackend}/api/v1/login`)
+    window.location.replace(`${nodeBackend}/buyer/api/v2/login`)
   }
 
   return (
@@ -56,4 +57,4 @@ const LoginCover = () => {
   )
 }
 
-export default LoginCover
+export default BuyerLogin
