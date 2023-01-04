@@ -44,10 +44,7 @@ router.use((req, res, next) => {
         .then(token => {
             let user_details = token.claims();
             sql = "SELECT * FROM public.tbl_buyer_details where buyer_emailid = '"+ user_details.email +"'";
-<<<<<<< Updated upstream
             console.log(sql)
-=======
->>>>>>> Stashed changes
             clientDB.query(sql, function(err, result) {
                 if (err) {
                     // res.redirect(303, config.reactFrontend + '/auth?error=User not Exist');
