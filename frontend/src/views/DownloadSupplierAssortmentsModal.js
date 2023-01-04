@@ -21,8 +21,6 @@ import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 const MySwal = withReactContent(Swal)
 
-const fileDownload = require('js-file-download')
-
 const DownloadArticliesModal = ({ open, handleModal, supllierNumberOptions }) => {
 
     const country = localStorage.getItem('country')
@@ -48,7 +46,7 @@ const DownloadArticliesModal = ({ open, handleModal, supllierNumberOptions }) =>
         }).then(async (res) => {
             handleModal(false)
             console.log(res)
-            fileDownload(res.data, "download.pdf")
+           
             if (res.data.status) {
                 return MySwal.fire({
                     title: 'Done!',

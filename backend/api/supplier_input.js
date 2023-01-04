@@ -92,7 +92,6 @@ module.exports = function (app, con) {
 				res.json({ status: false });
 				return;
 			} else {
-				console.log(result.rows)
 				data.supplierInputs = result.rows
 <<<<<<< HEAD
 				res.json({ status: true, data: data });
