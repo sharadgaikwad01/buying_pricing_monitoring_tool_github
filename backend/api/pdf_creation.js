@@ -1,32 +1,36 @@
 const fs = require("fs");
 const PDFDocument = require("pdfkit");
 const https = require('https');
+var async = require("async");
 
-async function createSupplierAssortments(assortment_details, path, ) {
+async function createSupplierAssortments(assortment_details, path, res, country, buyer_name) {
   let doc = new PDFDocument({ size: "A4", margin: 50 });
   var stream;
   var shouldReturn = false;
-  await generateHeader(doc);
+  await generateHeader(doc, country, buyer_name);
   await generateCustomerInformation(doc, assortment_details);
   await generateAssortmentTable(doc, assortment_details);
   await generateFooter(doc);
   stream = await doc.pipe(fs.createWriteStream(path));
   doc.end();
   stream.on('finish', function() {
-    console.log("Finish ========")
+    var data =fs.readFileSync(path);
+    res.contentType("application/pdf");
+    res.send(data);
+    return;
   });
 }
 
-function generateHeader(doc) {
+function generateHeader(doc, country, buyer_name) {
   doc
     .image("tool_logo.png", 50, 45, { height: 30, width: 150 })
     .fillColor("#444444")
     .fontSize(15)
     .text("", 50, 80)
     .fontSize(10)
-    .text("Buyer Name", 200, 50, { align: "right" })
+    .text(buyer_name, 200, 50, { align: "right" })
     .text("Category Manger", 200, 65, { align: "right" })
-    .text("Country", 200, 80, { align: "right" })
+    .text(country, 200, 80, { align: "right" })
     .moveDown();
 }
 

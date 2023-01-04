@@ -1,12 +1,21 @@
 const http = require('http');
+const Https = require('https');
 var nodemailer = require('nodemailer');
+var async = require("async");
+const fs = require('fs');
+const { createSupplierAssortments } = require("./pdf_creation");
+const PDFDocument = require('pdfkit');
+const { dirname } = require('path');
+const appDir = dirname(require.main.filename);
+var path = require('path');
 //=========== MonthEnd API Module ===================
 module.exports = function(app, con) {
     app.get('/buyer_input', async function(req, res){
 		var data = {};
 		var supplierIDOptions = [];
 		var categoryOptions = [];
-		var getUniqueSupplierIdQuery = "select distinct t1.suppl_no from vw_suppl_info t1 where country_name='"+req.query.country+"'";
+
+		var getUniqueSupplierIdQuery = "SELECT distinct t.suppl_no FROM public.vw_buyer_details t where t.buyer_emailid = '"+req.query.email+"'";
 
 		await con.query(getUniqueSupplierIdQuery, function(err, result) {
 			if (err) {
@@ -86,9 +95,6 @@ module.exports = function(app, con) {
 				return;
 			} else{				
 				var query = "SELECT row_id, bdm_global_umbrella_no, suppl_no, suppl_name, ean_no, art_no, art_name_tl, current_price, new_price, frmt_new_price, price_difference_perc, to_char(request_date, 'dd-mm-YYYY') as request_date, price_change_reason, action_status, frmt_negotiate_final_price, negotiate_final_price, to_char(price_increase_communicated_date, 'dd-mm-YYYY') as price_increase_communicated_date, to_char(price_increase_effective_date, 'dd-mm-YYYY') as price_increase_effective_date, stratbuyer_name FROM public.vw_buyer_details where country_name='"+req.body.country+"' AND buyer_emailid='"+req.body.email+"' AND new_price IS NOT NULL AND request_date IS NOT NULL ORDER by action_status ASC";
-
-				console.log("query=======")
-				console.log(query)
 				
 				await con.query(query, function(err, result) {
 					if (err) {
@@ -176,6 +182,31 @@ module.exports = function(app, con) {
 				res.json({ status: true, data: result.rows });
 				return;
 			}			
+		});
+	});
+
+	app.get('/download_supplier_assoerment_pdf', function (req, res) {
+		var supplier_number = req.query.supplier_number;
+		var query = "select suppl_no, art_no, art_name, frmt_new_price as new_price, frmt_negotiate_final_price as final_price, to_char(price_increase_effective_date, 'dd-mm-YYYY') as price_increase_effective_date from vw_request_details where action_status='closed' and country_name='" + req.query.country + "' AND SUPPL_NO = '" + req.query.supplier_number + "'";
+
+		con.query(query, async function (err, result) {
+			if (err) {
+				console.log(err);
+				res.contentType("application/pdf");
+				res.send();
+				return;
+			} else {
+				if(result.rowCount > 0){
+					var assortment_details = result.rows
+					var file_path = path.join(__dirname+'/pdf/supplier_assortments_'+supplier_number+'.pdf');
+					await createSupplierAssortments(assortment_details, file_path, res, req.query.country, req.query.buyer_name)
+				}else{
+					res.contentType("application/pdf");
+    				res.send();
+					return;
+				}
+				;				
+			}
 		});
 	});
 

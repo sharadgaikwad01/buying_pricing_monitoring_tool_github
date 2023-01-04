@@ -20,10 +20,12 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 const MySwal = withReactContent(Swal)
+const fileDownload = require('js-file-download')
 
 const DownloadArticliesModal = ({ open, handleModal, supllierNumberOptions }) => {
 
     const country = localStorage.getItem('country')
+    const buyer_name = localStorage.getItem('name')
 
     const [supplierNumber, setSupplierNumber] = useState('')
 
@@ -41,12 +43,12 @@ const DownloadArticliesModal = ({ open, handleModal, supllierNumberOptions }) =>
         console.log(data)
         const supplier_number = data.supplier_number
         await axios.get(`${nodeBackend}/download_supplier_assoerment_pdf`, {
-            params: { supplier_number, country },
+            params: { supplier_number, country, buyer_name },
             responseType: 'blob'
         }).then(async (res) => {
             handleModal(false)
-            fileDownload(res.data, "download.pdf")
             if (res.data.size > 0) {
+                fileDownload(res.data, "download.pdf")
                 return MySwal.fire({
                     title: 'Done!',
                     text: 'Supplier Assortment PDF has been downloaded!',

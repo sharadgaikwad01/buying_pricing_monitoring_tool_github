@@ -138,26 +138,6 @@ module.exports = function (app, con) {
 		});
 	});
 
-	app.get('/download_supplier_assoerment_pdf', function (req, res) {
-		var supplier_number = req.query.supplier_number;
-		var query = "select country_name, vat_no, suppl_no, art_no, art_name, umbrella_name, '' as new_price, '' as final_price,'' as price_change_reason, '' as price_increase_effective_date from vw_artinfo_with_request where country_name='" + req.query.country + "' AND SUPPL_NO IN ('" + req.query.supplier_number + "')";
-
-		con.query(query, async function (err, result) {
-			if (err) {
-				console.log(err);
-				res.json({ status: false });
-				return;
-			} else {
-				var assortment_details = result.rows
-				var file_path = path.join(__dirname+'/pdf/supplier_assortments_'+supplier_number+'.pdf');
-				var flag = await createSupplierAssortments(assortment_details, file_path, res);
-				var data =fs.readFileSync(file_path);
-				res.contentType("application/pdf");
-				res.send(data);
-			}
-		});
-	});
-
 	app.post('/delete_supplier_input', async function (req, res) {
 
 		var data = {};
