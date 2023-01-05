@@ -26,6 +26,8 @@ export default class Auth extends Component {
             localStorage.setItem("name", name)
             if (type === 'BUYER') {
                 this.props.history.push('/buyer_input')
+            } else if (type === 'ADMIN') {
+                this.props.history.push('/buyers')
             } else {
                 localStorage.setItem("vat", vat)
                 this.props.history.push('/home')

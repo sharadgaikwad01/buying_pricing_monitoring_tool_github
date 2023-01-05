@@ -247,7 +247,7 @@ const AddNewModalBuyer = ({ open, handleModal, rowData, articalNumberOptions, se
                 name='country_name'
                 defaultValue=''
                 control={control}
-                render={({ field }) => <Input type="text"{...field} placeholder='countryName' value={CountryValue} invalid={errors.country_name && true} />}
+                render={({ field }) => <Input type="text"{...field} placeholder='countryName' value={CountryValue} invalid={errors.country_name && true} onChange={(e) => { setCountryValue(e.target.value); setValue('country_name', e.target.value) } }/>}
               />
               
               {errors.country_name && <FormFeedback>{"countryName is a required field"}</FormFeedback>}
