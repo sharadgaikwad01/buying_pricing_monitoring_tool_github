@@ -23,6 +23,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 console.log(config.reactFrontend)
 console.log("config.nodebackend=============================")
 console.log(config.nodebackend)
+
 //app.use(cors());
 var corsOptions = {
 	"methods": "GET, POST, PUT, PATCH, DELETE, OPTIONS",
