@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 
 import { reactFrontend } from '@utils'
 
-import { useEffect } from 'react'
+//import { useEffect } from 'react'
 
 // ** Custom Components
 import Avatar from '@components/avatar'
@@ -18,35 +18,21 @@ import { User, Mail, CheckSquare, MessageSquare, Settings, CreditCard, HelpCircl
 // ** Reactstrap Imports
 import { UncontrolledDropdown, DropdownMenu, DropdownToggle, DropdownItem } from 'reactstrap'
 
-// ** Default Avatar Image
-//import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg'
-
 const UserDropdown = () => {
   // ** State
   const user_email = localStorage.getItem('email')
   // const vat_number = localStorage.getItem('vat')
   const user_name = localStorage.getItem('name')
 
-  // const [userDetails, setUserDetails] = useState([])
-
-  //** Vars
-  //const userAvatar = (userData && userData.avatar) || defaultAvatar
-
   const handlelogout = () => {
     localStorage.clear()
-    window.location.replace(`${reactFrontend}/login`)
-  }
-
-  useEffect(async () => {
     const user_type = localStorage.getItem("type")
     if (user_type === 'SUPPLIER') {
-      // const result = `${user_type} / ${vat_number} / ${user_name}`
-      // setUserDetails(result)
+      window.location.replace(`${reactFrontend}/login`)
     } else {
-      // setUserDetails(user_type)
-    }
-  }, [])
-
+      window.location.replace(`${reactFrontend}/buyer_login`)
+    }    
+  }
   return (
     <UncontrolledDropdown tag='li' className='dropdown-user nav-item'>
       {/* <span className='user-status float-left'>{userDetails}</span> */}

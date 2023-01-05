@@ -1,4 +1,4 @@
-//import { useEffect } from 'react'
+import { useEffect } from 'react'
 import { useSkin } from '@hooks/useSkin'
 import { Link } from 'react-router-dom'
 import { Facebook, Twitter, Mail, GitHub } from 'react-feather'
