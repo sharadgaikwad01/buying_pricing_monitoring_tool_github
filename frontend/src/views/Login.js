@@ -1,11 +1,11 @@
-//import { useEffect } from 'react'
+import { useEffect } from 'react'
 import { useSkin } from '@hooks/useSkin'
 import { Link } from 'react-router-dom'
 import { Facebook, Twitter, Mail, GitHub } from 'react-feather'
 import InputPasswordToggle from '@components/input-password-toggle'
 import { Row, Col, CardTitle, CardText, Form, Label, Input, Button } from 'reactstrap'
 import '@styles/react/pages/page-authentication.scss'
-import { nodeBackend } from '@utils'
+import { nodeBackend, reactFrontend } from '@utils'
 export const data = []
 
 const LoginCover = () => {
