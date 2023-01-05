@@ -66,11 +66,11 @@ router.use((req, res, next) => {
     next()
 })
 
-router.get('/buyer/api/v2/callback', (req, res, next) => {  
+router.get('/api/v2/callback', (req, res, next) => {  
     //res.send("callback")  
 })
 
-router.get('/buyer/api/v2/login', (req, res, next) => {
+router.get('/api/v2/login', (req, res, next) => {
     if (client == undefined) {
         res.send("Authorization provider is unavailable");
         next()

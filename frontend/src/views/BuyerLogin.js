@@ -1,11 +1,11 @@
-import { useEffect } from 'react'
+//import { useEffect } from 'react'
 import { useSkin } from '@hooks/useSkin'
 import { Link } from 'react-router-dom'
 import { Facebook, Twitter, Mail, GitHub } from 'react-feather'
 import InputPasswordToggle from '@components/input-password-toggle'
 import { Row, Col, CardTitle, CardText, Form, Label, Input, Button } from 'reactstrap'
 import '@styles/react/pages/page-authentication.scss'
-import { nodeBackend, reactFrontend } from '@utils'
+import { nodeBackend } from '@utils'
 export const data = []
 
 const BuyerLogin = () => {
@@ -13,15 +13,6 @@ const BuyerLogin = () => {
 
   const illustration = skin === 'dark' ? 'login-v2-dark.svg' : 'login-v2.svg',
   source = require(`@src/assets/images/pages/${illustration}`).default
-
-  useEffect(async () => {
-    const auth_token = localStorage.getItem('token')
-    if (auth_token) {
-      window.location.replace(`${reactFrontend}/buyer_input`)
-    } else {
-        window.location.replace(`${nodeBackend}/buyer/api/v2/login`)
-    }
-  }, [])
 
   const handleLogin = () => {
     window.location.replace(`${nodeBackend}/buyer/api/v2/login`)
@@ -43,9 +34,9 @@ const BuyerLogin = () => {
             <CardTitle tag='h2' className='fw-bold mb-1'>
               Welcome to Metro
             </CardTitle>
-            <CardText className='mb-2'>Please sign-in to your account and start the adventure</CardText>
+            <CardText className='mb-2'>Please log-in to your account and start the adventure</CardText>
             <Button className='mb-1' color='primary' block onClick={handleLogin}>
-              Sign in
+              Log in
             </Button>
             <div className='divider my-2'>
               <div className='divider-text'></div>

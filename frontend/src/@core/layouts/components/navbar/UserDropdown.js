@@ -24,12 +24,14 @@ const UserDropdown = () => {
   // const vat_number = localStorage.getItem('vat')
   const user_name = localStorage.getItem('name')
 
-  const handlelogout = () => {
-    localStorage.clear()
+  const handlelogout = () => {    
     const user_type = localStorage.getItem("type")
     if (user_type === 'SUPPLIER') {
+      localStorage.clear()
       window.location.replace(`${reactFrontend}/login`)
-    } else {
+    }
+    if (user_type === 'BUYER') {
+      localStorage.clear()
       window.location.replace(`${reactFrontend}/buyer_login`)
     }    
   }

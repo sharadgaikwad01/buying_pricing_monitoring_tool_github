@@ -4,7 +4,6 @@ var nodemailer = require('nodemailer');
 var async = require("async");
 const fs = require('fs');
 const PDFDocument = require('pdfkit');
-const { createSupplierAssortments } = require("./pdf_creation");
 const { dirname } = require('path');
 const appDir = dirname(require.main.filename);
 var path = require('path');
