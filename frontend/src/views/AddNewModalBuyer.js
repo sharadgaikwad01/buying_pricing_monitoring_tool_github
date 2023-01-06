@@ -113,7 +113,7 @@ const AddNewModalBuyer = ({ open, handleModal, rowData, articalNumberOptions, se
         //handle success
         console.log(success)     
         if (success.status) {
-          await setUsersInputsData(success.data.data)
+          setUsersInputsData(success.data.data)
           if (UserValue) {
             return MySwal.fire({
               title: 'Done!',
