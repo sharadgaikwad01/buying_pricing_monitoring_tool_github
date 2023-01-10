@@ -4,7 +4,6 @@ import { User, Briefcase, Mail, Calendar, DollarSign, X } from 'react-feather'
 
 import axios from 'axios'
 import Select, { ActionMeta, OnChangeValue, StylesConfig } from 'react-select'
-import { MultiSelect } from "react-multi-select-component"
 import { nodeBackend } from '@utils'
 // ** Reactstrap Imports
 import { Modal, Input, Label, Button, ModalHeader, ModalBody, InputGroup, InputGroupText, FormFeedback, Form } from 'reactstrap'
@@ -24,24 +23,25 @@ import { useState, useEffect } from 'react'
 const MySwal = withReactContent(Swal)
 
 const AddNewModalBuyer = ({ open, handleModal, rowData, articalNumberOptions, setUsersInputsData }) => {
-  // const [UserData, setUsersData] = useState({user_name:'', email:'', user_id:'', emp_id:'', row_id:''})
+  // const [UserData, setUsersData] = useState({user_name:'', email:'', emp_id:'', row_id:''})
   const [DepartmentValue, setDepartmentValue] = useState('')
   const [FNameValue, setFNameValue] = useState('')
+  const [LNameValue, setLNameValue] = useState('')
+  const [UserValue, setUserValue] = useState(0)
   const [EmailValue, setEmailValue] = useState('')
   const [selectedOptions, setselectedOptions] = useState('')
  
   const [CountryValue, setCountryValue] = useState('')
-  const [ActiveStatus, setActiveStatus] = useState('')
-  const [UserIdValue, setUserIdValue] = useState(0)
+  // const [ActiveStatus, setActiveStatus] = useState('')
   // const [articalNumber, setarticalNumber] = useState('')
 
   const validationSchema = yup.object().shape({
     first_name: yup.string().required(),
+    last_name: yup.string().required(),
     buyer_emailid: yup.string().required().email(),
     // emp_id: yup.string().required().test('len', 'Must be exactly 8 characters', val => val.length === 8),
     dept_name: yup.string().required(),
-    country_name: yup.string().required(),
-    active_status: yup.string().required()
+    country_name: yup.string().required()
   })
 
   const {
@@ -54,21 +54,24 @@ const AddNewModalBuyer = ({ open, handleModal, rowData, articalNumberOptions, se
   // console.log(rowData)
 
   useEffect(async () => {
-      //console.log(rowData)
+      console.log(rowData)
       await setFNameValue(rowData.first_name)
-      setValue('first_name', `${rowData.first_name} ${rowData.last_name}`, { shouldValidate:true })
+      setValue('first_name', `${rowData.first_name}`, { shouldValidate:true })
+
+      await setLNameValue(rowData.last_name)
+      setValue('last_name', `${rowData.last_name}`, { shouldValidate:true })
     
       await setDepartmentValue(rowData.dept_name)
       setValue('dept_name', rowData.dept_name, { shouldValidate:true })
     
       await setEmailValue(rowData.buyer_emailid)
       setValue('buyer_emailid', rowData.buyer_emailid)
+      
+      await setUserValue(rowData.user_id)
+      //setValue('buyer_emailid', rowData.user_id)
     
-      await setActiveStatus(rowData.active_status ? rowData.active_status : 'active')
-      setValue('active_status', rowData.active_status ? rowData.active_status : 'active')
-
-      await setUserIdValue(rowData.row_id)
-      setValue('user_id', rowData.row_id)
+      // await setActiveStatus(rowData.active_status ? rowData.active_status : 'active')
+      // setValue('active_status', rowData.active_status ? rowData.active_status : 'active')
 
       if (rowData.stratbuyer_name) {
           console.log(rowData.stratbuyer_name.split(','))
@@ -82,21 +85,21 @@ const AddNewModalBuyer = ({ open, handleModal, rowData, articalNumberOptions, se
         await setselectedOptions('')
         setValue('stratbuyer_name', '')
       }
-      
       await setCountryValue(rowData.country_name)
       setValue('country_name', rowData.country_name)
 
     // setEmailValue(rowData.email)
   }, [rowData])
+
   const CloseBtn = <X className='cursor-pointer' size={15} onClick={handleModal} />
 
   const onSubmit = data => {
     console.log(data)
     const first_name = data.first_name
+    const last_name = data.last_name
     const dept_name = data.dept_name
     const buyer_emailid = data.buyer_emailid
-    const active_status = data.active_status
-    const user_id = data.user_id
+    // const active_status = data.active_status
     const country_name = data.country_name
     const stratbuyer_name = data.stratbuyer_name
 
@@ -104,13 +107,14 @@ const AddNewModalBuyer = ({ open, handleModal, rowData, articalNumberOptions, se
     axios({
       method: "post",
       url: `${nodeBackend}/buyers_add_input`,
-      data: { first_name, dept_name, buyer_emailid, active_status, user_id, stratbuyer_name, country_name }
+      data: { first_name, last_name, dept_name, buyer_emailid, stratbuyer_name, country_name }
     })
       .then(async function (success) {
-        //handle success        
+        //handle success
+        console.log(success)     
         if (success.status) {
-          await setUsersInputsData(success.data.data)
-          if (user_id) {
+          setUsersInputsData(success.data.data)
+          if (UserValue) {
             return MySwal.fire({
               title: 'Done!',
               text: 'Buyer Updated Successfully!',
@@ -157,10 +161,10 @@ const AddNewModalBuyer = ({ open, handleModal, rowData, articalNumberOptions, se
       })
   }
 
-  const active_statusOptions = [
-    { value: 'active', label: 'Active' },
-    { value: 'inactive', label: 'InActive' }
-  ]
+  // const active_statusOptions = [
+  //   { value: 'active', label: 'Active' },
+  //   { value: 'inactive', label: 'InActive' }
+  // ]
 
   const handleChange = async (val) => {
     await setselectedOptions(val)
@@ -190,9 +194,25 @@ const AddNewModalBuyer = ({ open, handleModal, rowData, articalNumberOptions, se
                 name='first_name'
                 defaultValue=''
                 control={control}
-                render={({ field }) => <Input type="text"{...field} placeholder='Full name' value={FNameValue} onChange={(e) => { setFNameValue(e.target.value); setValue('first_name', e.target.value) } }  invalid={errors.first_name && true} />}
+                render={({ field }) => <Input type="text"{...field} placeholder='First name' value={FNameValue} onChange={(e) => { setFNameValue(e.target.value); setValue('first_name', e.target.value) } }  invalid={errors.first_name && true} />}
               />
-              {errors.user_name && <FormFeedback>{"First Name is a required field"}</FormFeedback>}
+              {errors.first_name && <FormFeedback>{"First Name is a required field"}</FormFeedback>}
+            </InputGroup>
+          </div>
+
+          <div className='mb-1'>
+            <Label className='form-label' for='last_name'>
+              Full Name
+            </Label>
+            <InputGroup>
+              <Controller
+                id='last_name'
+                name='last_name'
+                defaultValue=''
+                control={control}
+                render={({ field }) => <Input type="text"{...field} placeholder='Last name' value={LNameValue} onChange={(e) => { setLNameValue(e.target.value); setValue('last_name', e.target.value) } }  invalid={errors.last_name && true} />}
+              />
+              {errors.last_name && <FormFeedback>{"Last Name is a required field"}</FormFeedback>}
             </InputGroup>
           </div>
           
@@ -208,7 +228,7 @@ const AddNewModalBuyer = ({ open, handleModal, rowData, articalNumberOptions, se
                 control={control}
                 render={({ field }) => <Input type="text"{...field} placeholder='Department' value={DepartmentValue} onChange={(e) => { setDepartmentValue(e.target.value); setValue('dept_name', e.target.value) } }  invalid={errors.dept_name && true} />}
               />
-              {errors.user_name && <FormFeedback>{"Department is a required field"}</FormFeedback>}
+              {errors.dept_name && <FormFeedback>{"Department is a required field"}</FormFeedback>}
             </InputGroup>
           </div>
 
@@ -225,14 +245,8 @@ const AddNewModalBuyer = ({ open, handleModal, rowData, articalNumberOptions, se
                 control={control}
                 render={({ field }) => <Input type="text"{...field} placeholder='Email' value={EmailValue} onChange={(e) => { setEmailValue(e.target.value); setValue('buyer_emailid', e.target.value) } }  invalid={errors.buyer_emailid && true} />}
               />
-              <Controller
-                id='user_id'
-                name='user_id'
-                defaultValue='0'
-                control={control}
-                render={({ field }) => <Input type="hidden"{...field} placeholder='user_id' value={UserIdValue}  invalid={errors.user_id && true}/>}
-              />
-              {errors.email && <FormFeedback>{"Email is a required field"}</FormFeedback>}
+              
+              {errors.buyer_emailid && <FormFeedback>{"Email is a required field"}</FormFeedback>}
             </InputGroup>
           </div>
           
@@ -254,7 +268,7 @@ const AddNewModalBuyer = ({ open, handleModal, rowData, articalNumberOptions, se
             </InputGroup>
           </div>
 
-          <div className='mb-1'>
+          {/* <div className='mb-1'>
             <Label className='form-label' for='active_status'>
               Status
             </Label>
@@ -273,7 +287,7 @@ const AddNewModalBuyer = ({ open, handleModal, rowData, articalNumberOptions, se
               )}
             />
             {errors["active_status"] && <FormFeedback>{'Status is a required field'}</FormFeedback>}
-          </div>
+          </div> */}
 
           <div className='mb-1'>
             <Label className='form-label' for='stratbuyer_name'>
