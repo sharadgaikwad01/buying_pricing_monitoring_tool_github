@@ -342,16 +342,17 @@ const Home = props => {
       delete item.frmt_new_price
     })
     const finalcsvdata = csvdata.map(item => ({
-      "Supplier Number": item.suppl_no,
-      "Article Number": item.art_no,
-      "Article Description": item.art_name,
-      "Requested Price": item.new_price,
-      "Requested Date": item.request_date,
-      "Final Price": item.negotiate_final_price,
-      "Price Finalize Date": item.price_increase_communicated_date,
-      "Price Effective Date": item.price_increase_effective_date,
-      "Article Status": item.action_status,
-      "Price change Reason": item.price_change_reason
+      "Supplier Number": item.suppl_no ? item.suppl_no.replace(",", ".") : item.suppl_no,
+      "Article Number": item.art_no ? item.art_no.replace(",", ".") : item.art_no,
+      "EAN Number": item.ean_no ? item.ean_no.replace(",", ".") : item.ean_no,
+      "Article Description": item.art_name ? item.art_name.replace(",", ".") : item.art_name,
+      "Requested Price": item.new_price ? item.new_price.replace(",", ".") : item.new_price,
+      "Requested Date": item.request_date ? item.request_date.replace(",", ".") : item.request_date,
+      "Final Price": item.negotiate_final_price ? item.negotiate_final_price.replace(",", ".") : item.negotiate_final_price,
+      "Price Finalize Date": item.price_increase_communicated_date ? item.price_increase_communicated_date.replace(",", ".") : item.price_increase_communicated_date,
+      "Price Effective Date": item.price_increase_effective_date ? item.price_increase_effective_date.replace(",", ".") : item.price_increase_effective_date,
+      "Article Status": item.action_status ? item.action_status.replace(",", ".") : item.action_status,
+      "Price change Reason": item.price_change_reason ? item.price_change_reason.replace(",", ".") : item.price_change_reason
     }))
     downloadCSV(finalcsvdata)
   }

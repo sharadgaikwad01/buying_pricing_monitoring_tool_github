@@ -97,7 +97,7 @@ const BuyerInput = props => {
       nextLabel=''
       forcePage={currentPage}
       onPageChange={page => handlePagination(page)}
-      pageCount={Math.ceil(dataToRender().length / 50) || 1}
+      pageCount={Math.ceil(dataToRender().length / 7) || 1}
       breakLabel='...'
       pageRangeDisplayed={2}
       marginPagesDisplayed={2}
@@ -166,20 +166,21 @@ const BuyerInput = props => {
         delete item.frmt_new_price
       })
       const finalcsvdata = csvdata.map(item => ({
-        "Supplier Number": item.suppl_no,
-        "Supplier Name":item.suppl_name,
-        "Article Number": item.art_no,
-        "Article Description": item.art_name_tl,
-        "Current Price":item.current_price,
-        "Requested Price": item.new_price,
-        "Price Increase in %":item.price_difference_perc,
-        "Requested Date": item.request_date,
-        "Price change Reason": item.price_change_reason,
-        "Article Status": item.action_status,
-        "Final Price": item.negotiate_final_price,
-        "Price Finalize Date": item.price_increase_communicated_date,
-        "Price Effective Date": item.price_increase_effective_date,
-        "Category Name":item.stratbuyer_name
+        "Supplier Number": item.suppl_no ? item.suppl_no.replace(",", ".") : item.suppl_no,
+        "Supplier Name":item.suppl_name ? item.suppl_name.replace(",", ".") : item.suppl_name,
+        "Article Number": item.art_no ? item.art_no.replace(",", ".") : item.art_no,
+        "EAN Number": item.ean_no ? item.ean_no.replace(",", ".") : item.ean_no,
+        "Article Description": item.art_name_tl ? item.art_name_tl.replace(",", ".") : item.art_name_tl,
+        "Current Price":item.current_price ? item.current_price.replace(",", ".") : item.current_price,
+        "Requested Price": item.new_price ? item.new_price.replace(",", ".") : item.new_price,
+        "Price Increase in %":item.price_difference_perc ? item.price_difference_perc.replace(",", ".") : item.price_difference_perc,
+        "Requested Date": item.request_date ? item.request_date.replace(",", ".") : item.request_date,
+        "Price change Reason": item.price_change_reason ? item.price_change_reason.replace(",", ".") : item.price_change_reason,
+        "Article Status": item.action_status ? item.action_status.replace(",", ".") : item.action_status,
+        "Final Price": item.negotiate_final_price ? item.negotiate_final_price.replace(",", ".") : item.negotiate_final_price,
+        "Price Finalize Date": item.price_increase_communicated_date ? item.price_increase_communicated_date.replace(",", ".") : item.price_increase_communicated_date,
+        "Price Effective Date": item.price_increase_effective_date ? item.price_increase_effective_date.replace(",", ".") : item.price_increase_effective_date,
+        "Category Name":item.stratbuyer_name ? item.stratbuyer_name.replace(",", ".") : item.stratbuyer_name
       }))
       downloadCSV(finalcsvdata)
     })
@@ -398,17 +399,6 @@ const BuyerInput = props => {
       }
     },
     {
-      name: 'EAN No.',
-      sortable: true,
-      minWidth: 'auto',
-      selector: row => row.ean_no,
-      cell: row => {
-        return (
-          row.ean_no ? row.ean_no : "-"
-        )
-      }
-    },
-    {
       name: 'Current Price',
       sortable: true,
       minWidth: 'auto',
@@ -616,7 +606,7 @@ const BuyerInput = props => {
               pagination
               selectableRowsNoSelectAll
               columns={columns}
-              paginationPerPage={50}
+              paginationPerPage={7}
               className='react-dataTable'
               sortIcon={<ChevronDown size={10} />}
               paginationDefaultPage={currentPage + 1}
