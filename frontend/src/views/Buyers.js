@@ -72,7 +72,7 @@ const Buyers = props => {
   // ** Function to handle Modal toggle
   const handleModal = () => setModal(!modal)
   // const downloadArticleModal = () => setSupplierInputModal(!supplierInputModal)
-  const [UserData] = useState({first_name:'', dept_name:'',  buyer_emailid:'', row_id:'', stratbuyer_name:'', country_name: '', active_status: ''})
+  const [UserData] = useState({first_name:'', dept_name:'',  buyer_emailid:'', user_id:0, stratbuyer_name:'', country_name: '', active_status: 'Active'})
   // const handleUploadArticleModal = () => setUploadArticleModal(!uploadArticleModal)
   // ** Function to handle Pagination
   const handlePagination = page => {
@@ -141,12 +141,14 @@ const Buyers = props => {
   const handleEdit = async (e, row) => {
     e.preventDefault()
     handleModal()
+    row.user_id = 1
     setRowData(row)
   }
   
   const handleAdd = async (e) => {
     e.preventDefault()
     handleModal()
+    UserData.user_id = 0
     setRowData(UserData)
   }
   

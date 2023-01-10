@@ -64,7 +64,7 @@ const AddNewModal = ({ open, handleModal, supllierNumberOptions, setsupplierInpu
   } = useForm({ mode: 'onChange', resolver: yupResolver(SupplierInputSchema) })
 
   const onSubmit = data => {
-    console.log(data)
+
     const new_price = data.new_price
     const reason = data.reason
     const supplier_number = data.supplier_number
@@ -88,6 +88,12 @@ const AddNewModal = ({ open, handleModal, supllierNumberOptions, setsupplierInpu
       return true
     })
     const price_effective_date = effective_date_arr[0]
+
+    setNewPrice('')
+    setReason('')
+    setSupplierNumber('')
+    setArticleNumber('')
+    setPriceIncreaseEffectiveDate('')
 
     handleModal(false)
     
@@ -144,6 +150,14 @@ const AddNewModal = ({ open, handleModal, supllierNumberOptions, setsupplierInpu
       }      
     })
   } 
+  const handleModalClose = async () => {
+    setNewPrice('')
+    setReason('')
+    setSupplierNumber('')
+    setArticleNumber('')
+    setPriceIncreaseEffectiveDate('')
+    handleModal(false)
+  }  
 
   return (
     <Modal
@@ -264,14 +278,14 @@ const AddNewModal = ({ open, handleModal, supllierNumberOptions, setsupplierInpu
               name='reason'
               defaultValue=''
               control={control}
-              render={({ field }) => <Input type='textarea' rows='5' {...field} placeholder='Reason' value={reason} onChange={e => { setReason(e.target.value);  setValue('reason', e.target.value, { shouldValidate: true }) }} invalid={errors.reason && true} />}
+              render={({ field }) => <Input type='textarea' rows='5' {...field} placeholder='Reason' value={reason} onChange={e => { console.log(e); setReason(e.target.value);  setValue('reason', e.target.value, { shouldValidate: true }) }} invalid={errors.reason && true} />}
             />
             {errors.reason && <FormFeedback>{"Reason is a required field"}</FormFeedback>}
           </div>
           <Button className='me-1' color='primary' type='submit'>
             Submit
           </Button>
-          <Button color='danger' onClick={handleModal} outline>
+          <Button color='danger'  onClick={() => handleModalClose()} outline>
             Cancel
           </Button>
         </Form>

@@ -5,7 +5,8 @@ const themeConfig = {
   app: {
     appName: '',
     appName1: '',
-    appLogoImage: require('@src/assets/images/logo/tool_logo.png').default
+    appLogoImage: require('@src/assets/images/logo/tool_logo.png').default,
+    appLogoImagefooter: require('@src/assets/images/logo/logom.png').default
   },
   layout: {
     isRTL: false,
