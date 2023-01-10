@@ -5,7 +5,7 @@ import { Facebook, Twitter, Mail, GitHub } from 'react-feather'
 import InputPasswordToggle from '@components/input-password-toggle'
 import { Row, Col, CardTitle, CardText, Form, Label, Input, Button } from 'reactstrap'
 import '@styles/react/pages/page-authentication.scss'
-import { nodeBackend, reactFrontend } from '@utils'
+import { nodeBackend } from '@utils'
 export const data = []
 
 const LoginCover = () => {
