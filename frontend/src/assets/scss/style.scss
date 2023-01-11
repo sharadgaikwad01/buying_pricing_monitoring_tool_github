@@ -832,7 +832,7 @@ input.form-control{
 }
 .filter-row .select__value-container {
     min-width: 120px !important;
-    max-width: 150px !important;
+    // max-width: 150px !important;
     width: auto !important;
 }
 .react-dataTable, .react-dataTable div {
@@ -932,7 +932,7 @@ ul.navbar-nav {
     justify-content: space-between;
 }
 .date-range-select{
-    min-width: 195px;
+    min-width: 210px;
 }
 [dir] .flatpickr-calendar .flatpickr-day.inRange, [dir] .flatpickr-calendar .flatpickr-day.inRange:hover{
     background: rgba(0, 59, 126, 0.2) !important;
@@ -941,6 +941,9 @@ ul.navbar-nav {
 }
 .mr-15{
     margin-right: 15px;
+}
+category-Select {
+
 }
 .rotate{
     -moz-transition: all 2s linear;

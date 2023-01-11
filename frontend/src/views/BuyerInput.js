@@ -583,7 +583,7 @@ const BuyerInput = props => {
               </Label>
               <Select
                 theme={selectThemeColors}
-                className='react-select'
+                className='react-select category-Select'
                 classNamePrefix='select'
                 defaultValue={categoryOptions ? categoryOptions[1] : categoryOptions}
                 name='status'
