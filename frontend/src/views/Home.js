@@ -416,7 +416,7 @@ const Home = props => {
     {
       name: 'Requested Price',
       sortable: true,
-      width: '120px',
+      width: '125px',
       selector: row => row.frmt_new_price,
       cell: row => {
         return (
