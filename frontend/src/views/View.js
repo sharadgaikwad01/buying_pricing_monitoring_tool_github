@@ -41,15 +41,13 @@ const View = () => {
     const [rowData, setRowData] = useState([])
     const [countries, setcountries] = useState([])
 
+    const [categoryId, setCategoryId] = useState('')
 
     const handleEdit = async (e, countryname, suppl_no) => {
 
         e.preventDefault()
         handleModal()
-        console.log(countryname)
-        console.log(suppl_no)
         await axios.get(`${nodeBackend}/buyer_supplier_details_list`, { params: { suppl_no, countryname } }).then((res) => {
-            console.log(res.data.data)
             setRowData(res.data.data)
         })
     }
@@ -68,7 +66,6 @@ const View = () => {
     useEffect(async () => {
         await axios.get(`${nodeBackend}/buyer_supplier_details`, { params: { suppl_no, country } }).then((res) => {
             if (res.data.data) {
-                console.log(res.data.data[0])
                 if (res.data.data[0]) {
                     setSuppliername(res.data.data[0].bdm_global_umbrella_name)
                     setSupplierno(res.data.data[0].suppl_no)

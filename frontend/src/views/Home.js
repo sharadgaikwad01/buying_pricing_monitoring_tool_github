@@ -113,7 +113,6 @@ const Home = props => {
         setsupplierInputsData(res.data.data.supplierInputs)
         setsupllierNumberOptions(res.data.data.supplierIDOptions)
         setarticleOptions(res.data.data.articleOptions)
-
         setSupplierInputCount(res.data.data.supplierInputCount)
       }      
 

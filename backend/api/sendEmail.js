@@ -21,10 +21,14 @@ async function sendEmail (to, subject, html, attachedment=null) {
 
 	// setup e-mail data, even with unicode symbols
 	var mailOptions = {
-		from: 'sharad.gaikwad02@metro-gsc.in', 	// sender address (who sends)
+		from: 'info-hyperautomation@metro-gsc.in', 	// sender address (who sends)
 		to: to, 	// list of receivers (who receives)
 		subject: subject, 	// Subject line
-		html: html 	// html body
+		html: html, 	// html body
+		attachments: [{
+            filename: 'Assortment_Details.pdf',
+            path: attachedment
+        }]
 	};
 
 	// send mail with defined transport object

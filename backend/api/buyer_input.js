@@ -152,13 +152,12 @@ module.exports = function(app, con) {
 
 	app.get('/buyer_supplier_details', async function(req, res){
 		var query = "SELECT bdm_global_umbrella_no, stratbuyer_name, bdm_global_umbrella_name, suppl_no FROM public.vw_request_details where suppl_no='"+req.query.suppl_no+"' AND request_date IS NOT NULL ";
-		console.log(query);
 		await con.query(query, async function(err, result) {
 			if (err) {
 				res.json({ status: false });
 				return;
 			} else{
-				var query1 = "select * from vw_buyer_dashboard";
+				var query1 = "select * from vw_buyer_dashboard where stratbuyer_name ='"+result.rows[0].stratbuyer_name+"'";
 				await con.query(query1, function(err1, result1) {
 					if (err1) {
 						res.json({ status: true, data: result.rows, response: "" });
@@ -187,7 +186,7 @@ module.exports = function(app, con) {
 
 	app.get('/download_supplier_assoerment_pdf', function (req, res) {
 		var supplier_number = req.query.supplier_number;
-		var query = "select suppl_no, art_no, art_name, frmt_new_price as new_price, frmt_negotiate_final_price as final_price, to_char(price_increase_effective_date, 'dd-mm-YYYY') as price_increase_effective_date from vw_request_details where action_status='closed' and country_name='" + req.query.country + "' AND SUPPL_NO = '" + req.query.supplier_number + "'";
+		var query = "select coalesce(suppl_name_tl,suppl_name) as suppl_name, suppl_no, art_no, art_name, frmt_new_price as new_price, frmt_negotiate_final_price as final_price, to_char(price_increase_effective_date, 'dd-mm-YYYY') as price_increase_effective_date from vw_request_details where action_status='closed' and country_name='" + req.query.country + "' AND SUPPL_NO = '" + req.query.supplier_number + "'";
 
 		con.query(query, async function (err, result) {
 			if (err) {
@@ -198,16 +197,16 @@ module.exports = function(app, con) {
 			} else {
 				if(result.rowCount > 0){
 					var assortment_details = result.rows
+					var supplier_name = result.rows[0].suppl_name
 					var file_path = path.join(__dirname+'/pdf/supplier_assortments_'+supplier_number+'.pdf');
-					await createSupplierAssortments(assortment_details, file_path, res, req.query.country, req.query.buyer_name)
+					var flag = 'pdf-download';
+					await createSupplierAssortments(assortment_details, file_path, res, req.query.country, req.query.buyer_name, flag, supplier_name)
 				}else{
 					res.contentType("application/pdf");
     				res.send();
 					return;
-				}
-				;				
+				}				
 			}
 		});
 	});
-
 }

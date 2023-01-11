@@ -9,6 +9,8 @@ const { Pool, Client } = require('pg')
 var cron = require('node-cron');
 
 const { sendEmail } = require("./api/sendEmail");
+const { createSupplierAssortments } = require("./api/pdf_creation");
+var path = require('path');
 
 //=========== API modules ===================
 var auth = require('./api/auth');
@@ -127,43 +129,65 @@ app.listen(config.port, () => {
 })
 
 cron.schedule('*/5 * * * * *', () => {
-	var db_query = "select distinct buyer_emailid from vw_buyer_details t Where t.request_date=current_date -1 and t.action_status='open'";
+	var db_query = "select distinct buyer_fullname as name, buyer_emailid from vw_buyer_details t Where t.request_date=current_date -1 and t.action_status='open'";
 	client.query(db_query, (err, result) => {
 		if (err) {
+			console.log(err)
 			return;
 		}
-		result.rows.forEach(async function (value, key) {
-			var message = (
-				'<table style="border: 1px solid #333;">' +
-				'<thead>' +
-				'<th> Supplier Number </th>' +
-				'<th> Article Number </th>' +
-				'<th> Requested Price </th>' +
-				'<th> Reason </th>' +
-				'<th> Price Effective Date </th>' +
-				'</thead>'
-			);
-			var db_query = "select distinct suppl_no, art_no, new_price, price_change_reason, to_char(price_increase_effective_date, 'dd-mm-YYYY') as price_increase_effective_date from vw_buyer_details t Where t.request_date =current_date-1 and t.action_status= 'open' and t.buyer_emailid ='" + value.buyer_emailid + "'";
-			await client.query(db_query, (error, b_result) => {
+		result.rows.forEach(async function (value, key) {			
+			var db_query = "select distinct coalesce(suppl_name_tl,suppl_name) as suppl_name, suppl_no, suppl_name, art_no, new_price, price_change_reason, to_char(price_increase_effective_date, 'dd-mm-YYYY') as price_increase_effective_date from vw_buyer_details t Where t.request_date =current_date-1 and t.action_status= 'open' and t.buyer_emailid ='" + value.buyer_emailid + "'";
+			var message = '';
+			await client.query(db_query, async (error, b_result) => {
 				if (error) {
 					return;
 				}
-				b_result.rows.forEach(function (value1, key1) {
-					message += (
-						'<tr>' +
-						'<td>' + value1.suppl_no + '</td>' +
-						'<td>' + value1.art_no + '</td>' +
-						'<td>' + value1.new_price + '</td>' +
-						'<td>' + value1.price_change_reason + '</td>' +
-						'<td>' + value1.price_increase_effective_date + '</td>' +
-						'</tr>'
+				if(b_result.rowCount > 0){
+					message = (
+						'Hi '+value.name+', <br><br>'+
+						'This is a notice that there is a price change request made by supplier on BPMT tool.'+
+						'<br>For more information, please visit the BPMT portal. <a href="'+config.reactFrontend+'/buyer_login" >Click here </a><br>'+
+						'<br>If you require any assistance, please contact our support email address: support-hyperautomation@metro-gsc.in'+
+						'<br><br>Sincerely,'+
+						'<br>Team BPMT'+	
+						'<br><br><br><p style="font-size: 10px;">Note: This email was sent from a notification-only address that cannot accept incoming email. Please do not reply to this message.</p>'			
 					);
-				});
-				to = 'sharad.gaikwad02@metro-gsc.in'
-				subject = 'Test Mail'
-				html = message
-				//sendEmail(to, subject, html, attachedment=null)		
+					//to = value.buyer_emailid;
+					to = 'sharad.gaikwad02@metro-gsc.in'
+					subject = 'A new price change request has been submitted by the supplier - BPMT'
+					html = message
+					//sendEmail(to, subject, html, attachedment=null)	
+				}
 			});			
 		});
+	})
+});
+
+cron.schedule('*/5 * * * * *', () => {
+	var db_query = "select distinct buyer_fullname as name, country_name, buyer_emailid from vw_buyer_details t Where t.request_date=current_date and t.action_status='closed'";
+	client.query(db_query, (err, result) => {
+		if (err) {
+			console.log(err)
+			return;
+		}
+		if(result.rowCount > 0){
+			result.rows.forEach(async function (value, key) {			
+				var db_query = "select distinct coalesce(suppl_name_tl,suppl_name) as suppl_name, suppl_no, art_no, art_name, frmt_new_price as new_price, frmt_negotiate_final_price as final_price, to_char(price_increase_effective_date, 'dd-mm-YYYY') as price_increase_effective_date from vw_buyer_details t Where t.request_date =current_date and t.action_status= 'closed' and t.buyer_emailid ='" + value.buyer_emailid + "'";
+				var message = '';
+				await client.query(db_query, async (error, b_result) => {
+					if (error) {
+						console.log(error)
+						return;
+					}
+					if(b_result.rowCount > 0){
+						var name = value.name.replace(" ","_");
+						var supplier_name = b_result.rows[0].suppl_name;
+						var file_path = path.join(__dirname+'/cron-pdf/supplier_assortments_'+name+'.pdf');
+						var flag = 'cron-job';
+						await createSupplierAssortments(b_result.rows, file_path, null, value.country_name, value.name, flag, supplier_name)
+					}
+				});			
+			});
+		}
 	})
 });
