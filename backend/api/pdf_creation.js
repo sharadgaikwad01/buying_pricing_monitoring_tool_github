@@ -49,7 +49,7 @@ function generateHeader(doc, country, buyer_name) {
     .text("", 50, 80)
     .fontSize(10)
     .text(buyer_name, 200, 50, { align: "right" })
-    .text("Category Manger", 200, 65, { align: "right" })
+    .text("Category Manager", 200, 65, { align: "right" })
     .text(country, 200, 80, { align: "right" })
     .moveDown();
 }
