@@ -2,22 +2,42 @@ const fs = require("fs");
 const PDFDocument = require("pdfkit");
 const https = require('https');
 var async = require("async");
+const { sendEmail } = require("./sendEmail");
+var config = require('../config');
+var path = require('path');
 
-async function createSupplierAssortments(assortment_details, path, res, country, buyer_name) {
+async function createSupplierAssortments(assortment_details=null, path=null, res=null, country=null, buyer_name=null, flag=null, supplier_name=null) {
   let doc = new PDFDocument({ size: "A4", margin: 50 });
   var stream;
   var shouldReturn = false;
   await generateHeader(doc, country, buyer_name);
-  await generateCustomerInformation(doc, assortment_details);
+  await generateCustomerInformation(doc, assortment_details, supplier_name);
   await generateAssortmentTable(doc, assortment_details);
   await generateFooter(doc);
   stream = await doc.pipe(fs.createWriteStream(path));
   doc.end();
   stream.on('finish', function() {
-    var data =fs.readFileSync(path);
-    res.contentType("application/pdf");
-    res.send(data);
-    return;
+    if( flag == 'pdf-download'){
+      var data =fs.readFileSync(path);
+      res.contentType("application/pdf");
+      res.send(data);
+      return;
+    } else {
+      message = (
+        'Dear '+buyer_name+', <br><br>'+
+        'The attached file contains a pdf of a closed article price request.<br><br>'+
+        '<br>For more information, please visit the BPMT portal. <a href="'+config.reactFrontend+'/buyer_login" >Click here </a><br>'+
+        '<br>If you require any assistance, please contact our support email address: support-hyperautomation@metro-gsc.in'+
+        '<br><br>Sincerely,'+
+        '<br>Team BPMT'+	
+        '<br><br><br><p style="font-size: 10px;">Note: This email was sent from a notification-only address that cannot accept incoming email. Please do not reply to this message.</p>'			
+      );
+      //to = value.buyer_emailid;
+      to = 'sharad.gaikwad02@metro-gsc.in'
+      subject = 'Attached is a PDF of the closed price request for the article - BPMT'
+      html = message
+      //sendEmail(to, subject, html, path)
+    }    
   });
 }
 
@@ -34,11 +54,11 @@ function generateHeader(doc, country, buyer_name) {
     .moveDown();
 }
 
-function generateCustomerInformation(doc, assortment_details) {
+function generateCustomerInformation(doc, assortment_details, supplier_name) {
   doc
     .fillColor("#444444")
     .fontSize(11)
-    .text("Dear Sharad,", 50, 160)
+    .text("Dear "+supplier_name+",", 50, 160)
     .text("As per our discussion, I am sharing the agreed article price and effective date in the table below.", 50, 180);
 }
 

@@ -113,7 +113,6 @@ const Home = props => {
         setsupplierInputsData(res.data.data.supplierInputs)
         setsupllierNumberOptions(res.data.data.supplierIDOptions)
         setarticleOptions(res.data.data.articleOptions)
-
         setSupplierInputCount(res.data.data.supplierInputCount)
       }      
 
@@ -385,21 +384,21 @@ const Home = props => {
       selector: row => row.row_id
     },
     {
-      name: 'Supplier Number',
+      name: 'Supplier No.',
       sortable: true,
-      width: '100px',
+      width: 'auto',
       selector: row => row.suppl_no
     },
     {
-      name: 'Article Number',
+      name: 'Article No.',
       sortable: true,
-      width: '130px',
+      width: 'auto',
       selector: row => row.art_no
     },
     {
-      name: 'EAN Number',
+      name: 'EAN No.',
       sortable: true,
-      width: '130px',
+      width: 'auto',
       selector: row => row.ean_no,
       cell: row => {
         return (
@@ -416,7 +415,7 @@ const Home = props => {
     {
       name: 'Requested Price',
       sortable: true,
-      width: '100px',
+      width: '125px',
       selector: row => row.frmt_new_price,
       cell: row => {
         return (
@@ -444,7 +443,7 @@ const Home = props => {
     {
       name: 'Price Effective Date',
       sortable: true,
-      width: 'auto',
+      width: '130px',
       selector: row => row.price_increase_effective_date,
       cell: row => {
         return (
@@ -466,7 +465,7 @@ const Home = props => {
     {
       name: 'Price Finalize Date',
       sortable: true,
-      width: 'auto',
+      width: '130px',
       selector: row => row.price_increase_communicated_date,
       cell: row => {
         return (
@@ -477,7 +476,7 @@ const Home = props => {
     {
       name: 'Status',
       sortable: true,
-      minWidth: '100px',
+      minWidth: '60px',
       selector: row => row.action_status,
       cell: row => {
         return (
@@ -489,7 +488,7 @@ const Home = props => {
       name: 'Actions',
       allowOverflow: true,
       center: 'yes',
-      width: '100px',
+      width: '70px',
       cell: (row) => {
         return (
           !row.negotiate_final_price && !row.price_increase_communicated_date && row.action_status === 'open' ? <div className='d-flex'> <Edit size={15} onClick={() => handleEdit(row)} className="editTableIcon text-info" /> <Trash size={15} onClick={(e) => handleDelete(e, row)} className="deleteTableIcon text-danger ms-1" /> </div> : "-"
