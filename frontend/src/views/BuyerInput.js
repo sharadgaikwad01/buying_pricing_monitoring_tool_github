@@ -158,8 +158,8 @@ const BuyerInput = props => {
     link.click()
   }
 
-  const handleDownloadCSV = async () => {
-    await axios.get(`${nodeBackend}/buyer_article_details`, { params: { country, email} }).then((res) => {
+  const handleDownloadCSV = async () => {    
+    await axios.get(`${nodeBackend}/buyer_article_details`, { params: { country, email, searchSupplierNumber, searchRequestedDate, searchStatus, searchCategory} }).then((res) => {
       const csvdata = res.data.data
       csvdata.forEach(function (item) {
         delete item.row_id

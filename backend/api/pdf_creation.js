@@ -24,8 +24,8 @@ async function createSupplierAssortments(assortment_details=null, path=null, res
       return;
     } else {
       message = (
-        'Hi '+buyer_name+', <br><br>'+
-        'This is a notice that there is a price change request made by supplier on BPMT tool.'+
+        'Dear '+buyer_name+', <br><br>'+
+        'The attached file contains a pdf of a closed article price request.<br><br>'+
         '<br>For more information, please visit the BPMT portal. <a href="'+config.reactFrontend+'/buyer_login" >Click here </a><br>'+
         '<br>If you require any assistance, please contact our support email address: support-hyperautomation@metro-gsc.in'+
         '<br><br>Sincerely,'+
@@ -34,7 +34,7 @@ async function createSupplierAssortments(assortment_details=null, path=null, res
       );
       //to = value.buyer_emailid;
       to = 'sharad.gaikwad02@metro-gsc.in'
-      subject = 'A new price change request has been submitted by the supplier - BPMT'
+      subject = 'Attached is a PDF of the closed price request for the article - BPMT'
       html = message
       //sendEmail(to, subject, html, path)
     }    

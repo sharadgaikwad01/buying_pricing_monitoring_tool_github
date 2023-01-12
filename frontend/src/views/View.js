@@ -41,8 +41,6 @@ const View = () => {
     const [rowData, setRowData] = useState([])
     const [countries, setcountries] = useState([])
 
-    const [categoryId, setCategoryId] = useState('')
-
     const handleEdit = async (e, countryname, suppl_no) => {
 
         e.preventDefault()

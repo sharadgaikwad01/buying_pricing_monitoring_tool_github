@@ -128,7 +128,7 @@ app.listen(config.port, () => {
 	console.log("Application is running at localhost:" + config.port)
 })
 
-cron.schedule('*/5 * * * * *', () => {
+cron.schedule('* * 7 * * *', () => {
 	var db_query = "select distinct buyer_fullname as name, buyer_emailid from vw_buyer_details t Where t.request_date=current_date -1 and t.action_status='open'";
 	client.query(db_query, (err, result) => {
 		if (err) {
@@ -163,7 +163,7 @@ cron.schedule('*/5 * * * * *', () => {
 	})
 });
 
-cron.schedule('*/5 * * * * *', () => {
+cron.schedule('* * 7 * * *', () => {
 	var db_query = "select distinct buyer_fullname as name, country_name, buyer_emailid from vw_buyer_details t Where t.request_date=current_date and t.action_status='closed'";
 	client.query(db_query, (err, result) => {
 		if (err) {
