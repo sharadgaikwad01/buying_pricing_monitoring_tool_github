@@ -103,5 +103,30 @@ module.exports = function(app, con) {
 				}
 			});	
 		}
-    })
+    });
+
+	app.post('/delete_buyer_input', async function(req, res){
+		var query = "UPDATE tbl_buyer_details SET active_status = 'inactive' WHERE buyer_emailid ='"+ req.body.buyer_emailid+"'";
+		//var query = "DELETE FROM public.tbl_users where id = '"+req.body.buyer_emailid +"'";
+		console.log(query);
+		await con.query(query, function(err, result) {
+			if (err) {
+				res.json({ status: false });
+				return;
+			} else{
+				var queryalldata = "SELECT first_name, last_name, buyer_emailid, dept_name, country_name,string_agg(stratbuyer_name,', ') stratbuyer_name FROM public.tbl_buyer_details where buyer_emailid IS NOT NULL AND active_status='active' group by first_name, last_name, buyer_emailid, dept_name, country_name";
+				con.query(queryalldata, function(errall, resultall) {
+					if (errall) {
+						res.json({ status: false, message: "Select all insert" });
+						return;
+					} else{
+						res.json({ status: true, data: resultall.rows });
+						return;
+					}			
+				});			
+				// res.json({ status: true, data: result.rows });
+				// return;
+            }			
+		});
+	});
 }
