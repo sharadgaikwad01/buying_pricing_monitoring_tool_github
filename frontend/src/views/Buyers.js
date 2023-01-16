@@ -153,7 +153,7 @@ const Buyers = props => {
   }
   
   const handleDelete = (e, row) => {
-    const id = row.row_id
+    const buyer_emailid = row.buyer_emailid
     e.preventDefault()
     MySwal.fire({
       title: 'Are you sure?',
@@ -170,12 +170,13 @@ const Buyers = props => {
       if (result.value) {
         axios({
           method: "post",
-          url: `${nodeBackend}/delete_user_input`,
-          data: { id }
+          url: `${nodeBackend}/delete_buyer_input`,
+          data: { buyer_emailid }
         })
           .then(function (success) {
             //handle success        
             if (success.data.status) {
+              setUsersInputsData(res.data.data)
               return MySwal.fire({
                 title: 'Done!',
                 text: 'Record has been deleted successfully',

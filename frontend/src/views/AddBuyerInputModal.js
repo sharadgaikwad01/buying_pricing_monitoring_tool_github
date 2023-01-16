@@ -148,13 +148,12 @@ const AddBuyerInputModal = ({ open, handleModal, rowData, setsupplierInputsData 
     })
     const effective_date = effective_date_arr[0]
 
-
     handleModal(false)
 
     axios({
       method: "post",
       url: `${nodeBackend}/update_buyer_input`,
-      data: { row_id, final_price, comment, finalize_date, effective_date, country, email}
+      data: { row_id, final_price, comment, finalize_date, effective_date, country, email, newPrice}
     })
       .then(function (success) {
         //handle success 

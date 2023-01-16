@@ -415,7 +415,7 @@ const Home = props => {
     {
       name: 'Requested Price',
       sortable: true,
-      width: '125px',
+      width: 'auto',
       selector: row => row.frmt_new_price,
       cell: row => {
         return (
@@ -426,7 +426,7 @@ const Home = props => {
     {
       name: 'Reason',
       sortable: true,
-      width: '100px',
+      width: 'auto',
       selector: row => row.price_change_reason,
       cell: row => {
         return (
@@ -443,7 +443,7 @@ const Home = props => {
     {
       name: 'Price Effective Date',
       sortable: true,
-      width: '130px',
+      width: 'auto',
       selector: row => row.price_increase_effective_date,
       cell: row => {
         return (
@@ -454,7 +454,7 @@ const Home = props => {
     {
       name: 'Final Price',
       sortable: true,
-      width: '120px',
+      width: 'auto',
       selector: row => row.negotiate_final_price,
       cell: row => {
         return (
@@ -465,7 +465,7 @@ const Home = props => {
     {
       name: 'Price Finalize Date',
       sortable: true,
-      width: '130px',
+      width: 'auto',
       selector: row => row.price_increase_communicated_date,
       cell: row => {
         return (
@@ -476,7 +476,7 @@ const Home = props => {
     {
       name: 'Status',
       sortable: true,
-      minWidth: '60px',
+      width: 'auto',
       selector: row => row.action_status,
       cell: row => {
         return (
@@ -488,7 +488,7 @@ const Home = props => {
       name: 'Actions',
       allowOverflow: true,
       center: 'yes',
-      width: '70px',
+      width: 'auto',
       cell: (row) => {
         return (
           !row.negotiate_final_price && !row.price_increase_communicated_date && row.action_status === 'open' ? <div className='d-flex'> <Edit size={15} onClick={() => handleEdit(row)} className="editTableIcon text-info" /> <Trash size={15} onClick={(e) => handleDelete(e, row)} className="deleteTableIcon text-danger ms-1" /> </div> : "-"

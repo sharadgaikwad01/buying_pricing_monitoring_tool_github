@@ -165,7 +165,7 @@ cron.schedule('* * 7 * * *', () => {
 });
 
 cron.schedule('* * 7 * * *', () => {
-	var db_query = "select distinct buyer_fullname as name, country_name, buyer_emailid from vw_buyer_details t Where t.request_date=current_date and t.action_status='closed'";
+	var db_query = "select distinct buyer_fullname as name, country_name, buyer_emailid from vw_buyer_details t Where t.request_date=current_date-1 and t.action_status='closed'";
 	client.query(db_query, (err, result) => {
 		if (err) {
 			console.log(err)
@@ -173,7 +173,7 @@ cron.schedule('* * 7 * * *', () => {
 		}
 		if(result.rowCount > 0){
 			result.rows.forEach(async function (value, key) {			
-				var db_query = "select distinct coalesce(suppl_name_tl,suppl_name) as suppl_name, suppl_no, art_no, art_name, frmt_new_price as new_price, frmt_negotiate_final_price as final_price, to_char(price_increase_effective_date, 'dd-mm-YYYY') as price_increase_effective_date from vw_buyer_details t Where t.request_date =current_date and t.action_status= 'closed' and t.buyer_emailid ='" + value.buyer_emailid + "'";
+				var db_query = "select distinct coalesce(suppl_name_tl,suppl_name) as suppl_name, suppl_no, art_no, art_name, frmt_new_price as new_price, frmt_negotiate_final_price as final_price, to_char(price_increase_effective_date, 'dd-mm-YYYY') as price_increase_effective_date from vw_buyer_details t Where t.request_date =current_date-1 and t.action_status= 'closed' and t.buyer_emailid ='" + value.buyer_emailid + "'";
 				var message = '';
 				await client.query(db_query, async (error, b_result) => {
 					if (error) {
