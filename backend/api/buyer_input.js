@@ -79,13 +79,11 @@ module.exports = function(app, con) {
             }			
 		});
     });
-	
+
 	app.post('/update_buyer_input', async function(req, res){
 		var data = {};
 
 		var query = "call public.usp_update_requestdetails(record_id=>"+req.body.row_id+", in_new_price=>"+req.body.newPrice+", in_negotiate_price=>"+req.body.final_price+", in_finalize_date=>'"+req.body.finalize_date+"', in_effective_date=>'"+req.body.effective_date+"', in_metro_comment =>'"+req.body.comment+"')";
-
-		console.log(query)
 
 		await con.query(query, async function(err, result) {
 			if (err) {
@@ -190,9 +188,10 @@ module.exports = function(app, con) {
 	});
 
 	app.get('/buyer_supplier_details_list', async function(req, res){
-		var query = "SELECT row_id, suppl_no, suppl_name, ean_no, art_no, art_name_tl, price_difference_perc, agreed_price_increase_perc, action_status, bdm_global_umbrella_no, bdm_global_umbrella_name FROM public.vw_request_details where country_name='"+req.query.countryname+"' AND suppl_no='"+req.query.suppl_no+"'  ORDER BY action_status ASC, row_id DESC";
+		var query = "SELECT row_id, suppl_no, suppl_name, ean_no, art_no, art_name_tl, price_increase_perc, agreed_price_increase_perc, action_status, bdm_global_umbrella_no, bdm_global_umbrella_name FROM public.vw_request_details where country_name='"+req.query.countryname+"' AND suppl_no='"+req.query.suppl_no+"'  ORDER BY action_status ASC, row_id DESC";
 		await con.query(query, async function(err, result) {
 			if (err) {
+				console.log(err)
 				res.json({ status: false });
 				return;
 			} else{
