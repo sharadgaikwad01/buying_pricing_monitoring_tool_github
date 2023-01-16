@@ -108,10 +108,10 @@ const AddNewModalSupplier = ({ open, handleModal, rowData }) => {
       name: 'Price Increase in %',
       sortable: true,
       minWidth: 'auto',
-      selector: row => row.price_difference_perc,
+      selector: row => row.price_increase_perc,
       cell: row => {
         return (
-          row.price_difference_perc ? `${row.price_difference_perc}%` : "-"
+          row.price_increase_perc ? `${row.price_increase_perc}%` : "-"
         )
       }
     },
