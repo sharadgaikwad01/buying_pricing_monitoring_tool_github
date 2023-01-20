@@ -22,7 +22,7 @@ import withReactContent from 'sweetalert2-react-content'
 import { useState, useEffect } from 'react'
 const MySwal = withReactContent(Swal)
 
-const AddNewModalBuyer = ({ open, handleModal, rowData, articalNumberOptions, setUsersInputsData }) => {
+const AddNewModalBuyer = ({ open, handleModal, rowData, articalNumberOptions, countryOptions, deptOptions, setUsersInputsData }) => {
   // const [UserData, setUsersData] = useState({user_name:'', email:'', emp_id:'', row_id:''})
   const [DepartmentValue, setDepartmentValue] = useState('')
   const [FNameValue, setFNameValue] = useState('')
@@ -30,6 +30,7 @@ const AddNewModalBuyer = ({ open, handleModal, rowData, articalNumberOptions, se
   const [UserValue, setUserValue] = useState(0)
   const [EmailValue, setEmailValue] = useState('')
   const [selectedOptions, setselectedOptions] = useState('')
+  
  
   const [CountryValue, setCountryValue] = useState('')
   // const [ActiveStatus, setActiveStatus] = useState('')
@@ -63,16 +64,15 @@ const AddNewModalBuyer = ({ open, handleModal, rowData, articalNumberOptions, se
     
       await setDepartmentValue(rowData.dept_name)
       setValue('dept_name', rowData.dept_name, { shouldValidate:true })
+
+      await setCountryValue(rowData.country_name)
+      setValue('country_name', rowData.country_name)
     
       await setEmailValue(rowData.buyer_emailid)
       setValue('buyer_emailid', rowData.buyer_emailid)
       
       await setUserValue(rowData.user_id)
-      //setValue('buyer_emailid', rowData.user_id)
-    
-      // await setActiveStatus(rowData.active_status ? rowData.active_status : 'active')
-      // setValue('active_status', rowData.active_status ? rowData.active_status : 'active')
-
+   
       if (rowData.stratbuyer_name) {
           console.log(rowData.stratbuyer_name.split(','))
           const articalIDOptions = []
@@ -85,8 +85,6 @@ const AddNewModalBuyer = ({ open, handleModal, rowData, articalNumberOptions, se
         await setselectedOptions('')
         setValue('stratbuyer_name', '')
       }
-      await setCountryValue(rowData.country_name)
-      setValue('country_name', rowData.country_name)
 
     // setEmailValue(rowData.email)
   }, [rowData])
@@ -186,7 +184,7 @@ const AddNewModalBuyer = ({ open, handleModal, rowData, articalNumberOptions, se
 
           <div className='mb-1'>
             <Label className='form-label' for='first_name'>
-              Full Name
+              First Name
             </Label>
             <InputGroup>
               <Controller
@@ -202,7 +200,7 @@ const AddNewModalBuyer = ({ open, handleModal, rowData, articalNumberOptions, se
 
           <div className='mb-1'>
             <Label className='form-label' for='last_name'>
-              Full Name
+              Last Name
             </Label>
             <InputGroup>
               <Controller
@@ -213,22 +211,6 @@ const AddNewModalBuyer = ({ open, handleModal, rowData, articalNumberOptions, se
                 render={({ field }) => <Input type="text"{...field} placeholder='Last name' value={LNameValue} onChange={(e) => { setLNameValue(e.target.value); setValue('last_name', e.target.value) } }  invalid={errors.last_name && true} />}
               />
               {errors.last_name && <FormFeedback>{"Last Name is a required field"}</FormFeedback>}
-            </InputGroup>
-          </div>
-          
-          <div className='mb-1'>
-            <Label className='form-label' for='dept_name'>
-              Department
-            </Label>
-            <InputGroup>
-              <Controller
-                id='dept_name'
-                name='dept_name'
-                defaultValue=''
-                control={control}
-                render={({ field }) => <Input type="text"{...field} placeholder='Department' value={DepartmentValue} onChange={(e) => { setDepartmentValue(e.target.value); setValue('dept_name', e.target.value) } }  invalid={errors.dept_name && true} />}
-              />
-              {errors.dept_name && <FormFeedback>{"Department is a required field"}</FormFeedback>}
             </InputGroup>
           </div>
 
@@ -251,43 +233,46 @@ const AddNewModalBuyer = ({ open, handleModal, rowData, articalNumberOptions, se
           </div>
           
           <div className='mb-1'>
-            <Label className='form-label' for='country_name'>
-              Country
+            <Label className='form-label' for='dept_name'>
+              Department
             </Label>
-            <InputGroup>
-              
-              <Controller
-                id='country_name'
-                name='country_name'
-                defaultValue=''
-                control={control}
-                render={({ field }) => <Input type="text"{...field} placeholder='countryName' value={CountryValue} invalid={errors.country_name && true} onChange={(e) => { setCountryValue(e.target.value); setValue('country_name', e.target.value) } }/>}
-              />
-              
-              {errors.country_name && <FormFeedback>{"countryName is a required field"}</FormFeedback>}
-            </InputGroup>
-          </div>
-
-          {/* <div className='mb-1'>
-            <Label className='form-label' for='active_status'>
-              Status
-            </Label>
-            <Controller className="select-custom-wrap"
-              name="active_status"
-              id="active_status"
+            <Controller
+              name="dept_name"
+              id="dept_name"
               control={control}
               render={({ field: { onChange, value } }) => (
                 <Select
-                  options={active_statusOptions}
-                  className='is-invalid select-custom'
-                  classNamePrefix="react-select"
-                  value={active_statusOptions.find((c) => c.value === value)}
-                  onChange={(val) => { onChange(val.value); setValue('active_status', val.value) }}
+                  options={deptOptions}
+                  value={deptOptions.find((c) => c.value === value)}
+                  // isSearchable={true}
+                  onChange={(val) => onChange(val.value)}
+                  // onChange={(val) => onChange(val, handleChange(val))}
                 />
               )}
             />
-            {errors["active_status"] && <FormFeedback>{'Status is a required field'}</FormFeedback>}
-          </div> */}
+            {errors["dept_name"] && <FormFeedback>{'Department is a required field'}</FormFeedback>}
+          </div>
+
+          <div className='mb-1'>
+            <Label className='form-label' for='country_name'>
+              Country
+            </Label>
+            <Controller
+              name="country_name"
+              id="country_name"
+              control={control}
+              render={({ field: { onChange, value } }) => (
+                <Select
+                  options={countryOptions}
+                  value={countryOptions.find((c) => c.value === value)}
+                  // isSearchable={true}
+                  onChange={(val) => onChange(val.value)}
+                  // onChange={(val) => onChange(val, handleChange(val))}
+                />
+              )}
+            />
+            {errors["country_name"] && <FormFeedback>{'countryName is a required field'}</FormFeedback>}
+          </div>
 
           <div className='mb-1'>
             <Label className='form-label' for='stratbuyer_name'>
@@ -300,7 +285,7 @@ const AddNewModalBuyer = ({ open, handleModal, rowData, articalNumberOptions, se
               render={({ field: { onChange } }) => (
                 <Select
                   options={articalNumberOptions}
-                  defaultValue = { selectedOptions }           
+                  // defaultValue = { selectedOptions }           
                   value={selectedOptions}
                   isMulti={true}
                   isSearchable={true}
@@ -308,7 +293,6 @@ const AddNewModalBuyer = ({ open, handleModal, rowData, articalNumberOptions, se
                 />
               )}
             />
-            
             {errors["stratbuyer_name"] && <FormFeedback>{'Artical number is a required field'}</FormFeedback>}
           </div>
           <Button className='me-1' color='primary' type='submit'>
