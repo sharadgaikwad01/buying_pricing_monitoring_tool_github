@@ -71,7 +71,7 @@ module.exports = function (app, con) {
 			condition = condition + " AND action_status = '" + req.query.searchStatus + "'"
 		}
 
-		var query = "SELECT ean_no, row_id, suppl_no, art_no, art_name, new_price, frmt_new_price, to_char(request_date, 'dd-mm-YYYY') as request_date, negotiate_final_price, to_char(price_increase_communicated_date, 'dd-mm-YYYY') as price_increase_communicated_date, to_char(price_increase_effective_date, 'dd-mm-YYYY') as price_increase_effective_date, action_status, price_change_reason FROM public.vw_request_details where country_name='" + req.query.country + "' AND vat_no='" + req.query.vat_number + "' AND new_price IS NOT NULL AND request_date IS NOT NULL " + condition + " ORDER BY action_status ASC, row_id DESC";
+		var query = "SELECT ean_no, row_id, suppl_no, art_no, art_name, new_price, frmt_new_price, to_char(request_date, 'dd-mm-YYYY') as request_date, frmt_negotiate_final_price, negotiate_final_price, to_char(price_increase_communicated_date, 'dd-mm-YYYY') as price_increase_communicated_date, to_char(price_increase_effective_date, 'dd-mm-YYYY') as price_increase_effective_date, action_status, price_change_reason FROM public.vw_request_details where country_name='" + req.query.country + "' AND vat_no='" + req.query.vat_number + "' AND new_price IS NOT NULL AND request_date IS NOT NULL " + condition + " ORDER BY action_status ASC, row_id DESC";
 
 		console.log(query)
 
@@ -102,7 +102,7 @@ module.exports = function (app, con) {
 				return;
 			};
 			//sendEmail(to, subject, html)
-			var query = "SELECT ean_no, row_id, suppl_no, art_no, art_name, new_price, frmt_new_price, to_char(request_date, 'dd-mm-YYYY') as request_date, negotiate_final_price, to_char(price_increase_communicated_date, 'dd-mm-YYYY') as price_increase_communicated_date, to_char(price_increase_effective_date, 'dd-mm-YYYY') as price_increase_effective_date, action_status, price_change_reason FROM public.vw_request_details where country_name='" + req.body.country + "' AND vat_no='" + req.body.vat_number + "' AND new_price IS NOT NULL AND request_date IS NOT NULL ORDER BY action_status ASC, row_id DESC";
+			var query = "SELECT ean_no, row_id, suppl_no, art_no, art_name, new_price, frmt_new_price, to_char(request_date, 'dd-mm-YYYY') as request_date, frmt_negotiate_final_price, negotiate_final_price, to_char(price_increase_communicated_date, 'dd-mm-YYYY') as price_increase_communicated_date, to_char(price_increase_effective_date, 'dd-mm-YYYY') as price_increase_effective_date, action_status, price_change_reason FROM public.vw_request_details where country_name='" + req.body.country + "' AND vat_no='" + req.body.vat_number + "' AND new_price IS NOT NULL AND request_date IS NOT NULL ORDER BY action_status ASC, row_id DESC";
 
 			console.log(query)
 
@@ -168,7 +168,7 @@ module.exports = function (app, con) {
 					condition = condition + " AND action_status = '" + req.body.searchStatus + "'"
 				}
 
-				var query = "SELECT ean_no, row_id, suppl_no, art_no, art_name, new_price, frmt_new_price, to_char(request_date, 'dd-mm-YYYY') as request_date, negotiate_final_price, to_char(price_increase_communicated_date, 'dd-mm-YYYY') as price_increase_communicated_date, to_char(price_increase_effective_date, 'dd-mm-YYYY') as price_increase_effective_date, action_status, price_change_reason FROM public.vw_request_details where country_name='" + req.body.country + "' AND vat_no='" + req.body.vat_number + "' AND new_price IS NOT NULL AND request_date IS NOT NULL " + condition + " ORDER BY action_status ASC, row_id DESC";
+				var query = "SELECT ean_no, row_id, suppl_no, art_no, art_name, new_price, frmt_new_price, to_char(request_date, 'dd-mm-YYYY') as request_date, frmt_negotiate_final_price, negotiate_final_price, to_char(price_increase_communicated_date, 'dd-mm-YYYY') as price_increase_communicated_date, to_char(price_increase_effective_date, 'dd-mm-YYYY') as price_increase_effective_date, action_status, price_change_reason FROM public.vw_request_details where country_name='" + req.body.country + "' AND vat_no='" + req.body.vat_number + "' AND new_price IS NOT NULL AND request_date IS NOT NULL " + condition + " ORDER BY action_status ASC, row_id DESC";
 
 				console.log(query);
 
@@ -219,7 +219,7 @@ module.exports = function (app, con) {
 					condition = condition + " AND action_status = '" + req.body.searchStatus + "'"
 				}
 
-				var query = "SELECT ean_no, row_id, suppl_no, art_no, art_name, new_price, frmt_new_price, to_char(request_date, 'dd-mm-YYYY') as request_date, negotiate_final_price, to_char(price_increase_communicated_date, 'dd-mm-YYYY') as price_increase_communicated_date, to_char(price_increase_effective_date, 'dd-mm-YYYY') as price_increase_effective_date, action_status, price_change_reason FROM public.vw_request_details where country_name='" + req.body.country + "' AND vat_no='" + req.body.vat_number + "' AND new_price IS NOT NULL AND request_date IS NOT NULL " + condition + " ORDER BY action_status ASC, row_id DESC";
+				var query = "SELECT ean_no, row_id, suppl_no, art_no, art_name, new_price, frmt_new_price, to_char(request_date, 'dd-mm-YYYY') as request_date, frmt_negotiate_final_price, negotiate_final_price, to_char(price_increase_communicated_date, 'dd-mm-YYYY') as price_increase_communicated_date, to_char(price_increase_effective_date, 'dd-mm-YYYY') as price_increase_effective_date, action_status, price_change_reason FROM public.vw_request_details where country_name='" + req.body.country + "' AND vat_no='" + req.body.vat_number + "' AND new_price IS NOT NULL AND request_date IS NOT NULL " + condition + " ORDER BY action_status ASC, row_id DESC";
 
 				console.log(query)
 
@@ -279,10 +279,6 @@ module.exports = function (app, con) {
 
 							con.query(sql, function (err, result) {
 								if (err) {
-									if (err.message = 'Duplicate entry') {
-										res.json({ status: false, message: "Duplicate entry" });
-										return;
-									}
 									error_count++;
 								} else {
 									sucess_count++;
@@ -293,8 +289,8 @@ module.exports = function (app, con) {
 				});
 				callback(null,sucess_count, error_count)
 			},
-			function (callback) {
-				var query = "SELECT ean_no, row_id, suppl_no, art_no, art_name, new_price, frmt_new_price, to_char(request_date, 'dd-mm-YYYY') as request_date, negotiate_final_price, to_char(price_increase_communicated_date, 'dd-mm-YYYY') as price_increase_communicated_date, to_char(price_increase_effective_date, 'dd-mm-YYYY') as price_increase_effective_date, action_status, price_change_reason FROM public.vw_request_details where country_name='" + req.body.country + "' AND vat_no='" + req.body.vat_number + "' AND new_price IS NOT NULL AND request_date IS NOT NULL ORDER BY action_status ASC, row_id DESC";
+			function (sucess_count, error_count, callback) {
+				var query = "SELECT ean_no, row_id, suppl_no, art_no, art_name, new_price, frmt_new_price, to_char(request_date, 'dd-mm-YYYY') as request_date, frmt_negotiate_final_price, negotiate_final_price, to_char(price_increase_communicated_date, 'dd-mm-YYYY') as price_increase_communicated_date, to_char(price_increase_effective_date, 'dd-mm-YYYY') as price_increase_effective_date, action_status, price_change_reason FROM public.vw_request_details where country_name='" + req.body.country + "' AND vat_no='" + req.body.vat_number + "' AND new_price IS NOT NULL AND request_date IS NOT NULL ORDER BY action_status ASC, row_id DESC";
 
 				con.query(query, function (err, result) {
 					if (err) {
@@ -309,30 +305,4 @@ module.exports = function (app, con) {
 			}
 		]);
 	});
-
-	var sendEmail = async function (to, subject, html) {
-		// Create the transporter with the required configuration for Outlook
-		var transporter = nodemailer.createTransport({
-			host: "viruswall.mgi.de", // hostname
-			secureConnection: false,
-			secure: false,
-			port: 25
-		});
-
-		// setup e-mail data, even with unicode symbols
-		var mailOptions = {
-			from: 'sharad.gaikwad02@metro-gsc.in', 	// sender address (who sends)
-			to: to, 	// list of receivers (who receives)
-			subject: subject, 	// Subject line
-			html: html 	// html body
-		};
-
-		// send mail with defined transport object
-		await transporter.sendMail(mailOptions, function (error, info) {
-			if (error) {
-				return console.log(error);
-			}
-			console.log('Message sent: ' + info.response);
-		});
-	}
 }

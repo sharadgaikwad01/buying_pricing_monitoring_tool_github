@@ -6,35 +6,44 @@ const { sendEmail } = require("./sendEmail");
 var config = require('../config');
 var path = require('path');
 
-async function createSupplierAssortments(assortment_details=null, path=null, res=null, country=null, buyer_name=null, flag=null, supplier_name=null) {
+async function createSupplierAssortments(assortment_details=null, path=null, res=null, country=null, buyer_name=null, flag=null, supplier_name=null, buyer_emailid=null) {
   let doc = new PDFDocument({ size: "A4", margin: 50 });
   var stream;
   var shouldReturn = false;
+  var file_path='';
+  if(country){
+    file_path="../languages/"+country.toUpperCase()+".json";
+  }
+
+  var language_contect = require(file_path);
+
   await generateHeader(doc, country, buyer_name);
   await generateCustomerInformation(doc, assortment_details, supplier_name);
+  await generateCustomerInformationLanguage(doc, assortment_details, supplier_name, language_contect)
   await generateAssortmentTable(doc, assortment_details);
-  await generateFooter(doc);
+  await generateFooter(doc,language_contect);  
   stream = await doc.pipe(fs.createWriteStream(path));
   doc.end();
+
   stream.on('finish', function() {
     if( flag == 'pdf-download'){
       var data =fs.readFileSync(path);
       res.contentType("application/pdf");
       res.send(data);
       return;
-    } else {
+    } else {      
       message = (
-        'Dear '+buyer_name+', <br><br>'+
-        'The attached file contains a pdf of a closed article price request.<br><br>'+
-        '<br>For more information, please visit the BPMT portal. <a href="'+config.reactFrontend+'/buyer_login" >Click here </a><br>'+
-        '<br>If you require any assistance, please contact our support email address: support-hyperautomation@metro-gsc.in'+
-        '<br><br>Sincerely,'+
-        '<br>Team BPMT'+	
-        '<br><br><br><p style="font-size: 10px;">Note: This email was sent from a notification-only address that cannot accept incoming email. Please do not reply to this message.</p>'			
+        language_contect.dear+' '+buyer_name+', <br><br>'+
+        language_contect.attached_file+'<br><br>'+
+        '<br>'+language_contect.more_information+' <a href="'+config.reactFrontend+'/buyer_login" >'+language_contect.click_here+' </a><br>'+
+        '<br>'+language_contect.support_email+' support-hyperautomation@metro-gsc.in'+
+        '<br><br>'+language_contect.sincerely+','+
+        '<br>'+language_contect.team_BPMT+''+	
+        '<br><br><br><p style="font-size: 10px;">'+language_contect.note+'</p>'			
       );
-      //to = value.buyer_emailid;
-      to = 'sharad.gaikwad02@metro-gsc.in'
-      subject = 'Attached is a PDF of the closed price request for the article - BPMT'
+      to = buyer_emailid;
+      //to = 'archanaaditya.deokar@metro-gsc.in'
+      subject = language_contect.subject
       html = message
       //sendEmail(to, subject, html, path)
     }    
@@ -58,13 +67,26 @@ function generateCustomerInformation(doc, assortment_details, supplier_name) {
   doc
     .fillColor("#444444")
     .fontSize(11)
-    .text("Dear "+supplier_name+",", 50, 160)
-    .text("As per our discussion, I am sharing the agreed article price and effective date in the table below.", 50, 180);
+    .text("M\S "+supplier_name+",", 50, 140)
+    .text("As per our discussion, I am sharing the agreed article price and effective date in the table below.", 50, 160);
+
+    generateHr(doc, 180);
+}
+
+function generateCustomerInformationLanguage(doc, assortment_details, supplier_name, language_contect) {
+  console.log(language_contect)
+  doc
+    .fillColor("#444444")
+    .fontSize(11)
+    .text(`${language_contect.dear_text} ${supplier_name},`, 50, 200)
+    .text(language_contect.per_our_discussion, 50, 220);
+  
+    generateHr(doc, 260);
 }
 
 function generateAssortmentTable(doc, assortment_details) {
   let i;
-  const assortment_detailsTableTop = 230;
+  const assortment_detailsTableTop = 300;
 
   doc.font("Helvetica-Bold");
   generateTableRow(
@@ -97,13 +119,19 @@ function generateAssortmentTable(doc, assortment_details) {
   }
 }
 
-function generateFooter(doc) {
+function generateFooter(doc,language_contect) {
   doc
     .fontSize(10)
     .text(
       "System generated PDF",
       50,
       780,
+      { align: "center", width: 500 }
+    )
+    .text(
+      `${language_contect.System_generated_PDF}`,
+      50,
+      800,
       { align: "center", width: 500 }
     );
 }
