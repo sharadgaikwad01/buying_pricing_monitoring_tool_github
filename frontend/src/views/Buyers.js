@@ -3,7 +3,7 @@
 import { Fragment, useState, forwardRef, useEffect } from 'react'
 import Select from 'react-select'
 
-import { selectThemeColors, nodeBackend } from '@utils'
+import { nodeBackend } from '@utils'
 import axios from 'axios'
 
 // ** Add New Modal Component
@@ -40,10 +40,10 @@ import {
 
 const MySwal = withReactContent(Swal)
 
-const user_statusOptions = [
-  { value: 'active', label: 'Active' },
-  { value: 'inactive', label: 'InActive' }
-]
+// const user_statusOptions = [
+//   { value: 'active', label: 'Active' },
+//   { value: 'inactive', label: 'InActive' }
+// ]
 
 const BootstrapCheckbox = forwardRef((props, ref) => (
   <div className='form-check'>
@@ -58,7 +58,7 @@ const Buyers = props => {
   const [searchName, setsearchName] = useState('')
   const [rowData, setRowData] = useState([])
   // const [searchRequestedDate, setSearchRequestedDate] = useState('')
-  const [Status, setStatus] = useState('')
+  // const [Status, setStatus] = useState('')
   // const [searchRole, setsearchRole] = useState('')
 
   const [modal, setModal] = useState(false)
@@ -68,6 +68,8 @@ const Buyers = props => {
 
   const [currentPage, setCurrentPage] = useState(0)
   const [articalNumberOptions, setarticalNumberOptions] = useState([])
+  const [countryOptions, setcountryOptions] = useState([])
+  const [deptOptions, setdeptOptions] = useState([])
   // const [rowData, setrowData] = useState([])
   // ** Function to handle Modal toggle
   const handleModal = () => setModal(!modal)
@@ -83,10 +85,12 @@ const Buyers = props => {
   }
    
   useEffect(async () => {
-    await axios.get(`${nodeBackend}/buyers`, { params: { searchName, Status } }).then((res) => {
+    await axios.get(`${nodeBackend}/buyers`, { params: { searchName } }).then((res) => {
      
       setUsersInputsData(res.data.data)  
       setarticalNumberOptions(res.data.options)  
+      setcountryOptions(res.data.countryoptions)  
+      setdeptOptions(res.data.deptOptions)  
     })
   }, [])
 
@@ -123,20 +127,20 @@ const Buyers = props => {
   const handleNameFilter = async (e) => {
     const searchName = e.target.value
     setsearchName(searchName)
-    await axios.get(`${nodeBackend}/buyers`, { params: { searchName, Status } }).then((res) => {
+    await axios.get(`${nodeBackend}/buyers`, { params: { searchName } }).then((res) => {
       setUsersInputsData(res.data.data)
     })
   }
 
 
   // ** Function to handle status filter
-  const handleStatusFilter = async (e) => {
-    const Status = e.value
-    setStatus(Status)
-    await axios.get(`${nodeBackend}/buyers`, { params: { searchName, Status } }).then((res) => {
-      setUsersInputsData(res.data.data)
-    })
-  }
+  // const handleStatusFilter = async (e) => {
+  //   const Status = e.value
+  //   setStatus(Status)
+  //   await axios.get(`${nodeBackend}/buyers`, { params: { searchName, Status } }).then((res) => {
+  //     setUsersInputsData(res.data.data)
+  //   })
+  // }
 
   const handleEdit = async (e, row) => {
     e.preventDefault()
@@ -154,6 +158,8 @@ const Buyers = props => {
   
   const handleDelete = (e, row) => {
     const buyer_emailid = row.buyer_emailid
+    const dept_name = row.dept_name
+    const country_name = row.country_name
     e.preventDefault()
     MySwal.fire({
       title: 'Are you sure?',
@@ -171,12 +177,13 @@ const Buyers = props => {
         axios({
           method: "post",
           url: `${nodeBackend}/delete_buyer_input`,
-          data: { buyer_emailid }
+          data: { buyer_emailid, dept_name, country_name }
         })
           .then(function (success) {
+            console.log(success.data.status)
             //handle success        
             if (success.data.status) {
-              setUsersInputsData(res.data.data)
+              setUsersInputsData(success.data.data)
               return MySwal.fire({
                 title: 'Done!',
                 text: 'Record has been deleted successfully',
@@ -299,7 +306,7 @@ const Buyers = props => {
               <Input className='form-control' type='text' id='name' placeholder='Buyer Name' value={searchName} onChange={handleNameFilter} /> 
             </Col>
 
-             <Col className='mb-1 col-auto'>
+             {/* <Col className='mb-1 col-auto'>
               <Label className='form-label' for='user_type'>
                 Status:
               </Label>
@@ -315,7 +322,7 @@ const Buyers = props => {
                 })}
                 onChange={handleStatusFilter}
               />
-            </Col>
+            </Col> */}
           </Row>
           <Row className='mt-1 mb-50 mx-auto'>
             <div className='react-dataTable my-1'>
@@ -336,7 +343,7 @@ const Buyers = props => {
           </Row>
         </CardBody>       
       </Card>
-      <AddNewModalBuyer open={modal} handleModal={handleModal} rowData={rowData} articalNumberOptions={articalNumberOptions} setUsersInputsData={setUsersInputsData} />
+      <AddNewModalBuyer open={modal} handleModal={handleModal} rowData={rowData} articalNumberOptions={articalNumberOptions} countryOptions={countryOptions} deptOptions={deptOptions} setUsersInputsData={setUsersInputsData} />
     </Fragment>
   )
 }

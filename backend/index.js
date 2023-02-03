@@ -26,17 +26,19 @@ var app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+<<<<<<< HEAD
 console.log(config.reactFrontend)
 console.log("config.nodebackend=============================")
 console.log(config.nodebackend)
 
+=======
+>>>>>>> a61a4815e48bf889c3c2d512259a3b9035107df8
 //app.use(cors());
 var corsOptions = {
 	"methods": "GET, POST, PUT, PATCH, DELETE, OPTIONS",
 	"preflightContinue": false,
 	credentials: true,
 	origin: function (origin, callback) {
-		console.log("Origin is ======================: " + origin);
 		if (origin == config.reactFrontend) return callback(null, true);
 		if (true) {
 			return callback(null, true);
@@ -129,15 +131,24 @@ app.listen(config.port, () => {
 	console.log("Application is running at localhost:" + config.port)
 })
 
+<<<<<<< HEAD
 open_request = cron.schedule('0 7 * * *', () => {
 	var db_query = "select distinct buyer_fullname as name, buyer_emailid from vw_buyer_details t Where t.request_date=current_date -1 and t.action_status='open'";
+=======
+var open_request = cron.schedule('* * * * * *', () => {
+	var db_query = "select distinct buyer_fullname as name, buyer_emailid, country_name from vw_buyer_details t Where t.request_date=current_date -1 and t.action_status='open'";
+>>>>>>> a61a4815e48bf889c3c2d512259a3b9035107df8
 	client.query(db_query, (err, result) => {
 		if (err) {
 			console.log(err)
 			return;
 		}
+<<<<<<< HEAD
 		console.log(result)
 		result.rows.forEach(async function (value, key) {			
+=======
+		result.rows.forEach(async function (value, key) {	
+>>>>>>> a61a4815e48bf889c3c2d512259a3b9035107df8
 			var db_query = "select distinct coalesce(suppl_name_tl,suppl_name) as suppl_name, suppl_no, suppl_name, art_no, new_price, price_change_reason, to_char(price_increase_effective_date, 'dd-mm-YYYY') as price_increase_effective_date from vw_buyer_details t Where t.request_date =current_date-1 and t.action_status= 'open' and t.buyer_emailid ='" + value.buyer_emailid + "'";
 			var message = '';
 			await client.query(db_query, async (error, b_result) => {
@@ -154,8 +165,8 @@ open_request = cron.schedule('0 7 * * *', () => {
 						'<br>Team BPMT'+	
 						'<br><br><br><p style="font-size: 10px;">Note: This email was sent from a notification-only address that cannot accept incoming email. Please do not reply to this message.</p>'			
 					);
-					//to = value.buyer_emailid;
-					to = 'sharad.gaikwad02@metro-gsc.in'
+					to = value.buyer_emailid;
+					//to = 'archanaaditya.deokar@metro-gsc.in'
 					subject = 'A new price change request has been submitted by the supplier - BPMT'
 					html = message
 					sendEmail(to, subject, html)	
@@ -167,16 +178,21 @@ open_request = cron.schedule('0 7 * * *', () => {
 
 open_request.stop();
 
+<<<<<<< HEAD
 closed_request = cron.schedule('0 7 * * *', () => {
 	var db_query = "select distinct buyer_fullname as name, country_name, buyer_emailid from vw_buyer_details t Where t.request_date=current_date-1 and t.action_status='closed'";
+=======
+var closed_request = cron.schedule('*/10 * * * * *', () => {
+	var db_query = "select distinct buyer_fullname as name, country_name, buyer_emailid from vw_buyer_details t Where t.request_date=current_date-2 and t.action_status='closed'";
+>>>>>>> a61a4815e48bf889c3c2d512259a3b9035107df8
 	client.query(db_query, (err, result) => {
 		if (err) {
 			console.log(err)
 			return;
 		}
 		if(result.rowCount > 0){
-			result.rows.forEach(async function (value, key) {			
-				var db_query = "select distinct coalesce(suppl_name_tl,suppl_name) as suppl_name, suppl_no, art_no, art_name, frmt_new_price as new_price, frmt_negotiate_final_price as final_price, to_char(price_increase_effective_date, 'dd-mm-YYYY') as price_increase_effective_date from vw_buyer_details t Where t.request_date =current_date-1 and t.action_status= 'closed' and t.buyer_emailid ='" + value.buyer_emailid + "'";
+			result.rows.forEach(async function (value, key) {
+				var db_query = "select distinct coalesce(suppl_name_tl,suppl_name) as suppl_name, suppl_no, art_no, art_name, frmt_new_price as new_price, frmt_negotiate_final_price as final_price, to_char(price_increase_effective_date, 'dd-mm-YYYY') as price_increase_effective_date from vw_buyer_details t Where t.request_date =current_date-2 and t.action_status= 'closed' and t.buyer_emailid ='" + value.buyer_emailid + "'";
 				var message = '';
 				await client.query(db_query, async (error, b_result) => {
 					if (error) {
@@ -196,4 +212,8 @@ closed_request = cron.schedule('0 7 * * *', () => {
 	})
 });
 
+<<<<<<< HEAD
 closed_request.stop();
+=======
+closed_request.start();
+>>>>>>> a61a4815e48bf889c3c2d512259a3b9035107df8

@@ -21,7 +21,6 @@ clientDB.connect();
 
 Issuer.discover('https://idam-pp.metrosystems.net/') // => Promise
   .then((idam) => {
-    console.log('Discovered issuer %s %O', idam.issuer, idam.metadata);
     client = new idam.Client({
         client_id: 'BUYING_PRICE_MONITORING_TOOL',
         client_secret: '7iMxRjOB5g',
@@ -34,7 +33,6 @@ Issuer.discover('https://idam-pp.metrosystems.net/') // => Promise
 });
 
 router.use((req, res, next) => {
-    console.log("LOG FROM MIDDLEWARE");
     if (req.query.code == undefined) {
         next()
         return
@@ -44,7 +42,6 @@ router.use((req, res, next) => {
         .then(token => {
             let user_details = token.claims();
             sql = "SELECT * FROM public.tbl_buyer_details where buyer_emailid = '"+ user_details.email +"'";
-            console.log(sql)
             clientDB.query(sql, function(err, result) {
                 if (err) {
                     // res.redirect(303, config.reactFrontend + '/auth?error=User not Exist');

@@ -20,11 +20,9 @@ const clientDB = new Client({
 	port: config.db_port,
 })
 clientDB.connect();
-console.log(clientDB);
 
 Issuer.discover('https://idam-pp.metrosystems.net/') // => Promise
   .then((idam) => {
-    console.log('Discovered issuer %s %O', idam.issuer, idam.metadata);
     client = new idam.Client({
         client_id: 'BUYING_PRICE_MONITORING_TOOL_S',
         client_secret: 'JALPBVzoVN',
@@ -37,7 +35,6 @@ Issuer.discover('https://idam-pp.metrosystems.net/') // => Promise
 });
 
 router.use((req, res, next) => {
-    console.log("LOG FROM MIDDLEWARE");
     if (req.query.code == undefined) {
         next()
         return
@@ -65,6 +62,11 @@ router.use((req, res, next) => {
                     }
                 }
             }
+<<<<<<< HEAD
+=======
+            supplierNumber = '33975';
+            country='ES';
+>>>>>>> a61a4815e48bf889c3c2d512259a3b9035107df8
             sql = "select * from public.vw_suppl_info where suppl_no='"+supplierNumber+"' and country_code='"+country+"'";
             clientDB.query(sql, function(err, result) {                
                 if (err) {

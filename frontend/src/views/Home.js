@@ -38,6 +38,7 @@ import {
 
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
+import { utils, writeFile } from 'xlsx'
 const MySwal = withReactContent(Swal)
 
 const statusOptions = [
@@ -76,7 +77,8 @@ const Home = props => {
   const [editSupplierModal, setEditSupplierModal] = useState(false)
 
   const [currentPage, setCurrentPage] = useState(0)
-
+  const [fileName] = useState('export')
+  const [fileFormat] = useState('xlsx')
 
   // ** Function to handle Modal toggle
   // const handleModal = () => setModal(!modal)
@@ -334,7 +336,7 @@ const Home = props => {
     })
   }
 
-  const handleDownloadCSV = async () => {
+  const assortmentDownload = async (flag) => {
     const csvdata = supplierInputsData
     csvdata.forEach(function (item) {
       delete item.row_id
@@ -353,7 +355,15 @@ const Home = props => {
       "Article Status": item.action_status ? item.action_status.replace(",", ".") : item.action_status,
       "Price change Reason": item.price_change_reason ? item.price_change_reason.replace(",", ".") : item.price_change_reason
     }))
-    downloadCSV(finalcsvdata)
+    if (flag === 1) {
+      downloadCSV(finalcsvdata)
+    } else {
+      const name = fileName.length ? `${fileName}.${fileFormat}` : `excel-sheet.${fileFormat}`
+      const wb = utils.json_to_sheet(finalcsvdata)
+      const wbout = utils.book_new()
+      utils.book_append_sheet(wbout, wb, fileName)
+      writeFile(wbout, name)
+    }    
   }
 
   const handleRefresh = async () => {
@@ -455,10 +465,10 @@ const Home = props => {
       name: 'Final Price',
       sortable: true,
       width: 'auto',
-      selector: row => row.negotiate_final_price,
+      selector: row => row.frmt_negotiate_final_price,
       cell: row => {
         return (
-          row.negotiate_final_price ? `${row.negotiate_final_price}` : "-"
+          row.frmt_negotiate_final_price ? `${row.frmt_negotiate_final_price}` : "-"
         )
       }
     },
@@ -520,9 +530,13 @@ const Home = props => {
                 <span className='align-middle ms-25'>Assortment Download</span>
               </DropdownToggle>
               <DropdownMenu>
-                <DropdownItem className='w-100' onClick={() => handleDownloadCSV()}>
+                <DropdownItem className='w-100' onClick={() => assortmentDownload(1)}>
                   <FileText size={15} />
-                  <span className='align-middle ms7'>CSV</span>
+                  <span className='align-middle ms7'> CSV</span>
+                </DropdownItem>
+                <DropdownItem className='w-100' onClick={() => assortmentDownload(2)}>
+                  <Grid size={15} />
+                  <span className='align-middle ms7'> Excel</span>
                 </DropdownItem>
               </DropdownMenu>
             </UncontrolledButtonDropdown>

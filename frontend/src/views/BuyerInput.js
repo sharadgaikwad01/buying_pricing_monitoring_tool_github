@@ -1,9 +1,10 @@
-import { Fragment, useState, useEffect } from 'react'
+import { Fragment, useState, useEffect, forwardRef } from 'react'
 import Select from 'react-select'
 import { Link } from 'react-router-dom'
 
 import { selectThemeColors, nodeBackend } from '@utils'
 import axios from 'axios'
+import { utils, writeFile } from 'xlsx'
 
 // ** Add New Modal Component
 import Flatpickr from 'react-flatpickr'
@@ -11,7 +12,9 @@ import AddBuyerInputModal from './AddBuyerInputModal'
 import ReactPaginate from 'react-paginate'
 import DataTable from 'react-data-table-component'
 import DownloadSupplierAssortmentsModal from './DownloadSupplierAssortmentsModal'
-import { Download, Search, ChevronDown, Share, Printer, FileText, File, Grid, Copy, Plus, Upload, Edit, Trash, Check, RefreshCcw} from 'react-feather'
+import { Download, Search, ChevronDown, Share, Printer, FileText, File, Grid, Copy, Plus, Upload, Edit, Trash, Check, RefreshCcw, ArrowLeftCircle, Repeat} from 'react-feather'
+import UploadBuyerArticliesModal from './UploadBuyerArticliesModal'
+import DownloadArticliesModal from './DownloadArticlesModal'
 
 import '@styles/react/libs/tables/react-dataTable-component.scss'
 import '@styles/react/libs/flatpickr/flatpickr.scss'
@@ -31,7 +34,8 @@ import {
   DropdownItem,
   DropdownToggle,
   UncontrolledButtonDropdown,
-  Badge
+  Badge,
+  Tooltip
 } from 'reactstrap'
 
 
@@ -41,8 +45,15 @@ const MySwal = withReactContent(Swal)
 
 const statusOptions = [
   { value: 'open', label: 'Open' },
-  { value: 'closed', label: 'Closed' }
+  { value: 'closed', label: 'Closed' },
+  { value: 'yet_to_approve', label: 'Yet to Approve' }
 ]
+
+const BootstrapCheckbox = () => forwardRef((props, ref) => (
+  <div className='form-check'>
+    <Input type='checkbox' ref={ref} {...props} />
+  </div>
+))
 
 const BuyerInput = props => {
   const country = localStorage.getItem('country')
@@ -55,21 +66,34 @@ const BuyerInput = props => {
   const [searchStatus, setSearchStatus] = useState('')
   const [searchCategory, setSearchCategory] = useState('')
   const [editBuyerModal, setBuyerInputModal] = useState(false)
+  const [rosIds, setRosIds] = useState([])
 
   const [currentPage, setCurrentPage] = useState(0)
 
+  const [pdfDownload, setPDFDownload] = useState(false)
   const [supplierInputModal, setSupplierInputModal] = useState(false)
-  
+  const [uploadArticleModal, setUploadArticleModal] = useState(false)
+
+  const [refreshButton, setRefreshButton] = useState(false)
+  const [closedStatusButton, setClosedStatusButton] = useState(false)
+  const [editButton, setEditButton] = useState(false)
+  const [statusButton, setStatusButton] = useState(false)
+  const [revokeButton, setRevokeButton] = useState(false)
 
   // ** Function to handle Pagination
   const handlePagination = page => {
     setCurrentPage(page.selected)
   }
+  const downloadArticlePDFModal = () => setPDFDownload(!pdfDownload)
+  const handleUploadArticleModal = () => setUploadArticleModal(!uploadArticleModal)
   const downloadArticleModal = () => setSupplierInputModal(!supplierInputModal)
 
   const [supllierNumberOptions, setsupllierNumberOptions] = useState([])
   const [categoryOptions, setCategoryOptions] = useState([])
   const [rowData, setRowData] = useState([])
+
+  const [fileName] = useState('export')
+  const [fileFormat] = useState('xlsx')
 
   useEffect(async () => {
     const user_type = localStorage.getItem("type")
@@ -158,7 +182,7 @@ const BuyerInput = props => {
     link.click()
   }
 
-  const handleDownloadCSV = async () => {    
+  const assortmentDownload = async (flag) => {    
     await axios.get(`${nodeBackend}/buyer_article_details`, { params: { country, email, searchSupplierNumber, searchRequestedDate, searchStatus, searchCategory} }).then((res) => {
       const csvdata = res.data.data
       csvdata.forEach(function (item) {
@@ -182,7 +206,15 @@ const BuyerInput = props => {
         "Price Effective Date": item.price_increase_effective_date ? item.price_increase_effective_date.replace(",", ".") : item.price_increase_effective_date,
         "Category Name":item.stratbuyer_name ? item.stratbuyer_name.replace(",", ".") : item.stratbuyer_name
       }))
-      downloadCSV(finalcsvdata)
+      if (flag === 1) {
+        downloadCSV(finalcsvdata)
+      } else {
+        const name = fileName.length ? `${fileName}.${fileFormat}` : `excel-sheet.${fileFormat}`
+        const wb = utils.json_to_sheet(finalcsvdata)
+        const wbout = utils.book_new()
+        utils.book_append_sheet(wbout, wb, fileName)
+        writeFile(wbout, name)
+      }      
     })
   }
 
@@ -255,15 +287,24 @@ const BuyerInput = props => {
     setBuyerInputModal(!editBuyerModal)
   }
 
-  const handleClosedAction = (e, row) => {
+  const handleClosedAction = (e, row, flag) => {
     const id = row.row_id
+    let confirmButtonText = ''
+    let text = ''
     e.preventDefault()
+    if (flag === 1) {
+      confirmButtonText = 'Yes, Close it'
+      text = 'Request has been closed successfully'
+    } else {
+      confirmButtonText = 'Yes, Revoke it'
+      text = 'Request closed status has been revoke successfully'
+    }
     MySwal.fire({
       title: 'Are you sure?',
       text: "You won't be able to revert this!",
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonText: 'Yes, Close it!',
+      confirmButtonText: `${confirmButtonText}`,
       customClass: {
         confirmButton: 'btn btn-primary',
         cancelButton: 'btn btn-outline-danger ms-1'
@@ -273,8 +314,8 @@ const BuyerInput = props => {
       if (result.value) {
         axios({
           method: "post",
-          url: `${nodeBackend}/closed_supplier_input`,
-          data: { id, country, email}
+          url: `${nodeBackend}/closed_and_revoke_input`,
+          data: { id, country, email, flag}
         })
           .then(function (success) {
             //handle success        
@@ -282,7 +323,7 @@ const BuyerInput = props => {
               setsupplierInputsData(success.data.data.supplierInputs) 
               return MySwal.fire({
                 title: 'Done!',
-                text: 'Request has been closed successfully',
+                text: `${text}`,
                 icon: 'success',
                 customClass: {
                   confirmButton: 'btn btn-primary'
@@ -335,6 +376,81 @@ const BuyerInput = props => {
         setCategoryOptions(res.data.data.categoryOptions)
       }
     })
+  }
+
+  const handleChange = (state) => {
+    const row_ids = []
+    state.selectedRows.map(i => {
+      row_ids.push(i.row_id)
+    })
+    setRosIds(row_ids)
+  }
+
+  const handleMultipleStatus = () => {
+    MySwal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, Close it!',
+      customClass: {
+        confirmButton: 'btn btn-primary',
+        cancelButton: 'btn btn-outline-danger ms-1'
+      },
+      buttonsStyling: false
+    }).then(function (result) {
+      if (result.value) {
+        axios({
+          method: "post",
+          url: `${nodeBackend}/bulk_closed_supplier_input`,
+          data: { rosIds, country, email}
+        })
+          .then(function (success) {
+            //handle success        
+            if (success.data.status) { 
+              setsupplierInputsData(success.data.data.buyerInputs) 
+              return MySwal.fire({
+                title: 'Done!',
+                text: `Selected ${success.data.sucess_count} Request has been closed successfully`,
+                icon: 'success',
+                customClass: {
+                  confirmButton: 'btn btn-primary'
+                },
+                buttonsStyling: false
+              })
+            } else {
+              return MySwal.fire({
+                title: 'Error',
+                text: 'Something went wrong. Please try again later',
+                icon: 'error',
+                customClass: {
+                  confirmButton: 'btn btn-primary'
+                },
+                buttonsStyling: false
+              })
+            }
+          })
+          .catch(function () {
+            return MySwal.fire({
+              title: 'Error',
+              text: 'Something went wrong. Please try again later',
+              icon: 'error',
+              customClass: {
+                confirmButton: 'btn btn-primary'
+              },
+              buttonsStyling: false
+            })
+          })
+      }
+    })
+  }
+
+  const rowDisabledCriteria = row => {
+    if (row.negotiate_final_price !== null && row.price_increase_communicated_date !== null && row.action_status === 'open') {
+      return false
+    } else {
+      return true
+    }
   }
 
   const columns = [
@@ -402,10 +518,10 @@ const BuyerInput = props => {
       name: 'Current Price',
       sortable: true,
       minWidth: 'auto',
-      selector: row => row.current_price,
+      selector: row => row.frmt_current_price,
       cell: row => {
         return (
-          row.current_price ? `${row.current_price}` : "-"
+          row.frmt_current_price ? `${row.frmt_current_price}` : "-"
         )
       }
     },
@@ -492,7 +608,7 @@ const BuyerInput = props => {
       sortable: row => row.action_status,
       cell: row => {
         return (
-          row.action_status === 'open' ? <Badge color='primary' pill>{row.action_status}</Badge> : <Badge color='success' pill>{row.action_status}</Badge>
+          row.action_status === 'open' ? <Badge color='primary' pill>Open</Badge> : <Badge color='success' pill>Closed</Badge>
         )
       }
     },
@@ -503,7 +619,7 @@ const BuyerInput = props => {
       allowOverflow: true,
       cell: (row) => {
         return (
-          row.negotiate_final_price && row.price_increase_communicated_date && row.action_status === 'open' ? <div className='d-flex'><Edit size={15} onClick={(e) => handleEdit(e, row)} className="editTableIcon text-info" /><Check size={15} onClick={(e) => handleClosedAction(e, row)} className="deleteTableIcon text-success ms-1" /></div> : row.action_status === 'open' ? <div className='d-flex'><Edit size={15} onClick={(e) => handleEdit(e, row)} className="editTableIcon text-info" /></div> : "-" 
+          row.negotiate_final_price && row.price_increase_communicated_date && row.action_status === 'open' ? <div className='d-flex'><Edit size={15} onClick={(e) => handleEdit(e, row)} className="editTableIcon text-info" id='refreshButton'/><Tooltip placement='top' isOpen={editButton} target='refreshButton' toggle={() => setEditButton(!editButton)} >Edit</Tooltip><Check size={15} onClick={(e) => handleClosedAction(e, row, 1)} className="deleteTableIcon text-success ms-1" id='statusButton' /><Tooltip placement='top' isOpen={statusButton} target='statusButton' toggle={() => setStatusButton(!statusButton)}>Closed</Tooltip></div> : row.action_status === 'open' ? <div className='d-flex'><Edit size={15} onClick={(e) => handleEdit(e, row)} className="editTableIcon text-info" id='refreshButton' /><Tooltip placement='top' isOpen={editButton} target='refreshButton' toggle={() => setEditButton(!editButton)} >Edit</Tooltip></div> : <div className='d-flex'><Repeat size={15} onClick={(e) => handleClosedAction(e, row, 2)} className="editTableIcon text-warning" id='revokeButton'/><Tooltip placement='top' isOpen={revokeButton} target='revokeButton' toggle={() => setRevokeButton(!revokeButton)} >Reove Closed Status</Tooltip></div>
         )
       }
     }
@@ -511,24 +627,38 @@ const BuyerInput = props => {
   return (
     <Fragment>
       <Card className='pageBox buyer-screen'>
-        <CardHeader className='flex-md-row flex-column align-md-items-center align-items-start border-bottom'>
-          <CardTitle tag='h2'>List of Assortments</CardTitle>
-          <Button.Ripple className='ms-1' outline color='warning' onClick={downloadArticleModal}>
-              <Download size={14} />
+      <CardHeader className='flex-md-row flex-column align-items-center align-items-start border-bottom'>
+          <CardTitle tag='h2'>List of Assortment</CardTitle>
+          <div className='d-flex mt-md-0 mt-1'>
+            <Button.Ripple className='ms-1 btn-icon' color='primary' onClick={downloadArticlePDFModal}>
+              <Download size={16} />
               <span className='align-middle ms-25'>Download Assortment PDF</span>
             </Button.Ripple>
-          <UncontrolledButtonDropdown className='ms-2'>
+            <Button.Ripple className='ms-1' outline color='warning' onClick={downloadArticleModal}>
+              <Download size={14} />
+              <span className='align-middle ms-25'>Multiple Assortment Inputs</span>
+            </Button.Ripple>
+            <Button.Ripple className='ms-1' outline color='info' onClick={handleUploadArticleModal}>
+              <Upload size={14} />
+              <span className='align-middle ms-25'>Upload Multiple Assortment Inputs</span>
+            </Button.Ripple>
+            <UncontrolledButtonDropdown className='ms-2'>
             <DropdownToggle color='primary' caret outline>
               <Download size={15} />
               <span className='align-middle ms-25'>Assortment Download</span>
             </DropdownToggle>
             <DropdownMenu>
-              <DropdownItem className='w-100' onClick={() => handleDownloadCSV()}>
+              <DropdownItem className='w-100' onClick={() => assortmentDownload(1)}>
                 <FileText size={15} />
                 <span className='align-middle ms-50'>CSV</span>
               </DropdownItem>
+              <DropdownItem className='w-100' onClick={() => assortmentDownload(2)}>
+                <Grid size={15} />
+                <span className='align-middle ms-50'>Excel</span>
+              </DropdownItem>
             </DropdownMenu>
           </UncontrolledButtonDropdown>
+          </div>
         </CardHeader>
         <CardBody>
           <Row className='mb-50 g-1 filter-row filter-buyer'>
@@ -595,30 +725,54 @@ const BuyerInput = props => {
               />
             </Col>
             <Col className='col-auto d-flex align-items-end'>
-              <Button.Ripple className='ms-1 btn-icon' color='primary' onClick={handleRefresh}>
+              <Button.Ripple className='ms-1 btn-icon' id='refreshButton' color='primary' onClick={handleRefresh}>
                 <RefreshCcw size={16} />
               </Button.Ripple>
+              <Tooltip
+                placement='top'
+                isOpen={refreshButton}
+                target='refreshButton'
+                toggle={() => setRefreshButton(!refreshButton)}
+              >
+                Refresh Filter
+              </Tooltip>
+              <Button.Ripple className='ms-1 btn-icon' id='closedStatusButton' color='success' onClick={handleMultipleStatus}>
+                <Check size={16} />
+              </Button.Ripple>
+              <Tooltip
+                placement='top'
+                isOpen={closedStatusButton}
+                target='closedStatusButton'
+                toggle={() => setClosedStatusButton(!closedStatusButton)}
+              >
+                Closed Status
+              </Tooltip>
             </Col>
           </Row>
           <div className='react-dataTable my-1'>
             <DataTable
               noHeader
               pagination
-              selectableRowsNoSelectAll
+              selectableRows
               columns={columns}
               paginationPerPage={7}
               className='react-dataTable'
               sortIcon={<ChevronDown size={10} />}
               paginationDefaultPage={currentPage + 1}
               paginationComponent={CustomPagination}
+              selectableRowsComponent={BootstrapCheckbox()}
+              onSelectedRowsChange={handleChange}
+              selectableRowDisabled={rowDisabledCriteria}
               // data={searchValue.length ? filteredData : data}
               data={dataToRender()}
             />
           </div>
         </CardBody>
       </Card>
-      <DownloadSupplierAssortmentsModal open={supplierInputModal} handleModal={downloadArticleModal} supllierNumberOptions={supllierNumberOptions} />
+      <DownloadSupplierAssortmentsModal open={pdfDownload} handleModal={downloadArticlePDFModal} supllierNumberOptions={supllierNumberOptions} />
       <AddBuyerInputModal open={editBuyerModal} handleModal={handleEdit} rowData={rowData} setsupplierInputsData={setsupplierInputsData} />
+      <UploadBuyerArticliesModal open={uploadArticleModal} handleModal={handleUploadArticleModal} setsupplierInputsData={setsupplierInputsData} />
+      <DownloadArticliesModal open={supplierInputModal} handleModal={downloadArticleModal} supllierNumberOptions={supllierNumberOptions} flag={2}  />
     </Fragment>
   )
 }
