@@ -10,7 +10,7 @@ module.exports = function(app, con) {
         var articalIDOptions = [];
 		
         if (req.query.searchName != ''){
-            condition = condition + " AND first_name LIKE '%" +req.query.searchName+"%'"
+            condition = condition + " AND ( first_name LIKE '%" +req.query.searchName+"%' OR last_name LIKE '%" +req.query.searchName+"%') "
         }
         if (req.query.Status != ''){
             condition = condition +" AND active_status = '" +req.query.Status+"'"
@@ -28,7 +28,7 @@ module.exports = function(app, con) {
 					articalIDOptions.push(option);
 				});
 				var query = "SELECT first_name, last_name, buyer_emailid, dept_name, country_name,string_agg(stratbuyer_name,', ') stratbuyer_name FROM public.tbl_buyer_details where buyer_emailid IS NOT NULL AND active_status='active'" + condition + " group by first_name, last_name, buyer_emailid, dept_name, country_name";
-				// var query="Select distinct first_name, last_name, buyer_emailid, dept_name, country_name"
+				console.log(query)
 				con.query(query, function(err, result) {
 					if (err) {
 						res.json({ status: false });
@@ -38,7 +38,6 @@ module.exports = function(app, con) {
 						return;
 					}			
 				});
-				//articalIDOptions = articalIDOptions;
             }
 		});	
 

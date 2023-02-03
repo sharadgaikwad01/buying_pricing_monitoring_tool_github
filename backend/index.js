@@ -129,13 +129,14 @@ app.listen(config.port, () => {
 	console.log("Application is running at localhost:" + config.port)
 })
 
-cron.schedule('* * 7 * * *', () => {
+open_request = cron.schedule('0 7 * * *', () => {
 	var db_query = "select distinct buyer_fullname as name, buyer_emailid from vw_buyer_details t Where t.request_date=current_date -1 and t.action_status='open'";
 	client.query(db_query, (err, result) => {
 		if (err) {
 			console.log(err)
 			return;
 		}
+		console.log(result)
 		result.rows.forEach(async function (value, key) {			
 			var db_query = "select distinct coalesce(suppl_name_tl,suppl_name) as suppl_name, suppl_no, suppl_name, art_no, new_price, price_change_reason, to_char(price_increase_effective_date, 'dd-mm-YYYY') as price_increase_effective_date from vw_buyer_details t Where t.request_date =current_date-1 and t.action_status= 'open' and t.buyer_emailid ='" + value.buyer_emailid + "'";
 			var message = '';
@@ -157,14 +158,16 @@ cron.schedule('* * 7 * * *', () => {
 					to = 'sharad.gaikwad02@metro-gsc.in'
 					subject = 'A new price change request has been submitted by the supplier - BPMT'
 					html = message
-					//sendEmail(to, subject, html, attachedment=null)	
+					sendEmail(to, subject, html)	
 				}
 			});			
 		});
 	})
 });
 
-cron.schedule('* * 7 * * *', () => {
+open_request.stop();
+
+closed_request = cron.schedule('0 7 * * *', () => {
 	var db_query = "select distinct buyer_fullname as name, country_name, buyer_emailid from vw_buyer_details t Where t.request_date=current_date-1 and t.action_status='closed'";
 	client.query(db_query, (err, result) => {
 		if (err) {
@@ -185,10 +188,12 @@ cron.schedule('* * 7 * * *', () => {
 						var supplier_name = b_result.rows[0].suppl_name;
 						var file_path = path.join(__dirname+'/cron-pdf/supplier_assortments_'+name+'.pdf');
 						var flag = 'cron-job';
-						await createSupplierAssortments(b_result.rows, file_path, null, value.country_name, value.name, flag, supplier_name)
+						await createSupplierAssortments(b_result.rows, file_path, null, value.country_name, value.name, flag, supplier_name, value.buyer_emailid)
 					}
 				});			
 			});
 		}
 	})
 });
+
+closed_request.stop();

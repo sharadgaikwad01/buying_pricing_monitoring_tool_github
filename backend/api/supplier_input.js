@@ -15,6 +15,9 @@ module.exports = function (app, con) {
 		var supplierIDOptions = [];
 		var articleOptions = [];
 
+		console.log("supplier_input======================")
+		console.log(req.query)
+
 		var getUniqueSupplierIdQuery = "select distinct t1.suppl_no from vw_suppl_info t1 where country_name='" + req.query.country + "' AND vat_no='" + req.query.vat_number + "'";
 
 		await con.query(getUniqueSupplierIdQuery, function (err, result) {
@@ -69,12 +72,12 @@ module.exports = function (app, con) {
 
 		if (req.query.searchStatus != '') {
 			condition = condition + " AND action_status = '" + req.query.searchStatus + "'"
-		}
+		}		
 
 		var query = "SELECT ean_no, row_id, suppl_no, art_no, art_name, new_price, frmt_new_price, to_char(request_date, 'dd-mm-YYYY') as request_date, negotiate_final_price, to_char(price_increase_communicated_date, 'dd-mm-YYYY') as price_increase_communicated_date, to_char(price_increase_effective_date, 'dd-mm-YYYY') as price_increase_effective_date, action_status, price_change_reason FROM public.vw_request_details where country_name='" + req.query.country + "' AND vat_no='" + req.query.vat_number + "' AND new_price IS NOT NULL AND request_date IS NOT NULL " + condition + " ORDER BY action_status ASC, row_id DESC";
 
+		console.log("supplier_input_query=========")
 		console.log(query)
-
 
 		await con.query(query, function (err, result) {
 			if (err) {
@@ -93,15 +96,19 @@ module.exports = function (app, con) {
 		var data = {};
 		sql = `CALL public."usp_addNewRequest"('` + req.body.article_number + `','` + req.body.supplier_number + `','` + req.body.country + `',` + req.body.new_price + `,'` + req.body.reason + `','` + req.body.price_effective_date + `');`;
 
+		console.log("sql add input===============")
 		console.log(sql)
 
 		con.query(sql, async function (err, result) {
 			if (err) {
+				console.log("err====================");
 				console.log(err);
 				res.json({ status: false });
 				return;
 			};
 			//sendEmail(to, subject, html)
+			console.log("supplier_after add =========")
+
 			var query = "SELECT ean_no, row_id, suppl_no, art_no, art_name, new_price, frmt_new_price, to_char(request_date, 'dd-mm-YYYY') as request_date, negotiate_final_price, to_char(price_increase_communicated_date, 'dd-mm-YYYY') as price_increase_communicated_date, to_char(price_increase_effective_date, 'dd-mm-YYYY') as price_increase_effective_date, action_status, price_change_reason FROM public.vw_request_details where country_name='" + req.body.country + "' AND vat_no='" + req.body.vat_number + "' AND new_price IS NOT NULL AND request_date IS NOT NULL ORDER BY action_status ASC, row_id DESC";
 
 			console.log(query)

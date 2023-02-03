@@ -6,7 +6,7 @@ const { sendEmail } = require("./sendEmail");
 var config = require('../config');
 var path = require('path');
 
-async function createSupplierAssortments(assortment_details=null, path=null, res=null, country=null, buyer_name=null, flag=null, supplier_name=null) {
+async function createSupplierAssortments(assortment_details=null, path=null, res=null, country=null, buyer_name=null, flag=null, supplier_name=null, buyer_emailid=null) {
   let doc = new PDFDocument({ size: "A4", margin: 50 });
   var stream;
   var shouldReturn = false;
@@ -32,11 +32,11 @@ async function createSupplierAssortments(assortment_details=null, path=null, res
         '<br>Team BPMT'+	
         '<br><br><br><p style="font-size: 10px;">Note: This email was sent from a notification-only address that cannot accept incoming email. Please do not reply to this message.</p>'			
       );
-      //to = value.buyer_emailid;
+      //to = buyer_emailid;
       to = 'sharad.gaikwad02@metro-gsc.in'
       subject = 'Attached is a PDF of the closed price request for the article - BPMT'
       html = message
-      //sendEmail(to, subject, html, path)
+      sendEmail(to, subject, html, path)
     }    
   });
 }
