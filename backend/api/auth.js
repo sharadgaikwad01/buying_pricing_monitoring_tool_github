@@ -52,12 +52,12 @@ router.use((req, res, next) => {
             var supplierName;
             var country_name;
             var user_details = jwt_decode(token.access_token);
-            console.log(user_details);
             for (const [key, value] of Object.entries(user_details.authorization)) {
                 for (const [key1, value1] of Object.entries(value)) {
                     if(key1 == 'BPMT_SUPPLIER')
-                    {
+                    {                        
                         for (const [key2, value2] of Object.entries(value1)) {
+                            console.log(value2);
                             country = value2.country[0];
                             salesLine = value2.salesLine[0];
                             supplierNumber = value2.supplierNumber[0];
@@ -65,8 +65,6 @@ router.use((req, res, next) => {
                     }
                 }
             }
-            supplierNumber = 21172;
-            country = 'ES';
             sql = "select * from public.vw_suppl_info where suppl_no='"+supplierNumber+"' and country_code='"+country+"'";
             clientDB.query(sql, function(err, result) {                
                 if (err) {
@@ -113,9 +111,5 @@ router.get('/api/v1/login', (req, res, next) => {
     next()
     
 }) 
-
-function getVATNumberBySupplierIDandCountry(country, supplier_id) {
-
-}
 
 module.exports = router
