@@ -12,6 +12,7 @@ export default class Auth extends Component {
         const vat = searchParams.get("vat")
         const name = searchParams.get("name")
         const error = searchParams.get("error")
+        const Logout = searchParams.get("Logout")
         if (error) {
             this.props.history.push({ pathname: '/notAuthorized', search: `?error=${error}` })
         }

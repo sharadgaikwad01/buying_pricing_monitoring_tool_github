@@ -32,8 +32,12 @@ const UserDropdown = () => {
     }
     if (user_type === 'BUYER') {
       localStorage.clear()
-      window.location.replace(`${reactFrontend}/buyer_login`)
-    }    
+      window.location.replace(`${reactFrontend}/buyer_login?message=Logout`)
+    }
+    if (user_type === 'ADMIN') {
+      localStorage.clear()
+      window.location.replace(`${reactFrontend}/buyer_login?message=Logout`)
+    }      
   }
   return (
     <UncontrolledDropdown tag='li' className='dropdown-user nav-item'>
