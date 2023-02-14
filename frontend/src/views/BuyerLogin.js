@@ -10,6 +10,15 @@ export const data = []
 
 const BuyerLogin = () => {
   const { skin } = useSkin()
+  
+  // const handleLoginmessage = () => {
+   // const Logoutmessage = searchParams.get("message")
+    // if (Logout) {
+    //   messagelogin =  'Logout Successful <br/>Please log-in to your account and start the adventure'
+    // } else {
+    //   messagelogin = 'Please log-in to your account and start the adventure'
+    // }
+  // }
 
   const illustration = skin === 'dark' ? 'login-v2-dark.svg' : 'login-v2.svg',
   source = require(`@src/assets/images/pages/${illustration}`).default
@@ -34,7 +43,13 @@ const BuyerLogin = () => {
             <CardTitle tag='h2' className='fw-bold mb-1'>
               Welcome to Metro
             </CardTitle>
-            <CardText className='mb-2'>Please log-in to your account and start the adventure</CardText>
+            <CardText className='mb-2'>
+
+            {/* {
+            Logoutmessage ? <p>Logout Successful</p> : <p></p>
+            }  */}
+              Please log-in to your account and start the adventure
+              </CardText>
             <Button className='mb-1' color='primary' block onClick={handleLogin}>
               Log in
             </Button>

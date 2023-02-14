@@ -20,7 +20,7 @@ async function createSupplierAssortments(assortment_details=null, path=null, res
   await generateHeader(doc, country, buyer_name);
   await generateCustomerInformation(doc, assortment_details, supplier_name);
   await generateCustomerInformationLanguage(doc, assortment_details, supplier_name, language_contect)
-  await generateAssortmentTable(doc, assortment_details);
+  await generateAssortmentTable(doc, assortment_details, language_contect);
   await generateFooter(doc,language_contect);  
   stream = await doc.pipe(fs.createWriteStream(path));
   doc.end();
@@ -83,9 +83,9 @@ function generateCustomerInformationLanguage(doc, assortment_details, supplier_n
     generateHr(doc, 260);
 }
 
-function generateAssortmentTable(doc, assortment_details) {
+function generateAssortmentTable(doc, assortment_details, language_contect) {
   let i;
-  const assortment_detailsTableTop = 300;
+  var assortment_detailsTableTop = 300;
 
   doc.font("Helvetica-Bold");
   generateTableRow(
@@ -100,10 +100,11 @@ function generateAssortmentTable(doc, assortment_details) {
   );
   generateHr(doc, assortment_detailsTableTop + 20);
   doc.font("Helvetica");
-
+  let index = 0;
   for (i = 0; i < assortment_details.length; i++) {
     const item = assortment_details[i];
-    const position = assortment_detailsTableTop + (i + 1) * 30;
+    var position = assortment_detailsTableTop + (index + 1) * 30;
+    index++;
     generateTableRow(
       doc,
       position,
@@ -113,24 +114,31 @@ function generateAssortmentTable(doc, assortment_details) {
       item.new_price,
       item.final_price,
       item.price_increase_effective_date
-    );
+    );    
     generateHr(doc, position + 20);
+    if (position > 650) {
+      assortment_detailsTableTop = 0;
+      index = 0;
+      generateFooter(doc,language_contect)
+      doc.addPage();
+    }
   }
 }
 
 function generateFooter(doc,language_contect) {
+  generateHr(doc, 730);
   doc
     .fontSize(10)
     .text(
       "System generated PDF",
       50,
-      780,
+      750,
       { align: "center", width: 500 }
     )
     .text(
       `${language_contect.System_generated_PDF}`,
       50,
-      800,
+      780,
       { align: "center", width: 500 }
     );
 }
