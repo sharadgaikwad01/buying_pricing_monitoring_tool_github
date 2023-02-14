@@ -5,14 +5,16 @@ var config = require('./config');
 var session = require('express-session');
 var nodemailer = require('nodemailer');
 var cors = require('cors');
-
+<<<<<<< Updated upstream
 const { Pool, Client } = require('pg')
 var cron = require('node-cron');
 
 const { sendEmail } = require("./api/sendEmail");
 const { createSupplierAssortments } = require("./api/pdf_creation");
 var path = require('path');
-
+=======
+const { Pool, Client } = require('pg');
+>>>>>>> Stashed changes
 
 //=========== API modules ===================
 var auth = require('./api/auth');

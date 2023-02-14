@@ -79,6 +79,11 @@ module.exports = function(app, con) {
 		enumerable: false
 	});
 
+	function capitalizeFirstLetter(string) {
+		return string.charAt(0).toUpperCase() + string.slice(1);
+	  }
+
+
     app.post('/buyers_add_input', async function(req, res){ 
 		console.log(req.body)
 		console.log("------------------------------------")
@@ -104,7 +109,6 @@ module.exports = function(app, con) {
 					});
 				}			
 			});
-
 			// var sql = "UPDATE tbl_buyer_details SET active_status = 'inactive' WHERE buyer_emailid ='"+ req.body.buyer_emailid+"' AND dept_name='"+ req.body.dept_name+"' AND country_name='"+ req.body.country_name+"'";
 			// await con.query(sql, function (errupdate, results) {
 			// 	if (errupdate) {
