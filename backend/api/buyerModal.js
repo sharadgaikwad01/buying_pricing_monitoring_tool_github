@@ -12,14 +12,7 @@ module.exports = function(app, con) {
         var deptOptions = [];
 		
         if (req.query.searchName != ''){
-<<<<<<< HEAD
-            condition = condition + " AND ( first_name LIKE '%" +req.query.searchName+"%' OR last_name LIKE '%" +req.query.searchName+"%') "
-        }
-        if (req.query.Status != ''){
-            condition = condition +" AND active_status = '" +req.query.Status+"'"
-=======
             condition = condition + " AND first_name LIKE '%" + req.query.searchName.capitalize() +"%' OR last_name LIKE '%" +req.query.searchName.capitalize() +"%'"
->>>>>>> a61a4815e48bf889c3c2d512259a3b9035107df8
         }
 		// if (req.query.searchName != ''){
         //     condition = condition + " AND last_name LIKE '%" +req.query.searchName.capitalize() +"%'"
@@ -38,17 +31,10 @@ module.exports = function(app, con) {
 					option = { value: value.stratbuyer_id, label: value.stratbuyer_name }
 					articalIDOptions.push(option);
 				});
-<<<<<<< HEAD
-				var query = "SELECT first_name, last_name, buyer_emailid, dept_name, country_name,string_agg(stratbuyer_name,', ') stratbuyer_name FROM public.tbl_buyer_details where buyer_emailid IS NOT NULL AND active_status='active'" + condition + " group by first_name, last_name, buyer_emailid, dept_name, country_name";
-				console.log(query)
-				con.query(query, function(err, result) {
-					if (err) {
-=======
 
 				var getUniquecountryQuery = "select distinct country_name, row_id from tbl_country_details";
 				con.query(getUniquecountryQuery, function(err2, result2) {
 					if (err2) {
->>>>>>> a61a4815e48bf889c3c2d512259a3b9035107df8
 						res.json({ status: false });
 						return;
 					} else{

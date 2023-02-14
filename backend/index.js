@@ -26,13 +26,6 @@ var app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-<<<<<<< HEAD
-console.log(config.reactFrontend)
-console.log("config.nodebackend=============================")
-console.log(config.nodebackend)
-
-=======
->>>>>>> a61a4815e48bf889c3c2d512259a3b9035107df8
 //app.use(cors());
 var corsOptions = {
 	"methods": "GET, POST, PUT, PATCH, DELETE, OPTIONS",
@@ -131,24 +124,14 @@ app.listen(config.port, () => {
 	console.log("Application is running at localhost:" + config.port)
 })
 
-<<<<<<< HEAD
-open_request = cron.schedule('0 7 * * *', () => {
-	var db_query = "select distinct buyer_fullname as name, buyer_emailid from vw_buyer_details t Where t.request_date=current_date -1 and t.action_status='open'";
-=======
 var open_request = cron.schedule('* * * * * *', () => {
 	var db_query = "select distinct buyer_fullname as name, buyer_emailid, country_name from vw_buyer_details t Where t.request_date=current_date -1 and t.action_status='open'";
->>>>>>> a61a4815e48bf889c3c2d512259a3b9035107df8
 	client.query(db_query, (err, result) => {
 		if (err) {
 			console.log(err)
 			return;
 		}
-<<<<<<< HEAD
-		console.log(result)
-		result.rows.forEach(async function (value, key) {			
-=======
 		result.rows.forEach(async function (value, key) {	
->>>>>>> a61a4815e48bf889c3c2d512259a3b9035107df8
 			var db_query = "select distinct coalesce(suppl_name_tl,suppl_name) as suppl_name, suppl_no, suppl_name, art_no, new_price, price_change_reason, to_char(price_increase_effective_date, 'dd-mm-YYYY') as price_increase_effective_date from vw_buyer_details t Where t.request_date =current_date-1 and t.action_status= 'open' and t.buyer_emailid ='" + value.buyer_emailid + "'";
 			var message = '';
 			await client.query(db_query, async (error, b_result) => {
@@ -178,13 +161,8 @@ var open_request = cron.schedule('* * * * * *', () => {
 
 open_request.stop();
 
-<<<<<<< HEAD
-closed_request = cron.schedule('0 7 * * *', () => {
-	var db_query = "select distinct buyer_fullname as name, country_name, buyer_emailid from vw_buyer_details t Where t.request_date=current_date-1 and t.action_status='closed'";
-=======
 var closed_request = cron.schedule('*/10 * * * * *', () => {
 	var db_query = "select distinct buyer_fullname as name, country_name, buyer_emailid from vw_buyer_details t Where t.request_date=current_date-2 and t.action_status='closed'";
->>>>>>> a61a4815e48bf889c3c2d512259a3b9035107df8
 	client.query(db_query, (err, result) => {
 		if (err) {
 			console.log(err)
@@ -212,8 +190,4 @@ var closed_request = cron.schedule('*/10 * * * * *', () => {
 	})
 });
 
-<<<<<<< HEAD
-closed_request.stop();
-=======
 closed_request.start();
->>>>>>> a61a4815e48bf889c3c2d512259a3b9035107df8
