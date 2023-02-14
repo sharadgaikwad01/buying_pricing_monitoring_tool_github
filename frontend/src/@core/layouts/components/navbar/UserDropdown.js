@@ -28,7 +28,7 @@ const UserDropdown = () => {
     const user_type = localStorage.getItem("type")
     if (user_type === 'SUPPLIER') {
       localStorage.clear()
-      window.location.replace(`${reactFrontend}/login`)
+      window.location.replace(`${reactFrontend}/logout`)
     }
     if (user_type === 'BUYER') {
       localStorage.clear()
