@@ -12,7 +12,7 @@ module.exports = function(app, con) {
         var deptOptions = [];
 		
         if (req.query.searchName != ''){
-            condition = condition + " AND first_name LIKE '%" + req.query.searchName.capitalize() +"%' OR last_name LIKE '%" +req.query.searchName.capitalize() +"%'"
+            condition = condition + " AND first_name LIKE '%" + req.query.searchName.capitalize() +"%' OR last_name LIKE '%" +req.query.searchName.capitalize() +"%' OR full_name LIKE '%" +req.query.searchName.capitalize() +"%'"
         }
 		// if (req.query.searchName != ''){
         //     condition = condition + " AND last_name LIKE '%" +req.query.searchName.capitalize() +"%'"
@@ -53,7 +53,7 @@ module.exports = function(app, con) {
 									option = { value: value.dept_name, label: value.dept_name }
 									deptOptions.push(option);
 								});
-								var query = "SELECT first_name, last_name, buyer_emailid, dept_name, country_name,string_agg(stratbuyer_name,', ') stratbuyer_name FROM tbl_buyer_details where buyer_emailid IS NOT NULL AND active_status='active'" + condition + " group by first_name, last_name, buyer_emailid, dept_name, country_name";
+								var query = "SELECT first_name, last_name, RTRIM(CONCAT(LTRIM(RTRIM(first_name)) , ' ' , LTRIM(RTRIM(last_name)))) AS full_name, buyer_emailid, dept_name, country_name,string_agg(stratbuyer_name,', ') stratbuyer_name FROM tbl_buyer_details where buyer_emailid IS NOT NULL AND active_status='active'" + condition + " group by first_name, last_name, buyer_emailid, dept_name, country_name";
 								con.query(query, function(err, result) {
 									if (err) {
 										res.json({ status: false });
