@@ -12,7 +12,7 @@ module.exports = function(app, con) {
         var deptOptions = [];
 		
         if (req.query.searchName != ''){
-            condition = condition + " AND first_name LIKE '%" + req.query.searchName.capitalize() +"%' OR last_name LIKE '%" +req.query.searchName.capitalize() +"%' OR full_name LIKE '%" +req.query.searchName.capitalize() +"%'"
+            condition = condition + " AND first_name ILIKE '%" + req.query.searchName +"%' OR last_name ILIKE '%" +req.query.searchName +"%' OR RTRIM(CONCAT(LTRIM(RTRIM(first_name)) , ' ' , LTRIM(RTRIM(last_name)))) ILIKE '%" +req.query.searchName +"%'  OR RTRIM(CONCAT(LTRIM(RTRIM(last_name)) , ' ' , LTRIM(RTRIM(first_name)))) ILIKE '%" +req.query.searchName +"%'"
         }
 		// if (req.query.searchName != ''){
         //     condition = condition + " AND last_name LIKE '%" +req.query.searchName.capitalize() +"%'"
@@ -44,6 +44,7 @@ module.exports = function(app, con) {
 						});
 
 						var getUniquedeptQuery = "select distinct dept_name from tbl_buyer_details";
+						
 						con.query(getUniquedeptQuery, function(err3, result3) {
 							if (err3) {
 								res.json({ status: false });
@@ -54,6 +55,7 @@ module.exports = function(app, con) {
 									deptOptions.push(option);
 								});
 								var query = "SELECT first_name, last_name, RTRIM(CONCAT(LTRIM(RTRIM(first_name)) , ' ' , LTRIM(RTRIM(last_name)))) AS full_name, buyer_emailid, dept_name, country_name,string_agg(stratbuyer_name,', ') stratbuyer_name FROM tbl_buyer_details where buyer_emailid IS NOT NULL AND active_status='active'" + condition + " group by first_name, last_name, buyer_emailid, dept_name, country_name";
+								console.log(query)
 								con.query(query, function(err, result) {
 									if (err) {
 										res.json({ status: false });
