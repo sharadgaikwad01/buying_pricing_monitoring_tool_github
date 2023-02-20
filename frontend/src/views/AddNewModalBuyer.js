@@ -69,8 +69,22 @@ const AddNewModalBuyer = ({ open, handleModal, rowData, articalNumberOptions, co
       
         await setEmailValue(rowData.buyer_emailid)
         setValue('buyer_emailid', rowData.buyer_emailid)
-      }
+      } else {
+        setFNameValue(rowData.first_name)
+        setValue('first_name', `${rowData.first_name}`)
+  
+        setLNameValue(rowData.last_name)
+        setValue('last_name', `${rowData.last_name}`)
       
+        setDepartmentValue(rowData.dept_name)
+        setValue('dept_name', rowData.dept_name)
+  
+        setCountryValue(rowData.country_name)
+        setValue('country_name', rowData.country_name)
+      
+        setEmailValue(rowData.buyer_emailid)
+        setValue('buyer_emailid', rowData.buyer_emailid)
+      }
       
       await setUserValue(rowData.user_id)
    
