@@ -355,15 +355,17 @@ const Home = props => {
       "Article Status": item.action_status ? item.action_status.replace(",", ".") : item.action_status,
       "Price change Reason": item.price_change_reason ? item.price_change_reason.replace(",", ".") : item.price_change_reason
     }))
-    if (flag === 1) {
-      downloadCSV(finalcsvdata)
-    } else {
-      const name = fileName.length ? `${fileName}.${fileFormat}` : `excel-sheet.${fileFormat}`
-      const wb = utils.json_to_sheet(finalcsvdata)
-      const wbout = utils.book_new()
-      utils.book_append_sheet(wbout, wb, fileName)
-      writeFile(wbout, name)
-    }    
+    if (finalcsvdata.length > 0) {
+      if (flag === 1) {
+        downloadCSV(finalcsvdata)
+      } else {
+        const name = fileName.length ? `${fileName}.${fileFormat}` : `excel-sheet.${fileFormat}`
+        const wb = utils.json_to_sheet(finalcsvdata)
+        const wbout = utils.book_new()
+        utils.book_append_sheet(wbout, wb, fileName)
+        writeFile(wbout, name)
+      }
+    }        
   }
 
   const handleRefresh = async () => {

@@ -2,7 +2,7 @@ require('dotenv').config();   //instatiate environment variables
 
 let CONFIG = {}               //Make this global to use all over the application
 
-CONFIG.port         = process.env.PORT  || '8080';
+CONFIG.port         = process.env.PORT  || '443';
 
 CONFIG.db_host      = process.env.DB_HOST       || '127.0.0.1';
 CONFIG.db_port      = process.env.DB_PORT       || '5432';

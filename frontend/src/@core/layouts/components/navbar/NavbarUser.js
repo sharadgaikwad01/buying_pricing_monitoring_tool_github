@@ -18,6 +18,7 @@ const NavbarUser = props => {
   const vat_number = localStorage.getItem('vat')
   const user_name = localStorage.getItem('name')
   const user_type = localStorage.getItem('type')
+  const country = localStorage.getItem('country')
   
   const [userDetails, setUserDetails] = useState([])
   //const [setApplicationName] = useState('')
@@ -55,6 +56,7 @@ const NavbarUser = props => {
               </NavItem>
               <NavItem>
               <span className='user-status float-left'>{userDetails}</span>
+              <span className='user-status float-left'>{country}</span>
               </NavItem>
               <NavItem>
               <ul className='nav navbar-nav align-items-center ms-auto mr-15'>

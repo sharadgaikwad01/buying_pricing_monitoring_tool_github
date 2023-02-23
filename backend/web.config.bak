@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
     <system.webServer>
-	<httpErrors existingResponse="PassThrough" />
         <rewrite>
             <rules>
                 <rule name="ReverseProxyInboundRule1" stopProcessing="true">
@@ -10,7 +9,7 @@
                 </rule>
             </rules>
         </rewrite>
-		
+		<httpErrors existingResponse="PassThrough" />
     </system.webServer>
 	
 </configuration>

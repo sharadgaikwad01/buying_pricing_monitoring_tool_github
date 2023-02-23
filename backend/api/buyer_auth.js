@@ -19,12 +19,12 @@ const clientDB = new Client({
 })
 clientDB.connect();
 
-Issuer.discover('https://idam-pp.metrosystems.net/') // => Promise
+Issuer.discover('https://idam.metrosystems.net/') // => Promise
   .then((idam) => {
     client = new idam.Client({
-        client_id: 'BUYING_PRICE_MONITORING_TOOL',
-        client_secret: '7iMxRjOB5g',
-        realm_id: 'BUYING_PRICE',
+        client_id: 'BUYING_PRICING_MONITORING_TOOL',
+        client_secret: 'sSxqxhjZPs',
+        realm_id: 'BUY_PRI_M_T',
         redirect_uris: [config.nodebackend + '/buyer/api/v2/callback'],
         response_types: ['code'],
     }); // => Client
@@ -76,7 +76,7 @@ router.get('/api/v2/login', (req, res, next) => {
     authUrl = client.authorizationUrl({
         scope: `openid realm_id=${'BUYING_PRICE'}`,
         code_challenge,
-        realm_id: 'BUYING_PRICE',
+        realm_id: 'BUY_PRI_M_T',
         code_challenge_method: 'S256',
     });
     res.send('<script>window.location.href="'+authUrl+'";</script>');

@@ -52,9 +52,8 @@ export const isUserLoggedIn = () => localStorage.getItem('userData')
  //export const nodeBackend =  "https://api-bpmt.metro.de"
  //export const reactFrontend =  "https://bpmt.metro.de"
 
-export const nodeBackend =  'https://api-bpmt.metro.de'
-export const reactFrontend =  'https://bpmt.metro.de'
-
+export const nodeBackend =  "http://10.16.148.59:81"
+export const reactFrontend =  "http://10.16.148.59:80"
 
 export const getUserData = () => JSON.parse(localStorage.getItem('userData'))
 
