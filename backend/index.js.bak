@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 var express = require('express');
 var app = express();
 
@@ -8,3 +9,5 @@ app.get('/', function (req, res) {
 app.listen(8080, function () {
   console.log('Example app listening on port 8080!');
 });
+=======
+>>>>>>> 2bb0c0956cf68a71072a2e52fefeb743e2897ff1

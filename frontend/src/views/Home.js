@@ -108,7 +108,11 @@ const Home = props => {
     if (user_type === 'BUYER') {
       props.history.push('/buyer_input')
     }
-    console.log(nodeBackend)
+
+    const auth_token = localStorage.getItem('token')
+    if (!auth_token) {
+      window.location.replace(`${nodeBackend}/api/v1/login`)
+    }
 
     await axios.get(`${nodeBackend}/supplier_input`, { params: { searchSupplierNumber, searchArticleNumber, searchRequestedDate, searchStatus, country, vat_number } }).then((res) => {
       if (res.data.data) {
@@ -116,8 +120,7 @@ const Home = props => {
         setsupllierNumberOptions(res.data.data.supplierIDOptions)
         setarticleOptions(res.data.data.articleOptions)
         setSupplierInputCount(res.data.data.supplierInputCount)
-      }      
-
+      }
     })
   }, [])
 

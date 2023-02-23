@@ -60,6 +60,14 @@ const Routes = [
     }
   },
   {
+    path: '/logout',
+    component: lazy(() => import('../../views/LogOut')),
+    layout: 'BlankLayout',
+    meta: {
+      authRoute: true
+    }
+  },
+  {
     path: '/error',
     component: lazy(() => import('../../views/Error')),
     layout: 'BlankLayout'

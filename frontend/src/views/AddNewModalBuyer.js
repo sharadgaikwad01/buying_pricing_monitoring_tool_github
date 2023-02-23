@@ -23,7 +23,7 @@ import { useState, useEffect } from 'react'
 const MySwal = withReactContent(Swal)
 
 const AddNewModalBuyer = ({ open, handleModal, rowData, articalNumberOptions, countryOptions, deptOptions, setUsersInputsData }) => {
-  // const [UserData, setUsersData] = useState({user_name:'', email:'', emp_id:'', row_id:''})
+
   const [DepartmentValue, setDepartmentValue] = useState('')
   const [FNameValue, setFNameValue] = useState('')
   const [LNameValue, setLNameValue] = useState('')
@@ -33,8 +33,6 @@ const AddNewModalBuyer = ({ open, handleModal, rowData, articalNumberOptions, co
   
  
   const [CountryValue, setCountryValue] = useState('')
-  // const [ActiveStatus, setActiveStatus] = useState('')
-  // const [articalNumber, setarticalNumber] = useState('')
 
   const validationSchema = yup.object().shape({
     first_name: yup.string().required(),
@@ -56,20 +54,37 @@ const AddNewModalBuyer = ({ open, handleModal, rowData, articalNumberOptions, co
 
   useEffect(async () => {
       console.log(rowData)
-      await setFNameValue(rowData.first_name)
-      setValue('first_name', `${rowData.first_name}`, { shouldValidate:true })
-
-      await setLNameValue(rowData.last_name)
-      setValue('last_name', `${rowData.last_name}`, { shouldValidate:true })
-    
-      await setDepartmentValue(rowData.dept_name)
-      setValue('dept_name', rowData.dept_name, { shouldValidate:true })
-
-      await setCountryValue(rowData.country_name)
-      setValue('country_name', rowData.country_name)
-    
-      await setEmailValue(rowData.buyer_emailid)
-      setValue('buyer_emailid', rowData.buyer_emailid)
+      if (rowData.first_name) {
+        await setFNameValue(rowData.first_name)
+        setValue('first_name', `${rowData.first_name}`, { shouldValidate:true })
+  
+        await setLNameValue(rowData.last_name)
+        setValue('last_name', `${rowData.last_name}`, { shouldValidate:true })
+      
+        await setDepartmentValue(rowData.dept_name)
+        setValue('dept_name', rowData.dept_name, { shouldValidate:true })
+  
+        await setCountryValue(rowData.country_name)
+        setValue('country_name', rowData.country_name)
+      
+        await setEmailValue(rowData.buyer_emailid)
+        setValue('buyer_emailid', rowData.buyer_emailid)
+      } else {
+        setFNameValue(rowData.first_name)
+        setValue('first_name', `${rowData.first_name}`)
+  
+        setLNameValue(rowData.last_name)
+        setValue('last_name', `${rowData.last_name}`)
+      
+        setDepartmentValue(rowData.dept_name)
+        setValue('dept_name', rowData.dept_name)
+  
+        setCountryValue(rowData.country_name)
+        setValue('country_name', rowData.country_name)
+      
+        setEmailValue(rowData.buyer_emailid)
+        setValue('buyer_emailid', rowData.buyer_emailid)
+      }
       
       await setUserValue(rowData.user_id)
    
@@ -192,7 +207,7 @@ const AddNewModalBuyer = ({ open, handleModal, rowData, articalNumberOptions, co
                 name='first_name'
                 defaultValue=''
                 control={control}
-                render={({ field }) => <Input type="text"{...field} placeholder='First name' value={FNameValue} onChange={(e) => { setFNameValue(e.target.value); setValue('first_name', e.target.value) } }  invalid={errors.first_name && true} />}
+                render={({ field }) => <Input type="text"{...field} placeholder='First name' value={FNameValue} onChange={(e) => { setFNameValue(e.target.value); setValue('first_name', e.target.value, { shouldValidate: true }) } }  invalid={errors.first_name && true} />}
               />
               {errors.first_name && <FormFeedback>{"First Name is a required field"}</FormFeedback>}
             </InputGroup>
@@ -208,7 +223,7 @@ const AddNewModalBuyer = ({ open, handleModal, rowData, articalNumberOptions, co
                 name='last_name'
                 defaultValue=''
                 control={control}
-                render={({ field }) => <Input type="text"{...field} placeholder='Last name' value={LNameValue} onChange={(e) => { setLNameValue(e.target.value); setValue('last_name', e.target.value) } }  invalid={errors.last_name && true} />}
+                render={({ field }) => <Input type="text"{...field} placeholder='Last name' value={LNameValue} onChange={(e) => { setLNameValue(e.target.value); setValue('last_name', e.target.value, { shouldValidate: true }) } }  invalid={errors.last_name && true} />}
               />
               {errors.last_name && <FormFeedback>{"Last Name is a required field"}</FormFeedback>}
             </InputGroup>
@@ -276,7 +291,7 @@ const AddNewModalBuyer = ({ open, handleModal, rowData, articalNumberOptions, co
 
           <div className='mb-1'>
             <Label className='form-label' for='stratbuyer_name'>
-              Artical Number
+              Article Name
             </Label>
             <Controller
               name="stratbuyer_name"
@@ -293,7 +308,7 @@ const AddNewModalBuyer = ({ open, handleModal, rowData, articalNumberOptions, co
                 />
               )}
             />
-            {errors["stratbuyer_name"] && <FormFeedback>{'Artical number is a required field'}</FormFeedback>}
+            {errors["stratbuyer_name"] && <FormFeedback>{'Article number is a required field'}</FormFeedback>}
           </div>
           <Button className='me-1' color='primary' type='submit'>
             Submit
