@@ -68,11 +68,10 @@ module.exports = function (app, con) {
 			condition = condition + " AND stratbuyer_name = '" + req.query.searchCategory + "'"
 		}
 
-		var query = "SELECT row_id, bdm_global_umbrella_no, suppl_no, suppl_name, ean_no, art_no, art_name_tl, frmt_current_price, new_price, frmt_new_price, price_difference_perc, to_char(request_date, 'dd-mm-YYYY') as request_date, price_change_reason, action_status, frmt_negotiate_final_price, negotiate_final_price, to_char(price_increase_communicated_date, 'dd-mm-YYYY') as price_increase_communicated_date, to_char(price_increase_effective_date, 'dd-mm-YYYY') as price_increase_effective_date, stratbuyer_name, price_increase_perc FROM public.vw_buyer_details where country_name='" + req.query.country + "' AND buyer_emailid='" + req.query.email + "' AND new_price IS NOT NULL AND request_date IS NOT NULL " + condition + " ORDER BY action_status ASC, row_id DESC";
+		var query = "SELECT row_id, bdm_global_umbrella_no, suppl_no, suppl_name, ean_no, art_no, art_name_tl, frmt_current_price, new_price, frmt_new_price, price_difference_perc, to_char(request_date, 'dd-mm-YYYY') as request_date, price_change_reason, action_status, frmt_negotiate_final_price, negotiate_final_price, to_char(price_increase_communicated_date, 'dd-mm-YYYY') as price_increase_communicated_date, to_char(price_increase_effective_date, 'dd-mm-YYYY') as price_increase_effective_date, stratbuyer_name, price_increase_perc FROM public.vw_buyer_details where country_name='" + req.query.country + "' AND buyer_emailid='" + req.query.email + "' AND new_price IS NOT NULL AND request_date IS NOT NULL " + condition + " ORDER BY action_status DESC, row_id DESC";
 
 		await con.query(query, function (err, result) {
 			if (err) {
-				console.log(err)
 				res.json({ status: false });
 				return;
 			} else {
@@ -90,11 +89,10 @@ module.exports = function (app, con) {
 
 		await con.query(query, async function (err, result) {
 			if (err) {
-				console.log(err)
 				res.json({ status: false });
 				return;
 			} else {
-				var query = "SELECT row_id, bdm_global_umbrella_no, suppl_no, suppl_name, ean_no, art_no, art_name_tl, frmt_current_price, new_price, frmt_new_price, price_difference_perc, to_char(request_date, 'dd-mm-YYYY') as request_date, price_change_reason, action_status, frmt_negotiate_final_price, negotiate_final_price, to_char(price_increase_communicated_date, 'dd-mm-YYYY') as price_increase_communicated_date, to_char(price_increase_effective_date, 'dd-mm-YYYY') as price_increase_effective_date, stratbuyer_name, price_increase_perc FROM public.vw_buyer_details where country_name='" + req.body.country + "' AND buyer_emailid='" + req.body.email + "' AND new_price IS NOT NULL AND request_date IS NOT NULL ORDER BY action_status ASC, row_id DESC";
+				var query = "SELECT row_id, bdm_global_umbrella_no, suppl_no, suppl_name, ean_no, art_no, art_name_tl, frmt_current_price, new_price, frmt_new_price, price_difference_perc, to_char(request_date, 'dd-mm-YYYY') as request_date, price_change_reason, action_status, frmt_negotiate_final_price, negotiate_final_price, to_char(price_increase_communicated_date, 'dd-mm-YYYY') as price_increase_communicated_date, to_char(price_increase_effective_date, 'dd-mm-YYYY') as price_increase_effective_date, stratbuyer_name, price_increase_perc FROM public.vw_buyer_details where country_name='" + req.body.country + "' AND buyer_emailid='" + req.body.email + "' AND new_price IS NOT NULL AND request_date IS NOT NULL ORDER BY action_status DESC, row_id DESC";
 
 				await con.query(query, function (err, result) {
 					if (err) {
@@ -120,15 +118,13 @@ module.exports = function (app, con) {
 
 		await con.query(query, async function (err, result) {
 			if (err) {
-				console.log(err)
 				res.json({ status: false });
 				return;
 			} else {
-				var query = "SELECT row_id, bdm_global_umbrella_no, suppl_no, suppl_name, ean_no, art_no, art_name_tl, frmt_current_price, new_price, frmt_new_price, price_difference_perc, to_char(request_date, 'dd-mm-YYYY') as request_date, price_change_reason, action_status, frmt_negotiate_final_price, negotiate_final_price, to_char(price_increase_communicated_date, 'dd-mm-YYYY') as price_increase_communicated_date, to_char(price_increase_effective_date, 'dd-mm-YYYY') as price_increase_effective_date, stratbuyer_name, price_increase_perc FROM public.vw_buyer_details where country_name='" + req.body.country + "' AND buyer_emailid='" + req.body.email + "' AND new_price IS NOT NULL AND request_date IS NOT NULL ORDER BY action_status ASC, row_id DESC";
+				var query = "SELECT row_id, bdm_global_umbrella_no, suppl_no, suppl_name, ean_no, art_no, art_name_tl, frmt_current_price, new_price, frmt_new_price, price_difference_perc, to_char(request_date, 'dd-mm-YYYY') as request_date, price_change_reason, action_status, frmt_negotiate_final_price, negotiate_final_price, to_char(price_increase_communicated_date, 'dd-mm-YYYY') as price_increase_communicated_date, to_char(price_increase_effective_date, 'dd-mm-YYYY') as price_increase_effective_date, stratbuyer_name, price_increase_perc FROM public.vw_buyer_details where country_name='" + req.body.country + "' AND buyer_emailid='" + req.body.email + "' AND new_price IS NOT NULL AND request_date IS NOT NULL ORDER BY action_status DESC, row_id DESC";
 
 				await con.query(query, function (err, result) {
 					if (err) {
-						console.log(err)
 						res.json({ status: false });
 						return;
 					} else {
@@ -187,10 +183,9 @@ module.exports = function (app, con) {
 			if (err) {
 				res.json({ status: false });
 				return;
-			} else{
-				var query1 = "select * from vw_buyer_dashboard where stratbuyer_name ='"+result.rows[0].stratbuyer_name+"'";
-				await con.query(query1, function(err1, result1) {
-					console.log(err1)
+			} else {
+				var query1 = "select * from vw_buyer_dashboard where stratbuyer_name ='" + result.rows[0].stratbuyer_name + "'";
+				await con.query(query1, function (err1, result1) {
 					if (err1) {
 						res.json({ status: true, data: result.rows, response: "" });
 						return;
@@ -204,10 +199,9 @@ module.exports = function (app, con) {
 	});
 
 	app.get('/buyer_supplier_details_list', async function (req, res) {
-		var query = "SELECT row_id, suppl_no, suppl_name, ean_no, art_no, art_name_tl, price_increase_perc, agreed_price_increase_perc, action_status, bdm_global_umbrella_no, bdm_global_umbrella_name FROM public.vw_request_details where country_name='" + req.query.countryname + "' AND suppl_no='" + req.query.suppl_no + "'  ORDER BY action_status ASC, row_id DESC";
+		var query = "SELECT row_id, suppl_no, suppl_name, ean_no, art_no, art_name_tl, price_increase_perc, agreed_price_increase_perc, action_status, bdm_global_umbrella_no, bdm_global_umbrella_name FROM public.vw_request_details where country_name='" + req.query.countryname + "' AND suppl_no='" + req.query.suppl_no + "'  ORDER BY action_status DESC, row_id DESC";
 		await con.query(query, async function (err, result) {
 			if (err) {
-				console.log(err)
 				res.json({ status: false });
 				return;
 			} else {
@@ -223,7 +217,6 @@ module.exports = function (app, con) {
 
 		con.query(query, async function (err, result) {
 			if (err) {
-				console.log(err);
 				res.contentType("application/pdf");
 				res.send();
 				return;
@@ -244,8 +237,6 @@ module.exports = function (app, con) {
 	});
 
 	app.post('/upload_buyer_input', async function (req, res) {
-		console.log("I am here");
-		console.log(req.body)
 		var data = {};
 		var buyer_inputs = req.body.buyer_inputs
 		var len = buyer_inputs.length;
@@ -263,7 +254,7 @@ module.exports = function (app, con) {
 						if (result) {
 							if (result.rows[0].new_price == value.Requested_Price) {
 								var query2 = "call public.usp_update_requestdetails(record_id=>" + result.rows[0].row_id + ", in_new_price=>" + value.Requested_Price + ", in_negotiate_price=>" + value.Final_Price + ", in_finalize_date=>'" + value.Price_Finalize_Date + "', in_effective_date=>'" + value.Price_Effective_Date + "', in_metro_comment =>'" + value.CAT_Manager_Comment + "')";
-								console.log(query2)
+								
 								con.query(query2, async function (err2, result2) {
 									if (err2) {
 										error_count++;
@@ -281,15 +272,13 @@ module.exports = function (app, con) {
 				});		
 			},
 			function (sucess_count, error_count,callback) {
-				var query = "SELECT row_id, bdm_global_umbrella_no, suppl_no, suppl_name, ean_no, art_no, art_name_tl, frmt_current_price, new_price, frmt_new_price, price_difference_perc, to_char(request_date, 'dd-mm-YYYY') as request_date, price_change_reason, action_status, frmt_negotiate_final_price, negotiate_final_price, to_char(price_increase_communicated_date, 'dd-mm-YYYY') as price_increase_communicated_date, to_char(price_increase_effective_date, 'dd-mm-YYYY') as price_increase_effective_date, stratbuyer_name, price_increase_perc FROM public.vw_buyer_details where country_name='" + req.body.country + "' AND buyer_emailid='" + req.body.email + "' AND new_price IS NOT NULL AND request_date IS NOT NULL ORDER BY action_status ASC, row_id DESC";
+				var query = "SELECT row_id, bdm_global_umbrella_no, suppl_no, suppl_name, ean_no, art_no, art_name_tl, frmt_current_price, new_price, frmt_new_price, price_difference_perc, to_char(request_date, 'dd-mm-YYYY') as request_date, price_change_reason, action_status, frmt_negotiate_final_price, negotiate_final_price, to_char(price_increase_communicated_date, 'dd-mm-YYYY') as price_increase_communicated_date, to_char(price_increase_effective_date, 'dd-mm-YYYY') as price_increase_effective_date, stratbuyer_name, price_increase_perc FROM public.vw_buyer_details where country_name='" + req.body.country + "' AND buyer_emailid='" + req.body.email + "' AND new_price IS NOT NULL AND request_date IS NOT NULL ORDER BY action_status DESC, row_id DESC";
 
 				con.query(query, function (err, result) {
 					if (err) {
-						console.log(err)
 						res.json({ status: false });
 						return;
 					} else {
-						console.log("I am here to return")
 						data.buyerInputs = result.rows
 						res.json({ status: true, data: data, sucess_count: sucess_count, error_count: error_count });
 						return;
@@ -309,12 +298,14 @@ module.exports = function (app, con) {
 		async.waterfall([
 			function (callback) {
 				for (let i = 0; i < rosIds.length; i++) {
-					console.log(i);
 					var query = "call public.usp_update_requestdetails (record_id=>" + rosIds[i] + ", in_action_status => 'closed')";
 					con.query(query, async function (err, result) {
 						if (err) {
-							console.log(err)
 							error_count++;
+							count++;
+							if(count == len){
+								callback(null, sucess_count, error_count)
+							}
 						} else {
 							count++;
 							sucess_count++;
@@ -323,15 +314,13 @@ module.exports = function (app, con) {
 							}
 						}
 					});
-				}				
-				callback(null, sucess_count, error_count)
+				}
 			},
 			function (sucess_count, error_count, callback) {
-				var query = "SELECT row_id, bdm_global_umbrella_no, suppl_no, suppl_name, ean_no, art_no, art_name_tl, frmt_current_price, new_price, frmt_new_price, price_difference_perc, to_char(request_date, 'dd-mm-YYYY') as request_date, price_change_reason, action_status, frmt_negotiate_final_price, negotiate_final_price, to_char(price_increase_communicated_date, 'dd-mm-YYYY') as price_increase_communicated_date, to_char(price_increase_effective_date, 'dd-mm-YYYY') as price_increase_effective_date, stratbuyer_name, price_increase_perc FROM public.vw_buyer_details where country_name='" + req.body.country + "' AND buyer_emailid='" + req.body.email + "' AND new_price IS NOT NULL AND request_date IS NOT NULL ORDER BY action_status ASC, row_id DESC";
+				var query = "SELECT row_id, bdm_global_umbrella_no, suppl_no, suppl_name, ean_no, art_no, art_name_tl, frmt_current_price, new_price, frmt_new_price, price_difference_perc, to_char(request_date, 'dd-mm-YYYY') as request_date, price_change_reason, action_status, frmt_negotiate_final_price, negotiate_final_price, to_char(price_increase_communicated_date, 'dd-mm-YYYY') as price_increase_communicated_date, to_char(price_increase_effective_date, 'dd-mm-YYYY') as price_increase_effective_date, stratbuyer_name, price_increase_perc FROM public.vw_buyer_details where country_name='" + req.body.country + "' AND buyer_emailid='" + req.body.email + "' AND new_price IS NOT NULL AND request_date IS NOT NULL ORDER BY action_status DESC, row_id DESC";
 
 				con.query(query, function (err, result) {
 					if (err) {
-						console.log(err)
 						res.json({ status: false });
 						return;
 					} else {

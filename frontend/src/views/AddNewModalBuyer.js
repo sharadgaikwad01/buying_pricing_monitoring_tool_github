@@ -22,8 +22,8 @@ import withReactContent from 'sweetalert2-react-content'
 import { useState, useEffect } from 'react'
 const MySwal = withReactContent(Swal)
 
-const AddNewModalBuyer = ({ open, handleModal, rowData, articalNumberOptions, countryOptions, deptOptions, setUsersInputsData }) => {
-
+const AddNewModalBuyer = ({ open, handleModal, rowData, articalNumberOptions, countryOptions, deptOptions, setUsersInputsData, searchName }) => {
+  // const [UserData, setUsersData] = useState({user_name:'', email:'', emp_id:'', row_id:''})
   const [DepartmentValue, setDepartmentValue] = useState('')
   const [FNameValue, setFNameValue] = useState('')
   const [LNameValue, setLNameValue] = useState('')
@@ -120,11 +120,9 @@ const AddNewModalBuyer = ({ open, handleModal, rowData, articalNumberOptions, co
     axios({
       method: "post",
       url: `${nodeBackend}/buyers_add_input`,
-      data: { first_name, last_name, dept_name, buyer_emailid, stratbuyer_name, country_name }
+      data: { first_name, last_name, dept_name, buyer_emailid, stratbuyer_name, country_name, searchName }
     })
       .then(async function (success) {
-        //handle success
-        console.log(success)     
         if (success.status) {
           setUsersInputsData(success.data.data)
           if (UserValue) {

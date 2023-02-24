@@ -61,8 +61,8 @@ router.use((req, res, next) => {
                     }
                 }
             }
-            supplierNumber = '33975';
-            country='ES';
+            // supplierNumber = '33975';
+            // country='ES';
             sql = "select * from public.vw_suppl_info where suppl_no='"+supplierNumber+"' and country_code='"+country+"'";
             clientDB.query(sql, function(err, result) {                
                 if (err) {

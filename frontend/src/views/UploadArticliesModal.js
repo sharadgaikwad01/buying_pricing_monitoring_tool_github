@@ -116,6 +116,7 @@ const UploadArticliesModal = ({ open, handleModal, setsupplierInputsData }) => {
           const wb = read(fileData, { type: 'binary', cellDates: true, dateNF:'yyyy-mm-dd;@'})
           wb.SheetNames.forEach(function (sheetName) {
             const rowObj = utils.sheet_to_row_object_array(wb.Sheets[sheetName], { header: 1, raw: false, blankrows: false, dateNF: 'yyyy-mm-dd' })
+            console.log(rowObj)
             const customHeadingsData = rowObj.map((item) => ({
                 country_name : item[0],
                 vat_no : item[1],

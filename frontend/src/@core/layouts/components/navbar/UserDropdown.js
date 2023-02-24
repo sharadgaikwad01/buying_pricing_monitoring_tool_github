@@ -26,17 +26,22 @@ const UserDropdown = () => {
 
   const handlelogout = () => {    
     const user_type = localStorage.getItem("type")
+    const token = localStorage.getItem("token")
+
     if (user_type === 'SUPPLIER') {
       localStorage.clear()
-      window.location.replace(`${reactFrontend}/logout`)
+      const url = `https://idam-pp.metrosystems.net/authorize/api/oauth2/op_session_end?id_token_hint=${token}&post_logout_redirect_uri=${reactFrontend}/logout`
+      window.location.replace(url)
     }
     if (user_type === 'BUYER') {
       localStorage.clear()
-      window.location.replace(`${reactFrontend}/buyer_login?message=Logout`)
+      const url = `https://idam-pp.metrosystems.net/authorize/api/oauth2/op_session_end?id_token_hint=${token}&post_logout_redirect_uri=${reactFrontend}/buyer_login?message=Logout`
+      window.location.replace(url)
     }
     if (user_type === 'ADMIN') {
       localStorage.clear()
-      window.location.replace(`${reactFrontend}/buyer_login?message=Logout`)
+      const url = `https://idam-pp.metrosystems.net/authorize/api/oauth2/op_session_end?id_token_hint=${token}&post_logout_redirect_uri=${reactFrontend}/buyer_login?message=Logout`
+      window.location.replace(url)
     }      
   }
   return (
