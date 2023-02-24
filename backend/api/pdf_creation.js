@@ -67,7 +67,7 @@ function generateCustomerInformation(doc, assortment_details, supplier_name) {
   doc
     .fillColor("#444444")
     .fontSize(11)
-    .text("M\S "+supplier_name+",", 50, 140)
+    .text(""+supplier_name+",", 50, 140)
     .text("As per our discussion, I am sharing the agreed article price and effective date in the table below.", 50, 160);
 
     generateHr(doc, 180);

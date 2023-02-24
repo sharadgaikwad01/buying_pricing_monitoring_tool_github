@@ -56,7 +56,7 @@ const NavbarUser = props => {
               </NavItem>
               <NavItem>
               <span className='user-status float-left'>{userDetails}</span>
-              <span className='user-status float-left'>{country}</span>
+              <span className='float-left'>{country}</span>
               </NavItem>
               <NavItem>
               <ul className='nav navbar-nav align-items-center ms-auto mr-15'>
