@@ -288,10 +288,10 @@ const Buyers = props => {
               <Plus size={16} />
               <span className='align-middle ms-25'>Add New Buyer</span>
             </Button.Ripple>
-            <Button.Ripple className='ms-2' outline color='warning' onClick={handlebuyers}>
-              <Download size={14} />
-              <span className='align-middle ms-25'>All Users</span>
-            </Button.Ripple>
+            {/* <Button.Ripple className='ms-2' outline color='warning' onClick={handlebuyers}> */}
+              {/* <Download size={14} /> */}
+              {/* <span className='align-middle ms-25'>All Users</span> */}
+            {/* </Button.Ripple> */}
            
           </div>
         </CardHeader>
