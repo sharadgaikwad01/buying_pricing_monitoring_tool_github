@@ -85,6 +85,17 @@ const Buyers = props => {
   }
    
   useEffect(async () => {
+    const user_type = localStorage.getItem("type")
+    if (user_type === '') {
+      props.history.push('/buyer_login')
+    }
+    if (user_type === 'BUYER') {
+      props.history.push('/buyer_input')
+    }
+    if (user_type === 'SUPPLIER') {
+      props.history.push('/home')
+    }
+
     await axios.get(`${nodeBackend}/buyers`, { params: { searchName } }).then((res) => {
      
       setUsersInputsData(res.data.data)  
