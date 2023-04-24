@@ -24,19 +24,42 @@ const UserDropdown = () => {
   // const vat_number = localStorage.getItem('vat')
   const user_name = localStorage.getItem('name')
 
+  // const handlelogout = () => {    
+  //   const user_type = localStorage.getItem("type")
+  //   if (user_type === 'SUPPLIER') {
+  //     localStorage.clear()
+  //     window.location.replace(`${reactFrontend}/logout`)
+  //   }
+  //   if (user_type === 'BUYER') {
+  //     localStorage.clear()
+  //     window.location.replace(`${reactFrontend}/buyer_login?message=Logout`)
+  //   }
+  //   if (user_type === 'ADMIN') {
+  //     localStorage.clear()
+  //     window.location.replace(`${reactFrontend}/buyer_login?message=Logout`)
+  //   }      
+  // }
   const handlelogout = () => {    
     const user_type = localStorage.getItem("type")
+    const token = localStorage.getItem("token")
+    console.log(reactFrontend)
     if (user_type === 'SUPPLIER') {
       localStorage.clear()
-      window.location.replace(`${reactFrontend}/logout`)
+      const url = `https://idam-pp.metrosystems.net/authorize/api/oauth2/op_session_end?id_token_hint=${token}&post_logout_redirect_uri=${reactFrontend}/logout`
+      console.log(url)
+      window.location.replace(url)
     }
     if (user_type === 'BUYER') {
       localStorage.clear()
-      window.location.replace(`${reactFrontend}/buyer_login?message=Logout`)
+      const url = `https://idam-pp.metrosystems.net/authorize/api/oauth2/op_session_end?id_token_hint=${token}&post_logout_redirect_uri=${reactFrontend}/buyer_login?message=Logout`
+      console.log(url)
+      window.location.replace(url)
     }
     if (user_type === 'ADMIN') {
       localStorage.clear()
-      window.location.replace(`${reactFrontend}/buyer_login?message=Logout`)
+      const url = `https://idam-pp.metrosystems.net/authorize/api/oauth2/op_session_end?id_token_hint=${token}&post_logout_redirect_uri=${reactFrontend}/buyer_login?message=Logout`
+      console.log(url)
+      window.location.replace(url)
     }      
   }
   return (

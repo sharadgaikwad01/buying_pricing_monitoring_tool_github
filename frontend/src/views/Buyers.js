@@ -74,7 +74,7 @@ const Buyers = props => {
   // ** Function to handle Modal toggle
   const handleModal = () => setModal(!modal)
   // const downloadArticleModal = () => setSupplierInputModal(!supplierInputModal)
-  const [UserData] = useState({first_name:'', dept_name:'',  buyer_emailid:'', user_id:0, stratbuyer_name:'', country_name: '', active_status: 'Active'})
+  const [UserData] = useState({first_name:'', last_name:'', dept_name:'',  buyer_emailid:'', user_id:0, stratbuyer_name:'', country_name: ''})
   // const handleUploadArticleModal = () => setUploadArticleModal(!uploadArticleModal)
   // ** Function to handle Pagination
   const handlePagination = page => {
@@ -270,7 +270,7 @@ const Buyers = props => {
     {
       name: 'Status',
       sortable: true,
-      selector: row => row.active_status,
+      // selector: row => row.active_status,
       cell: row => {
          return (
           row.active_status === 'Active' ? <Badge color='success' pill>Active</Badge> : <Badge color='success' pill>Active</Badge>
