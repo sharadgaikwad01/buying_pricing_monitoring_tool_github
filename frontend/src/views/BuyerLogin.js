@@ -48,6 +48,8 @@ const BuyerLogin = () => {
             {/* {
             Logoutmessage ? <p>Logout Successful</p> : <p></p>
             }  */}
+              Logout Successful
+              
               Please log-in to your account and start the adventure
               </CardText>
             <Button className='mb-1' color='primary' block onClick={handleLogin}>

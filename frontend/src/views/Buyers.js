@@ -85,6 +85,17 @@ const Buyers = props => {
   }
    
   useEffect(async () => {
+    const user_type = localStorage.getItem("type")
+    if (user_type === '') {
+      props.history.push('/buyer_login')
+    }
+    if (user_type === 'BUYER') {
+      props.history.push('/buyer_input')
+    }
+    if (user_type === 'SUPPLIER') {
+      props.history.push('/home')
+    }
+
     await axios.get(`${nodeBackend}/buyers`, { params: { searchName } }).then((res) => {
      
       setUsersInputsData(res.data.data)  
@@ -157,9 +168,7 @@ const Buyers = props => {
   }
   
   const handleDelete = (e, row) => {
-    const buyer_emailid = row.buyer_emailid
-    const dept_name = row.dept_name
-    const country_name = row.country_name
+    const row_id = row.row_id
     e.preventDefault()
     MySwal.fire({
       title: 'Are you sure?',
@@ -177,8 +186,8 @@ const Buyers = props => {
         axios({
           method: "post",
           url: `${nodeBackend}/delete_buyer_input`,
-          data: { buyer_emailid, dept_name, country_name }
-        })
+          data: { row_id, searchName}
+        }) 
           .then(function (success) {
             console.log(success.data.status)
             //handle success        
@@ -290,10 +299,10 @@ const Buyers = props => {
               <Plus size={16} />
               <span className='align-middle ms-25'>Add New Buyer</span>
             </Button.Ripple>
-            <Button.Ripple className='ms-2' outline color='warning' onClick={handlebuyers}>
-              <Download size={14} />
-              <span className='align-middle ms-25'>All Users</span>
-            </Button.Ripple>
+            {/* <Button.Ripple className='ms-2' outline color='warning' onClick={handlebuyers}> */}
+              {/* <Download size={14} /> */}
+              {/* <span className='align-middle ms-25'>All Users</span> */}
+            {/* </Button.Ripple> */}
            
           </div>
         </CardHeader>
@@ -343,8 +352,8 @@ const Buyers = props => {
           </Row>
         </CardBody>       
       </Card>
-      <AddNewModalBuyer open={modal} handleModal={handleModal} rowData={rowData} articalNumberOptions={articalNumberOptions} countryOptions={countryOptions} deptOptions={deptOptions} setUsersInputsData={setUsersInputsData} />
+      <AddNewModalBuyer open={modal} handleModal={handleModal} rowData={rowData} articalNumberOptions={articalNumberOptions} countryOptions={countryOptions} deptOptions={deptOptions} setUsersInputsData={setUsersInputsData} searchName={searchName} />
     </Fragment>
   )
-}
+} 
 export default Buyers

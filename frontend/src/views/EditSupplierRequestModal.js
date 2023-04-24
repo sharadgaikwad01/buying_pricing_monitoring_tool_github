@@ -25,13 +25,14 @@ const MySwal = withReactContent(Swal)
 
 import { currencies } from './countryCurrency'
 
-const EditSupplierRequestModal = ({ open, handleModal, rowData, supllierNumberOptions, setsupplierInputsData, searchSupplierNumber, searchArticleNumber, searchRequestedDate, searchStatus }) => {
+const EditSupplierRequestModal = ({ open, handleModal, rowData, supllierNumberOptions, setsupplierInputsData, searchSupplierNumber, searchArticleNumber, searchRequestedDate, searchStatus, type }) => {
   // ** State
   // const [Picker, setPicker] = useState('')
   const [articleOptions, setarticleOptions] = useState([])
 
   const country = localStorage.getItem('country')
-  const vat_number = localStorage.getItem('vat')
+  let vat_number = localStorage.getItem('vat')
+  const email = localStorage.getItem('email')
   
   const [newPrice, setNewPrice] = useState('')
   const [reason, setReason] = useState('')
@@ -63,6 +64,8 @@ const EditSupplierRequestModal = ({ open, handleModal, rowData, supllierNumberOp
       await setReason(rowData.price_change_reason)
       await setSupplierNumber(rowData.suppl_no)
       await setArticleNumber(rowData.art_no)
+
+      vat_number = rowData.vat_no
 
       const finatEffectiveDate = []
       if (rowData.price_increase_effective_date) {
@@ -96,6 +99,7 @@ const EditSupplierRequestModal = ({ open, handleModal, rowData, supllierNumberOp
   // ** Hooks  
 
   const onSubmit = data => {
+    const vat_number = rowData.vat_no
     const new_price = data.new_price
     const reason = data.reason
     const supplier_number = data.supplier_number
@@ -122,12 +126,11 @@ const EditSupplierRequestModal = ({ open, handleModal, rowData, supllierNumberOp
     const price_effective_date = effective_date_arr[0]
 
     handleModal(false)
-
+    
     axios({
       method: "post",
-
-      url: `${nodeBackend}/update_supplier_input`,
-      data: { row_id, new_price, reason, supplier_number, article_number, price_effective_date, country, vat_number, searchSupplierNumber, searchArticleNumber, searchRequestedDate, searchStatus}
+      url: type === 'behalf_of_supplier' ? `${nodeBackend}/update_supplier_input_by_buyer` :  `${nodeBackend}/update_supplier_input`,
+      data: { row_id, new_price, reason, supplier_number, article_number, price_effective_date, country, vat_number, searchSupplierNumber, searchArticleNumber, searchRequestedDate, searchStatus, email}
 
     }).then(function (success) {
       //handle success        
@@ -170,7 +173,6 @@ const EditSupplierRequestModal = ({ open, handleModal, rowData, supllierNumberOp
     const supplierNumber = value.value
     setValue('article_number', '', { shouldValidate: true })
     await axios.get(`${nodeBackend}/getArticlesBySupplierNumber`, { params: { supplierNumber, country, vat_number } }).then((res) => {
-      console.log(res.data)
       setarticleOptions(res.data.data.articleOptions)
     })
   }

@@ -25,6 +25,8 @@ Issuer.discover('https://idam-pp.metrosystems.net/') // => Promise
         client_id: 'BUYING_PRICE_MONITORING_TOOL',
         client_secret: '7iMxRjOB5g',
         realm_id: 'BUYING_PRICE',
+        country_code: 'IN',
+        locale_id: 'en-IN',
         redirect_uris: [config.nodebackend + '/buyer/api/v2/callback'],
         response_types: ['code'],
     }); // => Client
@@ -77,6 +79,8 @@ router.get('/api/v2/login', (req, res, next) => {
         scope: `openid realm_id=${'BUYING_PRICE'}`,
         code_challenge,
         realm_id: 'BUYING_PRICE',
+        country_code: 'IN',
+        locale_id: 'en-IN',
         code_challenge_method: 'S256',
     });
     res.send('<script>window.location.href="'+authUrl+'";</script>');

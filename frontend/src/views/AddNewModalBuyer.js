@@ -22,16 +22,16 @@ import withReactContent from 'sweetalert2-react-content'
 import { useState, useEffect } from 'react'
 const MySwal = withReactContent(Swal)
 
-const AddNewModalBuyer = ({ open, handleModal, rowData, articalNumberOptions, countryOptions, deptOptions, setUsersInputsData }) => {
-
+const AddNewModalBuyer = ({ open, handleModal, rowData, articalNumberOptions, countryOptions, deptOptions, setUsersInputsData, searchName }) => {
+  // const [UserData, setUsersData] = useState({user_name:'', email:'', emp_id:'', row_id:''})
   const [DepartmentValue, setDepartmentValue] = useState('')
   const [FNameValue, setFNameValue] = useState('')
   const [LNameValue, setLNameValue] = useState('')
   const [UserValue, setUserValue] = useState(0)
   const [EmailValue, setEmailValue] = useState('')
   const [selectedOptions, setselectedOptions] = useState('')
+  const [isEdit, setIsEdit] = useState(false)
   
- 
   const [CountryValue, setCountryValue] = useState('')
 
   const validationSchema = yup.object().shape({
@@ -55,6 +55,7 @@ const AddNewModalBuyer = ({ open, handleModal, rowData, articalNumberOptions, co
   useEffect(async () => {
       console.log(rowData)
       if (rowData.first_name) {
+        setIsEdit(true)
         await setFNameValue(rowData.first_name)
         setValue('first_name', `${rowData.first_name}`, { shouldValidate:true })
   
@@ -70,6 +71,7 @@ const AddNewModalBuyer = ({ open, handleModal, rowData, articalNumberOptions, co
         await setEmailValue(rowData.buyer_emailid)
         setValue('buyer_emailid', rowData.buyer_emailid)
       } else {
+        setIsEdit(false)
         setFNameValue(rowData.first_name)
         setValue('first_name', `${rowData.first_name}`)
   
@@ -85,7 +87,6 @@ const AddNewModalBuyer = ({ open, handleModal, rowData, articalNumberOptions, co
         setEmailValue(rowData.buyer_emailid)
         setValue('buyer_emailid', rowData.buyer_emailid)
       }
-      
       
       await setUserValue(rowData.user_id)
    
@@ -121,11 +122,9 @@ const AddNewModalBuyer = ({ open, handleModal, rowData, articalNumberOptions, co
     axios({
       method: "post",
       url: `${nodeBackend}/buyers_add_input`,
-      data: { first_name, last_name, dept_name, buyer_emailid, stratbuyer_name, country_name }
+      data: { first_name, last_name, dept_name, buyer_emailid, stratbuyer_name, country_name, searchName }
     })
       .then(async function (success) {
-        //handle success
-        console.log(success)     
         if (success.status) {
           setUsersInputsData(success.data.data)
           if (UserValue) {
@@ -241,7 +240,7 @@ const AddNewModalBuyer = ({ open, handleModal, rowData, articalNumberOptions, co
                 name='buyer_emailid'
                 defaultValue=''
                 control={control}
-                render={({ field }) => <Input type="text"{...field} placeholder='Email' value={EmailValue} onChange={(e) => { setEmailValue(e.target.value); setValue('buyer_emailid', e.target.value) } }  invalid={errors.buyer_emailid && true} />}
+                render={ isEdit ? ({ field}) => <Input type="text"{...field} placeholder='Email' value={EmailValue} onChange={(e) => { setEmailValue(e.target.value); setValue('buyer_emailid', e.target.value) } }  invalid={errors.buyer_emailid && true} readOnly /> : ({ field}) => <Input type="text"{...field} placeholder='Email' value={EmailValue} onChange={(e) => { setEmailValue(e.target.value); setValue('buyer_emailid', e.target.value) } }  invalid={errors.buyer_emailid && true} />}
               />
               
               {errors.buyer_emailid && <FormFeedback>{"Email is a required field"}</FormFeedback>}
@@ -292,7 +291,7 @@ const AddNewModalBuyer = ({ open, handleModal, rowData, articalNumberOptions, co
 
           <div className='mb-1'>
             <Label className='form-label' for='stratbuyer_name'>
-              Article Name
+              Category Name
             </Label>
             <Controller
               name="stratbuyer_name"

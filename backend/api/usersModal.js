@@ -20,8 +20,8 @@ module.exports = function(app, con) {
             condition = condition + " AND user_role = '" +req.query.searchRole+"'"
         }
         var query = "SELECT * FROM public.tbl_users where email IS NOT NULL" + condition;
-        console.log(query)
-        console.log(req.query);
+        // console.log(query)
+        // console.log(req.query);
 
         await con.query(query, function(err, result) {
 			if (err) {
@@ -34,7 +34,7 @@ module.exports = function(app, con) {
             }			
 		});
     });
-
+	
 	app.post('/add_user_input', function(req, res){
 		// var role = 'Admin';
 		var data = {};

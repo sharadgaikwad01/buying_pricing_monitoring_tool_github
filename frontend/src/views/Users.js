@@ -10,10 +10,10 @@ import axios from 'axios'
 import Flatpickr from 'react-flatpickr'
 import AddNewModalUser from './AddNewModalUser'
 // import DownloadArticliesModal from './DownloadArticlesModal'
-// import UploadArticliesModal from './UploadArticliesModal'
+import UploadUserModal from './UploadUserModal'
 import ReactPaginate from 'react-paginate'
 import DataTable from 'react-data-table-component'
-import { Download, Search, ChevronDown, Share, Printer, FileText, File, Grid, Copy, Plus, Upload, Edit, Trash} from 'react-feather'
+import { Download, Search, ChevronDown, Share, Printer, FileText, File, Grid, Copy, Plus, Upload, Edit, Trash, Users} from 'react-feather'
 
 import '@styles/react/libs/tables/react-dataTable-component.scss'
 import '@styles/react/libs/flatpickr/flatpickr.scss'
@@ -56,6 +56,7 @@ const BootstrapCheckbox = forwardRef((props, ref) => (
   </div>
 ))
 
+
 const Home = props => {
   // ** States
 
@@ -67,17 +68,17 @@ const Home = props => {
   const [searchRole, setsearchRole] = useState('')
 
   const [modal, setModal] = useState(false)
-  // 
-  // const [supplierInputModal, setSupplierInputModal] = useState(false)
-  // const [uploadArticleModal, setUploadArticleModal] = useState(false)
+
+  const [uploadUserModal, setUploadUserModal] = useState(false)
 
   const [currentPage, setCurrentPage] = useState(0)
-  // const [rowData, setrowData] = useState([])
+
   // ** Function to handle Modal toggle
   const handleModal = () => setModal(!modal)
-  // const downloadArticleModal = () => setSupplierInputModal(!supplierInputModal)
+  
   const [UserData] = useState({user_name:'', email:'',  emp_id:'', row_id:'', user_type:'', user_role: ''})
-  // const handleUploadArticleModal = () => setUploadArticleModal(!uploadArticleModal)
+
+  const handleUploadUserModal = () => setUploadUserModal(!uploadUserModal)
 
   // ** Function to handle Pagination
   const handlePagination = page => {
@@ -86,7 +87,6 @@ const Home = props => {
   const handlebuyers = () => {
     props.history.push('/buyers')
   }
-   
 
   useEffect(async () => {
     await axios.get(`${nodeBackend}/users`, { params: { searchName, UserType, searchRole } }).then((res) => {
@@ -263,6 +263,18 @@ const Home = props => {
       }
     },
     {
+      name: 'First Name',
+      // width: "10",
+      sortable: true,
+      selector: row => row.user_name
+    },
+    {
+      name: 'Last Name',
+      // width: "10",
+      sortable: true,
+      selector: row => row.user_name
+    },
+    {
       name: 'User name',
       // width: "10",
       sortable: true,
@@ -303,7 +315,7 @@ const Home = props => {
       }
     },
     {
-      name: 'country',
+      name: 'Country',
       sortable: true,
       selector: row => row.country
     }  
@@ -315,12 +327,22 @@ const Home = props => {
         <CardHeader className='flex-md-row flex-column align-md-items-center align-items-start border-bottom'>
           <CardTitle tag='h2'>Users Data</CardTitle>
           <div className='d-flex mt-md-0 mt-1'>
+          <a href='/sample.xlsx' download>
+            <Button.Ripple className='ms-1' color='primary' >
+                <Download size={14} />
+                <span className='align-middle ms-25'>Sample File</span>
+              </Button.Ripple>
+          </a>
+          <Button.Ripple className='ms-1' outline color='info' onClick={handleUploadUserModal}>
+              <Upload size={14} />
+              <span className='align-middle ms-25'>Upload Multiple Article Inputs</span>
+            </Button.Ripple>
             <Button.Ripple className='ms-2 btn-icon' color='primary' onClick={handleAdd}>
               <Plus size={16} />
               <span className='align-middle ms-25'>Add New User</span>
             </Button.Ripple>
             <Button.Ripple className='ms-2' outline color='warning' onClick={handlebuyers}>
-              <Download size={14} />
+              <Users size={14} />
               <span className='align-middle ms-25'>All Buyers</span>
             </Button.Ripple>
             {/* <UncontrolledButtonDropdown className='ms-2'>
@@ -401,6 +423,7 @@ const Home = props => {
         </CardBody>       
       </Card>
       <AddNewModalUser open={modal} handleModal={handleModal} rowData={rowData} setUsersInputsData={setUsersInputsData} />
+      <UploadUserModal open={uploadUserModal} handleModal={handleUploadUserModal} />
     </Fragment>
   )
 }

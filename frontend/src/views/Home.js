@@ -358,15 +358,17 @@ const Home = props => {
       "Article Status": item.action_status ? item.action_status.replace(",", ".") : item.action_status,
       "Price change Reason": item.price_change_reason ? item.price_change_reason.replace(",", ".") : item.price_change_reason
     }))
-    if (flag === 1) {
-      downloadCSV(finalcsvdata)
-    } else {
-      const name = fileName.length ? `${fileName}.${fileFormat}` : `excel-sheet.${fileFormat}`
-      const wb = utils.json_to_sheet(finalcsvdata)
-      const wbout = utils.book_new()
-      utils.book_append_sheet(wbout, wb, fileName)
-      writeFile(wbout, name)
-    }    
+    if (finalcsvdata.length > 0) {
+      if (flag === 1) {
+        downloadCSV(finalcsvdata)
+      } else {
+        const name = fileName.length ? `${fileName}.${fileFormat}` : `excel-sheet.${fileFormat}`
+        const wb = utils.json_to_sheet(finalcsvdata)
+        const wbout = utils.book_new()
+        utils.book_append_sheet(wbout, wb, fileName)
+        writeFile(wbout, name)
+      }
+    }        
   }
 
   const handleRefresh = async () => {
@@ -493,7 +495,7 @@ const Home = props => {
       selector: row => row.action_status,
       cell: row => {
         return (
-          row.action_status === 'open' ? <Badge color='primary' pill>Open</Badge> : <Badge color='success' pill>Closed</Badge>
+          row.action_status === 'open' ? <div><Badge color="primary" pill>Open</Badge><br /><span className='text-muted font-small-2'>{ row.previous_request_days > 0 ? row.previous_request_days > 1 ? `${row.previous_request_days} Days Ago` : `${row.previous_request_days} Day Ago` : ''}  </span></div> : <div><Badge color='success' pill>Closed</Badge><br /><span className='text-muted font-small-2'>{ row.previous_request_days > 0 ? row.previous_request_days > 1 ? `${row.previous_request_days} Days Ago` : `${row.previous_request_days} Day Ago` : ''}  </span></div>
         )
       }
     },

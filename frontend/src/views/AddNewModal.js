@@ -24,11 +24,12 @@ import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 const MySwal = withReactContent(Swal)
 
-const AddNewModal = ({ open, handleModal, supllierNumberOptions, setsupplierInputsData }) => {
+const AddNewModal = ({ open, handleModal, supllierNumberOptions, setsupplierInputsData, type }) => {
   // ** State
   // const [Picker, setPicker] = useState('')
   const country = localStorage.getItem('country')
   const vat_number = localStorage.getItem('vat')
+  const email = localStorage.getItem('email')
 
   const [articleOptions, setarticleOptions] = useState([])
 
@@ -99,8 +100,8 @@ const AddNewModal = ({ open, handleModal, supllierNumberOptions, setsupplierInpu
     
     axios({
       method: "post",
-      url: `${nodeBackend}/add_supplier_input`,
-      data: { new_price, reason, supplier_number, article_number, country, vat_number, price_effective_date }
+      url: type === 'behalf_of_supplier' ? `${nodeBackend}/add_supplier_input_by_buyer` :  `${nodeBackend}/add_supplier_input`,
+      data: { new_price, reason, supplier_number, article_number, country, vat_number, price_effective_date, email}
     })
       .then(function (success) {
         //handle success 
