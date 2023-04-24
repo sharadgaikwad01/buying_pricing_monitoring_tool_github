@@ -15,12 +15,24 @@ const Routes = [
     component: lazy(() => import('../../views/Home'))
   },
   {
+    path: '/faq',
+    component: lazy(() => import('../../views/faq'))
+  },
+  {
     path: '/users',
     component: lazy(() => import('../../views/Users'))
   },
   {
     path: '/buyers',
     component: lazy(() => import('../../views/Buyers'))
+  },
+  {
+    path: '/dashboard',
+    component: lazy(() => import('../../views/Dashboard'))
+  },
+  {
+    path: '/category_dashboard',
+    component: lazy(() => import('../../views/CategoryDashboard'))
   },
   {
     path: '/view/:id',
@@ -34,6 +46,14 @@ const Routes = [
     path: '/auth',
     layout: 'BlankLayout',
     component: lazy(() => import('../../views/Auth'))
+  },
+  {
+    path: '/auth_login',
+    component: lazy(() => import('../../views/AuthLogin')),
+    layout: 'BlankLayout',
+    meta: {
+      authRoute: true
+    }
   },
   {
     path: '/login',

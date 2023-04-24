@@ -30,8 +30,8 @@ const AddNewModalBuyer = ({ open, handleModal, rowData, articalNumberOptions, co
   const [UserValue, setUserValue] = useState(0)
   const [EmailValue, setEmailValue] = useState('')
   const [selectedOptions, setselectedOptions] = useState('')
+  const [isEdit, setIsEdit] = useState(false)
   
- 
   const [CountryValue, setCountryValue] = useState('')
 
   const validationSchema = yup.object().shape({
@@ -55,6 +55,7 @@ const AddNewModalBuyer = ({ open, handleModal, rowData, articalNumberOptions, co
   useEffect(async () => {
       console.log(rowData)
       if (rowData.first_name) {
+        setIsEdit(true)
         await setFNameValue(rowData.first_name)
         setValue('first_name', `${rowData.first_name}`, { shouldValidate:true })
   
@@ -70,6 +71,7 @@ const AddNewModalBuyer = ({ open, handleModal, rowData, articalNumberOptions, co
         await setEmailValue(rowData.buyer_emailid)
         setValue('buyer_emailid', rowData.buyer_emailid)
       } else {
+        setIsEdit(false)
         setFNameValue(rowData.first_name)
         setValue('first_name', `${rowData.first_name}`)
   
@@ -238,7 +240,7 @@ const AddNewModalBuyer = ({ open, handleModal, rowData, articalNumberOptions, co
                 name='buyer_emailid'
                 defaultValue=''
                 control={control}
-                render={({ field }) => <Input type="text"{...field} placeholder='Email' value={EmailValue} onChange={(e) => { setEmailValue(e.target.value); setValue('buyer_emailid', e.target.value) } }  invalid={errors.buyer_emailid && true} />}
+                render={ isEdit ? ({ field}) => <Input type="text"{...field} placeholder='Email' value={EmailValue} onChange={(e) => { setEmailValue(e.target.value); setValue('buyer_emailid', e.target.value) } }  invalid={errors.buyer_emailid && true} readOnly /> : ({ field}) => <Input type="text"{...field} placeholder='Email' value={EmailValue} onChange={(e) => { setEmailValue(e.target.value); setValue('buyer_emailid', e.target.value) } }  invalid={errors.buyer_emailid && true} />}
               />
               
               {errors.buyer_emailid && <FormFeedback>{"Email is a required field"}</FormFeedback>}
