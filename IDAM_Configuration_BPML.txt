@@ -1,10 +1,14 @@
 Client ID ==========
-BUYING_PRICING_MONITORING_TOOL
 
-REan ID==========
-BUY_PRI_M_T
 
-New Client Screte ============
-wFq9MLAW4n
+Production URL:-  https://idam.metrosystems.net/adminui/
+
+BUYER
+Client - BUYING_PRICING_MONITORING_TOOL
+Realm - BUY_PRI_M_T
+
+Supplier
+Client - BUYING_PRICING_MONITORING_TOOL_SUPPLIER
+Realm - SUPP_REALM
 
 

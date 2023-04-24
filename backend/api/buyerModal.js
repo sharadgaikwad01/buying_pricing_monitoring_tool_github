@@ -11,6 +11,12 @@ module.exports = function (app, con) {
         var CountryOptions = [];
         var deptOptions = [];
 
+		
+        if (req.query.searchName != '') {
+            // condition = condition + " AND first_name ILIKE '%" + req.query.searchName +"%' OR last_name ILIKE '%" +req.query.searchName +"%' OR RTRIM(CONCAT(LTRIM(RTRIM(first_name)) , ' ' , LTRIM(RTRIM(last_name)))) ILIKE '%" +req.query.searchName +"%'  OR RTRIM(CONCAT(LTRIM(RTRIM(last_name)) , ' ' , LTRIM(RTRIM(first_name)))) ILIKE '%" +req.query.searchName +"%'"
+            condition = condition + " AND RTRIM(CONCAT(LTRIM(RTRIM(first_name)) , ' ' , LTRIM(RTRIM(last_name)))) ILIKE '%" +req.query.searchName +"%'"
+        }
+
 		if (req.query.searchName != '') {
 			condition = condition + " AND RTRIM(CONCAT(LTRIM(RTRIM(first_name)) , ' ' , LTRIM(RTRIM(last_name)))) ILIKE '%" +req.query.searchName +"%'"
 		}
@@ -20,8 +26,9 @@ module.exports = function (app, con) {
 			if (err) {
 				res.json({ status: false });
 				return;
-			} else {
-				result1.rows.forEach(function (value, key) {
+
+			} else {				
+				result1.rows.forEach(function(value, key) {
 					option = { value: value.stratbuyer_id, label: value.stratbuyer_name }
 					articalIDOptions.push(option);
 				});
@@ -32,7 +39,7 @@ module.exports = function (app, con) {
 						res.json({ status: false });
 						return;
 					} else {
-						result2.rows.forEach(function (value, key) {
+						result2.rows.forEach(function(value, key) {
 							option = { value: value.country_name, label: value.country_name }
 							CountryOptions.push(option);
 						});
@@ -44,7 +51,7 @@ module.exports = function (app, con) {
 								res.json({ status: false });
 								return;
 							} else {
-								result3.rows.forEach(function (value, key) {
+								result3.rows.forEach(function(value, key) {
 									option = { value: value.dept_name, label: value.dept_name }
 									deptOptions.push(option);
 								});
@@ -55,8 +62,7 @@ module.exports = function (app, con) {
 										res.json({ status: false });
 										return;
 									} else {
-										console.log(result.rows)
-										res.json({ status: true, data: result.rows, options: articalIDOptions, countryoptions: CountryOptions, deptOptions: deptOptions });
+										res.json({ status: true, data: result.rows , options: articalIDOptions , countryoptions : CountryOptions , deptOptions : deptOptions });
 										return;
 									}
 								});

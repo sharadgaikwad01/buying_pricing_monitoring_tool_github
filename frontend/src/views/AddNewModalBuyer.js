@@ -291,7 +291,7 @@ const AddNewModalBuyer = ({ open, handleModal, rowData, articalNumberOptions, co
 
           <div className='mb-1'>
             <Label className='form-label' for='stratbuyer_name'>
-              Article Name
+              Category Name
             </Label>
             <Controller
               name="stratbuyer_name"
