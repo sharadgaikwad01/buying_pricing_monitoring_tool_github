@@ -70,8 +70,10 @@ const AddNewModalBuyer = ({ open, handleModal, rowData, articalNumberOptions, co
       
         await setEmailValue(rowData.buyer_emailid)
         setValue('buyer_emailid', rowData.buyer_emailid)
+        
       } else {
         setIsEdit(false)
+
         setFNameValue(rowData.first_name)
         setValue('first_name', `${rowData.first_name}`)
   

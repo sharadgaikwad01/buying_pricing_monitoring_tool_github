@@ -20,6 +20,9 @@ module.exports = function (app, con) {
 		if (req.query.searchName != '') {
 			condition = condition + " AND RTRIM(CONCAT(LTRIM(RTRIM(first_name)) , ' ' , LTRIM(RTRIM(last_name)))) ILIKE '%" +req.query.searchName +"%'"
 		}
+		if (req.query.searchName != '') {
+			condition = condition + " AND RTRIM(LTRIM(RTRIM(buyer_emailid))) ILIKE '%" +req.query.searchName +"%'"
+		}
 
 		var getUniqueSupplierIdQuery = "select distinct stratbuyer_id, stratbuyer_name from tbl_stratbuyer_details";
 		await con.query(getUniqueSupplierIdQuery, function (err, result1) {
