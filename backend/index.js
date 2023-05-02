@@ -194,8 +194,4 @@ var closed_request = cron.schedule('*/10 * * * * *', () => {
 	})
 });
 
-<<<<<<< HEAD
 closed_request.stop();
-=======
-closed_request.stop();
->>>>>>> aed850b6d8d6355f3a492d9c96804b270b97d9eb

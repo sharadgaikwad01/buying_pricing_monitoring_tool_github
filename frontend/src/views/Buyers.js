@@ -80,9 +80,9 @@ const Buyers = props => {
   const handlePagination = page => {
     setCurrentPage(page.selected)
   }
-  const handlebuyers = () => {
-    props.history.push('/users')
-  }
+  // const handlebuyers = () => {
+  //   props.history.push('/users')
+  // }
    
   useEffect(async () => {
     const user_type = localStorage.getItem("type")
