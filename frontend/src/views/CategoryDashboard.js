@@ -56,39 +56,40 @@ const CategoryDashboard = () => {
   }, [])
 
   const dataCal = (backgrounde, value, min, max, data, x, y) => {
-    console.log(data)
     console.log(x)
     console.log(y)
-    if (value < 0) {
-      return {
-        background: `#64bc7c`,
-        fontSize: "11.5px",
-        color: "#444"
-      }
-    } else if (value > 0 && value <= 4) {
-      return {
-        background: `#9dcb7d`,
-        fontSize: "11.5px",
-        color: "#444"
-      }
-    } else if ((value > 4 && value <= 8)) {
-      return {
-        background: `#f6e183`,
-        fontSize: "11.5px",
-        color: "#444"
-      }
-    } else if ((value > 8 && value < 15)) {
-      return {
-        background: `#fcb57a`,
-        fontSize: "11.5px",
-        color: "#444"
-      }
+    let avg_val = 0
+    avg_val = data[y][19]    
+    let max_val = 0
+    let min_val = 0    
+    max_val = 2 + avg_val
+    min_val = avg_val - 2
 
-    } else if ((value >= 15)) {
-      return {
-        background: `#fc6c6c`,
-        fontSize: "11.5px",
-        color: "#444"
+    if (x < 19)  {
+      if (value <= min_val) {
+        return {
+          background: `#64bc7c`,
+          fontSize: "11.5px",
+          color: "#444"
+        }
+      } else if (value >= min_val && value <= max_val) {
+        return {
+          background: `#f6e183`,
+          fontSize: "11.5px",
+          color: "#444"
+        }
+      } else if (value >= max_val) {
+        return {
+          background: `#fc6c6c`,
+          fontSize: "11.5px",
+          color: "#444"
+        }
+      } else {
+        return {
+          background: `white`,
+          fontSize: "11.5px",
+          color: "#444"
+        }
       }
     } else {
       return {
@@ -96,8 +97,9 @@ const CategoryDashboard = () => {
         fontSize: "11.5px",
         color: "#444"
       }
-    }
+    }    
   }
+
 
   return (
     <Fragment>
@@ -122,7 +124,6 @@ const CategoryDashboard = () => {
               data={data}
               squares
               height={50}
-              onClick={(x, y) => alert(`Clicked x${x}, y${y}`)}
               cellStyle={(backgrounde, value, min, max, data, x, y) => dataCal(backgrounde, value, min, max, data, x, y)}
               cellRender={(value) => value && <div>{value === '0.00' ? 0 : value}%</div>}
             />

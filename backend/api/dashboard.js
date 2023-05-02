@@ -29,6 +29,8 @@ module.exports = function (app, con) {
 				return;
 			} else {
                 result.rows.forEach(function (value, key) {
+					var total = 0;
+					var avg = 0;
 					// countryCode.push(value.country_code);
 					supplierName.push(value['bdm_global_umbrella_name']);
 					countryCode.push(parseInt(value['bg']).toFixed(2));
@@ -50,13 +52,17 @@ module.exports = function (app, con) {
 					countryCode.push(parseInt(value['sk']).toFixed(2));
 					countryCode.push(parseInt(value['tr']).toFixed(2));
 					countryCode.push(parseInt(value['ua']).toFixed(2));
+
+					total = parseInt(value['bg']) + parseInt(value['cz']) + parseInt(value['de']) + parseInt(value['es']) + parseInt(value['fr']) + parseInt(value['hr']) + parseInt(value['hu']) + parseInt(value['it']) + parseInt(value['kz']) + parseInt(value['md']) + parseInt(value['nl']) + parseInt(value['pk']) + parseInt(value['pl']) + parseInt(value['pt']) + parseInt(value['ro']) + parseInt(value['rs']) + parseInt(value['sk']) + parseInt(value['tr']) + parseInt(value['ua']);
+					avg = total / 19;
+					countryCode.push(avg.toFixed(2));
 					countryData.push(countryCode);
 					countryCode = [];
 				});
 				console.log(countryData)
 				data.supplierName = supplierName;
 				data.countryData = countryData;
-				data.countryCodeSeries = ['BG', 'CZ', 'DE', 'ES', 'FR', 'HR', 'HU', 'IT', 'KZ', 'MD', 'NL', 'PK', 'PL', 'PT', 'RO', 'RS', 'SK', 'TR', 'UA']
+				data.countryCodeSeries = ['BG', 'CZ', 'DE', 'ES', 'FR', 'HR', 'HU', 'IT', 'KZ', 'MD', 'NL', 'PK', 'PL', 'PT', 'RO', 'RS', 'SK', 'TR', 'UA', 'AVG']
 
 				supplierName.forEach(function (value, key) {
 					option = { value: value, label: value }
@@ -110,12 +116,15 @@ module.exports = function (app, con) {
 					countryCode.push(parseInt(value['sk']).toFixed(2));
 					countryCode.push(parseInt(value['tr']).toFixed(2));
 					countryCode.push(parseInt(value['ua']).toFixed(2));
+					total = parseInt(value['bg']) + parseInt(value['cz']) + parseInt(value['de']) + parseInt(value['es']) + parseInt(value['fr']) + parseInt(value['hr']) + parseInt(value['hu']) + parseInt(value['it']) + parseInt(value['kz']) + parseInt(value['md']) + parseInt(value['nl']) + parseInt(value['pk']) + parseInt(value['pl']) + parseInt(value['pt']) + parseInt(value['ro']) + parseInt(value['rs']) + parseInt(value['sk']) + parseInt(value['tr']) + parseInt(value['ua']);
+					avg = total / 19;
+					countryCode.push(avg.toFixed(2));
 					countryData.push(countryCode);
 					countryCode = [];
 				});
 				data.categoryName = categoryName;
 				data.countryData = countryData;
-				data.countryCodeSeries = ['BG', 'CZ', 'DE', 'ES', 'FR', 'HR', 'HU', 'IT', 'KZ', 'MD', 'NL', 'PK', 'PL', 'PT', 'RO', 'RS', 'SK', 'TR', 'UA']
+				data.countryCodeSeries = ['BG', 'CZ', 'DE', 'ES', 'FR', 'HR', 'HU', 'IT', 'KZ', 'MD', 'NL', 'PK', 'PL', 'PT', 'RO', 'RS', 'SK', 'TR', 'UA', 'AVG']
 
 				console.log(categoryName)
 
