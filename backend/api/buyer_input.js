@@ -581,4 +581,26 @@ module.exports = function (app, con) {
 			}
 		});
 	});
+
+	app.get('/getMintecData', async function (req, res) {
+		var query = "SELECT id, region, country_name, category, sub_category, dashboard_name, dashboard_url, created_by, is_deleted, created_on FROM public.vw_mintec_dashboard where country_name='" + req.query.country_name + "' AND category='" + req.query.stratbuyer_name + "'";
+
+		console.log(query)
+
+		await con.query(query, async function (err, result) {
+			if (err) {
+				res.json({ status: false });
+				return;
+			} else {
+				console.log(result.rows)
+				if (result.rowCount > 0) {
+					res.json({ status: true, data: result.rows});
+					return;
+				}else{
+					res.json({ status: false });
+					return;
+				}				
+			}
+		});
+	});	
 }
