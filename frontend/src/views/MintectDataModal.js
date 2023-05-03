@@ -68,7 +68,7 @@ const MintectDataModal = ({ open, handleModal, rowData }) => {
       }
     },
     {
-      name: 'Country Name',
+      name: 'Country',
       sortable: true,
       width: 'auto',
       selector: row => row.country_name,
@@ -79,7 +79,7 @@ const MintectDataModal = ({ open, handleModal, rowData }) => {
       }
     },
     {
-      name: 'Category',
+      name: 'Metro Category',
       sortable: true,
       minWidth: 'auto',
       selector: row => row.category,
@@ -90,7 +90,7 @@ const MintectDataModal = ({ open, handleModal, rowData }) => {
       }
     },
     {
-      name: 'Dashboard Name',
+      name: 'Mintec Category',
       sortable: true,
       minWidth: 'auto',
       selector: row => row.dashboard_name,
@@ -101,7 +101,7 @@ const MintectDataModal = ({ open, handleModal, rowData }) => {
       }
     },
     {
-      name: 'Dashboard URL',
+      name: 'Mintec Dashboard Link',
       sortable: true,
       minWidth: 'auto',
       selector: row => row.dashboard_url,
