@@ -495,7 +495,7 @@ const Home = props => {
       selector: row => row.action_status,
       cell: row => {
         return (
-          row.action_status === 'open' ? <Badge color='primary' pill>Open</Badge> : <Badge color='success' pill>Closed</Badge>
+          row.action_status === 'open' ? <div><Badge color="primary" pill>Open</Badge><br /><span className='text-muted font-small-2'>{ row.previous_request_days > 0 ? row.previous_request_days > 1 ? `${row.previous_request_days} Days Ago` : `${row.previous_request_days} Day Ago` : ''}  </span></div> : <div><Badge color='success' pill>Closed</Badge><br /><span className='text-muted font-small-2'>{ row.previous_request_days > 0 ? row.previous_request_days > 1 ? `${row.previous_request_days} Days Ago` : `${row.previous_request_days} Day Ago` : ''}  </span></div>
         )
       }
     },

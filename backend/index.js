@@ -21,6 +21,7 @@ var supplierInput = require('./api/supplier_input')
 var usersModal = require('./api/usersModal')
 var buyerModal = require('./api/buyerModal')
 var buyerInput = require('./api/buyer_input');
+var dashboard = require('./api/dashboard');
 const { query } = require('express');
 
 //=========== Create server ===================
@@ -121,6 +122,7 @@ supplierInput(app, client);
 usersModal(app, client);
 buyerModal(app, client);
 buyerInput(app, client);
+dashboard(app, client);
 
 app.listen(config.port, () => {
 	console.log("Application is running at localhost:" + config.port)

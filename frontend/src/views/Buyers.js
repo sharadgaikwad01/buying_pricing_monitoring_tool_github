@@ -80,12 +80,12 @@ const Buyers = props => {
   const handlePagination = page => {
     setCurrentPage(page.selected)
   }
-  const handlebuyers = () => {
-    props.history.push('/users')
-  }
+  // const handlebuyers = () => {
+  //   props.history.push('/users')
+  // }
    
   useEffect(async () => {
-const user_type = localStorage.getItem("type")
+  const user_type = localStorage.getItem("type")
     if (user_type === '') {
       props.history.push('/buyer_login')
     }
@@ -298,10 +298,10 @@ const user_type = localStorage.getItem("type")
               <Plus size={16} />
               <span className='align-middle ms-25'>Add New Buyer</span>
             </Button.Ripple>
-            <Button.Ripple className='ms-2' outline color='warning' onClick={handlebuyers}>
-              <Download size={14} />
-              <span className='align-middle ms-25'>All Users</span>
-            </Button.Ripple>
+            {/* <Button.Ripple className='ms-2' outline color='warning' onClick={handlebuyers}> */}
+              {/* <Download size={14} /> */}
+              {/* <span className='align-middle ms-25'>All Users</span> */}
+            {/* </Button.Ripple> */}
            
           </div>
         </CardHeader>

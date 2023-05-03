@@ -103,7 +103,11 @@ router.get('/api/v1/login', (req, res, next) => {
     authUrl = client.authorizationUrl({
         scope: `openid realm_id=${'SUPP_REALM'}`,
         code_challenge,
+<<<<<<< HEAD
         realm_id: 'SUPP_REALM',
+=======
+        realm_id: 'SUPP_REALM',        
+>>>>>>> 4fffeb7353928ffdefc1f956cf1f1e7388709ac9
         country_code: 'IN',
         locale_id: 'en-IN',
         code_challenge_method: 'S256',
@@ -114,9 +118,4 @@ router.get('/api/v1/login', (req, res, next) => {
     next()
     
 }) 
-
-function getVATNumberBySupplierIDandCountry(country, supplier_id) {
-
-}
-
 module.exports = router

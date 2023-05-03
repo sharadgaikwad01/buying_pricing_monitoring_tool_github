@@ -32,11 +32,16 @@ const AddNewModalUser = ({ open, handleModal, rowData, setUsersInputsData }) => 
   const [UserEmpIdValue, setUserEmpIdValue] = useState('')
   const [UserIdValue, setUserIdValue] = useState(0)
 
+  const [firstName, setFirstName] = useState('')
+  const [lastName, setLastName] = useState('')
+
   const validationSchema = yup.object().shape({
+    first_name: yup.string().required(),
+    last_name: yup.string().required(),
     user_name: yup.string().required(),
     email: yup.string().required().email(),
-    // emp_id: yup.string().required().test('len', 'Must be exactly 8 characters', val => val.length === 8),
-    emp_id: yup.string().required(),
+    emp_id: yup.string().required().test('len', 'Must be exactly 8 characters', val => val.length === 8),
+    // emp_id: yup.string().required(),
     user_role: yup.string().required(),
     user_type: yup.string().required()
   })
@@ -52,8 +57,15 @@ const AddNewModalUser = ({ open, handleModal, rowData, setUsersInputsData }) => 
 
   useEffect(async () => {
     // setUsersData(rowData)
+
+      await setFirstName(rowData.user_name)
+      setValue('first_name', rowData.user_name)
+
+      await setLastName(rowData.user_name)
+      setValue('last_name', rowData.user_name)
+
       await setNameValue(rowData.user_name)
-      setValue('user_name', rowData.user_name, { shouldValidate:true })
+      setValue('user_name', rowData.user_name)
 
       await setEmailValue(rowData.email)
       setValue('email', rowData.email)
@@ -185,10 +197,42 @@ const AddNewModalUser = ({ open, handleModal, rowData, setUsersInputsData }) => 
             />
             {errors["user_role"] && <FormFeedback>{'Role is a required field'}</FormFeedback>}
           </div>
-          
+
+          <div className='mb-1'>
+            <Label className='form-label' for='first_name'>
+              First Name
+            </Label>
+            <InputGroup>
+              <Controller
+                id='first_name'
+                name='first_name'
+                defaultValue=''
+                control={control}
+                render={({ field }) => <Input type="text"{...field} placeholder='First Name' value={firstName} onChange={(e) => { setFirstName(e.target.value); setValue('first_name', e.target.value, { shouldValidate: true }) } }  invalid={errors.first_name && true} />}
+              />
+              {errors.first_name && <FormFeedback>{"First Name is a required field"}</FormFeedback>}
+            </InputGroup>
+          </div>
+
+          <div className='mb-1'>
+            <Label className='form-label' for='first_name'>
+              Last Name
+            </Label>
+            <InputGroup>
+              <Controller
+                id='last_name'
+                name='last_name'
+                defaultValue=''
+                control={control}
+                render={({ field }) => <Input type="text"{...field} placeholder='Last Name' value={lastName} onChange={(e) => { setLastName(e.target.value); setValue('last_name', e.target.value, { shouldValidate: true }) } }  invalid={errors.last_name && true} />}
+              />
+              {errors.last_name && <FormFeedback>{"Last Name is a required field"}</FormFeedback>}
+            </InputGroup>
+          </div>
+
           <div className='mb-1'>
             <Label className='form-label' for='name'>
-              Name
+              User Name
             </Label>
             <InputGroup>
               <Controller
@@ -196,7 +240,7 @@ const AddNewModalUser = ({ open, handleModal, rowData, setUsersInputsData }) => 
                 name='user_name'
                 defaultValue=''
                 control={control}
-                render={({ field }) => <Input type="text"{...field} placeholder='user_name' value={NameValue} onChange={(e) => { setNameValue(e.target.value); setValue('user_name', e.target.value) } }  invalid={errors.user_name && true} />}
+                render={({ field }) => <Input type="text"{...field} placeholder='User Name' value={NameValue} onChange={(e) => { setNameValue(e.target.value); setValue('user_name', e.target.value, { shouldValidate: true }) } }  invalid={errors.user_name && true} />}
               />
               {errors.user_name && <FormFeedback>{"Name is a required field"}</FormFeedback>}
             </InputGroup>
@@ -214,15 +258,9 @@ const AddNewModalUser = ({ open, handleModal, rowData, setUsersInputsData }) => 
                 defaultValue=''
                 
                 control={control}
-                render={({ field }) => <Input type="text"{...field} placeholder='Email' value={EmailValue} onChange={(e) => { setEmailValue(e.target.value); setValue('email', e.target.value) } }  invalid={errors.email && true} />}
+                render={({ field }) => <Input type="text"{...field} placeholder='Email' value={EmailValue} onChange={(e) => { setEmailValue(e.target.value); setValue('email', e.target.value, { shouldValidate: true }) } }  invalid={errors.email && true} />}
               />
-              <Controller
-                id='user_id'
-                name='user_id'
-                defaultValue='0'
-                control={control}
-                render={({ field }) => <Input type="hidden"{...field} placeholder='user_id' value={UserIdValue}  invalid={errors.user_id && true}/>}
-              />
+              
               {errors.email && <FormFeedback>{"Email is a required field"}</FormFeedback>}
             </InputGroup>
           </div>

@@ -34,7 +34,7 @@ module.exports = function(app, con) {
             }			
 		});
     });
-
+	
 	app.post('/add_user_input', function(req, res){
 		// var role = 'Admin';
 		var data = {};

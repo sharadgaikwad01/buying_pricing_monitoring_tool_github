@@ -9,10 +9,12 @@ import { utils, writeFile } from 'xlsx'
 // ** Add New Modal Component
 import Flatpickr from 'react-flatpickr'
 import AddBuyerInputModal from './AddBuyerInputModal'
+import AddNewModal from './AddNewModal'
+import EditSupplierRequestModal from './EditSupplierRequestModal'
 import ReactPaginate from 'react-paginate'
 import DataTable from 'react-data-table-component'
 import DownloadSupplierAssortmentsModal from './DownloadSupplierAssortmentsModal'
-import { Download, Search, ChevronDown, Share, Printer, FileText, File, Grid, Copy, Plus, Upload, Edit, Trash, Check, RefreshCcw, ArrowLeftCircle, Repeat} from 'react-feather'
+import { Download, Search, ChevronDown, Share, Printer, FileText, File, Grid, Copy, Plus, Upload, Edit, Trash, Check, RefreshCcw, ArrowLeftCircle, Repeat, Edit3 } from 'react-feather'
 import UploadBuyerArticliesModal from './UploadBuyerArticliesModal'
 import DownloadArticliesModal from './DownloadArticlesModal'
 
@@ -68,17 +70,22 @@ const BuyerInput = props => {
   const [editBuyerModal, setBuyerInputModal] = useState(false)
   const [rosIds, setRosIds] = useState([])
 
+  const [editSupplierModal, setEditSupplierModal] = useState(false)
+
   const [currentPage, setCurrentPage] = useState(0)
 
   const [pdfDownload, setPDFDownload] = useState(false)
   const [supplierInputModal, setSupplierInputModal] = useState(false)
   const [uploadArticleModal, setUploadArticleModal] = useState(false)
+  const [downloadArticles, setDownloadArticles] = useState(false)
 
   const [refreshButton, setRefreshButton] = useState(false)
+  const [addButton, setAddButton] = useState(false)
   const [closedStatusButton, setClosedStatusButton] = useState(false)
   const [editButton, setEditButton] = useState(false)
   const [statusButton, setStatusButton] = useState(false)
   const [revokeButton, setRevokeButton] = useState(false)
+  const [supplierListOption, setSupplierListOption] = useState([])
 
   // ** Function to handle Pagination
   const handlePagination = page => {
@@ -86,7 +93,8 @@ const BuyerInput = props => {
   }
   const downloadArticlePDFModal = () => setPDFDownload(!pdfDownload)
   const handleUploadArticleModal = () => setUploadArticleModal(!uploadArticleModal)
-  const downloadArticleModal = () => setSupplierInputModal(!supplierInputModal)
+  const downloadArticleModal = () => setDownloadArticles(!downloadArticles)
+  const supplierInputNewModal = () => setSupplierInputModal(!supplierInputModal)
 
   const [supllierNumberOptions, setsupllierNumberOptions] = useState([])
   const [categoryOptions, setCategoryOptions] = useState([])
@@ -106,7 +114,8 @@ const BuyerInput = props => {
         setsupplierInputsData(res.data.data.supplierInputs)
         setsupllierNumberOptions(res.data.data.supplierIDOptions)
         setCategoryOptions(res.data.data.categoryOptions)
-      }      
+        setSupplierListOption(res.data.data.supplierListOption)
+      }
     })
   }, [])
 
@@ -182,8 +191,8 @@ const BuyerInput = props => {
     link.click()
   }
 
-  const assortmentDownload = async (flag) => {    
-    await axios.get(`${nodeBackend}/buyer_article_details`, { params: { country, email, searchSupplierNumber, searchRequestedDate, searchStatus, searchCategory} }).then((res) => {
+  const assortmentDownload = async (flag) => {
+    await axios.get(`${nodeBackend}/buyer_article_details`, { params: { country, email, searchSupplierNumber, searchRequestedDate, searchStatus, searchCategory } }).then((res) => {
       const csvdata = res.data.data
       csvdata.forEach(function (item) {
         delete item.row_id
@@ -191,20 +200,20 @@ const BuyerInput = props => {
       })
       const finalcsvdata = csvdata.map(item => ({
         "Supplier Number": item.suppl_no ? item.suppl_no.replace(",", ".") : item.suppl_no,
-        "Supplier Name":item.suppl_name ? item.suppl_name.replace(",", ".") : item.suppl_name,
+        "Supplier Name": item.suppl_name ? item.suppl_name.replace(",", ".") : item.suppl_name,
         "Article Number": item.art_no ? item.art_no.replace(",", ".") : item.art_no,
         "EAN Number": item.ean_no ? item.ean_no.replace(",", ".") : item.ean_no,
         "Article Description": item.art_name_tl ? item.art_name_tl.replace(",", ".") : item.art_name_tl,
-        "Current Price":item.current_price ? item.current_price.replace(",", ".") : item.current_price,
+        "Current Price": item.current_price ? item.current_price.replace(",", ".") : item.current_price,
         "Requested Price": item.new_price ? item.new_price.replace(",", ".") : item.new_price,
-        "Price Increase in %":item.price_difference_perc ? item.price_difference_perc.replace(",", ".") : item.price_difference_perc,
+        "Price Increase in %": item.price_difference_perc ? item.price_difference_perc.replace(",", ".") : item.price_difference_perc,
         "Requested Date": item.request_date ? item.request_date.replace(",", ".") : item.request_date,
         "Price change Reason": item.price_change_reason ? item.price_change_reason.replace(",", ".") : item.price_change_reason,
         "Article Status": item.action_status ? item.action_status.replace(",", ".") : item.action_status,
         "Final Price": item.negotiate_final_price ? item.negotiate_final_price.replace(",", ".") : item.negotiate_final_price,
         "Price Finalize Date": item.price_increase_communicated_date ? item.price_increase_communicated_date.replace(",", ".") : item.price_increase_communicated_date,
         "Price Effective Date": item.price_increase_effective_date ? item.price_increase_effective_date.replace(",", ".") : item.price_increase_effective_date,
-        "Category Name":item.stratbuyer_name ? item.stratbuyer_name.replace(",", ".") : item.stratbuyer_name
+        "Category Name": item.stratbuyer_name ? item.stratbuyer_name.replace(",", ".") : item.stratbuyer_name
       }))
       if (flag === 1) {
         downloadCSV(finalcsvdata)
@@ -214,7 +223,7 @@ const BuyerInput = props => {
         const wbout = utils.book_new()
         utils.book_append_sheet(wbout, wb, fileName)
         writeFile(wbout, name)
-      }      
+      }
     })
   }
 
@@ -256,7 +265,7 @@ const BuyerInput = props => {
         setsupplierInputsData(res.data.data.supplierInputs)
         setsupllierNumberOptions(res.data.data.supplierIDOptions)
         setCategoryOptions(res.data.data.categoryOptions)
-      }      
+      }
     })
   }
 
@@ -287,6 +296,11 @@ const BuyerInput = props => {
     setBuyerInputModal(!editBuyerModal)
   }
 
+  const handleEditSupplierInput = async (e, row) => {
+    setRowData(row)
+    setEditSupplierModal(!editSupplierModal)
+  }
+
   const handleClosedAction = (e, row, flag) => {
     const id = row.row_id
     let confirmButtonText = ''
@@ -315,12 +329,12 @@ const BuyerInput = props => {
         axios({
           method: "post",
           url: `${nodeBackend}/closed_and_revoke_input`,
-          data: { id, country, email, flag}
+          data: { id, country, email, flag }
         })
           .then(function (success) {
             //handle success        
-            if (success.data.status) { 
-              setsupplierInputsData(success.data.data.supplierInputs) 
+            if (success.data.status) {
+              setsupplierInputsData(success.data.data.supplierInputs)
               return MySwal.fire({
                 title: 'Done!',
                 text: `${text}`,
@@ -356,6 +370,7 @@ const BuyerInput = props => {
       }
     })
   }
+
 
   const handleRefresh = async () => {
     await setSupplierNumber("")
@@ -403,12 +418,12 @@ const BuyerInput = props => {
         axios({
           method: "post",
           url: `${nodeBackend}/bulk_closed_supplier_input`,
-          data: { rosIds, country, email}
+          data: { rosIds, country, email }
         })
           .then(function (success) {
             //handle success        
-            if (success.data.status) { 
-              setsupplierInputsData(success.data.data.buyerInputs) 
+            if (success.data.status) {
+              setsupplierInputsData(success.data.data.buyerInputs)
               return MySwal.fire({
                 title: 'Done!',
                 text: `Selected ${success.data.sucess_count} Request has been closed successfully`,
@@ -453,10 +468,72 @@ const BuyerInput = props => {
     }
   }
 
+  const handleDelete = (e, row) => {
+    const id = row.row_id
+    e.preventDefault()
+    MySwal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, delete it!',
+      customClass: {
+        confirmButton: 'btn btn-primary',
+        cancelButton: 'btn btn-outline-danger ms-1'
+      },
+      buttonsStyling: false
+    }).then(function (result) {
+      if (result.value) {
+        const searchArticleNumber = ''
+        axios({
+          method: "post",
+          url: `${nodeBackend}/delete_supplier_input_behalf_of_supplier`,
+          data: { id, country, email, searchSupplierNumber, searchArticleNumber, searchRequestedDate, searchStatus }
+        })
+          .then(function (success) {
+            //handle success        
+            if (success.data.status) {
+              setsupplierInputsData(success.data.data.supplierInputs)
+              return MySwal.fire({
+                title: 'Done!',
+                text: 'Record has been deleted successfully',
+                icon: 'success',
+                customClass: {
+                  confirmButton: 'btn btn-primary'
+                },
+                buttonsStyling: false
+              })
+            } else {
+              return MySwal.fire({
+                title: 'Error',
+                text: 'Something went wrong. Please try again later',
+                icon: 'error',
+                customClass: {
+                  confirmButton: 'btn btn-primary'
+                },
+                buttonsStyling: false
+              })
+            }
+          })
+          .catch(function () {
+            return MySwal.fire({
+              title: 'Error',
+              text: 'Something went wrong. Please try again later',
+              icon: 'error',
+              customClass: {
+                confirmButton: 'btn btn-primary'
+              },
+              buttonsStyling: false
+            })
+          })
+      }
+    })
+  }
+
   const columns = [
     {
       name: 'Row Id',
-      omit:true,
+      omit: true,
       selector: row => row.row_id
     },
     {
@@ -568,7 +645,7 @@ const BuyerInput = props => {
           row.price_change_reason ? row.price_change_reason : "-"
         )
       }
-    },    
+    },
     {
       name: 'Price Effective Date',
       sortable: true,
@@ -601,14 +678,14 @@ const BuyerInput = props => {
           row.price_increase_communicated_date ? row.price_increase_communicated_date : "-"
         )
       }
-    },    
+    },
     {
       name: 'Status',
       width: 'auto',
       sortable: row => row.action_status,
       cell: row => {
         return (
-          row.action_status === 'open' ? <Badge color='primary' pill>Open</Badge> : <Badge color='success' pill>Closed</Badge>
+          row.action_status === 'open' ? <div><Badge color="primary" pill>Open</Badge><br /><span className='text-muted font-small-2'>{row.previous_request_days > 0 ? row.previous_request_days > 1 ? `${row.previous_request_days} Days Ago` : `${row.previous_request_days} Day Ago` : ''}  </span></div> : <div><Badge color="success" pill>Closed</Badge><br /><span className='text-muted font-small-2'>{row.previous_request_days > 0 ? row.previous_request_days > 1 ? `${row.previous_request_days} Days Ago` : `${row.previous_request_days} Day Ago` : ''}  </span></div>
         )
       }
     },
@@ -619,7 +696,7 @@ const BuyerInput = props => {
       allowOverflow: true,
       cell: (row) => {
         return (
-          row.negotiate_final_price && row.price_increase_communicated_date && row.action_status === 'open' ? <div className='d-flex'><Edit size={15} onClick={(e) => handleEdit(e, row)} className="editTableIcon text-info" id='refreshButton'/><Tooltip placement='top' isOpen={editButton} target='refreshButton' toggle={() => setEditButton(!editButton)} >Edit</Tooltip><Check size={15} onClick={(e) => handleClosedAction(e, row, 1)} className="deleteTableIcon text-success ms-1" id='statusButton' /><Tooltip placement='top' isOpen={statusButton} target='statusButton' toggle={() => setStatusButton(!statusButton)}>Closed</Tooltip></div> : row.action_status === 'open' ? <div className='d-flex'><Edit size={15} onClick={(e) => handleEdit(e, row)} className="editTableIcon text-info" id='refreshButton' /><Tooltip placement='top' isOpen={editButton} target='refreshButton' toggle={() => setEditButton(!editButton)} >Edit</Tooltip></div> : <div className='d-flex'><Repeat size={15} onClick={(e) => handleClosedAction(e, row, 2)} className="editTableIcon text-warning" id='revokeButton'/><Tooltip placement='top' isOpen={revokeButton} target='revokeButton' toggle={() => setRevokeButton(!revokeButton)} >Revoke Closed Status</Tooltip></div>
+          row.negotiate_final_price && row.price_increase_communicated_date && row.action_status === 'open' ? <div className='d-flex'><Edit size={15} onClick={(e) => handleEdit(e, row)} className="editTableIcon text-info" id='editButton' /><Tooltip placement='top' isOpen={editButton} target='editButton' toggle={() => setEditButton(!editButton)} >Edit</Tooltip><Check size={15} onClick={(e) => handleClosedAction(e, row, 1)} className="deleteTableIcon text-success ms-1" id='statusButton' /><Tooltip placement='top' isOpen={statusButton} target='statusButton' toggle={() => setStatusButton(!statusButton)}>Closed</Tooltip></div> : row.action_status === 'open' ? row.created_by === email ? <div className='d-flex'><Edit3 size={15} onClick={(e) => handleEditSupplierInput(e, row)} className="editTableIcon text-info " id='editButtonb' /><Trash size={15} onClick={(e) => handleDelete(e, row)} className="deleteTableIcon text-danger ms-1" /> <Edit size={15} onClick={(e) => handleEdit(e, row)} className="editTableIcon text-info ms-1" id='editButton' /><Tooltip placement='top' isOpen={editButton} target='editButton' toggle={() => setEditButton(!editButton)} >Edit</Tooltip></div> : <div className='d-flex'><Edit size={15} onClick={(e) => handleEdit(e, row)} className="editTableIcon text-info" id='editButton' /><Tooltip placement='top' isOpen={editButton} target='editButton' toggle={() => setEditButton(!editButton)} >Edit</Tooltip></div> : row.is_revoke === 'false' ? "" : <div className='d-flex'><Repeat size={15} onClick={(e) => handleClosedAction(e, row, 2)} className="editTableIcon text-warning" id='revokeButton' /><Tooltip placement='top' isOpen={revokeButton} target='revokeButton' toggle={() => setRevokeButton(!revokeButton)} >Revoke Closed Status</Tooltip></div>
         )
       }
     }
@@ -627,7 +704,7 @@ const BuyerInput = props => {
   return (
     <Fragment>
       <Card className='pageBox buyer-screen'>
-      <CardHeader className='flex-md-row flex-column align-items-center align-items-start border-bottom'>
+        <CardHeader className='flex-md-row flex-column align-items-center align-items-start border-bottom'>
           <CardTitle tag='h2'>List of Assortment</CardTitle>
           <div className='d-flex mt-md-0 mt-1'>
             <Button.Ripple className='ms-1 btn-icon' color='primary' onClick={downloadArticlePDFModal}>
@@ -643,21 +720,32 @@ const BuyerInput = props => {
               <span className='align-middle ms-25'>Upload Multiple Assortment Inputs</span>
             </Button.Ripple>
             <UncontrolledButtonDropdown className='ms-2'>
-            <DropdownToggle color='primary' caret outline>
-              <Download size={15} />
-              <span className='align-middle ms-25'>Assortment Download</span>
-            </DropdownToggle>
-            <DropdownMenu>
-              <DropdownItem className='w-100' onClick={() => assortmentDownload(1)}>
-                <FileText size={15} />
-                <span className='align-middle ms-50'>CSV</span>
-              </DropdownItem>
-              <DropdownItem className='w-100' onClick={() => assortmentDownload(2)}>
-                <Grid size={15} />
-                <span className='align-middle ms-50'>Excel</span>
-              </DropdownItem>
-            </DropdownMenu>
-          </UncontrolledButtonDropdown>
+              <DropdownToggle color='primary' caret outline>
+                <Download size={15} />
+                <span className='align-middle ms-25'>Assortment Download</span>
+              </DropdownToggle>
+              <DropdownMenu>
+                <DropdownItem className='w-100' onClick={() => assortmentDownload(1)}>
+                  <FileText size={15} />
+                  <span className='align-middle ms-50'>CSV</span>
+                </DropdownItem>
+                <DropdownItem className='w-100' onClick={() => assortmentDownload(2)}>
+                  <Grid size={15} />
+                  <span className='align-middle ms-50'>Excel</span>
+                </DropdownItem>
+              </DropdownMenu>
+            </UncontrolledButtonDropdown>
+            <Button.Ripple className='ms-1 btn-icon' id='addButton' color='primary' onClick={supplierInputNewModal}>
+              <Plus size={16} />
+            </Button.Ripple>
+            <Tooltip
+              placement='top'
+              isOpen={addButton}
+              target='addButton'
+              toggle={() => setAddButton(!addButton)}
+            >
+              Add Supplier input
+            </Tooltip>
           </div>
         </CardHeader>
         <CardBody>
@@ -769,10 +857,19 @@ const BuyerInput = props => {
           </div>
         </CardBody>
       </Card>
+
       <DownloadSupplierAssortmentsModal open={pdfDownload} handleModal={downloadArticlePDFModal} supllierNumberOptions={supllierNumberOptions} />
+
       <AddBuyerInputModal open={editBuyerModal} handleModal={handleEdit} rowData={rowData} setsupplierInputsData={setsupplierInputsData} />
+
       <UploadBuyerArticliesModal open={uploadArticleModal} handleModal={handleUploadArticleModal} setsupplierInputsData={setsupplierInputsData} />
-      <DownloadArticliesModal open={supplierInputModal} handleModal={downloadArticleModal} supllierNumberOptions={supllierNumberOptions} flag={2}  />
+
+      <DownloadArticliesModal open={downloadArticles} handleModal={downloadArticleModal} supllierNumberOptions={supllierNumberOptions} flag={2} />
+
+      <AddNewModal open={supplierInputModal} handleModal={supplierInputNewModal} supllierNumberOptions={supplierListOption} setsupplierInputsData={setsupplierInputsData} type={'behalf_of_supplier'} />
+
+      <EditSupplierRequestModal open={editSupplierModal} handleModal={handleEditSupplierInput} rowData={rowData} supllierNumberOptions={supllierNumberOptions} setsupplierInputsData={setsupplierInputsData} searchSupplierNumber={searchSupplierNumber} searchArticleNumber={''} searchRequestedDate={searchRequestedDate} searchStatus={searchStatus} type={'behalf_of_supplier'} />
+
     </Fragment>
   )
 }
