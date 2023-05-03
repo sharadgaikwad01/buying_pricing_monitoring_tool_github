@@ -25,6 +25,8 @@ Issuer.discover('https://idam.metrosystems.net/') // => Promise
         client_id: 'BUYING_PRICING_MONITORING_TOOL',
         client_secret: 'sSxqxhjZPs',
         realm_id: 'BUY_PRI_M_T',
+        country_code: 'IN',
+        locale_id: 'en-IN',
         redirect_uris: [config.nodebackend + '/buyer/api/v2/callback'],
         response_types: ['code'],
     }); // => Client
@@ -41,7 +43,7 @@ router.use((req, res, next) => {
     client.callback(config.nodebackend+'/buyer/api/v2/callback', params, { code_verifier }) // => Promise
         .then(token => {
             let user_details = token.claims();
-            sql = "SELECT * FROM public.tbl_buyer_details where buyer_emailid = '"+ user_details.email +"'";
+            sql = "SELECT * FROM public.tbl_buyer_details where buyer_emailid = '"+ user_details.email +"' and active_status='active'";
             clientDB.query(sql, function(err, result) {
                 if (err) {
                     // res.redirect(303, config.reactFrontend + '/auth?error=User not Exist');
@@ -77,6 +79,8 @@ router.get('/api/v2/login', (req, res, next) => {
         scope: `openid realm_id=${'BUYING_PRICE'}`,
         code_challenge,
         realm_id: 'BUY_PRI_M_T',
+        country_code: 'IN',
+        locale_id: 'en-IN',
         code_challenge_method: 'S256',
     });
     res.send('<script>window.location.href="'+authUrl+'";</script>');

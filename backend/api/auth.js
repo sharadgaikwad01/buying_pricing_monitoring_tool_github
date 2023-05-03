@@ -27,6 +27,8 @@ Issuer.discover('https://idam.metrosystems.net/') // => Promise
         client_id: 'BUYING_PRICING_MONITORING_TOOL_SUPPLIER',
         client_secret: 'd8okLx6Q45',
         realm_id: 'SUPP_REALM',
+        country_code: 'IN',
+        locale_id: 'en-IN',
         redirect_uris: [config.nodebackend + '/api/v1/callback'],
         response_types: ['code'],
     }); // => Client
@@ -102,6 +104,8 @@ router.get('/api/v1/login', (req, res, next) => {
         scope: `openid realm_id=${'SUPP_REALM'}`,
         code_challenge,
         realm_id: 'SUPP_REALM',
+        country_code: 'IN',
+        locale_id: 'en-IN',
         code_challenge_method: 'S256',
     });
    
