@@ -13,7 +13,7 @@ const LoginCover = () => {
 
   const illustration = skin === 'dark' ? 'login-v2-dark.svg' : 'login-v2.svg',
   source = require(`@src/assets/images/pages/${illustration}`).default
-
+  console.log(source)
   useEffect(async () => {
     const auth_token = localStorage.getItem('token')
     if (auth_token) {

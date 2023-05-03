@@ -5,6 +5,9 @@ import { useParams } from 'react-router-dom'
 import { Download, Search, ChevronDown, Share, Printer, FileText, File, Grid, Copy, Plus, Upload, Edit, Trash, Check } from 'react-feather'
 import axios from 'axios'
 import AddNewModalSupplier from './AddNewModalSupplier'
+import MintectDataModal from './MintectDataModal'
+
+
 // ** Reactstrap Imports
 import {
     Row,
@@ -41,8 +44,10 @@ const View = () => {
     const [rowData, setRowData] = useState([])
     const [countries, setcountries] = useState([])
 
-    const handleEdit = async (e, countryname, suppl_no) => {
+    const [mintectModal, setMintectModal] = useState(false)
+    const handleMintectModal = () => setMintectModal(!mintectModal)
 
+    const handleEdit = async (e, countryname, suppl_no) => {
         e.preventDefault()
         handleModal()
         await axios.get(`${nodeBackend}/buyer_supplier_details_list`, { params: { suppl_no, countryname } }).then((res) => {
@@ -75,6 +80,16 @@ const View = () => {
             }
         })
     }, [])
+
+    const handleMintecSearch = async (e, row) => {
+        e.preventDefault()
+        const country_name = row.country_name
+        const stratbuyer_name = row.stratbuyer_name
+        await axios.get(`${nodeBackend}/getMintecData`, { params: { country_name, stratbuyer_name} }).then((res) => {
+            setRowData(res.data.data)
+        })
+        handleMintectModal()
+    }
 
     return (
         <Fragment>
@@ -119,10 +134,15 @@ const View = () => {
                                                 <span className="incr-infla-badge incr-infla-3 mb-2">{row.requested_price_increase_perc === null ? 0 : Math.round(row.requested_price_increase_perc)}%</span>
                                                 <span className="incr-infla-badge incr-infla-5 mb-2">{row.agreed_price_increase_perc === null ? 0 : Math.round(row.agreed_price_increase_perc)}%</span>
                                             </Col>
+                                            <Row>   
+                                                <Col onClick={(e) => (handleMintecSearch(e, row))} className="sku-info d-flex justify-content-end align-bottom align-items-baseline align-items-end align-items">
+                                                    <img src={`${process.env.PUBLIC_URL}/logo/mintec.png`} className="country-flag-img" />
+                                                </Col>
 
-                                            <Col onClick={(e) => (row.article_count > 0 ? handleEdit(e, row.country_name, Supplierno) : handleEditError(e))} className="sku-info d-flex justify-content-end align-bottom align-items-baseline align-items-end align-items">
-                                                {row.article_count ? row.article_count : 0} SKU
-                                            </Col>
+                                                <Col onClick={(e) => (row.article_count > 0 ? handleEdit(e, row.country_name, Supplierno) : handleEditError(e))} className="sku-info d-flex justify-content-end align-bottom align-items-baseline align-items-end align-items">
+                                                    {row.article_count ? row.article_count : 0} SKU
+                                                </Col>
+                                            </Row>
                                         </Col>
                                     </Col>
                                 </Col>
@@ -132,6 +152,7 @@ const View = () => {
                 </CardBody>
             </Card>
             <AddNewModalSupplier open={modal} handleModal={handleModal} rowData={rowData} />
+            <MintectDataModal open={mintectModal} handleModal={handleMintectModal} rowData={rowData} />
         </Fragment>
     )
 }
