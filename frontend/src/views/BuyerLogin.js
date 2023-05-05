@@ -22,7 +22,6 @@ const BuyerLogin = () => {
 
   const illustration = skin === 'dark' ? 'login-v2-dark.svg' : 'login-v2.svg',
   source = require(`@src/assets/images/pages/${illustration}`).default
-  console.log(source)
 
   const handleLogin = () => {
     window.location.replace(`${nodeBackend}/buyer/api/v2/login`)
