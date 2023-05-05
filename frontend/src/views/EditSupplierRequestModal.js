@@ -65,7 +65,9 @@ const EditSupplierRequestModal = ({ open, handleModal, rowData, supllierNumberOp
       await setSupplierNumber(rowData.suppl_no)
       await setArticleNumber(rowData.art_no)
 
+      console.log(rowData)
       vat_number = rowData.vat_no
+      console.log(vat_number)
 
       const finatEffectiveDate = []
       if (rowData.price_increase_effective_date) {
