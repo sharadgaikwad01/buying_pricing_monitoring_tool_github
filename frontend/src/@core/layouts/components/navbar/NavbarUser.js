@@ -49,7 +49,7 @@ const NavbarUser = props => {
               <NavItem>
                 <Link to='/' className='navbar-brand'>
                   <span className='brand-logo'>
-                    <img src={themeConfig.app.appLogoImage} alt='logo' />
+                    <img src={`${process.env.PUBLIC_URL}/logo/tool_logo.png`} alt='logo' />
                   </span>
                   <h4 className='brand-text mb-0'>{themeConfig.app.appName}<br /></h4>
                 </Link>
