@@ -32,6 +32,7 @@ import { utils, writeFile } from 'xlsx'
 const DownloadArticliesModal = ({ open, handleModal, supllierNumberOptions, flag = null }) => {
 
     const country = localStorage.getItem('country')
+    const user_type = localStorage.getItem('type')
     const email = localStorage.getItem('email')
     const vat_number = localStorage.getItem('vat')
     const [fileName] = useState('export')
@@ -258,7 +259,7 @@ const DownloadArticliesModal = ({ open, handleModal, supllierNumberOptions, flag
                     <Form onSubmit={handleSubmit(onSubmit)}>                    
                         <ModalBody className='flex-grow-1'>
                             <Row className='mb-50'>
-                                <Col lg='12' md='6' className='mb-1'>
+                                { user_type === 'BUYER' ? (<Col lg='12' md='6' className='mb-1'>
                                     <Controller
                                         name="behalf_of_supplier"
                                         control={control}
@@ -269,7 +270,7 @@ const DownloadArticliesModal = ({ open, handleModal, supllierNumberOptions, flag
                                     <Label for='basic-cb-unchecked' className='form-check-label'>
                                         &nbsp; Behalf of supplier
                                     </Label>
-                                </Col>
+                                </Col>) : ''}                                
                                 <Col lg='12' md='6' className='mb-1'>
                                     <Label className='form-label' for='supplier_number'>
                                         Supplier Number

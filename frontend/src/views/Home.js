@@ -273,6 +273,7 @@ const Home = props => {
 
   // ** Function to handle edit
   const handleEdit = async (row) => {
+    console.log(row)
     setRowData(row)
     setEditSupplierModal(!editSupplierModal)
   }

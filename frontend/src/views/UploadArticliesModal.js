@@ -21,6 +21,7 @@ import { read, utils } from 'xlsx'
 const UploadArticliesModal = ({ open, handleModal, setsupplierInputsData }) => {
   const country = localStorage.getItem('country')
   const vat_number = localStorage.getItem('vat')
+  const email = localStorage.getItem('email')
 
   // ** Custom close btn
   const CloseBtn = <X className='cursor-pointer' size={15} onClick={handleModal} />
@@ -38,7 +39,7 @@ const UploadArticliesModal = ({ open, handleModal, setsupplierInputsData }) => {
     await axios({
       method: "post",
       url: `${nodeBackend}/upload_supplier_input`,
-      data: { supplier_inputs, country, vat_number }
+      data: { supplier_inputs, country, vat_number, email }
     })
       .then(function (success) {
         setsupplierInputsData(success.data.data.supplierInputs)
