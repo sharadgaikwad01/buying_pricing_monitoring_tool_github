@@ -11,17 +11,11 @@ module.exports = function (app, con) {
         var CountryOptions = [];
         var deptOptions = [];
 
-		
-        if (req.query.searchName != '') {
-            // condition = condition + " AND first_name ILIKE '%" + req.query.searchName +"%' OR last_name ILIKE '%" +req.query.searchName +"%' OR RTRIM(CONCAT(LTRIM(RTRIM(first_name)) , ' ' , LTRIM(RTRIM(last_name)))) ILIKE '%" +req.query.searchName +"%'  OR RTRIM(CONCAT(LTRIM(RTRIM(last_name)) , ' ' , LTRIM(RTRIM(first_name)))) ILIKE '%" +req.query.searchName +"%'"
-            condition = condition + " AND RTRIM(CONCAT(LTRIM(RTRIM(first_name)) , ' ' , LTRIM(RTRIM(last_name)))) ILIKE '%" +req.query.searchName +"%'"
-        }
-
 		if (req.query.searchName != '') {
 			condition = condition + " AND RTRIM(CONCAT(LTRIM(RTRIM(first_name)) , ' ' , LTRIM(RTRIM(last_name)))) ILIKE '%" +req.query.searchName +"%'"
 		}
 		if (req.query.searchName != '') {
-			condition = condition + " AND RTRIM(LTRIM(RTRIM(buyer_emailid))) ILIKE '%" +req.query.searchName +"%'"
+			condition = condition + " OR RTRIM(LTRIM(RTRIM(buyer_emailid))) ILIKE '%" +req.query.searchName +"%'"
 		}
 
 		var getUniqueSupplierIdQuery = "select distinct stratbuyer_id, stratbuyer_name from tbl_stratbuyer_details";
