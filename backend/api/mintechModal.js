@@ -36,7 +36,7 @@ module.exports = function(app, con) {
     });
 	
 	app.post('/add_mintech_input', function(req, res){
-		// var role = 'Admin';
+		// var role = 'SUPERADMIN';
 		var data = {};
 		// usp_addNewUser('id','user_name','email','emp_id','user_role')
 		if(req.body.user_id == 'undefined' || req.body.user_id == 0){

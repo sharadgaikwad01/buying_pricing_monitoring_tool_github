@@ -38,7 +38,7 @@ const UserDropdown = () => {
       const url = `https://idam.metrosystems.net/authorize/api/oauth2/op_session_end?id_token_hint=${token}&post_logout_redirect_uri=${reactFrontend}/buyer_login`
       window.location.replace(url)
     }
-    if (user_type === 'ADMIN') {
+    if (user_type === 'ADMIN' || user_type === 'SUPERADMIN') {
       localStorage.clear()
       const url = `https://idam.metrosystems.net/authorize/api/oauth2/op_session_end?id_token_hint=${token}&post_logout_redirect_uri=${reactFrontend}/buyer_login`
       window.location.replace(url)

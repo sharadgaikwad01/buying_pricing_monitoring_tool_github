@@ -30,9 +30,8 @@ const AddNewModalBuyer = ({ open, handleModal, rowData, articalNumberOptions, co
   const [UserValue, setUserValue] = useState(0)
   const [EmailValue, setEmailValue] = useState('')
   const [selectedOptions, setselectedOptions] = useState('')
-  const [selectedRoleOptions, setselectedRoleOptions] = useState('')
+  const [RoleValue, setRoleValue] = useState('')
   const [isEdit, setIsEdit] = useState(false)
-  
   const [CountryValue, setCountryValue] = useState('')
 
   const validationSchema = yup.object().shape({
@@ -72,8 +71,8 @@ const AddNewModalBuyer = ({ open, handleModal, rowData, articalNumberOptions, co
         await setEmailValue(rowData.buyer_emailid)
         setValue('buyer_emailid', rowData.buyer_emailid)
         
-        await setselectedRoleOptions(rowData.role)
-        setValue('role', rowData.role)
+        await setRoleValue(rowData.role_name)
+        setValue('role', rowData.role_name)
         
       } else {
         setIsEdit(false)
@@ -93,8 +92,8 @@ const AddNewModalBuyer = ({ open, handleModal, rowData, articalNumberOptions, co
         setEmailValue(rowData.buyer_emailid)
         setValue('buyer_emailid', rowData.buyer_emailid)
 
-        setselectedRoleOptions(rowData.role)
-        setValue('role', rowData.role)
+        setRoleValue(rowData.role_name)
+        setValue('role', rowData.role_name)
       }
       
       await setUserValue(rowData.user_id)
@@ -123,7 +122,7 @@ const AddNewModalBuyer = ({ open, handleModal, rowData, articalNumberOptions, co
     const last_name = data.last_name
     const dept_name = data.dept_name
     const buyer_emailid = data.buyer_emailid
-    const role = data.role
+    const role_name = data.role_name
     const country_name = data.country_name
     const stratbuyer_name = data.stratbuyer_name
 
@@ -131,7 +130,7 @@ const AddNewModalBuyer = ({ open, handleModal, rowData, articalNumberOptions, co
     axios({
       method: "post",
       url: `${nodeBackend}/buyers_add_input`,
-      data: { first_name, last_name, dept_name, buyer_emailid, stratbuyer_name, country_name, searchName, role }
+      data: { first_name, last_name, dept_name, buyer_emailid, stratbuyer_name, country_name, searchName, role_name }
     })
       .then(async function (success) {
         if (success.status) {
@@ -192,6 +191,9 @@ const AddNewModalBuyer = ({ open, handleModal, rowData, articalNumberOptions, co
   const handleChange = async (val) => {
     await setselectedOptions(val)
   }
+  // const handleChangeRole = async (val) => {
+  //   await setselectedRoleOptions(val)
+  // }
 
   return (
     <Modal
@@ -322,25 +324,22 @@ const AddNewModalBuyer = ({ open, handleModal, rowData, articalNumberOptions, co
           </div>
 
           <div className='mb-1'>
-            <Label className='form-label' for='stratbuyer_name'>
+            <Label className='form-label' for='role_name'>
               Role
             </Label>
             <Controller
-              name="role"
-              id="role"
+              name="role_name"
+              id="role_name"
               control={control}
-              render={({ field: { onChange } }) => (
+              render={({ field: { onChange, value } }) => (
                 <Select
                   options={RoleOptions}
-                  // defaultValue = { selectedOptions }           
-                  value={selectedRoleOptions}
-                  isMulti={true}
-                  isSearchable={true}
-                  onChange={(val) => onChange(val, handleChange(val))}
+                  value={RoleOptions.find((c) => c.value === value)}       
+                  onChange={(val) => onChange(val.value)}
                 />
               )}
             />
-            {errors["role"] && <FormFeedback>{'Role is a required field'}</FormFeedback>}
+            {errors["role_name"] && <FormFeedback>{'Role is a required field'}</FormFeedback>}
           </div>
           <Button className='me-1' color='primary' type='submit'>
             Submit

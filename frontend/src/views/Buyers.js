@@ -169,6 +169,7 @@ const Buyers = props => {
   
   const handleDelete = (e, row) => {
     const row_id = row.row_id
+    console.log(row_id)
     e.preventDefault()
     MySwal.fire({
       title: 'Are you sure?',
@@ -275,6 +276,11 @@ const Buyers = props => {
       name: 'Country',
       sortable: true,
       selector: row => row.country_name
+    },
+    {
+      name: 'Role',
+      sortable: true,
+      selector: row => row.role_name
     },
     {
       name: 'Status',
