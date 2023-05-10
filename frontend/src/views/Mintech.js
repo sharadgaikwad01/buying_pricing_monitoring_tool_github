@@ -40,16 +40,6 @@ import {
 
 const MySwal = withReactContent(Swal)
 
-const RoleOptions = [
-  { value: 'Admin', label: 'Admin' },
-  { value: 'User', label: 'User' }
-]
-
-const user_typeOptions = [
-  { value: 'buyer', label: 'Buyer' },
-  { value: 'supplier', label: 'Supplier' }
-]
-
 const BootstrapCheckbox = forwardRef((props, ref) => (
   <div className='form-check'>
     <Input type='checkbox' ref={ref} {...props} />
@@ -61,11 +51,13 @@ const Home = props => {
   // ** States
 
   const [UsersInputsData, setUsersInputsData] = useState([])
+  const [CategoryOptions, setCategoryoptions] = useState([])
+  const [CountryOptions, setCountryOptions] = useState([])
   const [searchName, setsearchName] = useState('')
   const [rowData, setRowData] = useState([])
   // const [searchRequestedDate, setSearchRequestedDate] = useState('')
-  const [UserType, setUserType] = useState('')
-  const [searchRole, setsearchRole] = useState('')
+  const [searchCategory, setsearchCategory] = useState('')
+  const [searchCountry, setsearchCountry] = useState('')
 
   const [modal, setModal] = useState(false)
 
@@ -76,7 +68,7 @@ const Home = props => {
   // ** Function to handle Modal toggle
   const handleModal = () => setModal(!modal)
   
-  const [UserData] = useState({user_name:'', email:'',  emp_id:'', row_id:'', user_type:'', user_role: ''})
+  const [UserData] = useState({dashboard_name:'', region:'',  country_name:'', row_id:'', category:'', sub_category: '', dashboard_url:'', created_by:''})
 
   const handlemintechModal = () => setmintechModal(!mintechModal)
 
@@ -89,9 +81,11 @@ const Home = props => {
   }
 
   useEffect(async () => {
-    await axios.get(`${nodeBackend}/mintech`, { params: { searchName, UserType, searchRole } }).then((res) => {
-      console.log(res.data.data.users)
+    await axios.get(`${nodeBackend}/mintech`, { params: { searchName, searchCategory, searchCountry } }).then((res) => {
+      console.log(res.data.data)
       setUsersInputsData(res.data.data.users)  
+      setCategoryoptions(res.data.data.CategoryOptions)  
+      setCountryOptions(res.data.data.CountryOptions)  
     })
   }, [])
 
@@ -144,27 +138,27 @@ const Home = props => {
 
   // ** Function to handle supplier filter
   const handleNameFilter = async (e) => {
-    const searchName = e.target.value
-    setsearchName(searchName)
-    await axios.get(`${nodeBackend}/mintech`, { params: { searchName, UserType, searchRole } }).then((res) => {
+    const searchNames = e.target.value
+    setsearchName(searchNames)
+    await axios.get(`${nodeBackend}/mintech`, { params: { searchName, searchCategory, searchCountry } }).then((res) => {
       setUsersInputsData(res.data.data.users)
     })
   }
 
 
   // ** Function to handle status filter
-  const handleUserTypeFilter = async (e) => {
-    const UserType = e.value
-    setUserType(UserType)
-    await axios.get(`${nodeBackend}/mintech`, { params: { searchName, UserType, searchRole } }).then((res) => {
+  const handleCategoryFilter = async (e) => {
+    const Category = e.value
+    setsearchCategory(Category)
+    await axios.get(`${nodeBackend}/mintech`, { params: { searchName, searchCategory, searchCountry } }).then((res) => {
       setUsersInputsData(res.data.data.users)
     })
   }
   
-  const handleRoleFilter = async (e) => {
-    const searchRole = e.value
-    setsearchRole(searchRole)
-    await axios.get(`${nodeBackend}/mintech`, { params: { searchName, UserType, searchRole } }).then((res) => {
+  const handleCountryFilter = async (e) => {
+    const searchCountry = e.value
+    setsearchCountry(searchCountry)
+    await axios.get(`${nodeBackend}/mintech`, { params: { searchName, searchCategory, searchCountry } }).then((res) => {
       setUsersInputsData(res.data.data.users)
     })
   }
@@ -263,61 +257,44 @@ const Home = props => {
       }
     },
     {
-      name: 'First Name',
+      name: 'Region',
       // width: "10",
       sortable: true,
-      selector: row => row.user_name
+      selector: row => row.region
     },
     {
-      name: 'Last Name',
+      name: 'Category',
       // width: "10",
       sortable: true,
-      selector: row => row.user_name
+      selector: row => row.category
     },
     {
-      name: 'User name',
+      name: 'Sub Category',
       // width: "10",
       sortable: true,
-      selector: row => row.user_name
+      selector: row => row.sub_category
     },
     {
-      name: 'Email',
+      name: 'Dashboard Name',
       // width: "auto",
       sortable: true,
-      selector: row => row.email
+      selector: row => row.dashboard_name
     },
     {
-      name: 'Emp. ID',
+      name: 'Dashboard url',
       // width: "auto",
       sortable: true,
-      selector: row => row.metro_id
+      selector: row => row.dashboard_url
     },
     {
-      name: 'User Type',
+      name: 'Created By',
       sortable: true,
-      selector: row => row.user_type,
-      cell: row => {
-         return (
-          row.user_type === 'BUYER' ? <Badge color='success' pill>{row.user_type}</Badge> : <Badge color='primary' pill>{row.user_type}</Badge>
-            // row.user_type === 'BUYER' ? `<span class="badge badge-success">${row.user_type}</span>` : `<span class="badge badge-success">${row.user_type}</span>`
-         )
-      }
-    },
+      selector: row => row.created_by
+    }, 
     {
-      name: 'User Role',
+      name: 'country_name',
       sortable: true,
-      selector: row => row.user_role,
-      cell: row => {
-         return (
-          row.user_role === 'Admin' ? <Badge color='success' pill>{row.user_role}</Badge> : <Badge color='warning' pill>{row.user_role}</Badge>
-            // row.user_type === 'BUYER' ? `<span class="badge badge-success">${row.user_type}</span>` : `<span class="badge badge-success">${row.user_type}</span>`
-         )
-      }
-    },
-    {
-      name: 'Country',
-      sortable: true,
-      selector: row => row.country
+      selector: row => row.country_name
     }  
   ]
 
@@ -327,79 +304,69 @@ const Home = props => {
         <CardHeader className='flex-md-row flex-column align-md-items-center align-items-start border-bottom'>
           <CardTitle tag='h2'>Mintech Master</CardTitle>
           <div className='d-flex mt-md-0 mt-1'>
-          <a href='/sample.xlsx' download>
+          {/* <a href='/sample.xlsx' download>
             <Button.Ripple className='ms-1' color='primary' >
                 <Download size={14} />
                 <span className='align-middle ms-25'>Sample File</span>
               </Button.Ripple>
-          </a>
-          <Button.Ripple className='ms-1' outline color='info' onClick={handlemintechModal}>
+          </a> */}
+          {/* <Button.Ripple className='ms-1' outline color='info' onClick={handlemintechModal}>
               <Upload size={14} />
               <span className='align-middle ms-25'>Upload Multiple Article Inputs</span>
-            </Button.Ripple>
+            </Button.Ripple> */}
             <Button.Ripple className='ms-2 btn-icon' color='primary' onClick={handleAdd}>
               <Plus size={16} />
-              <span className='align-middle ms-25'>Add New User</span>
+              <span className='align-middle ms-25'>Add New Data</span>
             </Button.Ripple>
             <Button.Ripple className='ms-2' outline color='warning' onClick={handlebuyers}>
               <Users size={14} />
               <span className='align-middle ms-25'>All Buyers</span>
             </Button.Ripple>
-            {/* <UncontrolledButtonDropdown className='ms-2'>
-              <DropdownToggle color='primary' caret outline>
-                <Download size={15} />
-              </DropdownToggle>
-              <DropdownMenu>
-                <DropdownItem className='w-100' onClick={() => downloadCSV(data)}>
-                  <FileText size={15} />
-                  <span className='align-middle ms-50'>CSV</span>
-                </DropdownItem>                
-              </DropdownMenu>
-            </UncontrolledButtonDropdown> */}
+         
           </div>
         </CardHeader>
         <CardBody>
           <Row className='g-1 filter-row'>
             <Col className='mb-1 col-auto'>
                <Label className='form-label' for='name'>
-                User Name:
+                Dashboard Name:
               </Label>
-              <Input className='form-control' type='text' id='name' placeholder='User Name' value={searchName} onChange={handleNameFilter} /> 
+              <Input className='form-control' type='text' id='name' placeholder='Dashboard Name' value={searchName} onChange={handleNameFilter} /> 
             </Col>
             
             <Col className='mb-1 col-auto'>
-              <Label className='form-label' for='user_role'>
-                Role:
+              <Label className='form-label' for='user_country'>
+                Country:
               </Label>
               <Select
                 theme={selectThemeColors}
                 className='react-select'
                 classNamePrefix='select'
-                defaultValue={RoleOptions[1]}
-                name='user_role'
-                options={RoleOptions}
-                value={RoleOptions.filter(function(option) {
-                  return option.value === searchRole
+                defaultValue={CountryOptions[1]}
+                name='user_country'
+                options={CountryOptions}
+                value={CountryOptions.filter(function(option) {
+                  return option.value === searchCountry
                 })}
-                onChange={handleRoleFilter}
+                onChange={handleCountryFilter}
               />
             </Col>
 
              <Col className='mb-1 col-auto'>
               <Label className='form-label' for='user_type'>
-                User Type:
+               Category:
               </Label>
               <Select
                 theme={selectThemeColors}
                 className='react-select'
                 classNamePrefix='select'
-                defaultValue={user_typeOptions[1]}
+                defaultValue={CategoryOptions[1]}
                 name='user_type'
-                options={user_typeOptions}
-                value={user_typeOptions.filter(function(option) {
-                  return option.value === UserType
+                options={CategoryOptions}
+                value={CategoryOptions.filter(function(option) {
+                  return option.value === searchCategory
                 })}
-                onChange={handleUserTypeFilter}
+                onChange={handleCategoryFilter}
               />
             </Col>
           </Row>
@@ -422,7 +389,7 @@ const Home = props => {
           </Row>
         </CardBody>       
       </Card>
-      <AddNewModalUser open={modal} handleModal={handleModal} rowData={rowData} setUsersInputsData={setUsersInputsData} />
+      <AddNewModalUser open={modal} handleModal={handleModal} rowData={rowData} CategoryOptions={CategoryOptions} CountryOptions={CountryOptions} setUsersInputsData={setUsersInputsData} searchName={searchName} searchCategory={searchCategory} searchCountry={searchCountry}/>
       <UploadmintechModal open={mintechModal} handleModal={handlemintechModal} />
     </Fragment>
   )
