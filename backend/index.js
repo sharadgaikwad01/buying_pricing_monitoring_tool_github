@@ -18,7 +18,7 @@ var path = require('path');
 var auth = require('./api/auth');
 var buyerAuth = require('./api/buyer_auth');
 var supplierInput = require('./api/supplier_input')
-var usersModal = require('./api/usersModal')
+var mintechModal = require('./api/mintechModal')
 var buyerModal = require('./api/buyerModal')
 var buyerInput = require('./api/buyer_input');
 var dashboard = require('./api/dashboard');
@@ -119,7 +119,7 @@ app.use("/", auth)
 // app.use("/", auth)
 app.use("/buyer", buyerAuth)
 supplierInput(app, client);
-usersModal(app, client);
+mintechModal(app, client);
 buyerModal(app, client);
 buyerInput(app, client);
 dashboard(app, client);

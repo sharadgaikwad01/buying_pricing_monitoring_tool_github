@@ -18,7 +18,7 @@ const MySwal = withReactContent(Swal)
 
 import { read, utils } from 'xlsx'
 
-const UploadUserModal = ({ open, handleModal, setsupplierInputsData }) => {
+const UploadmintechModal = ({ open, handleModal, setsupplierInputsData }) => {
   const country = localStorage.getItem('country')
   const vat_number = localStorage.getItem('vat')
 
@@ -180,4 +180,4 @@ const UploadUserModal = ({ open, handleModal, setsupplierInputsData }) => {
   )
 }
 
-export default UploadUserModal
+export default UploadmintechModal

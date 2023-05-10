@@ -74,7 +74,7 @@ module.exports = function (app, con) {
 	app.post('/buyers_add_input', async function (req, res) {
 		if (req.body.stratbuyer_name) {
 			const stratbuyer_name = Array.prototype.map.call(req.body.stratbuyer_name, function (item) { return item.label; }).join(",")
-			var query = "call public.usp_update_buyerdetails ('" + req.body.first_name + "', '" + req.body.last_name + "', '" + req.body.dept_name + "', '" + req.body.buyer_emailid + "', '" + req.body.country_name + "', '" + stratbuyer_name + "')";
+			var query = "call public.usp_update_buyerdetails ('" + req.body.first_name + "', '" + req.body.last_name + "', '" + req.body.dept_name + "', '" + req.body.buyer_emailid + "', '" + req.body.country_name + "','" + req.body.role + "', '" + stratbuyer_name + "')";
 			await con.query(query, async function (err, result) {
 				if (err) {
 					console.log(err)

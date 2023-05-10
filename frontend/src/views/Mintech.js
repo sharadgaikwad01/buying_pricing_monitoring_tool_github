@@ -8,9 +8,9 @@ import axios from 'axios'
 
 // ** Add New Modal Component
 import Flatpickr from 'react-flatpickr'
-import AddNewModalUser from './AddNewModalUser'
+import AddNewModalUser from './AddNewModalmintech'
 // import DownloadArticliesModal from './DownloadArticlesModal'
-import UploadUserModal from './UploadUserModal'
+import UploadmintechModal from './UploadmintechModal'
 import ReactPaginate from 'react-paginate'
 import DataTable from 'react-data-table-component'
 import { Download, Search, ChevronDown, Share, Printer, FileText, File, Grid, Copy, Plus, Upload, Edit, Trash, Users} from 'react-feather'
@@ -69,7 +69,7 @@ const Home = props => {
 
   const [modal, setModal] = useState(false)
 
-  const [uploadUserModal, setUploadUserModal] = useState(false)
+  const [mintechModal, setmintechModal] = useState(false)
 
   const [currentPage, setCurrentPage] = useState(0)
 
@@ -78,7 +78,7 @@ const Home = props => {
   
   const [UserData] = useState({user_name:'', email:'',  emp_id:'', row_id:'', user_type:'', user_role: ''})
 
-  const handleUploadUserModal = () => setUploadUserModal(!uploadUserModal)
+  const handlemintechModal = () => setmintechModal(!mintechModal)
 
   // ** Function to handle Pagination
   const handlePagination = page => {
@@ -89,7 +89,7 @@ const Home = props => {
   }
 
   useEffect(async () => {
-    await axios.get(`${nodeBackend}/users`, { params: { searchName, UserType, searchRole } }).then((res) => {
+    await axios.get(`${nodeBackend}/mintech`, { params: { searchName, UserType, searchRole } }).then((res) => {
       console.log(res.data.data.users)
       setUsersInputsData(res.data.data.users)  
     })
@@ -146,7 +146,7 @@ const Home = props => {
   const handleNameFilter = async (e) => {
     const searchName = e.target.value
     setsearchName(searchName)
-    await axios.get(`${nodeBackend}/users`, { params: { searchName, UserType, searchRole } }).then((res) => {
+    await axios.get(`${nodeBackend}/mintech`, { params: { searchName, UserType, searchRole } }).then((res) => {
       setUsersInputsData(res.data.data.users)
     })
   }
@@ -156,7 +156,7 @@ const Home = props => {
   const handleUserTypeFilter = async (e) => {
     const UserType = e.value
     setUserType(UserType)
-    await axios.get(`${nodeBackend}/users`, { params: { searchName, UserType, searchRole } }).then((res) => {
+    await axios.get(`${nodeBackend}/mintech`, { params: { searchName, UserType, searchRole } }).then((res) => {
       setUsersInputsData(res.data.data.users)
     })
   }
@@ -164,7 +164,7 @@ const Home = props => {
   const handleRoleFilter = async (e) => {
     const searchRole = e.value
     setsearchRole(searchRole)
-    await axios.get(`${nodeBackend}/users`, { params: { searchName, UserType, searchRole } }).then((res) => {
+    await axios.get(`${nodeBackend}/mintech`, { params: { searchName, UserType, searchRole } }).then((res) => {
       setUsersInputsData(res.data.data.users)
     })
   }
@@ -325,7 +325,7 @@ const Home = props => {
     <Fragment>
       <Card className='pageBox user-screen'>
         <CardHeader className='flex-md-row flex-column align-md-items-center align-items-start border-bottom'>
-          <CardTitle tag='h2'>Users Data</CardTitle>
+          <CardTitle tag='h2'>Mintech Master</CardTitle>
           <div className='d-flex mt-md-0 mt-1'>
           <a href='/sample.xlsx' download>
             <Button.Ripple className='ms-1' color='primary' >
@@ -333,7 +333,7 @@ const Home = props => {
                 <span className='align-middle ms-25'>Sample File</span>
               </Button.Ripple>
           </a>
-          <Button.Ripple className='ms-1' outline color='info' onClick={handleUploadUserModal}>
+          <Button.Ripple className='ms-1' outline color='info' onClick={handlemintechModal}>
               <Upload size={14} />
               <span className='align-middle ms-25'>Upload Multiple Article Inputs</span>
             </Button.Ripple>
@@ -423,7 +423,7 @@ const Home = props => {
         </CardBody>       
       </Card>
       <AddNewModalUser open={modal} handleModal={handleModal} rowData={rowData} setUsersInputsData={setUsersInputsData} />
-      <UploadUserModal open={uploadUserModal} handleModal={handleUploadUserModal} />
+      <UploadmintechModal open={mintechModal} handleModal={handlemintechModal} />
     </Fragment>
   )
 }

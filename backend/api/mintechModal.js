@@ -2,7 +2,7 @@ const http = require('http');
 var nodemailer = require('nodemailer');
 //=========== MonthEnd API Module ===================
 module.exports = function(app, con) {
-    app.get('/users', async function(req, res){
+    app.get('/mintech', async function(req, res){
 		var data = {};
         // var query = "SELECT * FROM public.tbl_users where action_status='Open'" + condition;
 
@@ -35,7 +35,7 @@ module.exports = function(app, con) {
 		});
     });
 	
-	app.post('/add_user_input', function(req, res){
+	app.post('/add_mintech_input', function(req, res){
 		// var role = 'Admin';
 		var data = {};
 		// usp_addNewUser('id','user_name','email','emp_id','user_role')
@@ -66,7 +66,7 @@ module.exports = function(app, con) {
 		});
     });
 
-	app.get('/edit_user_input', async function(req, res){
+	app.get('/edit_mintech_input', async function(req, res){
 		var query = "SELECT * FROM public.tbl_users where id = '"+req.query.id +"'";
 		console.log(query);
 		await con.query(query, function(err, result) {
@@ -80,7 +80,7 @@ module.exports = function(app, con) {
 		});
 	});
 
-	app.get('/user_input', async function(req, res){
+	app.get('/mintech_input', async function(req, res){
 		var query = "SELECT * FROM public.tbl_users where email = '"+req.query.email +"'";
 		console.log(query);
 		
@@ -97,7 +97,7 @@ module.exports = function(app, con) {
 		});
 	});
 
-	app.post('/delete_user_input', async function(req, res){
+	app.post('/mintech_user_input', async function(req, res){
 		var query = "DELETE FROM public.tbl_users where id = '"+req.body.id +"'";
 		console.log(query);
 		await con.query(query, function(err, result) {
