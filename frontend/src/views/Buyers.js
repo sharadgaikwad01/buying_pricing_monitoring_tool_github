@@ -89,12 +89,12 @@ const Buyers = props => {
     if (user_type === '') {
       props.history.push('/buyer_login')
     }
-    if (user_type === 'BUYER') {
-      props.history.push('/buyer_input')
-    }
-    if (user_type === 'SUPPLIER') {
-      props.history.push('/home')
-    }
+    // if (user_type === 'BUYER') {
+    //   props.history.push('/buyer_input')
+    // }
+    // if (user_type === 'SUPPLIER') {
+    //   props.history.push('/home')
+    // }
 
     await axios.get(`${nodeBackend}/buyers`, { params: { searchName } }).then((res) => {
      

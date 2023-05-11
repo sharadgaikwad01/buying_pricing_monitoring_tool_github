@@ -27,7 +27,6 @@ const BuyerLogin = () => {
   useEffect(async () => {
     const auth_token = localStorage.getItem('token')
     const type = localStorage.getItem('type')
-    
     if (auth_token) {
       if (type === 'BUYER') {
         window.location.replace(`${reactFrontend}/buyer_input`)
