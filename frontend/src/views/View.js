@@ -33,7 +33,7 @@ const MySwal = withReactContent(Swal)
 const View = () => {
 
     const { id } = useParams()
-    
+
     const suppl_no = id
     const country = localStorage.getItem('country')
     const [Suppliername, setSuppliername] = useState('')
@@ -61,10 +61,10 @@ const View = () => {
             text: 'There are no records to display',
             icon: 'info',
             customClass: {
-              confirmButton: 'btn btn-primary'
+                confirmButton: 'btn btn-primary'
             },
             buttonsStyling: false
-          })
+        })
     }
     useEffect(async () => {
         await axios.get(`${nodeBackend}/buyer_supplier_details`, { params: { suppl_no, country } }).then((res) => {
@@ -85,7 +85,7 @@ const View = () => {
         e.preventDefault()
         const country_name = row.country_name
         const stratbuyer_name = row.stratbuyer_name
-        await axios.get(`${nodeBackend}/getMintecData`, { params: { country_name, stratbuyer_name} }).then((res) => {
+        await axios.get(`${nodeBackend}/getMintecData`, { params: { country_name, stratbuyer_name } }).then((res) => {
             setRowData(res.data.data)
         })
         handleMintectModal()
@@ -94,15 +94,17 @@ const View = () => {
     return (
         <Fragment>
             <Card className='pageBox buyer-screen'>
-                <CardHeader className='flex-md-row flex-column align-md-items-center align-items-start border-bottom'>
+                <CardHeader className='flex-md-row flex-column align-md-items-center align-items-start mb-1'>
                     {/* <CardTitle tag='h2'>Supplier Number - {bdm_global_umbrella_no}</CardTitle> */}
+                    <CardTitle tag='h2'>Country Overview</CardTitle>
+                   
                 </CardHeader>
                 <CardBody>
                     <Row className='g-1 filter-row'>
                     </Row>
-                    <Row className='g-1 filter-row'>
-                        <Col className='mb-1 col-auto'>
-                            <Col className="row g-0">
+                    <Row className='g-1 filter-row d-flex justify-content-between align-items-center'>
+                        <Col className='col-auto'>
+                            <Col className="row g-0 mb-1">
                                 <Col className="col-auto d-flex align-items-center">
                                     <Label htmlFor="select_supplier" className="me-50">Category: </Label>
                                 </Col>
@@ -113,10 +115,21 @@ const View = () => {
                                 </Col>
                             </Col>
                         </Col>
+                        <Col className='mb-1 col-auto'>
+                            <div className="d-block d-md-flex incr-infla align-items-center">
+                                <div className="color-indicator d-flex me-1">
+                                    <span className="incr-infla-badge supplier-req-infla-rate"></span> : Supplier Raised Request
+                                </div>
+                                <div className="color-indicator d-flex">
+                                    <span className="incr-infla-badge buyer-agreed-infla-rate"> </span>: Buyer Close Request
+                                </div>
+                            </div>
+                        </Col>
                     </Row>
+
                     <Row className='g-1'>
-                        { countries.map((row, i) => (
-                            <Col className="col-auto mt-1"  key={i}>
+                        {countries.map((row, i) => (
+                            <Col className="col-auto mt-1" key={i}>
                                 <Col className="country-info-box">
                                     <Col className="row d-flex justify-content-between">
                                         <Col className="col-auto align-self-end">
@@ -131,14 +144,13 @@ const View = () => {
                                         </Col>
                                         <Col className="col-auto">
                                             <Col className="incr-infla d-flex justify-content-end">
-                                                <span className="incr-infla-badge incr-infla-3 mb-2">{row.requested_price_increase_perc === null ? 0 : Math.round(row.requested_price_increase_perc)}%</span>
-                                                <span className="incr-infla-badge incr-infla-5 mb-2">{row.agreed_price_increase_perc === null ? 0 : Math.round(row.agreed_price_increase_perc)}%</span>
+                                                <span className="incr-infla-badge supplier-req-infla-rate mb-2">{row.requested_price_increase_perc === null ? 0 : Math.round(row.requested_price_increase_perc)}%</span>
+                                                <span className="incr-infla-badge buyer-agreed-infla-rate mb-2">{row.agreed_price_increase_perc === null ? 0 : Math.round(row.agreed_price_increase_perc)}%</span>
                                             </Col>
-                                            <Row>   
+                                            <Row className='g-1'>
                                                 <Col onClick={(e) => (handleMintecSearch(e, row))} className="sku-info d-flex justify-content-end align-bottom align-items-baseline align-items-end align-items">
                                                     <img src={`${process.env.PUBLIC_URL}/logo/mintec.png`} className="country-flag-img" />
                                                 </Col>
-
                                                 <Col onClick={(e) => (row.article_count > 0 ? handleEdit(e, row.country_name, Supplierno) : handleEditError(e))} className="sku-info d-flex justify-content-end align-bottom align-items-baseline align-items-end align-items">
                                                     {row.article_count ? row.article_count : 0} SKU
                                                 </Col>

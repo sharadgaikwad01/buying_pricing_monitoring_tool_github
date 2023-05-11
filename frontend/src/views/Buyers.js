@@ -300,7 +300,7 @@ const Buyers = props => {
       <Card className='pageBox user-screen'>
         <CardHeader className='flex-md-row flex-column align-md-items-center align-items-start border-bottom'>
           <CardTitle tag='h2'>Buyers Data</CardTitle>
-          <div className='d-flex mt-md-0 mt-1'>
+          <div className='d-flex mt-md-0 mt-1 btn-row'>
             <Button.Ripple className='ms-2 btn-icon' color='primary' onClick={handleAdd}>
               <Plus size={16} />
               <span className='align-middle ms-25'>Add New Buyer</span>

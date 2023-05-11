@@ -614,7 +614,7 @@ const BuyerInput = props => {
       }
     },
     {
-      name: 'Price Increase in %',
+      name: 'Price Increase(%)',
       sortable: true,
       minWidth: 'auto',
       selector: row => row.price_increase_perc,
@@ -625,7 +625,7 @@ const BuyerInput = props => {
       }
     },
     {
-      name: 'Request Creation Date',
+      name: 'Request Creation_Date',
       sortable: true,
       minWidth: 'auto',
       selector: row => row.request_date,
@@ -636,7 +636,7 @@ const BuyerInput = props => {
       }
     },
     {
-      name: 'Reason For Price Change',
+      name: 'Reason For Price_Change',
       sortable: true,
       minWidth: 'auto',
       selector: row => row.price_change_reason,
@@ -647,7 +647,7 @@ const BuyerInput = props => {
       }
     },
     {
-      name: 'Price Effective Date',
+      name: 'Price Effective_Date',
       sortable: true,
       minWidth: 'auto',
       selector: row => row.price_increase_effective_date,
@@ -669,7 +669,7 @@ const BuyerInput = props => {
       }
     },
     {
-      name: 'Price Finalize Date',
+      name: 'Price Finalize_Date',
       sortable: true,
       width: 'auto',
       selector: row => row.price_increase_communicated_date,
@@ -696,7 +696,7 @@ const BuyerInput = props => {
       allowOverflow: true,
       cell: (row) => {
         return (
-          row.negotiate_final_price && row.price_increase_communicated_date && row.action_status === 'open' ? <div className='d-flex'><Edit size={15} onClick={(e) => handleEdit(e, row)} className="editTableIcon text-info" id='editButton' /><Tooltip placement='top' isOpen={editButton} target='editButton' toggle={() => setEditButton(!editButton)} >Edit</Tooltip><Check size={15} onClick={(e) => handleClosedAction(e, row, 1)} className="deleteTableIcon text-success ms-1" id='statusButton' /><Tooltip placement='top' isOpen={statusButton} target='statusButton' toggle={() => setStatusButton(!statusButton)}>Closed</Tooltip></div> : row.action_status === 'open' ? row.created_by === email ? <div className='d-flex'><Edit3 size={15} onClick={(e) => handleEditSupplierInput(e, row)} className="editTableIcon text-info " id='editButtonb' /><Trash size={15} onClick={(e) => handleDelete(e, row)} className="deleteTableIcon text-danger ms-1" /> <Edit size={15} onClick={(e) => handleEdit(e, row)} className="editTableIcon text-info ms-1" id='editButton' /><Tooltip placement='top' isOpen={editButton} target='editButton' toggle={() => setEditButton(!editButton)} >Edit</Tooltip></div> : <div className='d-flex'><Edit size={15} onClick={(e) => handleEdit(e, row)} className="editTableIcon text-info" id='editButton' /><Tooltip placement='top' isOpen={editButton} target='editButton' toggle={() => setEditButton(!editButton)} >Edit</Tooltip></div> : row.is_revoke === 'false' ? "" : <div className='d-flex'><Repeat size={15} onClick={(e) => handleClosedAction(e, row, 2)} className="editTableIcon text-warning" id='revokeButton' /><Tooltip placement='top' isOpen={revokeButton} target='revokeButton' toggle={() => setRevokeButton(!revokeButton)} >Revoke Closed Status</Tooltip></div>
+          row.negotiate_final_price && row.price_increase_communicated_date && row.action_status === 'open' ? <div className='d-flex'><Edit size={15} onClick={(e) => handleEdit(e, row)} className="editTableIcon text-info" id='editButton' /><Tooltip placement='top' isOpen={editButton} target='editButton' toggle={() => setEditButton(!editButton)} >Edit</Tooltip><Check size={15} onClick={(e) => handleClosedAction(e, row, 1)} className="deleteTableIcon text-success ms-1" id='statusButton' /><Tooltip placement='top' isOpen={statusButton} target='statusButton' toggle={() => setStatusButton(!statusButton)}>Closed</Tooltip></div> : row.action_status === 'open' ? row.created_by === email ? <div className='d-flex'><Edit3 size={15} onClick={(e) => handleEditSupplierInput(e, row)} className="editTableIcon text-info" id='editButtonb' /><Trash size={15} onClick={(e) => handleDelete(e, row)} className="deleteTableIcon text-danger ms-1" /> <Edit size={15} onClick={(e) => handleEdit(e, row)} className="editTableIcon text-info ms-1" id='editButton' /><Tooltip placement='top' isOpen={editButton} target='editButton' toggle={() => setEditButton(!editButton)} >Edit</Tooltip></div> : <div className='d-flex'><Edit size={15} onClick={(e) => handleEdit(e, row)} className="editTableIcon text-info" id='editButton' /><Tooltip placement='top' isOpen={editButton} target='editButton' toggle={() => setEditButton(!editButton)} >Edit</Tooltip></div> : row.is_revoke === 'false' ? "" : <div className='d-flex'><Repeat size={15} onClick={(e) => handleClosedAction(e, row, 2)} className="editTableIcon text-warning" id='revokeButton' /><Tooltip placement='top' isOpen={revokeButton} target='revokeButton' toggle={() => setRevokeButton(!revokeButton)} >Revoke Closed Status</Tooltip></div>
         )
       }
     }
@@ -704,9 +704,9 @@ const BuyerInput = props => {
   return (
     <Fragment>
       <Card className='pageBox buyer-screen'>
-        <CardHeader className='flex-md-row flex-column align-items-center align-items-start border-bottom'>
+        <CardHeader className='align-items-center align-items-start border-bottom'>
           <CardTitle tag='h2'>List of Assortment</CardTitle>
-          <div className='d-flex mt-md-0 mt-1'>
+          <div className='d-md-flex mt-md-0 mt-1 btn-row document-btn-row'>
             <Button.Ripple className='ms-1 btn-icon' color='primary' onClick={downloadArticlePDFModal}>
               <Download size={16} />
               <span className='align-middle ms-25'>Download Assortment PDF</span>
@@ -719,7 +719,7 @@ const BuyerInput = props => {
               <Upload size={14} />
               <span className='align-middle ms-25'>Upload Multiple Assortment Inputs</span>
             </Button.Ripple>
-            <UncontrolledButtonDropdown className='ms-2'>
+            <UncontrolledButtonDropdown className=''>
               <DropdownToggle color='primary' caret outline>
                 <Download size={15} />
                 <span className='align-middle ms-25'>Assortment Download</span>
@@ -813,7 +813,7 @@ const BuyerInput = props => {
               />
             </Col>
             <Col className='col-auto d-flex align-items-end'>
-              <Button.Ripple className='ms-1 btn-icon' id='refreshButton' color='primary' onClick={handleRefresh}>
+              <Button.Ripple className='btn-icon me-1' id='refreshButton' color='primary' onClick={handleRefresh}>
                 <RefreshCcw size={16} />
               </Button.Ripple>
               <Tooltip
@@ -824,7 +824,7 @@ const BuyerInput = props => {
               >
                 Refresh Filter
               </Tooltip>
-              <Button.Ripple className='ms-1 btn-icon' id='closedStatusButton' color='success' onClick={handleMultipleStatus}>
+              <Button.Ripple className='btn-icon me-1' id='closedStatusButton' color='success' onClick={handleMultipleStatus}>
                 <Check size={16} />
               </Button.Ripple>
               <Tooltip

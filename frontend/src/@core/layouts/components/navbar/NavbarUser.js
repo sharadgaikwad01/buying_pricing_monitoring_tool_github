@@ -44,7 +44,7 @@ const NavbarUser = props => {
 
   return (
     <Fragment>
-      <div className='navbar-header  d-xl-block d-none'>
+      <div className='navbar-header '>
             <ul className='nav navbar-nav'>
               <NavItem>
                 <Link to='/' className='navbar-brand'>

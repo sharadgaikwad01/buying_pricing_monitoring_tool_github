@@ -20,7 +20,7 @@ import { UncontrolledDropdown, DropdownMenu, DropdownToggle, DropdownItem } from
 
 const UserDropdown = () => {
   // ** State
-  const user_email = localStorage.getItem('email')
+  // const user_email = localStorage.getItem('email')
   // const vat_number = localStorage.getItem('vat')
   const user_name = localStorage.getItem('name')
 
@@ -49,8 +49,8 @@ const UserDropdown = () => {
       {/* <span className='user-status float-left'>{userDetails}</span> */}
       <DropdownToggle href='/' tag='a' className='nav-link dropdown-user-link' onClick={e => e.preventDefault()}>
       
-        <div className='user-nav d-sm-flex d-none'>
-          <span className='user-name fw-bold'>{user_email}</span>
+        <div className='user-nav text-end'> 
+          <span className='user-name fw-bold text-end'>Hello, <br /> {user_name}</span>
             
         </div>        
         <Avatar color='light-primary' content={user_name} initials />
