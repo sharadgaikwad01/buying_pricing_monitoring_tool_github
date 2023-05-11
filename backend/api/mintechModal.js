@@ -18,9 +18,9 @@ module.exports = function(app, con) {
             condition = condition +" AND category = '" +req.query.searchCategory+"'"
         }
 
-        if (req.query.searchCountry != ''){
-            condition = condition + " AND country_name = '" +req.query.searchCountry+"'"
-        }
+        // if (req.query.searchCountry != ''){
+        //     condition = condition + " AND country_name = '" +req.query.searchCountry+"'"
+        // }
 
 		var getUniqueCatQuery = "select distinct stratbuyer_name,buyer_emailid,country_name from public.tbl_buyer_details";
 
@@ -37,19 +37,19 @@ module.exports = function(app, con) {
 			}
 		});
 
-		var getUniquecountryQuery = "select distinct country_name, row_id from tbl_country_details";
-		await con.query(getUniquecountryQuery, function (err, result) {
-			if (err) {
-				res.json({ status: false });
-				return;
-			} else {
-				result.rows.forEach(function(value, key) {
-					option = { value: value.country_name, label: value.country_name }
-					CountryOptions.push(option);
-				});
-				data.CountryOptions = CountryOptions;
-			}
-		});
+		// var getUniquecountryQuery = "select distinct country_name, row_id from tbl_country_details";
+		// await con.query(getUniquecountryQuery, function (err, result) {
+		// 	if (err) {
+		// 		res.json({ status: false });
+		// 		return;
+		// 	} else {
+		// 		result.rows.forEach(function(value, key) {
+		// 			option = { value: value.country_name, label: value.country_name }
+		// 			CountryOptions.push(option);
+		// 		});
+		// 		data.CountryOptions = CountryOptions;
+		// 	}
+		// });
 
         var query = "SELECT * FROM public.tbl_mintec_dashboard where dashboard_name IS NOT NULL" + condition;
         // console.log(query)
@@ -72,10 +72,11 @@ module.exports = function(app, con) {
 		var data = {};
 		// usp_addNewUser('id','user_name','email','emp_id','user_role')
 		if(req.body.user_id == 'undefined' || req.body.user_id == 0){
-			sql=`CALL public.usp_addNewUser('0','` + req.body.user_name +`','`+ req.body.email +`','`+ req.body.emp_id +`','`+ req.body.emp_id +`','` + req.body.user_type + `','','','','` + req.body.user_role + `');`;
+			sql=`CALL public.usp_addMintech('0','` + req.body.category +`','`+ req.body.sub_category +`','`+ req.body.dashboard_name +`','`+ req.body.dashboard_url +`','` + req.body.created_by + `');`;
 		}else{
-			sql=`CALL public.usp_addNewUser('` + req.body.user_id + `','` + req.body.user_name +`','`+ req.body.email +`','`+ req.body.emp_id +`','`+ req.body.emp_id +`','` + req.body.user_type + `','','','','` + req.body.user_role + `');`;		
+			sql=`CALL public.usp_addMintech('` + req.body.user_id + `','` + req.body.category +`','`+ req.body.sub_category +`','`+ req.body.dashboard_name +`','`+ req.body.dashboard_url +`','` + req.body.created_by + `');`;		
 		}
+		// usp_addMintech('0','region','country_name','category','sub_category','dashboard_name','dashboard_url','created_by')
 		console.log(sql);
 		con.query(sql, function(err, result) {
 			if (err) {
@@ -92,9 +93,9 @@ module.exports = function(app, con) {
             condition = condition +" AND category = '" +req.body.searchCategory+"'"
         }
 
-        if (req.body.searchCountry != ''){
-            condition = condition + " AND country_name = '" +req.body.searchCountry+"'"
-        }
+        // if (req.body.searchCountry != ''){
+        //     condition = condition + " AND country_name = '" +req.body.searchCountry+"'"
+        // }
 
 		var query = "SELECT * FROM public.tbl_mintec_dashboard where dashboard_name IS NOT" + condition;
         con.query(query, function(err, result) {
@@ -124,7 +125,7 @@ module.exports = function(app, con) {
 	});
 
 	app.get('/mintech_input', async function(req, res){
-		var query = "SELECT * FROM public.tbl_mintec_dashboard where email = '"+req.query.email +"'";
+		var query = "SELECT * FROM public.tbl_mintec_dashboard where id = '"+req.query.id +"'";
 		console.log(query);
 		await con.query(query, function(err, result) {
 			console.log(result);
@@ -153,9 +154,9 @@ module.exports = function(app, con) {
 				if (req.body.searchCategory != ''){
 					condition = condition +" AND category = '" +req.body.searchCategory+"'"
 				}
-				if (req.body.searchCountry != ''){
-					condition = condition + " AND country_name = '" +req.body.searchCountry+"'"
-				}
+				// if (req.body.searchCountry != ''){
+				// 	condition = condition + " AND country_name = '" +req.body.searchCountry+"'"
+				// }
 				var query = "SELECT * FROM public.tbl_mintec_dashboard where dashboard_name IS NOT" + condition;
 				await con.query(query, function(err, result) {
 					if (err) {

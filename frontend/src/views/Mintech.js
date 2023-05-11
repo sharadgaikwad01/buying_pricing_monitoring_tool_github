@@ -52,12 +52,12 @@ const Home = props => {
 
   const [UsersInputsData, setUsersInputsData] = useState([])
   const [CategoryOptions, setCategoryoptions] = useState([])
-  const [CountryOptions, setCountryOptions] = useState([])
+  // const [CountryOptions, setCountryOptions] = useState([])
   const [searchName, setsearchName] = useState('')
   const [rowData, setRowData] = useState([])
   // const [searchRequestedDate, setSearchRequestedDate] = useState('')
   const [searchCategory, setsearchCategory] = useState('')
-  const [searchCountry, setsearchCountry] = useState('')
+  // const [searchCountry, setsearchCountry] = useState('')
 
   const [modal, setModal] = useState(false)
 
@@ -81,11 +81,11 @@ const Home = props => {
   }
 
   useEffect(async () => {
-    await axios.get(`${nodeBackend}/mintech`, { params: { searchName, searchCategory, searchCountry } }).then((res) => {
+    await axios.get(`${nodeBackend}/mintech`, { params: { searchName, searchCategory } }).then((res) => {
       console.log(res.data.data)
       setUsersInputsData(res.data.data.users)  
       setCategoryoptions(res.data.data.CategoryOptions)  
-      setCountryOptions(res.data.data.CountryOptions)  
+      // setCountryOptions(res.data.data.CountryOptions)  
     })
   }, [])
 
@@ -140,7 +140,7 @@ const Home = props => {
   const handleNameFilter = async (e) => {
     const searchNames = e.target.value
     setsearchName(searchNames)
-    await axios.get(`${nodeBackend}/mintech`, { params: { searchName, searchCategory, searchCountry } }).then((res) => {
+    await axios.get(`${nodeBackend}/mintech`, { params: { searchName, searchCategory } }).then((res) => {
       setUsersInputsData(res.data.data.users)
     })
   }
@@ -150,18 +150,18 @@ const Home = props => {
   const handleCategoryFilter = async (e) => {
     const Category = e.value
     setsearchCategory(Category)
-    await axios.get(`${nodeBackend}/mintech`, { params: { searchName, searchCategory, searchCountry } }).then((res) => {
+    await axios.get(`${nodeBackend}/mintech`, { params: { searchName, searchCategory } }).then((res) => {
       setUsersInputsData(res.data.data.users)
     })
   }
   
-  const handleCountryFilter = async (e) => {
-    const searchCountry = e.value
-    setsearchCountry(searchCountry)
-    await axios.get(`${nodeBackend}/mintech`, { params: { searchName, searchCategory, searchCountry } }).then((res) => {
-      setUsersInputsData(res.data.data.users)
-    })
-  }
+  // const handleCountryFilter = async (e) => {
+  //   const searchCountry = e.value
+  //   setsearchCountry(searchCountry)
+  //   await axios.get(`${nodeBackend}/mintech`, { params: { searchName, searchCategory, searchCountry } }).then((res) => {
+  //     setUsersInputsData(res.data.data.users)
+  //   })
+  // }
 
   const handleEdit = async (e, row) => {
     e.preventDefault()
@@ -256,12 +256,7 @@ const Home = props => {
         )
       }
     },
-    {
-      name: 'Region',
-      // width: "10",
-      sortable: true,
-      selector: row => row.region
-    },
+    
     {
       name: 'Category',
       // width: "10",
@@ -290,12 +285,7 @@ const Home = props => {
       name: 'Created By',
       sortable: true,
       selector: row => row.created_by
-    }, 
-    {
-      name: 'country_name',
-      sortable: true,
-      selector: row => row.country_name
-    }  
+    }
   ]
 
   return (
@@ -334,7 +324,7 @@ const Home = props => {
               <Input className='form-control' type='text' id='name' placeholder='Dashboard Name' value={searchName} onChange={handleNameFilter} /> 
             </Col>
             
-            <Col className='mb-1 col-auto'>
+            {/* <Col className='mb-1 col-auto'>
               <Label className='form-label' for='user_country'>
                 Country:
               </Label>
@@ -350,7 +340,7 @@ const Home = props => {
                 })}
                 onChange={handleCountryFilter}
               />
-            </Col>
+            </Col> */}
 
              <Col className='mb-1 col-auto'>
               <Label className='form-label' for='user_type'>
@@ -389,7 +379,7 @@ const Home = props => {
           </Row>
         </CardBody>       
       </Card>
-      <AddNewModalUser open={modal} handleModal={handleModal} rowData={rowData} CategoryOptions={CategoryOptions} CountryOptions={CountryOptions} setUsersInputsData={setUsersInputsData} searchName={searchName} searchCategory={searchCategory} searchCountry={searchCountry}/>
+      <AddNewModalUser open={modal} handleModal={handleModal} rowData={rowData} CategoryOptions={CategoryOptions} setUsersInputsData={setUsersInputsData} searchName={searchName} searchCategory={searchCategory}/>
       <UploadmintechModal open={mintechModal} handleModal={handlemintechModal} />
     </Fragment>
   )

@@ -22,7 +22,7 @@ import withReactContent from 'sweetalert2-react-content'
 import { useState, useEffect } from 'react'
 const MySwal = withReactContent(Swal)
 
-const AddNewModalUser = ({open, handleModal, rowData, CategoryOptions, CountryOptions, setUsersInputsData, searchName, searchCategory, searchCountry}) => {
+const AddNewModalUser = ({open, handleModal, rowData, CategoryOptions, setUsersInputsData, searchName, searchCategory}) => {
   // const [UserData, setUsersData] = useState({user_name:'', email:'', user_id:'', emp_id:'', row_id:''})
   // const [NameValue, setNameValue] = useState('')
   // const [EmailValue, setEmailValue] = useState('')
@@ -31,22 +31,22 @@ const AddNewModalUser = ({open, handleModal, rowData, CategoryOptions, CountryOp
   // const [UserEmpIdValue, setUserEmpIdValue] = useState('')
   // const [UserIdValue, setUserIdValue] = useState(0)
 
-  const [Region, setRegion] = useState('')
+  // const [Region, setRegion] = useState('')
   const [dashboard_nameValue, setdashboard_nameValue] = useState('')
   const [dashboard_urlValue, setdashboard_urlValue] = useState('')
-  const [CountryValue, setCountryValue] = useState('')
+  // const [CountryValue, setCountryValue] = useState('')
   const [CategoryValue, setCategoryValue] = useState('')
   const [SubCategoryValue, setSubCategoryValue] = useState('')
   // const [lastName, setLastName] = useState('')
 
   const validationSchema = yup.object().shape({
-    country_name: yup.string().required(),
+    // country_name: yup.string().required(),
     // last_name: yup.string().required(),
     // user_name: yup.string().required(),
     // email: yup.string().required().email(),
     // emp_id: yup.string().required().test('len', 'Must be exactly 8 characters', val => val.length === 8),
     // emp_id: yup.string().required(),
-    region: yup.string().required(),
+    // region: yup.string().required(),
     dashboard_name: yup.string().required(),
     categroy: yup.string().required(),
     sub_categroy: yup.string().required()
@@ -63,11 +63,11 @@ const AddNewModalUser = ({open, handleModal, rowData, CategoryOptions, CountryOp
 
   useEffect(async () => {
     // setUsersData(rowData)
-      await setCountryValue(rowData.country_name)
-      setValue('country_name', rowData.country_name)
+      // await setCountryValue(rowData.country_name)
+      // setValue('country_name', rowData.country_name)
       
-      await setRegion(rowData.region)
-      setValue('region', rowData.region)
+      // await setRegion(rowData.region)
+      // setValue('region', rowData.region)
 
       await setdashboard_urlValue(rowData.dashboard_name)
       setValue('dashboard_name', rowData.dashboard_name)
@@ -101,8 +101,8 @@ const AddNewModalUser = ({open, handleModal, rowData, CategoryOptions, CountryOp
   const CloseBtn = <X className='cursor-pointer' size={15} onClick={handleModal} />
 
   const onSubmit = data => {
-    const region = data.region
-    const country_name = data.country_name
+    // const region = data.region
+    // const country_name = data.country_name
     const dashboard_url = data.dashboard_url
     const dashboard_name = data.dashboard_name
     const categroy = data.categroy
@@ -113,7 +113,7 @@ const AddNewModalUser = ({open, handleModal, rowData, CategoryOptions, CountryOp
     axios({
       method: "post",
       url: `${nodeBackend}/add_mintech_input`,
-      data: { region, dashboard_url, dashboard_name, categroy, sub_categroy, country_name, created_by, searchName, searchCountry, searchCategory }
+      data: {  dashboard_url, dashboard_name, categroy, sub_categroy, created_by, searchName, searchCountry, searchCategory }
     })
       .then(async function (success) {
         //handle success        
@@ -184,7 +184,7 @@ const AddNewModalUser = ({open, handleModal, rowData, CategoryOptions, CountryOp
       <ModalBody className='flex-grow-1'>
         <Form onSubmit={handleSubmit(onSubmit)} onReset={reset}>
 
-          <div className='mb-1'>
+          {/* <div className='mb-1'>
             <Label className='form-label' for='country_name'>
               Country
             </Label>
@@ -203,10 +203,10 @@ const AddNewModalUser = ({open, handleModal, rowData, CategoryOptions, CountryOp
               )}
             />
             {errors["country_name"] && <FormFeedback>{'countryName is a required field'}</FormFeedback>}
-          </div>
+          </div> */}
 
 
-          <div className='mb-1'>
+          {/* <div className='mb-1'>
             <Label className='form-label' for='region'>
               Region
             </Label>
@@ -220,7 +220,7 @@ const AddNewModalUser = ({open, handleModal, rowData, CategoryOptions, CountryOp
               />
               {errors.first_name && <FormFeedback>{"Region is a required field"}</FormFeedback>}
             </InputGroup>
-          </div>
+          </div> */}
           
           <div className='mb-1'>
             <Label className='form-label' for='dashboard_name'>
