@@ -22,7 +22,7 @@ module.exports = function(app, con) {
         //     condition = condition + " AND country_name = '" +req.query.searchCountry+"'"
         // }
 
-		var getUniqueCatQuery = "select distinct stratbuyer_name,buyer_emailid,country_name from public.tbl_buyer_details";
+		var getUniqueCatQuery = "select distinct stratbuyer_name,stratbuyer_id from public.tbl_stratbuyer_details";
 
 		await con.query(getUniqueCatQuery, function (err, result) {
 			if (err) {
@@ -30,7 +30,7 @@ module.exports = function(app, con) {
 				return;
 			} else {
 				result.rows.forEach(function (value, key) {
-					option = { value: value.stratbuyer_name, label: value.stratbuyer_name }
+					option = { value: value.stratbuyer_id, label: value.stratbuyer_name }
 					CategoryOptions.push(option);
 				});
 				data.CategoryOptions = CategoryOptions;
@@ -72,9 +72,9 @@ module.exports = function(app, con) {
 		var data = {};
 		// usp_addNewUser('id','user_name','email','emp_id','user_role')
 		if(req.body.user_id == 'undefined' || req.body.user_id == 0){
-			sql=`CALL public.usp_addMintech('0','` + req.body.category +`','`+ req.body.sub_category +`','`+ req.body.dashboard_name +`','`+ req.body.dashboard_url +`','` + req.body.created_by + `');`;
+			sql=`CALL public.usp_mitech_dashboard('0','` + req.body.stratbuyer_category +`','`+ req.body.mintec_sub_category +`','`+ req.body.dashboard_name +`','`+ req.body.dashboard_url +`','` + req.body.is_deleted + `','` + req.body.created_by + `');`;
 		}else{
-			sql=`CALL public.usp_addMintech('` + req.body.user_id + `','` + req.body.category +`','`+ req.body.sub_category +`','`+ req.body.dashboard_name +`','`+ req.body.dashboard_url +`','` + req.body.created_by + `');`;		
+			sql=`CALL public.usp_mitech_dashboard('` + req.body.user_id + `','` + req.body.stratbuyer_category +`','`+ req.body.mintec_sub_category +`','`+ req.body.dashboard_name +`','`+ req.body.dashboard_url +`','` + req.body.is_deleted + `','` + req.body.created_by + `');`;		
 		}
 		// usp_addMintech('0','region','country_name','category','sub_category','dashboard_name','dashboard_url','created_by')
 		console.log(sql);

@@ -68,7 +68,7 @@ const Home = props => {
   // ** Function to handle Modal toggle
   const handleModal = () => setModal(!modal)
   
-  const [UserData] = useState({dashboard_name:'', region:'',  country_name:'', row_id:'', category:'', sub_category: '', dashboard_url:'', created_by:''})
+  const [UserData] = useState({dashboard_name :'', region:'',  country_name:'', row_id:'', stratbuyer_category:'', mintec_sub_category: '', dashboard_url:'', created_by:''})
 
   const handlemintechModal = () => setmintechModal(!mintechModal)
 
@@ -165,6 +165,7 @@ const Home = props => {
 
   const handleEdit = async (e, row) => {
     e.preventDefault()
+    console.log(row)
     handleModal()
     setRowData(row)
   }
@@ -193,7 +194,7 @@ const Home = props => {
       if (result.value) {
         axios({
           method: "post",
-          url: `${nodeBackend}/delete_user_input`,
+          url: `${nodeBackend}/delete_mintech_input`,
           data: { id }
         })
           .then(function (success) {
@@ -241,7 +242,7 @@ const Home = props => {
       name: 'Sr. No',
       width: "80px",
       sortable: true,
-      selector: row => row.row_id
+      selector: row => row.id
     },
     {
       name: 'Actions',
@@ -261,13 +262,13 @@ const Home = props => {
       name: 'Category',
       // width: "10",
       sortable: true,
-      selector: row => row.category
+      selector: row => row.stratbuyer_category
     },
     {
       name: 'Sub Category',
       // width: "10",
       sortable: true,
-      selector: row => row.sub_category
+      selector: row => row.mintec_sub_category
     },
     {
       name: 'Dashboard Name',

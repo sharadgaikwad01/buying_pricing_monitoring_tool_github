@@ -48,8 +48,8 @@ const AddNewModalUser = ({open, handleModal, rowData, CategoryOptions, setUsersI
     // emp_id: yup.string().required(),
     // region: yup.string().required(),
     dashboard_name: yup.string().required(),
-    categroy: yup.string().required(),
-    sub_categroy: yup.string().required()
+    stratbuyer_category: yup.string().required()
+    // mintec_sub_category: yup.string().required()
   })
 
   const {
@@ -59,7 +59,7 @@ const AddNewModalUser = ({open, handleModal, rowData, CategoryOptions, setUsersI
     reset,
     formState: { errors }
   } = useForm({ mode: 'onChange', resolver: yupResolver(validationSchema) })
-  // console.log(rowData)
+  console.log(rowData)
 
   useEffect(async () => {
     // setUsersData(rowData)
@@ -75,23 +75,12 @@ const AddNewModalUser = ({open, handleModal, rowData, CategoryOptions, setUsersI
       await setdashboard_urlValue(rowData.dashboard_url)
       setValue('dashboard_url', rowData.dashboard_url)
 
-      await setCategoryValue(rowData.categroy)
-      setValue('categroy', rowData.categroy)
+      await setCategoryValue(rowData.stratbuyer_category)
+      setValue('stratbuyer_category', rowData.stratbuyer_category)
       
-      await setSubCategoryValue(rowData.sub_categroy)
-      setValue('sub_categroy', rowData.sub_categroy)
+      await setSubCategoryValue(rowData.mintec_sub_category)
+      setValue('mintec_sub_category', rowData.mintec_sub_category)
 
-      // await setEmailValue(rowData.email)
-      // setValue('email', rowData.email)
-
-      // await setUserTypeValue(rowData.user_type)
-      // setValue('user_type', rowData.user_type)
-
-      // await setUserRoleValue(rowData.user_role)
-      // setValue('user_role', rowData.user_role)
-
-      // await setUserEmpIdValue(rowData.metro_id)
-      // setValue('emp_id', rowData.metro_id)
 
       // await setUserIdValue(rowData.row_id)
       // setValue('user_id', rowData.row_id)
@@ -105,15 +94,15 @@ const AddNewModalUser = ({open, handleModal, rowData, CategoryOptions, setUsersI
     // const country_name = data.country_name
     const dashboard_url = data.dashboard_url
     const dashboard_name = data.dashboard_name
-    const categroy = data.categroy
-    const sub_categroy = data.sub_categroy
+    const stratbuyer_category = data.stratbuyer_category
+    const mintec_sub_category = data.mintec_sub_category
     const created_by = localStorage.getItem('email')
 
     handleModal(false)
     axios({
       method: "post",
       url: `${nodeBackend}/add_mintech_input`,
-      data: {  dashboard_url, dashboard_name, categroy, sub_categroy, created_by, searchName, searchCountry, searchCategory }
+      data: {  dashboard_url, dashboard_name, stratbuyer_category, mintec_sub_category, created_by, searchName, searchCountry, searchCategory }
     })
       .then(async function (success) {
         //handle success        
@@ -255,11 +244,11 @@ const AddNewModalUser = ({open, handleModal, rowData, CategoryOptions, setUsersI
           </div>
 
           <div className='mb-1'>
-            <Label className='form-label' for='category'>
+            <Label className='form-label' for='stratbuyer_category'>
              Category
             </Label>
             <Controller category="select-custom-wrap"
-              name="categroy"
+              name="stratbuyer_category"
               control={control}
               render={({ field: { onChange, value } }) => (
                 <Select
@@ -272,15 +261,15 @@ const AddNewModalUser = ({open, handleModal, rowData, CategoryOptions, setUsersI
                 />
               )}
             />
-            {errors["categroy"] && <FormFeedback>{'Category is a required field'}</FormFeedback>}
+            {errors["stratbuyer_category"] && <FormFeedback>{'Category is a required field'}</FormFeedback>}
           </div>
 
           <div className='mb-1'>
-            <Label className='form-label' for='sub_category'>
+            <Label className='form-label' for='mintec_sub_category'>
              Sub Category
             </Label>
             <Controller category="select-custom-wrap"
-              name="sub_category"
+              name="mintec_sub_category"
               control={control}
               render={({ field: { onChange, value } }) => (
                 <Select
@@ -293,7 +282,7 @@ const AddNewModalUser = ({open, handleModal, rowData, CategoryOptions, setUsersI
                 />
               )}
             />
-            {errors["sub_category"] && <FormFeedback>{'sub_category is a required field'}</FormFeedback>}
+            {errors["mintec_sub_category"] && <FormFeedback>{'Sub category is a required field'}</FormFeedback>}
           </div>
           
           <Button className='me-1' color='primary' type='submit'>

@@ -42,7 +42,9 @@ router.use((req, res, next) => {
     const params = client.callbackParams(req)
     client.callback(config.nodebackend+'/buyer/api/v2/callback', params, { code_verifier }) // => Promise
         .then(token => {
+            console.log(token.access_token)
             let user_details = token.claims();
+            console.log(user_details)
             sql = "SELECT * FROM public.tbl_buyer_details where buyer_emailid = '"+ user_details.email +"' and active_status='active'";
             clientDB.query(sql, function(err, result) {
                
@@ -78,7 +80,7 @@ router.get('/api/v2/login', (req, res, next) => {
         return
     }
     authUrl = client.authorizationUrl({
-        scope: `openid realm_id=${'EMP_REALM'}`,
+        scope: `openid clnt=${'BUYING_PRICING_MONITORING_TOOL'}`,
         code_challenge,
         realm_id: 'EMP_REALM',
         country_code: 'IN',
