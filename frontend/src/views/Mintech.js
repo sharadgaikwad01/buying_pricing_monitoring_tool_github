@@ -68,7 +68,7 @@ const Home = props => {
   // ** Function to handle Modal toggle
   const handleModal = () => setModal(!modal)
   
-  const [UserData] = useState({dashboard_name :'', region:'',  country_name:'', row_id:'', stratbuyer_category:'', mintec_sub_category: '', dashboard_url:'', created_by:''})
+  const [UserData] = useState({dashboard_name :'', id:'', stratbuyer_id:'', stratbuyer_category:'', mintec_sub_category: '', dashboard_url:'', created_by:''})
 
   const handlemintechModal = () => setmintechModal(!mintechModal)
 
@@ -94,13 +94,14 @@ const Home = props => {
   }
 
   // ** Custom Pagination
+  
   const CustomPagination = () => (
     <ReactPaginate
       previousLabel=''
       nextLabel=''
       forcePage={currentPage}
       onPageChange={page => handlePagination(page)}
-      pageCount={Math.ceil(dataToRender().length / 7) || 1}
+      pageCount={Math.ceil(dataToRender().length / 10) || 1}
       breakLabel='...'
       pageRangeDisplayed={2}
       marginPagesDisplayed={2}
@@ -242,7 +243,7 @@ const Home = props => {
       name: 'Sr. No',
       width: "80px",
       sortable: true,
-      selector: row => row.id
+      cell: (row, index) => (currentPage * 10) + index + 1
     },
     {
       name: 'Actions',
@@ -361,6 +362,7 @@ const Home = props => {
               />
             </Col>
           </Row>
+         
           <Row className='mt-1 mb-50 mx-auto'>
             <div className='react-dataTable my-1'>
               <DataTable
@@ -368,7 +370,7 @@ const Home = props => {
                 pagination
                 selectableRowsNoSelectAll
                 columns={columns}
-                paginationPerPage={50}
+                paginationPerPage={10}
                 className='react-dataTable'
                 sortIcon={<ChevronDown size={10} />}
                 paginationDefaultPage={currentPage + 1}

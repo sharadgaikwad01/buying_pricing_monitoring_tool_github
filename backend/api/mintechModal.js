@@ -15,7 +15,7 @@ module.exports = function(app, con) {
         }
 
         if (req.query.searchCategory != ''){
-            condition = condition +" AND category = '" +req.query.searchCategory+"'"
+            condition = condition +" AND stratbuyer_category = '" +req.query.searchCategory+"'"
         }
 
         // if (req.query.searchCountry != ''){
@@ -70,6 +70,9 @@ module.exports = function(app, con) {
 	app.post('/add_mintech_input', function(req, res){
 		// var role = 'SUPERADMIN';
 		var data = {};
+		var condition  = '';
+		var sql  = '';
+		console.log(req.body);
 		// usp_addNewUser('id','user_name','email','emp_id','user_role')
 		if(req.body.user_id == 'undefined' || req.body.user_id == 0){
 			sql=`CALL public.usp_mitech_dashboard('0','` + req.body.stratbuyer_category +`','`+ req.body.mintec_sub_category +`','`+ req.body.dashboard_name +`','`+ req.body.dashboard_url +`','` + req.body.is_deleted + `','` + req.body.created_by + `');`;
@@ -81,33 +84,33 @@ module.exports = function(app, con) {
 		con.query(sql, function(err, result) {
 			if (err) {
 				console.log(err);
-				res.json({ status: false });
+				res.json({ status: false, message:'Error in Procedure' });
 				return;
-			};	
+			}else{
+				if (req.body.searchName != ''){
+					condition = condition + " AND dashboard_name LIKE '%" +req.body.searchName+"%'"
+				}
+				if (req.body.searchCategory != ''){
+					condition = condition +" AND stratbuyer_category = '" +req.body.searchCategory+"'"
+				}
+				var query = "SELECT * FROM public.tbl_mintec_dashboard where dashboard_name IS NOT NULL" + condition;
+				con.query(query, function(err, result) {
+					if (err) {
+						res.json({ status: false, message:'Error in All Data' });
+						return;
+					} else{
+						data.users = result.rows
+						res.json({ status: true, data: data });
+						return;
+					}			
+				});
+			}	
 		});
-		if (req.body.searchName != ''){
-            condition = condition + " AND dashboard_name LIKE '%" +req.body.searchName+"%'"
-        }
 
-        if (req.body.searchCategory != ''){
-            condition = condition +" AND category = '" +req.body.searchCategory+"'"
-        }
+        // console.log(query)
+        // console.log(req.query);
 
-        // if (req.body.searchCountry != ''){
-        //     condition = condition + " AND country_name = '" +req.body.searchCountry+"'"
-        // }
-
-		var query = "SELECT * FROM public.tbl_mintec_dashboard where dashboard_name IS NOT" + condition;
-        con.query(query, function(err, result) {
-			if (err) {
-				res.json({ status: true });
-				return;
-			} else{
-				data.users = result.rows
-                res.json({ status: true, data: data });
-				return;
-            }			
-		});
+        
     });
 
 	app.get('/edit_mintech_input', async function(req, res){
@@ -143,6 +146,7 @@ module.exports = function(app, con) {
 	app.post('/delete_mintech_input', async function(req, res){
 		var query = "DELETE FROM public.tbl_mintec_dashboard where id = '"+req.body.id +"'";
 		console.log(query);
+		var condition  = '';
 		await con.query(query, async function(err, result) {
 			if (err) {
 				res.json({ status: false });
@@ -152,7 +156,7 @@ module.exports = function(app, con) {
 					condition = condition + " AND dashboard_name LIKE '%" +req.body.searchName+"%'"
 				}
 				if (req.body.searchCategory != ''){
-					condition = condition +" AND category = '" +req.body.searchCategory+"'"
+					condition = condition +" AND stratbuyer_category = '" +req.body.searchCategory+"'"
 				}
 				// if (req.body.searchCountry != ''){
 				// 	condition = condition + " AND country_name = '" +req.body.searchCountry+"'"
