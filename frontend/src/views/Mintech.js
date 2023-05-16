@@ -199,9 +199,10 @@ const Home = props => {
         })
           .then(function (success) {
             //handle success 
-            console.log(res.data)  
-            setUsersInputsData(res.data.data.users)     
+            console.log(success.data.data.users) 
+            // setUsersInputsData(success.data.data.users)     
             if (success.data.status) {
+              setUsersInputsData(success.data.data.users)
               return MySwal.fire({
                 title: 'Done!',
                 text: 'Record has been deleted successfully',

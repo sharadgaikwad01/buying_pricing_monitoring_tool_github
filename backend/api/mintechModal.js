@@ -12,7 +12,7 @@ module.exports = function(app, con) {
 		var CountryOptions = [];
 
         if (req.query.searchName != ''){
-            condition = condition + " AND dashboard_name LIKE '%" +req.query.searchName+"%'"
+            condition = condition + " AND dashboard_name ILIKE '%" +req.query.searchName+"%'"
         }
 
         if (req.query.searchCategory != ''){
@@ -89,7 +89,7 @@ module.exports = function(app, con) {
 				return;
 			}else{
 				if (req.body.searchName != ''){
-					condition = condition + " AND dashboard_name LIKE '%" +req.body.searchName+"%'"
+					condition = condition + " AND dashboard_name ILIKE '%" +req.body.searchName+"%'"
 				}
 				if (req.body.searchCategory != ''){
 					condition = condition +" AND stratbuyer_category = '" +req.body.searchCategory+"'"
@@ -149,13 +149,14 @@ module.exports = function(app, con) {
 		console.log(res.body);
 		var condition  = '';
 		var data = {};
+		console.log(query);
 		await con.query(query, async function(err, result) {
 			if (err) {
 				res.json({ status: false, message:'Error in delete' });
 				return;
 			} else{			
 				if (req.body.searchName != ''){
-					condition = condition + " AND dashboard_name LIKE '%" +req.body.searchName+"%'"
+					condition = condition + " AND dashboard_name ILIKE '%" +req.body.searchName+"%'"
 				}
 				if (req.body.searchCategory != ''){
 					condition = condition +" AND stratbuyer_category = '" +req.body.searchCategory+"'"
@@ -182,39 +183,50 @@ module.exports = function(app, con) {
 		var len = mintech_inputs.length;
 		var sucess_count = 0;
 		var error_count = 0;
-		var count = 0;
+		// var count = 0;
 		var condition  = '';
-		// console.log(req.body);
+		console.log(mintech_inputs[0].dashboard_name);
+		var value = mintech_inputs[0];
 		async.waterfall([
 			function (callback) {
-				mintech_inputs.forEach(async function (value, key) {
-					if (value.dashboard_name && value.dashboard_name != 'null' && value.dashboard_name != undefined && value.dashboard_name != null) {
-							var sql = `CALL public.usp_mitech_dashboard('0','` + value.stratbuyer_category +`','`+ value.mintec_sub_category +`','`+ value.dashboard_name +`','`+ value.dashboard_url +`','0','` + req.body.created_by + `');`;
-							//var sql=`CALL public.usp_mitech_dashboard('0','` + value.stratbuyer_category +`','`+ value.mintec_sub_category +`','`+ value.dashboard_name +`','`+ value.dashboard_url +`','0','` + req.body.created_by + `');`;
-							console.log(sql);
-							await con.query(sql, function (err, result) {
-								if (err) {
-									error_count++;
-									if(error_count+sucess_count == len){
-										callback(null, sucess_count, error_count)
+				try{
+					mintech_inputs.forEach(function (value, key) {
+						if (value.dashboard_name && value.dashboard_name != 'null' && value.dashboard_name != undefined && value.dashboard_name != null) {
+								var sql=`CALL public.usp_mitech_dashboard('0','` + value.stratbuyer_category +`','`+ value.mintec_sub_category +`','`+ value.dashboard_name +`','`+ value.dashboard_url +`','1','` + req.body.created_by + `');`;
+								//var sql = `CALL public.usp_mitech_dashboard('0','` + value.stratbuyer_category +`','`+ value.mintec_sub_category +`','`+ value.dashboard_name +`','`+ value.dashboard_url +`','0','` + req.body.created_by + `');`;
+								console.log(sql);
+								con.query(sql, function(err, result) {
+									if (err) {
+										error_count++;
+										console.log(err.message);
+										// res.json({ status: false, message:err.message });
+										// return;
+										if(error_count+sucess_count == len){
+											callback(null, sucess_count, error_count)
+										}
+									} else {
+										// count++;
+										sucess_count++;
+										// res.json({ status: true, message:'success' });
+										// return;
+										if(error_count+sucess_count == len){
+											callback(null, sucess_count, error_count)
+										}
 									}
-								} else {
-									count++;
-									sucess_count++;
-									if(error_count+sucess_count == len){
-										callback(null, sucess_count, error_count)
-									}
-								}
-							});
-					}
-				});
+								});
+						}
+					});
+				}catch(error){
+					console.log(error);
+				}
+				
 			},
 			function (sucess_count, error_count, callback) {
 				if (req.body.searchName != ''){
-					condition = condition + " AND dashboard_name LIKE '%" +req.body.searchName+"%'"
+					condition = condition + " AND dashboard_name ILIKE '%" +req.body.searchName+"%'"
 				}
 				if (req.body.searchCategory != ''){
-					condition = condition +" AND stratbuyer_category = '" +req.body.searchCategory+"'"
+					condition = condition +" AND stratbuyer_category ILIKE '%" +req.body.searchCategory+"%'"
 				}
 				var query = "SELECT * FROM public.tbl_mintec_dashboard where dashboard_name IS NOT NULL"+ condition;
 				con.query(query, function(err, result) {
