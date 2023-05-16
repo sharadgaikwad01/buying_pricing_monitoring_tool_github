@@ -46,12 +46,14 @@ const NavbarUser = props => {
 
   return (
     <Fragment>
-      <div className='navbar-header  d-xl-block d-none'>
+      <div className='navbar-header '>
             <ul className='nav navbar-nav'>
               <NavItem>
                 <Link to='/' className='navbar-brand'>
                   <span className='brand-logo'>
-                    <img src={`${process.env.PUBLIC_URL}/logo/tool_logo.png`} alt='logo' />
+
+                    <img src={themeConfig.app.appLogoImage} alt='logo2' />
+
                   </span>
                   <h4 className='brand-text mb-0'>{themeConfig.app.appName}<br /></h4>
                 </Link>

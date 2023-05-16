@@ -19,8 +19,8 @@ const Routes = [
     component: lazy(() => import('../../views/faq'))
   },
   {
-    path: '/users',
-    component: lazy(() => import('../../views/Users'))
+    path: '/mintech',
+    component: lazy(() => import('../../views/Mintech'))
   },
   {
     path: '/buyers',

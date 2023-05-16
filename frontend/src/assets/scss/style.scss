@@ -218,7 +218,7 @@ background:unset !important;
 }
 .horizontal-menu .header-navbar.navbar-horizontal ul#main-menu-navigation > li > .dropdown-menu a:hover{
     background-color: #f9ae00;
-    color: #000 !important;
+    color: #333 !important;
 }
 .nav  .project-name{
     display: inline-block;
@@ -241,6 +241,18 @@ nav .dropdown-menu{
     line-height: 1;
     font-weight: bolder;
 }
+.user-nav{
+    line-height: 1.2;
+}
+.navbar-header{
+    position: relative !important;
+}
+.navbar-container{
+    min-height: auto !important;
+}
+.header-navbar .navbar-container ul.navbar-nav li a.dropdown-user-link .user-name{
+    margin-bottom: 0;
+}
 .nav-item-link.active{
     border-radius: 4px;
     box-shadow: 0 4px 6px -1px rgb(249 174 0/0.1),0 2px 4px -2px rgb(249 174 0/0.1);
@@ -249,6 +261,9 @@ nav .dropdown-menu{
     border-radius: 6px;
     opacity: 1;
     color: #0089cb;
+}
+.navbar-container {
+    min-height: auto;
 }
 .header-navbar .navbar-container ul.navbar-nav li > a.nav-link{
     color: #0089cb !important;
@@ -283,7 +298,7 @@ nav .dropdown-menu{
     border: 1px solid rgba(255, 255, 255, 0.125);
 }
 .dark-layout input.form-control, .dark-layout select.form-select, .dark-layout textarea.form-control {
-    background-color: #000000;
+    background-color: #333333;
     color: #e1e1e1;
 }
 .dark-layout .nav-item-link a.nav-link{
@@ -346,7 +361,7 @@ nav{
     font-size: 1.6rem;
 }
 .user-name {
-    color: #000 !important;
+    color: #333 !important;
 }
 .user-status{
     font-size: 14px !important;
@@ -519,7 +534,7 @@ color: #fff !important;
 }
 .selected-amenities .text-bg-info{
     background-color: rgba(0, 137, 203,.25);
-    color: #000000 !important;
+    color: #333333 !important;
     font-size: 1rem;
     margin-right: 10px;
 padding: 5px 15px;
@@ -565,18 +580,18 @@ padding: 5px 15px;
     border-radius: 6px;
     opacity: 1;
     padding: 5px 10px;
-    color: #000 !important;
+    color: #333 !important;
     font-weight: 600;
     min-width: 80px;
     text-align: center;
     width: auto;
 }
 .select2-selection__rendered{
-    color: #000 !important;
+    color: #333 !important;
 }
 .metro-theme-btn{
     background: #00A4C7 0% 0% no-repeat padding-box;
-    box-shadow: 0px 3px 6px #00000029;
+    box-shadow: 0px 3px 6px #33333329;
     border-radius: 6px;
     color: #fff;
     font-weight: 600;
@@ -588,12 +603,12 @@ padding: 5px 15px;
     border-radius: 6px;
     // color: #fff;
     font-weight: 600;
-    padding: 0.5rem 1.2rem !important;
+    padding: 0.4rem 1rem !important;
     font-size: 12px;
     line-height: 1 ;
 }
 .btn.btn-warning{
-    color: #000 !important;
+    color: #333 !important;
 }
 .select2{
     border-radius: 6px;
@@ -609,6 +624,10 @@ padding: 5px 15px;
 .select2-container--classic .select2-selection--single, .select2-container--default .select2-selection--single{
     min-height: 1.6rem !important;
     align-items: center;
+}
+.card .card-header{
+    margin-bottom: .8rem;
+    border-bottom: 2px solid #EEEEEE;
 }
 .select2-container--default .select2-selection--single .select2-selection__arrow{
     height: 30px;
@@ -679,16 +698,18 @@ table.dataTable>thead>tr>th:not(.sorting_disabled), table.dataTable>thead>tr>td:
 table.dataTable th{
     color: #323232;
 }
+
 .country-info-box {
     background: #f8f8f8 0% 0% no-repeat padding-box;
-    border: 2px solid #00296725;
-    border-radius: 4px;
-    padding: .7rem;
+    border-radius: .3rem;
+    padding: 0.7rem;
     min-width: 250px;
+    box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.1);
 }
 .country-info-box .country-flag img{
-    max-width: 2.4rem;
-    border: 1px solid rgb(211, 211, 211);
+    max-width: 2.6rem;
+    border: 1px solid #D5D5D5;
+    border-radius: .2rem;
 }
 .country-info-box .country-name{
     text-align: left;
@@ -712,7 +733,7 @@ table.dataTable th{
 }
 .incr-infla-badge{
     border-radius: 4px;
-    border: 1px solid #E2E2E2;
+    // border: 1px solid #E2E2E2;
     color: #fff;
     padding: 0.2rem 0.8rem;
     font-size: 1.2rem;
@@ -726,7 +747,7 @@ table.dataTable th{
 }
 .incr-infla-2{
     background: #FDCA53 0% 0% no-repeat padding-box;
-    color: #000;
+    color: #333;
 }
 .incr-infla-3{
     background: #F28E00 0% 0% no-repeat padding-box;
@@ -736,6 +757,16 @@ table.dataTable th{
 }
 .incr-infla-5{
     background: #7bd3aa 0% 0% no-repeat padding-box;
+}
+
+.supplier-req-infla-rate{
+    background: #F9AE00 0% 0% no-repeat padding-box;
+}
+.buyer-agreed-infla-rate{
+    background: #90C360 0% 0% no-repeat padding-box;
+}
+.color-indicator .incr-infla-badge{
+    min-width: 35px;
 }
 .country-info-left{
     display: contents;
@@ -764,7 +795,7 @@ table.dataTable th{
 }
 
 .card-body {
-    padding: 0.5rem 1rem;
+    padding: 1rem;
 }
 
 .react-dataTable .rdt_TableBody .rdt_TableRow .rdt_TableCell{
@@ -780,12 +811,12 @@ table.dataTable th{
 .card.pageBox{
     background-color: unset !important;
     box-shadow: 0 4px 6px -1px rgb(0 0 0 / 10%), 0 2px 4px -2px rgb(0 0 0 / 10%);
-    background: rgb(237 234 234 / 70%) no-repeat padding-box !important;
+    background: #f9f9f650 no-repeat padding-box !important;
     border: 4px solid #fff;
     border-radius: 6px;
     opacity: 1;
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(32px);
+    -webkit-backdrop-filter: blur(32px);
 }
 .brand-text{
     color: #00A4C7 !important;
@@ -956,3 +987,35 @@ category-Select {
     -webkit-transform: rotate(180deg);
     transform: rotate(180deg);
 }
+.document-btn-row button{
+    padding: .3rem .8rem !important;
+    margin-left: .5rem !important;
+    margin-bottom: .5rem;
+}
+.document-btn-row .btn-group{
+
+}
+.document-btn-row .dropdown-toggle::after {
+    left: .5rem;
+}
+.dropdown-menu .dropdown-item{
+    width: 100%;
+}
+.deleteTableIcon,
+.editTableIcon {
+    cursor: pointer;
+}
+@media (max-width: 600px){
+    .vertical-overlay-menu .navbar .navbar-header {
+        float: left;
+        width: auto;
+        min-width: auto;
+    }
+    .navbar-brand{
+        display: none;
+    }
+    .navbar-container{
+        justify-content: space-between;
+    }
+}
+

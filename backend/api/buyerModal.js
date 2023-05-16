@@ -11,17 +11,11 @@ module.exports = function (app, con) {
         var CountryOptions = [];
         var deptOptions = [];
 
-		
-        if (req.query.searchName != '') {
-            // condition = condition + " AND first_name ILIKE '%" + req.query.searchName +"%' OR last_name ILIKE '%" +req.query.searchName +"%' OR RTRIM(CONCAT(LTRIM(RTRIM(first_name)) , ' ' , LTRIM(RTRIM(last_name)))) ILIKE '%" +req.query.searchName +"%'  OR RTRIM(CONCAT(LTRIM(RTRIM(last_name)) , ' ' , LTRIM(RTRIM(first_name)))) ILIKE '%" +req.query.searchName +"%'"
-            condition = condition + " AND RTRIM(CONCAT(LTRIM(RTRIM(first_name)) , ' ' , LTRIM(RTRIM(last_name)))) ILIKE '%" +req.query.searchName +"%'"
-        }
-
 		if (req.query.searchName != '') {
 			condition = condition + " AND RTRIM(CONCAT(LTRIM(RTRIM(first_name)) , ' ' , LTRIM(RTRIM(last_name)))) ILIKE '%" +req.query.searchName +"%'"
 		}
-		if (req.query.searchName != '') {
-			condition = condition + " AND RTRIM(LTRIM(RTRIM(buyer_emailid))) ILIKE '%" +req.query.searchName +"%'"
+		if (req.query.searchEmail != '') {
+			condition = condition + " AND RTRIM(LTRIM(RTRIM(buyer_emailid))) ILIKE '%" +req.query.searchEmail +"%'"
 		}
 
 		var getUniqueSupplierIdQuery = "select distinct stratbuyer_id, stratbuyer_name from tbl_stratbuyer_details";
@@ -58,7 +52,7 @@ module.exports = function (app, con) {
 									option = { value: value.dept_name, label: value.dept_name }
 									deptOptions.push(option);
 								});
-								var query = "SELECT array_agg(row_id) as row_id, first_name, last_name, buyer_emailid, dept_name, country_name,string_agg(stratbuyer_name,', ') stratbuyer_name FROM tbl_buyer_details where buyer_emailid IS NOT NULL AND active_status='active'" + condition + " group by first_name, last_name, buyer_emailid, dept_name, country_name";
+								var query = "SELECT array_agg(row_id) as row_id, first_name, last_name, buyer_emailid, dept_name, role_name, country_name,string_agg(stratbuyer_name,', ') stratbuyer_name FROM tbl_buyer_details where buyer_emailid IS NOT NULL AND active_status='active'" + condition + " group by first_name, last_name, buyer_emailid, dept_name, country_name, role_name";
 								con.query(query, function (err, result) {
 									if (err) {
 										console.log(err)
@@ -79,8 +73,9 @@ module.exports = function (app, con) {
 
 	app.post('/buyers_add_input', async function (req, res) {
 		if (req.body.stratbuyer_name) {
+			console.log(req.body)
 			const stratbuyer_name = Array.prototype.map.call(req.body.stratbuyer_name, function (item) { return item.label; }).join(",")
-			var query = "call public.usp_update_buyerdetails ('" + req.body.first_name + "', '" + req.body.last_name + "', '" + req.body.dept_name + "', '" + req.body.buyer_emailid + "', '" + req.body.country_name + "', '" + stratbuyer_name + "')";
+			var query = "call public.usp_update_buyerdetails ('" + req.body.first_name + "', '" + req.body.last_name + "', '" + req.body.dept_name + "', '" + req.body.buyer_emailid + "', '" + req.body.country_name + "','" + req.body.role_name + "', '" + stratbuyer_name + "')";
 			await con.query(query, async function (err, result) {
 				if (err) {
 					console.log(err)
@@ -91,7 +86,10 @@ module.exports = function (app, con) {
 					if (req.body.searchName != '') {
 						condition = condition + " AND RTRIM(CONCAT(LTRIM(RTRIM(first_name)) , ' ' , LTRIM(RTRIM(last_name)))) ILIKE '%" +req.body.searchName +"%'"
 					}
-					var queryalldata = "SELECT array_agg(row_id) as row_id, first_name, last_name, buyer_emailid, dept_name, country_name,string_agg(stratbuyer_name,', ') stratbuyer_name FROM tbl_buyer_details where buyer_emailid IS NOT NULL AND active_status='active' " + condition + " group by first_name, last_name, buyer_emailid, dept_name, country_name";
+					if (req.body.searchEmail != '') {
+						condition = condition + " AND RTRIM(LTRIM(RTRIM(buyer_emailid))) ILIKE '%" +req.body.searchEmail +"%'"
+					}
+					var queryalldata = "SELECT array_agg(row_id) as row_id, first_name, last_name, buyer_emailid, dept_name, role_name, country_name,string_agg(stratbuyer_name,', ') stratbuyer_name FROM tbl_buyer_details where buyer_emailid IS NOT NULL AND active_status='active' " + condition + " group by first_name, last_name, buyer_emailid, dept_name, country_name, role_name";
 					await con.query(queryalldata, function (errall, resultall) {
 						if (errall) {
 							res.json({ status: false, message: "fetch all data" });
@@ -113,8 +111,13 @@ module.exports = function (app, con) {
 		var len = req.body.row_id.length;
 		var count = 0;
 		var condition = '';
+		console.log(req.body);
+		
 		if (req.body.searchName != '') {
 			condition = condition + " AND RTRIM(CONCAT(LTRIM(RTRIM(first_name)) , ' ' , LTRIM(RTRIM(last_name)))) ILIKE '%" +req.body.searchName +"%'"
+		}
+		if (req.body.searchEmail != '') {
+			condition = condition + " AND RTRIM(LTRIM(RTRIM(buyer_emailid))) ILIKE '%" +req.body.searchEmail +"%'"
 		}
 		if (req.body.row_id) {
 			req.body.row_id.forEach(async function (value, key) {
@@ -125,7 +128,7 @@ module.exports = function (app, con) {
 					} else {
 						count++;
 						if (len == count) {
-							var queryalldata = "SELECT array_agg(row_id) as row_id, first_name, last_name, buyer_emailid, dept_name, country_name,string_agg(stratbuyer_name,', ') stratbuyer_name FROM tbl_buyer_details where buyer_emailid IS NOT NULL AND active_status='active' " + condition + " group by first_name, last_name, buyer_emailid, dept_name, country_name";
+							var queryalldata = "SELECT array_agg(row_id) as row_id, first_name, last_name, buyer_emailid, dept_name, role_name, country_name,string_agg(stratbuyer_name,', ') stratbuyer_name FROM tbl_buyer_details where buyer_emailid IS NOT NULL AND active_status='active' " + condition + " group by first_name, last_name, buyer_emailid, dept_name, country_name, role_name";
 							await con.query(queryalldata, function (errall, resultall) {
 								if (errall) {
 									res.json({ status: false, message: "Select all insert" });

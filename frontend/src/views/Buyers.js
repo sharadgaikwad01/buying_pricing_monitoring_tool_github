@@ -56,6 +56,7 @@ const Buyers = props => {
 
   const [UsersInputsData, setUsersInputsData] = useState([])
   const [searchName, setsearchName] = useState('')
+  const [searchEmail, setsearchEmail] = useState('')
   const [rowData, setRowData] = useState([])
   // const [searchRequestedDate, setSearchRequestedDate] = useState('')
   // const [Status, setStatus] = useState('')
@@ -80,23 +81,23 @@ const Buyers = props => {
   const handlePagination = page => {
     setCurrentPage(page.selected)
   }
-  // const handlebuyers = () => {
-  //   props.history.push('/users')
-  // }
+  const handlebuyers = () => {
+    props.history.push('/mintech')
+  }
    
   useEffect(async () => {
   const user_type = localStorage.getItem("type")
     if (user_type === '') {
       props.history.push('/buyer_login')
     }
-    if (user_type === 'BUYER') {
-      props.history.push('/buyer_input')
-    }
-    if (user_type === 'SUPPLIER') {
-      props.history.push('/home')
-    }
+    // if (user_type === 'BUYER') {
+    //   props.history.push('/buyer_input')
+    // }
+    // if (user_type === 'SUPPLIER') {
+    //   props.history.push('/home')
+    // }
 
-    await axios.get(`${nodeBackend}/buyers`, { params: { searchName } }).then((res) => {
+    await axios.get(`${nodeBackend}/buyers`, { params: { searchName, searchEmail } }).then((res) => {
      
       setUsersInputsData(res.data.data)  
       setarticalNumberOptions(res.data.options)  
@@ -138,7 +139,14 @@ const Buyers = props => {
   const handleNameFilter = async (e) => {
     const searchName = e.target.value
     setsearchName(searchName)
-    await axios.get(`${nodeBackend}/buyers`, { params: { searchName } }).then((res) => {
+    await axios.get(`${nodeBackend}/buyers`, { params: { searchName, searchEmail } }).then((res) => {
+      setUsersInputsData(res.data.data)
+    })
+  } 
+  const handleEmailFilter = async (e) => {
+    const searchEmail = e.target.value
+    setsearchEmail(searchEmail)
+    await axios.get(`${nodeBackend}/buyers`, { params: { searchName, searchEmail } }).then((res) => {
       setUsersInputsData(res.data.data)
     })
   }
@@ -169,6 +177,7 @@ const Buyers = props => {
   
   const handleDelete = (e, row) => {
     const row_id = row.row_id
+    console.log(row_id)
     e.preventDefault()
     MySwal.fire({
       title: 'Are you sure?',
@@ -186,7 +195,7 @@ const Buyers = props => {
         axios({
           method: "post",
           url: `${nodeBackend}/delete_buyer_input`,
-          data: { row_id, searchName}
+          data: { row_id, searchName, searchEmail}
         }) 
           .then(function (success) {
             console.log(success.data.status)
@@ -277,6 +286,11 @@ const Buyers = props => {
       selector: row => row.country_name
     },
     {
+      name: 'Role',
+      sortable: true,
+      selector: row => row.role_name
+    },
+    {
       name: 'Status',
       sortable: true,
       // selector: row => row.active_status,
@@ -294,15 +308,15 @@ const Buyers = props => {
       <Card className='pageBox user-screen'>
         <CardHeader className='flex-md-row flex-column align-md-items-center align-items-start border-bottom'>
           <CardTitle tag='h2'>Buyers Data</CardTitle>
-          <div className='d-flex mt-md-0 mt-1'>
+          <div className='d-flex mt-md-0 mt-1 btn-row'>
             <Button.Ripple className='ms-2 btn-icon' color='primary' onClick={handleAdd}>
               <Plus size={16} />
               <span className='align-middle ms-25'>Add New Buyer</span>
             </Button.Ripple>
-            {/* <Button.Ripple className='ms-2' outline color='warning' onClick={handlebuyers}> */}
-              {/* <Download size={14} /> */}
-              {/* <span className='align-middle ms-25'>All Users</span> */}
-            {/* </Button.Ripple> */}
+            <Button.Ripple className='ms-2' outline color='warning' onClick={handlebuyers}>
+              <Download size={14} />
+               <span className='align-middle ms-25'>Mintech Master</span> 
+            </Button.Ripple>
            
           </div>
         </CardHeader>
@@ -313,6 +327,13 @@ const Buyers = props => {
                 Buyer Name:
               </Label>
               <Input className='form-control' type='text' id='name' placeholder='Buyer Name' value={searchName} onChange={handleNameFilter} /> 
+            </Col>
+
+            <Col className='mb-1 col-auto'>
+               <Label className='form-label' for='email'>
+                Buyer Email:
+              </Label>
+              <Input className='form-control' type='text' id='email' placeholder='Buyer Name' value={searchEmail} onChange={handleEmailFilter} /> 
             </Col>
 
              {/* <Col className='mb-1 col-auto'>
@@ -352,7 +373,7 @@ const Buyers = props => {
           </Row>
         </CardBody>       
       </Card>
-      <AddNewModalBuyer open={modal} handleModal={handleModal} rowData={rowData} articalNumberOptions={articalNumberOptions} countryOptions={countryOptions} deptOptions={deptOptions} setUsersInputsData={setUsersInputsData} searchName={searchName} />
+      <AddNewModalBuyer open={modal} handleModal={handleModal} rowData={rowData} articalNumberOptions={articalNumberOptions} countryOptions={countryOptions} deptOptions={deptOptions} setUsersInputsData={setUsersInputsData} searchName={searchName} searchEmail={searchEmail}/>
     </Fragment>
   )
 } 
