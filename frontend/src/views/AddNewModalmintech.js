@@ -22,7 +22,7 @@ import withReactContent from 'sweetalert2-react-content'
 import { useState, useEffect } from 'react'
 const MySwal = withReactContent(Swal)
 
-const AddNewModalUser = ({open, handleModal, rowData, CategoryOptions, setUsersInputsData, searchName, searchCategory}) => {
+const AddNewModalUser =  ({open, handleModal, rowData, CategoryOptions, setUsersInputsData, searchName, searchCategory}) => {
   // const [UserData, setUsersData] = useState({user_name:'', email:'', user_id:'', emp_id:'', row_id:''})
   // const [NameValue, setNameValue] = useState('')
   // const [EmailValue, setEmailValue] = useState('')
@@ -62,43 +62,45 @@ const AddNewModalUser = ({open, handleModal, rowData, CategoryOptions, setUsersI
     reset,
     formState: { errors }
   } = useForm({ mode: 'onChange', resolver: yupResolver(validationSchema) })
-  console.log(rowData)
 
   useEffect(async () => {
+    console.log(rowData.stratbuyer_id)
+    
     // setUsersData(rowData)
       // await setCountryValue(rowData.country_name)
       // setValue('country_name', rowData.country_name)
       // await setRegion(rowData.region)
       // setValue('region', rowData.region)
       if (rowData.dashboard_name) {
-      await setdashboard_nameValue(rowData.dashboard_name)
+      console.log(rowData.stratbuyer_category.trim())
+      setdashboard_nameValue(rowData.dashboard_name)
       setValue('dashboard_name', rowData.dashboard_name, { shouldValidate:true })
       
-      await setdashboard_urlValue(rowData.dashboard_url)
+      setdashboard_urlValue(rowData.dashboard_url)
       setValue('dashboard_url', rowData.dashboard_url, { shouldValidate:true })
 
-      await setCategoryValue(rowData.stratbuyer_category)
-      setValue('stratbuyer_category', rowData.stratbuyer_category, { shouldValidate:true })
+      setCategoryValue(rowData.stratbuyer_category.trim())
+      setValue('stratbuyer_category', rowData.stratbuyer_category.trim())
       
-      await setSubCategoryValue(rowData.mintec_sub_category)
+      setSubCategoryValue(rowData.mintec_sub_category)
       setValue('mintec_sub_category', rowData.mintec_sub_category)
 
-      await setUserIdValue(rowData.id)
+      setUserIdValue(rowData.id)
       } else {
 
-      await setdashboard_nameValue(rowData.dashboard_name)
+      setdashboard_nameValue(rowData.dashboard_name)
       setValue('dashboard_name', rowData.dashboard_name)
       
-      await setdashboard_urlValue(rowData.dashboard_url)
+      setdashboard_urlValue(rowData.dashboard_url)
       setValue('dashboard_url', rowData.dashboard_url)
 
-      await setCategoryValue(rowData.stratbuyer_category)
+      setCategoryValue(rowData.stratbuyer_category)
       setValue('stratbuyer_category', rowData.stratbuyer_category)
       
-      await setSubCategoryValue(rowData.mintec_sub_category)
+      setSubCategoryValue(rowData.mintec_sub_category)
       setValue('mintec_sub_category', rowData.mintec_sub_category)
 
-      await setUserIdValue(rowData.id)
+      setUserIdValue(rowData.id)
       }
       //setValue('user_id', rowData.row_id)
     // setEmailValue(rowData.email)
@@ -249,16 +251,17 @@ const AddNewModalUser = ({open, handleModal, rowData, CategoryOptions, setUsersI
             <Label className='form-label' for='stratbuyer_category'>
              Category
             </Label>
-            <Controller category="select-custom-wrap"
+            <Controller
               name="stratbuyer_category"
+              id="stratbuyer_category"
               control={control}
               render={({ field: { onChange, value } }) => (
                 <Select
                   options={CategoryOptions}
-                  className='is-invalid select-custom'
-                  classNamePrefix="react-select"
                   value={CategoryOptions.find((c) => c.value === value)}
+                  // isSearchable={true}
                   onChange={(val) => onChange(val.value)}
+                  // onChange={(val) => { setCategoryValue(val); onChange(val.value); setValue('stratbuyer_category', val.value, { shouldValidate: true }) }}
                 />
               )}
             />

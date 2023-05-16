@@ -1,5 +1,6 @@
 const http = require('http');
 var nodemailer = require('nodemailer');
+var async = require("async");
 //=========== MonthEnd API Module ===================
 module.exports = function(app, con) {
     app.get('/mintech', async function(req, res){
@@ -29,8 +30,8 @@ module.exports = function(app, con) {
 				res.json({ status: false });
 				return;
 			} else {
-				result.rows.forEach(function (value, key) {
-					option = { value: value.stratbuyer_id, label: value.stratbuyer_name }
+				result.rows.forEach(function (row, key) {
+					option = { value: row.stratbuyer_name, label: row.stratbuyer_name }
 					CategoryOptions.push(option);
 				});
 				data.CategoryOptions = CategoryOptions;
@@ -145,11 +146,12 @@ module.exports = function(app, con) {
 
 	app.post('/delete_mintech_input', async function(req, res){
 		var query = "DELETE FROM public.tbl_mintec_dashboard where id = '"+req.body.id +"'";
-		console.log(query);
+		console.log(res.body);
 		var condition  = '';
+		var data = {};
 		await con.query(query, async function(err, result) {
 			if (err) {
-				res.json({ status: false });
+				res.json({ status: false, message:'Error in delete' });
 				return;
 			} else{			
 				if (req.body.searchName != ''){
@@ -158,21 +160,74 @@ module.exports = function(app, con) {
 				if (req.body.searchCategory != ''){
 					condition = condition +" AND stratbuyer_category = '" +req.body.searchCategory+"'"
 				}
-				// if (req.body.searchCountry != ''){
-				// 	condition = condition + " AND country_name = '" +req.body.searchCountry+"'"
-				// }
-				var query = "SELECT * FROM public.tbl_mintec_dashboard where dashboard_name IS NOT" + condition;
-				await con.query(query, function(err, result) {
+				var query = "SELECT * FROM public.tbl_mintec_dashboard where dashboard_name IS NOT NULL" + condition;
+				con.query(query, function(err, result) {
 					if (err) {
-						res.json({ status: false });
+						res.json({ status: false, message:'Error in All Data' });
 						return;
-					} else{	
+					} else{
 						data.users = result.rows
 						res.json({ status: true, data: data });
 						return;
-					}
+					}			
 				});
             }			
 		});
+	});
+
+	app.post('/upload_mintech_input', async function (req, res) {
+		var data = {};
+		var mintech_inputs = req.body.mintech_inputs
+		// var created_by = req.body.created_by
+		var len = mintech_inputs.length;
+		var sucess_count = 0;
+		var error_count = 0;
+		var count = 0;
+		var condition  = '';
+		// console.log(req.body);
+		async.waterfall([
+			function (callback) {
+				mintech_inputs.forEach(async function (value, key) {
+					if (value.dashboard_name && value.dashboard_name != 'null' && value.dashboard_name != undefined && value.dashboard_name != null) {
+							var sql = `CALL public.usp_mitech_dashboard('0','` + value.stratbuyer_category +`','`+ value.mintec_sub_category +`','`+ value.dashboard_name +`','`+ value.dashboard_url +`','0','` + req.body.created_by + `');`;
+							//var sql=`CALL public.usp_mitech_dashboard('0','` + value.stratbuyer_category +`','`+ value.mintec_sub_category +`','`+ value.dashboard_name +`','`+ value.dashboard_url +`','0','` + req.body.created_by + `');`;
+							console.log(sql);
+							await con.query(sql, function (err, result) {
+								if (err) {
+									error_count++;
+									if(error_count+sucess_count == len){
+										callback(null, sucess_count, error_count)
+									}
+								} else {
+									count++;
+									sucess_count++;
+									if(error_count+sucess_count == len){
+										callback(null, sucess_count, error_count)
+									}
+								}
+							});
+					}
+				});
+			},
+			function (sucess_count, error_count, callback) {
+				if (req.body.searchName != ''){
+					condition = condition + " AND dashboard_name LIKE '%" +req.body.searchName+"%'"
+				}
+				if (req.body.searchCategory != ''){
+					condition = condition +" AND stratbuyer_category = '" +req.body.searchCategory+"'"
+				}
+				var query = "SELECT * FROM public.tbl_mintec_dashboard where dashboard_name IS NOT NULL"+ condition;
+				con.query(query, function(err, result) {
+					if (err) {
+						res.json({ status: false, message:'Error in All Data' });
+						return;
+					} else{
+						data.users = result.rows
+						res.json({ status: true, data: data, sucess_count, error_count });
+						return;
+					}			
+				});
+			}
+		]);
 	});
 }

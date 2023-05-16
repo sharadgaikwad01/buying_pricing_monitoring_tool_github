@@ -22,7 +22,7 @@ import withReactContent from 'sweetalert2-react-content'
 import { useState, useEffect } from 'react'
 const MySwal = withReactContent(Swal)
 
-const AddNewModalBuyer = ({ open, handleModal, rowData, articalNumberOptions, countryOptions, deptOptions, setUsersInputsData, searchName }) => {
+const AddNewModalBuyer = ({ open, handleModal, rowData, articalNumberOptions, countryOptions, deptOptions, setUsersInputsData, searchName, searchEmail }) => {
   // const [UserData, setUsersData] = useState({user_name:'', email:'', emp_id:'', row_id:''})
   const [DepartmentValue, setDepartmentValue] = useState('')
   const [FNameValue, setFNameValue] = useState('')
@@ -72,7 +72,7 @@ const AddNewModalBuyer = ({ open, handleModal, rowData, articalNumberOptions, co
         setValue('buyer_emailid', rowData.buyer_emailid)
         
         await setRoleValue(rowData.role_name)
-        setValue('role', rowData.role_name)
+        setValue('role_name', rowData.role_name)
         
       } else {
         setIsEdit(false)
@@ -93,7 +93,7 @@ const AddNewModalBuyer = ({ open, handleModal, rowData, articalNumberOptions, co
         setValue('buyer_emailid', rowData.buyer_emailid)
 
         setRoleValue(rowData.role_name)
-        setValue('role', rowData.role_name)
+        setValue('role_name', rowData.role_name)
       }
       
       await setUserValue(rowData.user_id)
@@ -130,7 +130,7 @@ const AddNewModalBuyer = ({ open, handleModal, rowData, articalNumberOptions, co
     axios({
       method: "post",
       url: `${nodeBackend}/buyers_add_input`,
-      data: { first_name, last_name, dept_name, buyer_emailid, stratbuyer_name, country_name, searchName, role_name }
+      data: { first_name, last_name, dept_name, buyer_emailid, stratbuyer_name, country_name, searchName, role_name, searchEmail }
     })
       .then(async function (success) {
         if (success.status) {

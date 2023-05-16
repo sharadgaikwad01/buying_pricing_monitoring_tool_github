@@ -68,7 +68,7 @@ const Home = props => {
   // ** Function to handle Modal toggle
   const handleModal = () => setModal(!modal)
   
-  const [UserData] = useState({dashboard_name :'', id:'', stratbuyer_id:'', stratbuyer_category:'', mintec_sub_category: '', dashboard_url:'', created_by:''})
+  const [UserData] = useState({dashboard_name :'', id:'0', stratbuyer_id:'', stratbuyer_category:'', mintec_sub_category: '', dashboard_url:'', created_by:''})
 
   const handlemintechModal = () => setmintechModal(!mintechModal)
 
@@ -166,19 +166,18 @@ const Home = props => {
 
   const handleEdit = async (e, row) => {
     e.preventDefault()
-    console.log(row)
-    handleModal()
     setRowData(row)
+    handleModal()
   }
   
   const handleAdd = async (e) => {
     e.preventDefault()
-    handleModal()
     setRowData(UserData)
+    handleModal()
   }
   
   const handleDelete = (e, row) => {
-    const id = row.row_id
+    const id = row.id
     e.preventDefault()
     MySwal.fire({
       title: 'Are you sure?',
@@ -196,10 +195,12 @@ const Home = props => {
         axios({
           method: "post",
           url: `${nodeBackend}/delete_mintech_input`,
-          data: { id }
+          data: { id, searchCategory, searchName }
         })
           .then(function (success) {
-            //handle success        
+            //handle success 
+            console.log(res.data)  
+            setUsersInputsData(res.data.data.users)     
             if (success.data.status) {
               return MySwal.fire({
                 title: 'Done!',
@@ -296,16 +297,16 @@ const Home = props => {
         <CardHeader className='flex-md-row flex-column align-md-items-center align-items-start border-bottom'>
           <CardTitle tag='h2'>Mintech Master</CardTitle>
           <div className='d-flex mt-md-0 mt-1 btn-row'>
-          {/* <a href='/sample.xlsx' download>
+          <a href='/mintech_sample.xlsx' download>
             <Button.Ripple className='ms-1' color='primary' >
                 <Download size={14} />
                 <span className='align-middle ms-25'>Sample File</span>
               </Button.Ripple>
-          </a> */}
-          {/* <Button.Ripple className='ms-1' outline color='info' onClick={handlemintechModal}>
+          </a>
+          <Button.Ripple className='ms-1' outline color='info' onClick={handlemintechModal}>
               <Upload size={14} />
-              <span className='align-middle ms-25'>Upload Multiple Article Inputs</span>
-            </Button.Ripple> */}
+              <span className='align-middle ms-25'>Upload Mintech Inputs</span>
+            </Button.Ripple>
             <Button.Ripple className='ms-2 btn-icon' color='primary' onClick={handleAdd}>
               <Plus size={16} />
               <span className='align-middle ms-25'>Add New Data</span>
@@ -383,7 +384,7 @@ const Home = props => {
         </CardBody>       
       </Card>
       <AddNewModalUser open={modal} handleModal={handleModal} rowData={rowData} CategoryOptions={CategoryOptions} setUsersInputsData={setUsersInputsData} searchName={searchName} searchCategory={searchCategory}/>
-      <UploadmintechModal open={mintechModal} handleModal={handlemintechModal} />
+      <UploadmintechModal open={mintechModal} handleModal={handlemintechModal} setUsersInputsData={setUsersInputsData} searchName={searchName} searchCategory={searchCategory}/>
     </Fragment>
   )
 }

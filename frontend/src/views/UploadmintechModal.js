@@ -18,9 +18,7 @@ const MySwal = withReactContent(Swal)
 
 import { read, utils } from 'xlsx'
 
-const UploadmintechModal = ({ open, handleModal, setsupplierInputsData }) => {
-  const country = localStorage.getItem('country')
-  const vat_number = localStorage.getItem('vat')
+const UploadmintechModal = ({ open, handleModal, setUsersInputsData, searchName, searchCategory }) => {
 
   // ** Custom close btn
   const CloseBtn = <X className='cursor-pointer' size={15} onClick={handleModal} />
@@ -34,14 +32,15 @@ const UploadmintechModal = ({ open, handleModal, setsupplierInputsData }) => {
   }
 
   async function uploadFile(data) {
-    const supplier_inputs = data
+    const mintech_inputs = data
+    const created_by = localStorage.getItem('email')
     await axios({
       method: "post",
-      url: `${nodeBackend}/upload_supplier_input`,
-      data: { supplier_inputs, country, vat_number }
+      url: `${nodeBackend}/upload_mintech_input`,
+      data: { mintech_inputs, created_by, searchName, searchCategory }
     })
       .then(function (success) {
-        setsupplierInputsData(success.data.data.supplierInputs)
+        setUsersInputsData(success.data.data.users)
         if (success.data.status) {
           return MySwal.fire({
             title: 'Done!',
@@ -55,7 +54,7 @@ const UploadmintechModal = ({ open, handleModal, setsupplierInputsData }) => {
         } else {
           return MySwal.fire({
             title: 'Duplicate entry found.',
-            text: 'Request already open for article. Please check file records',
+            text: 'Data already exist. Please check file records',
             icon: 'error',
             customClass: {
               confirmButton: 'btn btn-primary'
@@ -81,7 +80,7 @@ const UploadmintechModal = ({ open, handleModal, setsupplierInputsData }) => {
     const csvHeader = string.slice(0, string.indexOf("\n")).split(",")
     const csvRows = string.slice(string.indexOf("\n") + 1).split("\n")
 
-    const supplier_inputs = csvRows.map(i => {
+    const mintech_inputs = csvRows.map(i => {
       const values = i.split(",")
 
       const obj = csvHeader.reduce((object, header, index) => {
@@ -94,7 +93,7 @@ const UploadmintechModal = ({ open, handleModal, setsupplierInputsData }) => {
       return obj
     })
     handleModal(false)    
-    uploadFile(supplier_inputs)
+    uploadFile(mintech_inputs)
   }
 
   const handleOnSubmit = (e) => {
@@ -118,15 +117,10 @@ const UploadmintechModal = ({ open, handleModal, setsupplierInputsData }) => {
             const rowObj = utils.sheet_to_row_object_array(wb.Sheets[sheetName], { header: 1, raw: false, blankrows: false, dateNF: 'yyyy-mm-dd' })
             console.log(rowObj)
             const customHeadingsData = rowObj.map((item) => ({
-                country_name : item[0],
-                vat_no : item[1],
-                suppl_no : item[2],
-                art_no : item[3],
-                art_name : item[4],
-                umbrella_name : item[5],
-                new_price : item[6],
-                price_change_reason : item[7],
-                price_increase_effective_date : item[8]
+                dashboard_name : item[0],
+                dashboard_url : item[1],
+                stratbuyer_category : item[2],
+                mintec_sub_category : item[3]
               }
             ))
             customHeadingsData.shift()
@@ -146,7 +140,7 @@ const UploadmintechModal = ({ open, handleModal, setsupplierInputsData }) => {
       contentClassName='pt-0'
     >
       <ModalHeader className='mb-1' toggle={handleModal} close={CloseBtn} tag='div'>
-        <h5 className='modal-title'>Upload Users</h5>
+        <h5 className='modal-title'>Upload Mintech Data</h5>
       </ModalHeader>
       <ModalBody className='flex-grow-1'>
         <Row className='mb-50'>
@@ -157,9 +151,9 @@ const UploadmintechModal = ({ open, handleModal, setsupplierInputsData }) => {
             <Col lg='12' md='6' className='mb-1'>
                     Note : While Uploading Article 
                 <ul>
-                    <li>User Name should be unique value</li>
+                    <li>Dashboard Name should be unique value</li>
                     <li>All field are a required field</li>
-                    <li>Employee ID must be 8 Digit</li>
+                    {/* <li>Employee ID must be 8 Digit</li> */}
                 </ul>
             </Col>
           

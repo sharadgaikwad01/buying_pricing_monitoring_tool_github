@@ -14,8 +14,8 @@ module.exports = function (app, con) {
 		if (req.query.searchName != '') {
 			condition = condition + " AND RTRIM(CONCAT(LTRIM(RTRIM(first_name)) , ' ' , LTRIM(RTRIM(last_name)))) ILIKE '%" +req.query.searchName +"%'"
 		}
-		if (req.query.searchName != '') {
-			condition = condition + " AND RTRIM(LTRIM(RTRIM(buyer_emailid))) ILIKE '%" +req.query.searchName +"%'"
+		if (req.query.searchEmail != '') {
+			condition = condition + " AND RTRIM(LTRIM(RTRIM(buyer_emailid))) ILIKE '%" +req.query.searchEmail +"%'"
 		}
 
 		var getUniqueSupplierIdQuery = "select distinct stratbuyer_id, stratbuyer_name from tbl_stratbuyer_details";
@@ -86,8 +86,8 @@ module.exports = function (app, con) {
 					if (req.body.searchName != '') {
 						condition = condition + " AND RTRIM(CONCAT(LTRIM(RTRIM(first_name)) , ' ' , LTRIM(RTRIM(last_name)))) ILIKE '%" +req.body.searchName +"%'"
 					}
-					if (req.body.searchName != '') {
-						condition = condition + " AND RTRIM(LTRIM(RTRIM(buyer_emailid))) ILIKE '%" +req.body.searchName +"%'"
+					if (req.body.searchEmail != '') {
+						condition = condition + " AND RTRIM(LTRIM(RTRIM(buyer_emailid))) ILIKE '%" +req.body.searchEmail +"%'"
 					}
 					var queryalldata = "SELECT array_agg(row_id) as row_id, first_name, last_name, buyer_emailid, dept_name, role_name, country_name,string_agg(stratbuyer_name,', ') stratbuyer_name FROM tbl_buyer_details where buyer_emailid IS NOT NULL AND active_status='active' " + condition + " group by first_name, last_name, buyer_emailid, dept_name, country_name, role_name";
 					await con.query(queryalldata, function (errall, resultall) {
@@ -116,8 +116,8 @@ module.exports = function (app, con) {
 		if (req.body.searchName != '') {
 			condition = condition + " AND RTRIM(CONCAT(LTRIM(RTRIM(first_name)) , ' ' , LTRIM(RTRIM(last_name)))) ILIKE '%" +req.body.searchName +"%'"
 		}
-		if (req.body.searchName != '') {
-			condition = condition + " AND RTRIM(LTRIM(RTRIM(buyer_emailid))) ILIKE '%" +req.body.searchName +"%'"
+		if (req.body.searchEmail != '') {
+			condition = condition + " AND RTRIM(LTRIM(RTRIM(buyer_emailid))) ILIKE '%" +req.body.searchEmail +"%'"
 		}
 		if (req.body.row_id) {
 			req.body.row_id.forEach(async function (value, key) {

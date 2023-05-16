@@ -56,6 +56,7 @@ const Buyers = props => {
 
   const [UsersInputsData, setUsersInputsData] = useState([])
   const [searchName, setsearchName] = useState('')
+  const [searchEmail, setsearchEmail] = useState('')
   const [rowData, setRowData] = useState([])
   // const [searchRequestedDate, setSearchRequestedDate] = useState('')
   // const [Status, setStatus] = useState('')
@@ -96,7 +97,7 @@ const Buyers = props => {
     //   props.history.push('/home')
     // }
 
-    await axios.get(`${nodeBackend}/buyers`, { params: { searchName } }).then((res) => {
+    await axios.get(`${nodeBackend}/buyers`, { params: { searchName, searchEmail } }).then((res) => {
      
       setUsersInputsData(res.data.data)  
       setarticalNumberOptions(res.data.options)  
@@ -138,7 +139,14 @@ const Buyers = props => {
   const handleNameFilter = async (e) => {
     const searchName = e.target.value
     setsearchName(searchName)
-    await axios.get(`${nodeBackend}/buyers`, { params: { searchName } }).then((res) => {
+    await axios.get(`${nodeBackend}/buyers`, { params: { searchName, searchEmail } }).then((res) => {
+      setUsersInputsData(res.data.data)
+    })
+  } 
+  const handleEmailFilter = async (e) => {
+    const searchEmail = e.target.value
+    setsearchEmail(searchEmail)
+    await axios.get(`${nodeBackend}/buyers`, { params: { searchName, searchEmail } }).then((res) => {
       setUsersInputsData(res.data.data)
     })
   }
@@ -187,7 +195,7 @@ const Buyers = props => {
         axios({
           method: "post",
           url: `${nodeBackend}/delete_buyer_input`,
-          data: { row_id, searchName}
+          data: { row_id, searchName, searchEmail}
         }) 
           .then(function (success) {
             console.log(success.data.status)
@@ -321,6 +329,13 @@ const Buyers = props => {
               <Input className='form-control' type='text' id='name' placeholder='Buyer Name' value={searchName} onChange={handleNameFilter} /> 
             </Col>
 
+            <Col className='mb-1 col-auto'>
+               <Label className='form-label' for='email'>
+                Buyer Email:
+              </Label>
+              <Input className='form-control' type='text' id='email' placeholder='Buyer Name' value={searchEmail} onChange={handleEmailFilter} /> 
+            </Col>
+
              {/* <Col className='mb-1 col-auto'>
               <Label className='form-label' for='user_type'>
                 Status:
@@ -358,7 +373,7 @@ const Buyers = props => {
           </Row>
         </CardBody>       
       </Card>
-      <AddNewModalBuyer open={modal} handleModal={handleModal} rowData={rowData} articalNumberOptions={articalNumberOptions} countryOptions={countryOptions} deptOptions={deptOptions} setUsersInputsData={setUsersInputsData} searchName={searchName} />
+      <AddNewModalBuyer open={modal} handleModal={handleModal} rowData={rowData} articalNumberOptions={articalNumberOptions} countryOptions={countryOptions} deptOptions={deptOptions} setUsersInputsData={setUsersInputsData} searchName={searchName} searchEmail={searchEmail}/>
     </Fragment>
   )
 } 
