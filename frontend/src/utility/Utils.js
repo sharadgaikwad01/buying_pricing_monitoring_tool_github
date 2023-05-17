@@ -55,6 +55,7 @@ export const isUserLoggedIn = () => localStorage.getItem('userData')
 // export const nodeBackend =  'http://localhost:8080'
 // export const reactFrontend =  'http://localhost:3000'
 
+
 export const getUserData = () => JSON.parse(localStorage.getItem('userData'))
 
 /**

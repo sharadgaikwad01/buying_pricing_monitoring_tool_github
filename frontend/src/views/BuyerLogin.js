@@ -1,11 +1,12 @@
 //import { useEffect } from 'react'
+import { useEffect } from 'react'
 import { useSkin } from '@hooks/useSkin'
 import { Link } from 'react-router-dom'
 import { Facebook, Twitter, Mail, GitHub } from 'react-feather'
 import InputPasswordToggle from '@components/input-password-toggle'
 import { Row, Col, CardTitle, CardText, Form, Label, Input, Button } from 'reactstrap'
 import '@styles/react/pages/page-authentication.scss'
-import { nodeBackend } from '@utils'
+import { nodeBackend, reactFrontend } from '@utils'
 export const data = []
 
 const BuyerLogin = () => {
@@ -22,6 +23,25 @@ const BuyerLogin = () => {
 
   const illustration = skin === 'dark' ? 'login-v2-dark.svg' : 'login-v2.svg',
   source = require(`@src/assets/images/pages/${illustration}`).default
+
+  useEffect(async () => {
+    const auth_token = localStorage.getItem('token')
+    const type = localStorage.getItem('type')
+    if (auth_token) {
+      if (type === 'BUYER') {
+        window.location.replace(`${reactFrontend}/buyer_input`)
+    } else if (type === 'SUPERADMIN') {
+      window.location.replace(`${reactFrontend}/buyers`)
+    } else if (type === 'ADMIN') {
+      window.location.replace(`${reactFrontend}/dashboard`)
+    } else {
+      window.location.replace(`${reactFrontend}/home`)
+    }
+      //window.location.replace(`${reactFrontend}/home`)
+    } else {
+      window.location.replace(`${nodeBackend}/buyer/api/v2/login`)
+    }
+  }, [])
 
   const handleLogin = () => {
     window.location.replace(`${nodeBackend}/buyer/api/v2/login`)

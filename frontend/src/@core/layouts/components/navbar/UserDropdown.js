@@ -20,27 +20,45 @@ import { UncontrolledDropdown, DropdownMenu, DropdownToggle, DropdownItem } from
 
 const UserDropdown = () => {
   // ** State
-  const user_email = localStorage.getItem('email')
+  // const user_email = localStorage.getItem('email')
   // const vat_number = localStorage.getItem('vat')
   const user_name = localStorage.getItem('name')
 
+  // const handlelogout = () => {    
+  //   const user_type = localStorage.getItem("type")
+  //   if (user_type === 'SUPPLIER') {
+  //     localStorage.clear()
+  //     window.location.replace(`${reactFrontend}/logout`)
+  //   }
+  //   if (user_type === 'BUYER') {
+  //     localStorage.clear()
+  //     window.location.replace(`${reactFrontend}/buyer_login?message=Logout`)
+  //   }
+  //   if (user_type === 'ADMIN') {
+  //     localStorage.clear()
+  //     window.location.replace(`${reactFrontend}/buyer_login?message=Logout`)
+  //   }      
+  // }
   const handlelogout = () => {    
     const user_type = localStorage.getItem("type")
     const token = localStorage.getItem("token")
-
+    console.log(reactFrontend)
     if (user_type === 'SUPPLIER') {
       localStorage.clear()
-      const url = `https://idam.metrosystems.net/authorize/api/oauth2/op_session_end?id_token_hint=${token}&post_logout_redirect_uri=${reactFrontend}/logout`
+      const url = `https://idam-pp.metrosystems.net/authorize/api/oauth2/op_session_end?id_token_hint=${token}&post_logout_redirect_uri=${reactFrontend}/logout`
+      console.log(url)
       window.location.replace(url)
     }
     if (user_type === 'BUYER') {
       localStorage.clear()
-      const url = `https://idam.metrosystems.net/authorize/api/oauth2/op_session_end?id_token_hint=${token}&post_logout_redirect_uri=${reactFrontend}/buyer_login`
+      const url = `https://idam-pp.metrosystems.net/authorize/api/oauth2/op_session_end?id_token_hint=${token}&post_logout_redirect_uri=${reactFrontend}/buyer_login?message=Logout`
+      console.log(url)
       window.location.replace(url)
     }
-    if (user_type === 'ADMIN') {
+    if (user_type === 'ADMIN' || user_type === 'SUPERADMIN') {
       localStorage.clear()
-      const url = `https://idam.metrosystems.net/authorize/api/oauth2/op_session_end?id_token_hint=${token}&post_logout_redirect_uri=${reactFrontend}/buyer_login`
+      const url = `https://idam-pp.metrosystems.net/authorize/api/oauth2/op_session_end?id_token_hint=${token}&post_logout_redirect_uri=${reactFrontend}/buyer_login?message=Logout`
+      console.log(url)
       window.location.replace(url)
     }      
   }
@@ -49,8 +67,8 @@ const UserDropdown = () => {
       {/* <span className='user-status float-left'>{userDetails}</span> */}
       <DropdownToggle href='/' tag='a' className='nav-link dropdown-user-link' onClick={e => e.preventDefault()}>
       
-        <div className='user-nav d-sm-flex d-none'>
-          <span className='user-name fw-bold'>{user_email}</span>
+        <div className='user-nav text-end'> 
+          <span className='user-name fw-bold text-end'>Hello, <br /> {user_name}</span>
             
         </div>        
         <Avatar color='light-primary' content={user_name} initials />

@@ -517,7 +517,7 @@ const Home = props => {
       <Card className='pageBox supplier-screen'>
         <CardHeader className='flex-md-row flex-column align-items-center align-items-start border-bottom'>
           <CardTitle tag='h2'>List of Assortment</CardTitle>
-          <div className='d-flex mt-md-0 mt-1'>
+          <div className='d-md-flex mt-md-0 mt-1  btn-row document-btn-row'>
             <Button.Ripple className='ms-1 btn-icon' color='primary' onClick={handleModal}>
               <Plus size={16} />
               <span className='align-middle ms-25'>Add Single Article Input</span>
@@ -530,7 +530,7 @@ const Home = props => {
               <Upload size={14} />
               <span className='align-middle ms-25'>Upload Multiple Article Inputs</span>
             </Button.Ripple>
-            <UncontrolledButtonDropdown className='ms-1'>
+            <UncontrolledButtonDropdown className=''>
               <DropdownToggle color='primary' caret outline>
                 <Download size={15} />
                 <span className='align-middle ms-25'>Assortment Download</span>

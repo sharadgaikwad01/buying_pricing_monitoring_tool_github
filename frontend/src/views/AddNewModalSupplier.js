@@ -151,7 +151,7 @@ const AddNewModalSupplier = ({ open, handleModal, rowData }) => {
         <h5 className='modal-title'>All Record</h5>
       </ModalHeader>
       <ModalBody className='flex-grow-1'>
-          <div className='react-dataTable my-1'>
+          <div className='react-dataTable mb-1'>
             <DataTable
               noHeader
               pagination

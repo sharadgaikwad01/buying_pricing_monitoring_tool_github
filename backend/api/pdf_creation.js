@@ -45,7 +45,7 @@ async function createSupplierAssortments(assortment_details=null, path=null, res
       //to = 'archanaaditya.deokar@metro-gsc.in'
       subject = language_contect.subject
       html = message
-      //sendEmail(to, subject, html, path)
+      sendEmail(to, subject, html, path)
     }    
   });
 }

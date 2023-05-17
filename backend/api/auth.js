@@ -55,8 +55,9 @@ router.use((req, res, next) => {
             for (const [key, value] of Object.entries(user_details.authorization)) {
                 for (const [key1, value1] of Object.entries(value)) {
                     if(key1 == 'BPMT_SUPPLIER')
-                    {
+                    {                        
                         for (const [key2, value2] of Object.entries(value1)) {
+                            console.log(value2);
                             country = value2.country[0];
                             salesLine = value2.salesLine[0];
                             supplierNumber = value2.supplierNumber[0];

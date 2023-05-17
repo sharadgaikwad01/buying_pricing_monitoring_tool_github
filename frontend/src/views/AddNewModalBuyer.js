@@ -22,7 +22,7 @@ import withReactContent from 'sweetalert2-react-content'
 import { useState, useEffect } from 'react'
 const MySwal = withReactContent(Swal)
 
-const AddNewModalBuyer = ({ open, handleModal, rowData, articalNumberOptions, countryOptions, deptOptions, setUsersInputsData, searchName }) => {
+const AddNewModalBuyer = ({ open, handleModal, rowData, articalNumberOptions, countryOptions, deptOptions, setUsersInputsData, searchName, searchEmail }) => {
   // const [UserData, setUsersData] = useState({user_name:'', email:'', emp_id:'', row_id:''})
   const [DepartmentValue, setDepartmentValue] = useState('')
   const [FNameValue, setFNameValue] = useState('')
@@ -30,8 +30,8 @@ const AddNewModalBuyer = ({ open, handleModal, rowData, articalNumberOptions, co
   const [UserValue, setUserValue] = useState(0)
   const [EmailValue, setEmailValue] = useState('')
   const [selectedOptions, setselectedOptions] = useState('')
+  const [RoleValue, setRoleValue] = useState('')
   const [isEdit, setIsEdit] = useState(false)
-  
   const [CountryValue, setCountryValue] = useState('')
 
   const validationSchema = yup.object().shape({
@@ -71,6 +71,9 @@ const AddNewModalBuyer = ({ open, handleModal, rowData, articalNumberOptions, co
         await setEmailValue(rowData.buyer_emailid)
         setValue('buyer_emailid', rowData.buyer_emailid)
         
+        await setRoleValue(rowData.role_name)
+        setValue('role_name', rowData.role_name)
+        
       } else {
         setIsEdit(false)
         setFNameValue(rowData.first_name)
@@ -87,6 +90,9 @@ const AddNewModalBuyer = ({ open, handleModal, rowData, articalNumberOptions, co
       
         setEmailValue(rowData.buyer_emailid)
         setValue('buyer_emailid', rowData.buyer_emailid)
+
+        setRoleValue(rowData.role_name)
+        setValue('role_name', rowData.role_name)
       }
       
       await setUserValue(rowData.user_id)
@@ -115,7 +121,7 @@ const AddNewModalBuyer = ({ open, handleModal, rowData, articalNumberOptions, co
     const last_name = data.last_name
     const dept_name = data.dept_name
     const buyer_emailid = data.buyer_emailid
-    // const active_status = data.active_status
+    const role_name = data.role_name
     const country_name = data.country_name
     const stratbuyer_name = data.stratbuyer_name
 
@@ -123,7 +129,7 @@ const AddNewModalBuyer = ({ open, handleModal, rowData, articalNumberOptions, co
     axios({
       method: "post",
       url: `${nodeBackend}/buyers_add_input`,
-      data: { first_name, last_name, dept_name, buyer_emailid, stratbuyer_name, country_name, searchName }
+      data: { first_name, last_name, dept_name, buyer_emailid, stratbuyer_name, country_name, searchName, role_name, searchEmail }
     })
       .then(async function (success) {
         if (success.status) {
@@ -175,14 +181,18 @@ const AddNewModalBuyer = ({ open, handleModal, rowData, articalNumberOptions, co
       })
   }
 
-  // const active_statusOptions = [
-  //   { value: 'active', label: 'Active' },
-  //   { value: 'inactive', label: 'InActive' }
-  // ]
+  const RoleOptions = [
+    { value: 'ADMIN', label: 'ADMIN' },
+    { value: 'BUYER', label: 'BUYER' },
+    { value: 'SUPERADMIN', label: 'SUPERADMIN' }
+  ]
 
   const handleChange = async (val) => {
     await setselectedOptions(val)
   }
+  // const handleChangeRole = async (val) => {
+  //   await setselectedRoleOptions(val)
+  // }
 
   return (
     <Modal
@@ -310,6 +320,25 @@ const AddNewModalBuyer = ({ open, handleModal, rowData, articalNumberOptions, co
               )}
             />
             {errors["stratbuyer_name"] && <FormFeedback>{'Article number is a required field'}</FormFeedback>}
+          </div>
+
+          <div className='mb-1'>
+            <Label className='form-label' for='role_name'>
+              Role
+            </Label>
+            <Controller
+              name="role_name"
+              id="role_name"
+              control={control}
+              render={({ field: { onChange, value } }) => (
+                <Select
+                  options={RoleOptions}
+                  value={RoleOptions.find((c) => c.value === value)}       
+                  onChange={(val) => onChange(val.value)}
+                />
+              )}
+            />
+            {errors["role_name"] && <FormFeedback>{'Role is a required field'}</FormFeedback>}
           </div>
           <Button className='me-1' color='primary' type='submit'>
             Submit
