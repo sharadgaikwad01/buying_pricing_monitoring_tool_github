@@ -45,19 +45,19 @@ const UserDropdown = () => {
     console.log(reactFrontend)
     if (user_type === 'SUPPLIER') {
       localStorage.clear()
-      const url = `https://idam-pp.metrosystems.net/authorize/api/oauth2/op_session_end?id_token_hint=${token}&post_logout_redirect_uri=${reactFrontend}/logout`
+      const url = `https://idam.metrosystems.net/authorize/api/oauth2/op_session_end?id_token_hint=${token}&post_logout_redirect_uri=${reactFrontend}/logout`
       console.log(url)
       window.location.replace(url)
     }
     if (user_type === 'BUYER') {
       localStorage.clear()
-      const url = `https://idam-pp.metrosystems.net/authorize/api/oauth2/op_session_end?id_token_hint=${token}&post_logout_redirect_uri=${reactFrontend}/buyer_login?message=Logout`
+      const url = `https://idam.metrosystems.net/authorize/api/oauth2/op_session_end?id_token_hint=${token}&post_logout_redirect_uri=${reactFrontend}/buyer_login?message=Logout`
       console.log(url)
       window.location.replace(url)
     }
     if (user_type === 'ADMIN' || user_type === 'SUPERADMIN') {
       localStorage.clear()
-      const url = `https://idam-pp.metrosystems.net/authorize/api/oauth2/op_session_end?id_token_hint=${token}&post_logout_redirect_uri=${reactFrontend}/buyer_login?message=Logout`
+      const url = `https://idam.metrosystems.net/authorize/api/oauth2/op_session_end?id_token_hint=${token}&post_logout_redirect_uri=${reactFrontend}/buyer_login?message=Logout`
       console.log(url)
       window.location.replace(url)
     }      

@@ -22,7 +22,7 @@ const BuyerLogin = () => {
   // }
 
   const illustration = skin === 'dark' ? 'login-v2-dark.svg' : 'login-v2.svg',
-  source = require(`@src/assets/images/pages/${illustration}`).default
+  source = require(`@src/assets/images/pages/${illustration}`)
 
   useEffect(async () => {
     const auth_token = localStorage.getItem('token')
