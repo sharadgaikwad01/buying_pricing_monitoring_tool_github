@@ -19,3 +19,6 @@ code {
 .fw-bolder {
   font-weight : 600 !important;
 }
+.bold{
+  font-weight: bold;
+}

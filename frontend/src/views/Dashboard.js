@@ -117,11 +117,12 @@ const Dashboard = () => {
       <Card className='pageBox user-screen'>
         <CardHeader className='flex-md-row flex-column align-md-items-center align-items-start border-bottom'>
           <CardTitle tag='h2'>Supplier Vs Country</CardTitle>
+          <div className='card-options bold'>Displayed information represents the supplier ask</div>
           <Link to={'/category_dashboard'}>
                 <Button.Ripple className='ms-1' outline color='info'>
                     <span className='align-middle ms-25'>Category Vs Country</span>
                 </Button.Ripple>
-            </Link>
+          </Link>
         </CardHeader>
         <CardBody>
           <Row className='mt-1 mb-50 mx-auto'>

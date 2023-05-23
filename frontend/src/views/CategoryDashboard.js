@@ -106,6 +106,7 @@ const CategoryDashboard = () => {
       <Card className='pageBox user-screen'>
         <CardHeader className='flex-md-row flex-column align-md-items-center align-items-start border-bottom'>
           <CardTitle tag='h2'>Category Vs Country</CardTitle>
+            <div className='card-options bold'>Displayed information represents the category wise</div>
             <Link to={'/dashboard'}>
                 <Button.Ripple className='ms-1' outline color='info'>
                     <span className='align-middle ms-25'>Supplier Vs Country</span>

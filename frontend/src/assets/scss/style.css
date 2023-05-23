@@ -69,4 +69,7 @@ body:before {
   font-family: monospace;
   content: "Error: wrong number of arguments (1 for 3) for `rgb'\A         on line 74 of C:\APPS\project\buying_pricing_monitoring_tool_github\frontend\src\assets\scss\style.scss\A \A 69: }\A 70: .dark-layout .horizontal-layout .horizontal-menu-wrapper .header-navbar.navbar-horizontal.navbar-dark{\A 71:     background: unset !important;\A 72:     backdrop-filter: blur(16px) saturate(180%) !important;\A 73:     -webkit-backdrop-filter: blur(16px) saturate(180%) !important;\A 74:     background-color:rgb(13 13 13 / 75%) !important;\A 75:     border: 1px solid rgba(255, 255, 255, 0.125) !important;\A 76: }\A 77: .dark-layout .dropdown-menu{\A 78:     background: unset !important;\A 79:     backdrop-filter: blur(16px) saturate(180%) !important;"; 
 }
+.bold{
+  font-weight: bold;
+}
 
