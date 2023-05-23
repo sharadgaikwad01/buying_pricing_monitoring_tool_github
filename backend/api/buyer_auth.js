@@ -79,7 +79,8 @@ router.get('/api/v2/login', (req, res, next) => {
         return
     }
     authUrl = client.authorizationUrl({
-        scope: `openid clnt=${'BUYING_PRICING_MONITORING_TOOL'}`,
+        scope: `openid realm_id=${'EMP_REALM'}`,
+        // scope: `openid clnt=${'BUYING_PRICING_MONITORING_TOOL'}`,
         code_challenge,
         realm_id: 'EMP_REALM',
         country_code: 'IN',

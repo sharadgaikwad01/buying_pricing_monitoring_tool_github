@@ -96,6 +96,9 @@ const Buyers = props => {
     if (user_type === 'SUPPLIER') {
       props.history.push('/home')
     }
+    if (user_type === 'ADMIN') {
+      props.history.push('/dashboard')
+    }
 
     await axios.get(`${nodeBackend}/buyers`, { params: { searchName, searchEmail } }).then((res) => {
      

@@ -48,6 +48,18 @@ const Dashboard = () => {
     .fill(0).map(() => (true))
 
   useEffect(async () => {
+
+    const user_type = localStorage.getItem("type")
+    if (user_type === '') {
+      props.history.push('/buyer_login')
+    }
+    if (user_type === 'BUYER') {
+      props.history.push('/buyer_input')
+    }
+    if (user_type === 'SUPPLIER') {
+      props.history.push('/home')
+    }
+
     await axios.get(`${nodeBackend}/dashboard`).then((res) => {
       setData(res.data.data.countryData)      
       setXLabels(res.data.data.countryCodeSeries)

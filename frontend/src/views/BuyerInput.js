@@ -529,17 +529,50 @@ const BuyerInput = props => {
       }
     })
   }
+  const tableCustomStyles = {
+    headCells: {
+      style: {
+        // fontSize: '20px',
+        // fontWeight: 'bold',
+        paddingLeft: '0px',
+        justifyContent: 'center',
+        width:'140px'
+        // textAlign:'left'
+        // backgroundColor: '#FFA500'
+      }
+    },
+    bodyCells: {
+      style: {
+        // fontSize: '20px',
+        // fontWeight: 'bold',
+        paddingLeft: '0px',
+        justifyContent: 'center',
+        width:'140px'
+        // textAlign:'left'
+        // backgroundColor: '#FFA500'
+      }
+    }
+  }
 
   const columns = [
     {
       name: 'Row Id',
       omit: true,
+      // maxWidth: 400,
+      // minWidth: 140,
+      // size: 200,
+      // width: 200,
       selector: row => row.row_id
     },
     {
       name: 'Supplier No.',
       sortable: true,
-      width: 'auto',
+      // width: 'auto',
+      // maxWidth: 400,
+      // minWidth: 140,
+      // width: 200,
+      // size: 200,
+      center: 'yes',
       selector: row => row.suppl_no,
       cell: row => {
         return (
@@ -550,7 +583,12 @@ const BuyerInput = props => {
     {
       name: 'Supplier Name',
       sortable: true,
-      minWidth: 'auto',
+      // minWidth: 'auto',
+      // maxWidth: 400,
+      // minWidth: 140,
+      // width: 200,
+      // width: 200,
+      // center: 'yes',
       selector: row => row.suppl_name,
       cell: row => {
         return (
@@ -562,6 +600,10 @@ const BuyerInput = props => {
       name: 'Article No.',
       sortable: true,
       minWidth: 'auto',
+      // maxWidth: 400,
+      // minWidth: 140,
+      // width: 200,
+      center: 'yes',
       selector: row => row.art_no,
       cell: row => {
         return (
@@ -572,7 +614,9 @@ const BuyerInput = props => {
     {
       name: 'EAN No.',
       sortable: true,
-      minWidth: 'auto',
+      // minWidth: 'auto',
+      // width: 200,
+      // center: 'yes',
       selector: row => row.ean_no,
       cell: row => {
         return (
@@ -583,7 +627,11 @@ const BuyerInput = props => {
     {
       name: 'Art. Desc.',
       sortable: true,
-      minWidth: 'auto',
+      // minWidth: 'auto',
+      //   maxWidth: 400,
+      // minWidth: 140,
+      // width: 200,
+      // center: 'yes',
       selector: row => row.art_name_tl,
       cell: row => {
         return (
@@ -594,7 +642,12 @@ const BuyerInput = props => {
     {
       name: 'Current Price',
       sortable: true,
-      minWidth: 'auto',
+      // maxWidth: 400,
+      // minWidth: 140,
+      // width: 200,
+      // center: 'yes',
+      width: 'auto',
+      center: 'yes',
       selector: row => row.frmt_current_price,
       cell: row => {
         return (
@@ -605,7 +658,10 @@ const BuyerInput = props => {
     {
       name: 'Requested Price',
       sortable: true,
-      minWidth: 'auto',
+      // maxWidth: 400,
+      // minWidth: 140,
+      // width: 200,
+      // center: 'yes',
       selector: row => row.frmt_new_price,
       cell: row => {
         return (
@@ -616,7 +672,8 @@ const BuyerInput = props => {
     {
       name: 'Price Increase(%)',
       sortable: true,
-      minWidth: 'auto',
+      // minWidth: 'auto',
+      // center: 'yes',
       selector: row => row.price_increase_perc,
       cell: row => {
         return (
@@ -627,7 +684,8 @@ const BuyerInput = props => {
     {
       name: 'Request Creation_Date',
       sortable: true,
-      minWidth: 'auto',
+      // minWidth: 'auto',
+      // center: 'yes',
       selector: row => row.request_date,
       cell: row => {
         return (
@@ -638,7 +696,8 @@ const BuyerInput = props => {
     {
       name: 'Reason For Price_Change',
       sortable: true,
-      minWidth: 'auto',
+      // minWidth: 'auto',
+      // center: 'yes',
       selector: row => row.price_change_reason,
       cell: row => {
         return (
@@ -649,7 +708,8 @@ const BuyerInput = props => {
     {
       name: 'Price Effective_Date',
       sortable: true,
-      minWidth: 'auto',
+      // minWidth: 'auto',
+      // center: 'yes',
       selector: row => row.price_increase_effective_date,
       cell: row => {
         return (
@@ -661,6 +721,7 @@ const BuyerInput = props => {
       name: 'Final Price',
       sortable: true,
       width: 'auto',
+      center: 'yes',
       selector: row => row.frmt_negotiate_final_price,
       cell: row => {
         return (
@@ -671,7 +732,8 @@ const BuyerInput = props => {
     {
       name: 'Price Finalize_Date',
       sortable: true,
-      width: 'auto',
+      // width: 'auto',
+      // center: 'yes',
       selector: row => row.price_increase_communicated_date,
       cell: row => {
         return (
@@ -682,6 +744,7 @@ const BuyerInput = props => {
     {
       name: 'Status',
       width: 'auto',
+      center: 'yes',
       sortable: row => row.action_status,
       cell: row => {
         return (
@@ -837,6 +900,7 @@ const BuyerInput = props => {
               </Tooltip>
             </Col>
           </Row>
+         
           <div className='react-dataTable my-1'>
             <DataTable
               noHeader
@@ -851,10 +915,13 @@ const BuyerInput = props => {
               selectableRowsComponent={BootstrapCheckbox()}
               onSelectedRowsChange={handleChange}
               selectableRowDisabled={rowDisabledCriteria}
+              customStyles={tableCustomStyles}
               // data={searchValue.length ? filteredData : data}
               data={dataToRender()}
             />
           </div>
+         
+          
         </CardBody>
       </Card>
 
