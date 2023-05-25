@@ -133,6 +133,8 @@ module.exports = function (app, con) {
 			}
 		});
 	});
+	
+
 
 	app.post('/delete_supplier_input', async function (req, res) {
 
@@ -349,5 +351,21 @@ module.exports = function (app, con) {
 				});
 			}
 		]);
+	});
+
+	app.get('/notifications', async function (req, res) {
+		
+		// var query = "select row_id, country_name, art_no, art_name, suppl_no, suppl_name, msg, new_price from tbl_notification where country_name='" + req.query.country;
+		var query = "select row_id, country_name, art_no, art_name, suppl_no, suppl_name, msg, new_price, created_at from tbl_notification";
+
+		await con.query(query, function (err, result) {
+			if (err) {
+				res.json({ status: false });
+				return;
+			} else {
+				res.json({ status: true, data: result.rows });
+				return;
+			}
+		});
 	});
 }

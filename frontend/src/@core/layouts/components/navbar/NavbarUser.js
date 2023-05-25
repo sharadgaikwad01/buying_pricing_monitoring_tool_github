@@ -4,9 +4,12 @@ import { Fragment, useState, useEffect } from 'react'
 // ** Dropdowns Imports
 import UserDropdown from './UserDropdown'
 import { Link } from 'react-router-dom'
+import axios from 'axios'
+import { nodeBackend } from '@utils'
 
 // ** Third Party Components
 import { Sun, Moon } from 'react-feather'
+import moment from 'moment'
 
 // ** Reactstrap Imports
 import { Navbar, NavItem, Button, UncontrolledDropdown, DropdownMenu, DropdownToggle, DropdownItem } from 'reactstrap'
@@ -21,6 +24,7 @@ const NavbarUser = props => {
   const user_name = localStorage.getItem('name')
   const user_type = localStorage.getItem('type')
   const country = localStorage.getItem('country')
+  const [notificationList, setnotificationList] = useState([])
 
   const [userDetails, setUserDetails] = useState([])
   //const [setApplicationName] = useState('')
@@ -42,7 +46,38 @@ const NavbarUser = props => {
       setUserDetails('')
       //setApplicationName("Monitoring Tool")
     }
+
+    await axios.get(`${nodeBackend}/notifications`).then((res) => {
+      console.log('notification-----------------------------')
+      console.log(res.data.data)
+      setnotificationList(res.data.data)    
+    })
+
   }, [])
+
+  const renderContent = () => {
+    return notificationList.map((step, index) => {
+      return (<DropdownItem className='new-notification'>
+      <a className="d-flex " href="#">
+        <div className="list-item d-flex align-items-start">
+          <div className="me-1">
+            <div className="avatar notification-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+                <path d="M224 0c-17.7 0-32 14.3-32 32V51.2C119 66 64 130.6 64 208v18.8c0 47-17.3 92.4-48.5 127.6l-7.4 8.3c-8.4 9.4-10.4 22.9-5.3 34.4S19.4 416 32 416H416c12.6 0 24-7.4 29.2-18.9s3.1-25-5.3-34.4l-7.4-8.3C401.3 319.2 384 273.9 384 226.8V208c0-77.4-55-142-128-156.8V32c0-17.7-14.3-32-32-32zm45.3 493.3c12-12 18.7-28.3 18.7-45.3H224 160c0 17 6.7 33.3 18.7 45.3s28.3 18.7 45.3 18.7s33.3-6.7 45.3-18.7z" />
+              </svg>
+            </div>
+          </div>
+          <div className="list-item-body flex-grow-1">
+            <p className="media-heading">
+              <span className="" data-value={index}>{step.msg}</span>
+            </p>
+            <small className="notification-text">{moment.utc(step.created_at).local().startOf('seconds').fromNow()}</small>
+          </div>
+        </div>
+      </a>
+    </DropdownItem>)
+    })
+  }
 
   return (
     <Fragment>
@@ -62,7 +97,6 @@ const NavbarUser = props => {
 
               <UncontrolledDropdown className='notification-panel nav-item' >
                 <DropdownToggle caret className='nav-link avatar  bg-light-primary' tag='a' >
-
                   <div className="avatar-content ">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
                       <path d="M224 0c-17.7 0-32 14.3-32 32V51.2C119 66 64 130.6 64 208v18.8c0 47-17.3 92.4-48.5 127.6l-7.4 8.3c-8.4 9.4-10.4 22.9-5.3 34.4S19.4 416 32 416H416c12.6 0 24-7.4 29.2-18.9s3.1-25-5.3-34.4l-7.4-8.3C401.3 319.2 384 273.9 384 226.8V208c0-77.4-55-142-128-156.8V32c0-17.7-14.3-32-32-32zm45.3 493.3c12-12 18.7-28.3 18.7-45.3H224 160c0 17 6.7 33.3 18.7 45.3s28.3 18.7 45.3 18.7s33.3-6.7 45.3-18.7z" />
@@ -75,7 +109,7 @@ const NavbarUser = props => {
                     <div className="d-flex">
                       <h4 className="notification-title mb-0 me-auto">Notifications</h4>
                       <div className="ms-auto d-flex">
-                        <div className="badge rounded-pill badge-light-primary me-1">6 New</div>
+                        <div className="badge rounded-pill badge-light-primary me-1">{notificationList.length} New</div>
                         <div className="">
                           <a className="d-flex mark-read-all" href="#">
                             <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512">
@@ -86,38 +120,8 @@ const NavbarUser = props => {
                       </div>
                     </div>
                   </DropdownItem>
-                  <DropdownItem className='new-notification'>
-                    <a className="d-flex " href="#">
-                      <div className="list-item d-flex align-items-start">
-                        <div className="me-1">
-                          <div className="avatar notification-icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
-                              <path d="M224 0c-17.7 0-32 14.3-32 32V51.2C119 66 64 130.6 64 208v18.8c0 47-17.3 92.4-48.5 127.6l-7.4 8.3c-8.4 9.4-10.4 22.9-5.3 34.4S19.4 416 32 416H416c12.6 0 24-7.4 29.2-18.9s3.1-25-5.3-34.4l-7.4-8.3C401.3 319.2 384 273.9 384 226.8V208c0-77.4-55-142-128-156.8V32c0-17.7-14.3-32-32-32zm45.3 493.3c12-12 18.7-28.3 18.7-45.3H224 160c0 17 6.7 33.3 18.7 45.3s28.3 18.7 45.3 18.7s33.3-6.7 45.3-18.7z" />
-                            </svg>
-                          </div>
-                        </div>
-                        <div className="list-item-body flex-grow-1">
-                          <p className="media-heading"><span className="fw-bolder">Your request to update Record </span>is approved</p><small className="notification-text"> 1 day ago</small>
-                        </div>
-                      </div>
-                    </a>
-                  </DropdownItem>
-                  <DropdownItem>
-                    <a className="d-flex" href="#">
-                      <div className="list-item d-flex align-items-start">
-                        <div className="me-1">
-                          <div className="avatar notification-icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
-                              <path d="M224 0c-17.7 0-32 14.3-32 32V51.2C119 66 64 130.6 64 208v18.8c0 47-17.3 92.4-48.5 127.6l-7.4 8.3c-8.4 9.4-10.4 22.9-5.3 34.4S19.4 416 32 416H416c12.6 0 24-7.4 29.2-18.9s3.1-25-5.3-34.4l-7.4-8.3C401.3 319.2 384 273.9 384 226.8V208c0-77.4-55-142-128-156.8V32c0-17.7-14.3-32-32-32zm45.3 493.3c12-12 18.7-28.3 18.7-45.3H224 160c0 17 6.7 33.3 18.7 45.3s28.3 18.7 45.3 18.7s33.3-6.7 45.3-18.7z" />
-                            </svg>
-                          </div>
-                        </div>
-                        <div className="list-item-body flex-grow-1">
-                          <p className="media-heading"><span className="fw-bolder">New message</span>&nbsp;received</p><small className="notification-text">23 April, 2023</small>
-                        </div>
-                      </div>
-                    </a>
-                  </DropdownItem>
+                  { renderContent()}
+                 
                 </DropdownMenu>
               </UncontrolledDropdown>
 
@@ -125,6 +129,7 @@ const NavbarUser = props => {
               <NavItem>
                 <span className='user-status float-left'>{userDetails}</span>
                 {user_type === 'SUPPLIER' ? '' : (<span className='float-left'>{country}</span>)}
+                {/* {user_type === 'SUPPLIER' ? '' : (<img src={`${process.env.PUBLIC_URL}/metro-countries-flag/${country}.svg`} className="footer-logo light-mode-logo custom-size-image" />)} */}
               </NavItem>
             </ul>
           </NavItem>

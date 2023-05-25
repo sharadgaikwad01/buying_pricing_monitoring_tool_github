@@ -56,36 +56,15 @@ const MintectDataModal = ({ open, handleModal, rowData }) => {
       omit:true,
       selector: row => row.row_id
     },
-    {
-      name: 'Region',
-      sortable: true,
-      width: 'auto',
-      selector: row => row.region,
-      cell: row => {
-        return (
-          row.region
-        )
-      }
-    },
-    {
-      name: 'Country',
-      sortable: true,
-      width: 'auto',
-      selector: row => row.country_name,
-      cell: row => {
-        return (
-          row.country_name
-        )
-      }
-    },
+   
     {
       name: 'Metro Category',
       sortable: true,
       minWidth: 'auto',
-      selector: row => row.category,
+      selector: row => row.stratbuyer_category,
       cell: row => {
         return (
-          row.category ? row.category : "-"
+          row.stratbuyer_category ? row.stratbuyer_category : "-"
         )
       }
     },

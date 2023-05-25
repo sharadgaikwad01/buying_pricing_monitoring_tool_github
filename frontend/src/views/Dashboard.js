@@ -38,7 +38,7 @@ import {
 
 const MySwal = withReactContent(Swal)
 
-const Dashboard = () => {
+const Dashboard = props => {
   const [xLabels, setXLabels] = useState([])
   const [yLabels, setYLabels] = useState([])
   const [data, setData] = useState([])
