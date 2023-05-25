@@ -39,7 +39,7 @@ const UserDropdown = () => {
   //     window.location.replace(`${reactFrontend}/buyer_login?message=Logout`)
   //   }      
   // }
-  const handlelogout = () => {    
+  const handlelogout = () => {
     const user_type = localStorage.getItem("type")
     const token = localStorage.getItem("token")
     console.log(reactFrontend)
@@ -60,17 +60,15 @@ const UserDropdown = () => {
       const url = `https://idam.metrosystems.net/authorize/api/oauth2/op_session_end?id_token_hint=${token}&post_logout_redirect_uri=${reactFrontend}/buyer_login?message=Logout`
       console.log(url)
       window.location.replace(url)
-    }      
+    }
   }
   return (
     <UncontrolledDropdown tag='li' className='dropdown-user nav-item'>
       {/* <span className='user-status float-left'>{userDetails}</span> */}
       <DropdownToggle href='/' tag='a' className='nav-link dropdown-user-link' onClick={e => e.preventDefault()}>
-      
-        <div className='user-nav text-end'> 
-          <span className='user-name fw-bold text-end'>Hello, <br /> {user_name}</span>
-            
-        </div>        
+        <div className='user-nav text-end'>
+          <span className='user-name fw-bold text-end'>Hello, <br /> <strong>  {user_name} </strong></span>
+        </div>
         <Avatar color='light-primary' content={user_name} initials />
       </DropdownToggle>
       <DropdownMenu end>
