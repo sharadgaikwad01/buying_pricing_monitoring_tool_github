@@ -43,6 +43,7 @@ const Dashboard = props => {
   const [yLabels, setYLabels] = useState([])
   const [data, setData] = useState([])
   const [checkedvalue, setcheckedvalue] = useState('supplier')
+  const [notificationmsg, setnotificationmsg] = useState('')
   
 
   // Display all labels
@@ -61,11 +62,13 @@ const Dashboard = props => {
     if (user_type === 'SUPPLIER') {
       props.history.push('/home')
     }
+    setnotificationmsg('Displayed information represents the supplier ask')
 
     await axios.get(`${nodeBackend}/dashboard`).then((res) => {
       setData(res.data.data.countryData)      
       setXLabels(res.data.data.countryCodeSeries)
       setYLabels(res.data.data.supplierName)
+      
     })
   }, [])
 
@@ -121,6 +124,7 @@ const Dashboard = props => {
     console.log(value)
     setcheckedvalue(value)
     if (value === 'buyer') {
+      setnotificationmsg('Displayed information represents the Catgory manager ask')
       console.log('buyer dashboard called')
       axios.get(`${nodeBackend}/dashboard_buyer`).then((res) => {
         setData(res.data.data.countryData)      
@@ -128,6 +132,7 @@ const Dashboard = props => {
         // setYLabels(res.data.data.supplierName)
       })
     } else {
+      setnotificationmsg('Displayed information represents the supplier ask')
       console.log('supplier dashboard called')
       axios.get(`${nodeBackend}/dashboard`).then((res) => {
         setData(res.data.data.countryData)      
@@ -142,11 +147,14 @@ const Dashboard = props => {
       <Card className='pageBox user-screen'>
         <CardHeader className='flex-md-row flex-column align-md-items-center align-items-start border-bottom'>
           <CardTitle tag='h2'>Supplier Vs Country</CardTitle>
-          <div className='card-options bold'>Displayed information represents the supplier ask</div>
+          <div className='card-options d-flex align-items-center'>
           <div onChange={onChangeValue}>
-            <input type="radio" value="supplier" onClick={() => handleEdit('supplier')} name="supplier" checked={checkedvalue === 'supplier'} /> supplier ask
-            <input type="radio" value="buyer" onClick={() => handleEdit('buyer')} name="supplier" checked={checkedvalue === 'buyer'}/> Catgory manager Ask
+            <input type="radio" value="supplier" onClick={() => handleEdit('supplier')} name="supplier" checked={checkedvalue === 'supplier'} /> Supplier
+            <input type="radio" value="buyer" onClick={() => handleEdit('buyer')} name="supplier" checked={checkedvalue === 'buyer'}/> Catgory manager
           </div>
+          </div>
+          <div className='card-options bold'>{notificationmsg}</div>
+         
           <Link to={'/category_dashboard'}>
                 <Button.Ripple className='ms-1' outline color='info'>
                     <span className='align-middle ms-25'>Category Vs Country</span>
