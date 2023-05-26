@@ -57,10 +57,18 @@ const NavbarUser = props => {
 
   }, [])
 
+  const notificationread = async (id) => {
+    await axios.post(`${nodeBackend}/notificationread`, { params: id}).then((res) => {
+      console.log('notification-----------------------------')
+     console.log(res.data.data)
+      setnotificationList(res.data.data)    
+    })
+  }
+
   const renderContent = () => {
     return notificationList.map((step, index) => {
-      if (step.statuscol === 1) {
-        return (<DropdownItem className='new-notification mark-read'>
+      if (step.statuscol === "1") {
+        return (<DropdownItem className='new-notification mark-read' onClick={() => notificationread(step.row_id)}>
         <a className="d-flex " href="#">
           <div className="list-item d-flex align-items-start">
             <div className="me-1">
@@ -80,7 +88,7 @@ const NavbarUser = props => {
         </a>
       </DropdownItem>)
       } else {
-        return (<DropdownItem className='new-notification'>
+        return (<DropdownItem className='new-notification' onClick={() => notificationread(step.row_id)}>
         <a className="d-flex " href="#">
           <div className="list-item d-flex align-items-start">
             <div className="me-1">
@@ -104,6 +112,7 @@ const NavbarUser = props => {
     })
   }
 
+  
   const notificationDownload = async () => {
       console.log(notificationList)
       
@@ -159,7 +168,6 @@ const NavbarUser = props => {
                               <path d="M64 32C28.7 32 0 60.7 0 96V416c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V96c0-35.3-28.7-64-64-64H64zM337 209L209 337c-9.4 9.4-24.6 9.4-33.9 0l-64-64c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l47 47L303 175c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9z" />
                             </svg>
                           </a>
-                          
                         </div>
                       </div>
                     </div>

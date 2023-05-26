@@ -356,7 +356,7 @@ module.exports = function (app, con) {
 	app.get('/notifications', async function (req, res) {
 		
 		// var query = "select row_id, country_name, art_no, art_name, suppl_no, suppl_name, msg, new_price from tbl_notification where country_name='" + req.query.country;
-		var query = "select row_id, country_name, art_no, art_name, suppl_no, suppl_name, msg, new_price, created_at from tbl_notification";
+		var query = "select row_id, statuscol, country_name, art_no, art_name, suppl_no, suppl_name, msg, new_price, created_at from tbl_notification";
 
 		await con.query(query, function (err, result) {
 			if (err) {
@@ -367,5 +367,27 @@ module.exports = function (app, con) {
 				return;
 			}
 		});
+	});
+	
+	app.post('/notificationread', async function (req, res) {
+		var query = "UPDATE tbl_notification SET statuscol = '1' WHERE row_id =" + req.body.params;
+		await con.query(query, async function (err, result) {
+			if (err) {
+				res.json({ status: false });
+				return;
+			} else {
+				var query = "select row_id, statuscol, country_name, art_no, art_name, suppl_no, suppl_name, msg, new_price, created_at from tbl_notification";
+		await con.query(query, function (err, result) {
+			if (err) {
+				res.json({ status: false });
+				return;
+			} else {
+				res.json({ status: true, data: result.rows });
+				return;
+			}
+		});
+			}
+		});
+		// var query = "select row_id, country_name, art_no, art_name, suppl_no, suppl_name, msg, new_price from tbl_notification where country_name='" + req.query.country;
 	});
 }
