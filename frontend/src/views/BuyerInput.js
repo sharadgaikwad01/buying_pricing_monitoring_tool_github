@@ -536,7 +536,7 @@ const BuyerInput = props => {
         // fontWeight: 'bold',
         paddingLeft: '0px',
         justifyContent: 'center',
-        width:'140px'
+        width: '140px'
         // textAlign:'left'
         // backgroundColor: '#FFA500'
       }
@@ -547,7 +547,7 @@ const BuyerInput = props => {
         // fontWeight: 'bold',
         paddingLeft: '0px',
         justifyContent: 'center',
-        width:'140px'
+        width: '140px'
         // textAlign:'left'
         // backgroundColor: '#FFA500'
       }
@@ -759,7 +759,19 @@ const BuyerInput = props => {
       allowOverflow: true,
       cell: (row) => {
         return (
-          row.negotiate_final_price && row.price_increase_communicated_date && row.action_status === 'open' ? <div className='d-flex'><Edit size={15} onClick={(e) => handleEdit(e, row)} className="editTableIcon text-info" id='editButton' /><Tooltip placement='top' isOpen={editButton} target='editButton' toggle={() => setEditButton(!editButton)} >Edit</Tooltip><Check size={15} onClick={(e) => handleClosedAction(e, row, 1)} className="deleteTableIcon text-success ms-1" id='statusButton' /><Tooltip placement='top' isOpen={statusButton} target='statusButton' toggle={() => setStatusButton(!statusButton)}>Closed</Tooltip></div> : row.action_status === 'open' ? row.created_by === email ? <div className='d-flex'><Edit3 size={15} onClick={(e) => handleEditSupplierInput(e, row)} className="editTableIcon text-info" id='editButtonb' /><Trash size={15} onClick={(e) => handleDelete(e, row)} className="deleteTableIcon text-danger ms-1" /> <Edit size={15} onClick={(e) => handleEdit(e, row)} className="editTableIcon text-info ms-1" id='editButton' /><Tooltip placement='top' isOpen={editButton} target='editButton' toggle={() => setEditButton(!editButton)} >Edit</Tooltip></div> : <div className='d-flex'><Edit size={15} onClick={(e) => handleEdit(e, row)} className="editTableIcon text-info" id='editButton' /><Tooltip placement='top' isOpen={editButton} target='editButton' toggle={() => setEditButton(!editButton)} >Edit</Tooltip></div> : row.is_revoke === 'false' ? "" : <div className='d-flex'><Repeat size={15} onClick={(e) => handleClosedAction(e, row, 2)} className="editTableIcon text-warning" id='revokeButton' /><Tooltip placement='top' isOpen={revokeButton} target='revokeButton' toggle={() => setRevokeButton(!revokeButton)} >Revoke Closed Status</Tooltip></div>
+          row.negotiate_final_price && row.price_increase_communicated_date && row.action_status === 'open' ? <div className='d-flex'><Edit size={15} onClick={(e) => handleEdit(e, row)} className="editTableIcon text-info" id='editButton' /><Tooltip placement='top' isOpen={editButton} target='editButton' toggle={() => setEditButton(!editButton)} >Edit</Tooltip><Check size={15} onClick={(e) => handleClosedAction(e, row, 1)} className="deleteTableIcon text-success ms-1" id='statusButton' /><Tooltip placement='top' isOpen={statusButton} target='statusButton' toggle={() => setStatusButton(!statusButton)}>Closed</Tooltip></div> : row.action_status === 'open' ? row.created_by === email ? <div className='d-flex'>
+
+            {/* <Edit3 size={15} onClick={(e) => handleEditSupplierInput(e, row)} className="editTableIcon text-info" id='editButtonb' /> */}
+            <a onClick={(e) => handleEditSupplierInput(e, row)} className="editTableIcon text-info" id="editButtonb">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512">
+                <path d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3C0 498.7 13.3 512 29.7 512H322.8c-3.1-8.8-3.7-18.4-1.4-27.8l15-60.1c2.8-11.3 8.6-21.5 16.8-29.7l40.3-40.3c-32.1-31-75.7-50.1-123.9-50.1H178.3zm435.5-68.3c-15.6-15.6-40.9-15.6-56.6 0l-29.4 29.4 71 71 29.4-29.4c15.6-15.6 15.6-40.9 0-56.6l-14.4-14.4zM375.9 417c-4.1 4.1-7 9.2-8.4 14.9l-15 60.1c-1.4 5.5 .2 11.2 4.2 15.2s9.7 5.6 15.2 4.2l60.1-15c5.6-1.4 10.8-4.3 14.9-8.4L576.1 358.7l-71-71L375.9 417z" />
+              </svg>
+            </a>
+
+            <Trash size={15} onClick={(e) => handleDelete(e, row)} className="deleteTableIcon text-danger ms-1" /> 
+            <Edit size={15} onClick={(e) => handleEdit(e, row)} className="editTableIcon text-info ms-1" id='editButton' />
+            <Tooltip placement='top' isOpen={editButton} target='editButton' toggle={() => setEditButton(!editButton)} >Edit</Tooltip>
+            </div> : <div className='d-flex'><Edit size={15} onClick={(e) => handleEdit(e, row)} className="editTableIcon text-info" id='editButton' /><Tooltip placement='top' isOpen={editButton} target='editButton' toggle={() => setEditButton(!editButton)} >Edit</Tooltip></div> : row.is_revoke === 'false' ? "" : <div className='d-flex'><Repeat size={15} onClick={(e) => handleClosedAction(e, row, 2)} className="editTableIcon text-warning" id='revokeButton' /><Tooltip placement='top' isOpen={revokeButton} target='revokeButton' toggle={() => setRevokeButton(!revokeButton)} >Revoke Closed Status</Tooltip></div>
         )
       }
     }
@@ -900,7 +912,7 @@ const BuyerInput = props => {
               </Tooltip>
             </Col>
           </Row>
-         
+
           <div className='react-dataTable my-1'>
             <DataTable
               noHeader
@@ -920,8 +932,8 @@ const BuyerInput = props => {
               data={dataToRender()}
             />
           </div>
-         
-          
+
+
         </CardBody>
       </Card>
 

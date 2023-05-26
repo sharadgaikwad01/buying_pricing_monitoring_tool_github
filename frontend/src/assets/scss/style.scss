@@ -888,10 +888,7 @@ input.form-control{
 .horizontal-menu .header-navbar.navbar-brand-center .navbar-header{
     left: unset !important;
 }
-.editTableIcon{
-    margin-left: .1rem;
 
-}
 .deleteTableIcon{
     margin-left: .1rem;
 }
@@ -1001,11 +998,22 @@ category-Select {
 .deleteTableIcon,
 .editTableIcon {
     cursor: pointer;
+    min-width: 1.4rem;
+    width: auto;
+    height: auto;
+}
+.editTableIcon{
+    margin-left: .1rem;
 }
 .vertical-overlay-menu .navbar .navbar-header{
     width: 100%;
 }
-
+.editTableIcon svg{
+    fill: #0089CB;
+}
+.dropdown-user-link{
+    padding: 0;
+}
 @media (max-width: 600px){
     .vertical-overlay-menu .navbar .navbar-header {
         float: left;
