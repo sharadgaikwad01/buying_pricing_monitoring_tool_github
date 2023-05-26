@@ -145,15 +145,24 @@ const Dashboard = props => {
   return (
     <Fragment>
       <Card className='pageBox user-screen'>
-        <CardHeader className='flex-md-row flex-column align-md-items-center align-items-start border-bottom'>
+        <CardHeader className=' border-bottom'>
           <CardTitle tag='h2'>Supplier Vs Country</CardTitle>
           <div className='card-options d-flex align-items-center'>
           <div onChange={onChangeValue}>
-            <input type="radio" value="supplier" onClick={() => handleEdit('supplier')} name="supplier" checked={checkedvalue === 'supplier'} /> Supplier
-            <input type="radio" value="buyer" onClick={() => handleEdit('buyer')} name="supplier" checked={checkedvalue === 'buyer'}/> Catgory manager
+            {/* <input type="radio" value="supplier" onClick={() => handleEdit('supplier')} name="supplier" checked={checkedvalue === 'supplier'} className='form-check-input'/> Supplier
+            <input type="radio" value="buyer" onClick={() => handleEdit('buyer')} name="supplier" checked={checkedvalue === 'buyer'} className='form-check-label'/> Catgory manager */}
+
+            <div class="form-check form-check-inline">
+              <input type="radio" value="supplier" onClick={() => handleEdit('supplier')} name="supplier" checked={checkedvalue === 'supplier'} className='form-check-input'/>
+              <label class="form-check-label" for="">Supplier</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input type="radio" value="buyer" onClick={() => handleEdit('buyer')} name="supplier" checked={checkedvalue === 'buyer'} className='form-check-input'/>
+              <label class="form-check-label" for="">Catgory manager</label>
+            </div>
           </div>
+
           </div>
-          <div className='card-options bold'>{notificationmsg}</div>
          
           <Link to={'/category_dashboard'}>
                 <Button.Ripple className='ms-1' outline color='info'>
@@ -162,21 +171,31 @@ const Dashboard = props => {
           </Link>
         </CardHeader>
         <CardBody>
+        <div className='card-options bold card-info-title'>{notificationmsg}</div>
           <Row className='mt-1 mb-50 mx-auto'>
-            <HeatMap
-              xLabels={xLabels}
-              yLabels={yLabels}
-              yLabelWidth={140}
-              xLabelsLocation={"top"}
-              xLabelsVisibility={xLabelsVisibility}
-              xLabelWidth={60}
-              data={data}
-              squares
-              height={50}
-              cellStyle={(backgrounde, value, min, max, data, x, y) => dataCal(backgrounde, value, min, max, data, x, y)}
-              cellRender={(value) => value && <div>{value === '0.00' ? 0 : value}%</div>}
-              title={(value) => `${value}%`}
-            />
+          <HeatMap
+            className="heatmap-container"
+            xLabels={xLabels}
+            yLabels={yLabels}
+            yLabelWidth={140}
+            xLabelsLocation="top"
+            xLabelsVisibility={xLabelsVisibility}
+            xLabelWidth={60}
+            data={data}
+            squares
+            height={50}
+            cellStyle={(background, value, min, max, data, x, y) => dataCal(background, value, min, max, data, x, y)}
+            cellRender={(value) => value && <div>{value === '0.00' ? 0 : value}%</div>}
+            title={(value) => `${value}%`}
+            style={{
+              /* Apply inline styles here */
+              /* For example: */
+              border: '1px solid #ccc',
+              borderRadius: '4px',
+              padding: '10px',
+              backgroundColor: '#f2f2f2'
+            }}
+          />
           </Row>
         </CardBody>
       </Card>

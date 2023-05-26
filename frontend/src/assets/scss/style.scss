@@ -1161,6 +1161,9 @@ category-Select {
 .notification-panel .dropdown-header{
     padding: 0.6rem 1.28rem;
 }
+.notification-panel .dropdown-item{
+    border-top: 1px solid #0029671f;
+}
 .new-notification-alert{
     background-color: #DE351B;
     height: 6px;
@@ -1169,4 +1172,9 @@ category-Select {
     position: absolute;
     top: 6px;
     right: 6px;
+}
+.card-info-title{
+    font-weight: 700;
+    display: flex;
+    justify-content: center;
 }
