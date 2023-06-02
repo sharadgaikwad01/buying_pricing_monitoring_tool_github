@@ -583,7 +583,7 @@ module.exports = function (app, con) {
 
 	app.get('/getMintecData', async function (req, res) {
 		//var query = "SELECT id, region, country_name, category, sub_category, dashboard_name, dashboard_url, created_by, is_deleted, created_on FROM public.vw_mintec_dashboard where country_name='" + req.query.country_name + "' AND category='" + req.query.stratbuyer_name + "'";
-		var query = "SELECT id,  stratbuyer_category, mintec_sub_category, dashboard_name, dashboard_url, created_by, is_deleted, created_on FROM public.vw_mintec_dashboard WHERE stratbuyer_category='" + req.query.stratbuyer_name + "'";
+		var query = "SELECT id, region, country_name, category, sub_category, dashboard_name, dashboard_url, created_by, is_deleted, created_on FROM public.vw_mintec_dashboard WHERE category='" + req.query.stratbuyer_name + "'";
 
 		console.log(query)
 
@@ -597,7 +597,7 @@ module.exports = function (app, con) {
 					res.json({ status: true, data: result.rows});
 					return;
 				}else{
-					res.json({ status: false,message: 'No data found' });
+					res.json({ status: false });
 					return;
 				}				
 			}

@@ -104,7 +104,11 @@ const client = new Client({
 	password: config.db_password,
 	port: config.db_port,
 })
-client.connect();
+ client.connect();
+// Enable query optimization settings
+ client.query('SET enable_seqscan = OFF');
+ client.query('SET enable_bitmapscan = ON');
+ client.query('SET enable_indexscan = ON');
 
 client.query('SELECT NOW()', (err, res) => {
 	if (err) {

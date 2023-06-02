@@ -912,7 +912,6 @@ const BuyerInput = props => {
               </Tooltip>
             </Col>
           </Row>
-
           <div className='react-dataTable my-1'>
             <DataTable
               noHeader
@@ -932,8 +931,6 @@ const BuyerInput = props => {
               data={dataToRender()}
             />
           </div>
-
-
         </CardBody>
       </Card>
 

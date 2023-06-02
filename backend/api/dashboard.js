@@ -21,7 +21,7 @@ module.exports = function (app, con) {
 
 		var getCountriesQuery = "SELECT bdm_global_umbrella_name, bg, cz, de, es, fr, hr, hu, it, kz, md, nl, pk, pl, pt, ro, rs, sk, tr, ua FROM public.vw_heatmap_dashboard_gu_tabular "+ condition;
 
-		console.log(getCountriesQuery)
+		//console.log(getCountriesQuery)
 
 		await con.query(getCountriesQuery, function (err, result) {
 			if (err) {
@@ -59,7 +59,7 @@ module.exports = function (app, con) {
 					countryData.push(countryCode);
 					countryCode = [];
 				});
-				console.log(countryData)
+				//console.log(countryData)
 				data.supplierName = supplierName;
 				data.countryData = countryData;
 				data.countryCodeSeries = ['BG', 'CZ', 'DE', 'ES', 'FR', 'HR', 'HU', 'IT', 'KZ', 'MD', 'NL', 'PK', 'PL', 'PT', 'RO', 'RS', 'SK', 'TR', 'UA', 'AVG']
@@ -153,7 +153,7 @@ module.exports = function (app, con) {
 
 		var getCountriesQuery = "SELECT stratbuyer_name, bg, cz, de, es, fr, hr, hu, it, kz, md, nl, pk, pl, pt, ro, rs, sk, tr, ua FROM public.vw_heatmap_dashboard_stratbuyer_tabular "+ condition;
 
-		console.log(getCountriesQuery)
+		//console.log(getCountriesQuery)
 
 		await con.query(getCountriesQuery, function (err, result) {
 			if (err) {
@@ -192,7 +192,7 @@ module.exports = function (app, con) {
 				data.countryData = countryData;
 				data.countryCodeSeries = ['BG', 'CZ', 'DE', 'ES', 'FR', 'HR', 'HU', 'IT', 'KZ', 'MD', 'NL', 'PK', 'PL', 'PT', 'RO', 'RS', 'SK', 'TR', 'UA', 'AVG']
 
-				console.log(categoryName)
+				//console.log(categoryName)
 
 				categoryName.forEach(function (value, key) {
 					option = { value: value, label: value }
