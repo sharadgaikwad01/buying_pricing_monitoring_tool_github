@@ -84,14 +84,17 @@ const EditSupplierRequestModal = ({ open, handleModal, rowData, supllierNumberOp
       setValue('supplier_number', rowData.suppl_no, { shouldValidate: true })
       setValue('article_number', rowData.art_no, { shouldValidate: true })
       setValue('price_effective_date', finatEffectiveDate, { shouldValidate: true })
+      console.log(supplierNumber)
 
       const flag = '1'
-
-      await axios.get(`${nodeBackend}/getArticlesBySupplierNumber`, { params: { supplierNumber, country, vat_number, flag } }).then((res) => {
-        if (res.data.data) {
-          setarticleOptions(res.data.data.articleOptions)
-        }        
-      })
+      if (supplierNumber) {
+        await axios.get(`${nodeBackend}/getArticlesBySupplierNumber`, { params: { supplierNumber, country, vat_number, flag } }).then((res) => {
+          if (res.data.data) {
+            setarticleOptions(res.data.data.articleOptions)
+          }        
+        })
+      }
+      
     }
   }, [rowData])
 
@@ -174,9 +177,11 @@ const EditSupplierRequestModal = ({ open, handleModal, rowData, supllierNumberOp
   const handleSupplierNumberFilter = async (value) => {
     const supplierNumber = value.value
     setValue('article_number', '', { shouldValidate: true })
-    await axios.get(`${nodeBackend}/getArticlesBySupplierNumber`, { params: { supplierNumber, country, vat_number } }).then((res) => {
-      setarticleOptions(res.data.data.articleOptions)
-    })
+    if (supplierNumber) {
+      await axios.get(`${nodeBackend}/getArticlesBySupplierNumber`, { params: { supplierNumber, country, vat_number } }).then((res) => {
+        setarticleOptions(res.data.data.articleOptions)
+      })
+    }
   }
 
   return (

@@ -6,6 +6,8 @@ import { selectThemeColors, nodeBackend } from '@utils'
 import axios from 'axios'
 import { utils, writeFile } from 'xlsx'
 
+import LoadingSpinner from '@src/@core/components/spinner/Loading-spinner.js'
+
 // ** Add New Modal Component
 import Flatpickr from 'react-flatpickr'
 import AddBuyerInputModal from './AddBuyerInputModal'
@@ -60,6 +62,7 @@ const BootstrapCheckbox = () => forwardRef((props, ref) => (
 const BuyerInput = props => {
   const country = localStorage.getItem('country')
   const email = localStorage.getItem('email')
+  const [isLoading, setIsLoading] = useState(false)
 
   const [Picker, setPicker] = useState('')
   const [supplierInputsData, setsupplierInputsData] = useState([])
@@ -79,7 +82,7 @@ const BuyerInput = props => {
   const [uploadArticleModal, setUploadArticleModal] = useState(false)
   const [downloadArticles, setDownloadArticles] = useState(false)
 
-  const [refreshButton, setRefreshButton] = useState(false)
+  const [refreshButton, setrefreshButton] = useState(false)
   const [addButton, setAddButton] = useState(false)
   const [closedStatusButton, setClosedStatusButton] = useState(false)
   const [editButton, setEditButton] = useState(false)
@@ -108,15 +111,19 @@ const BuyerInput = props => {
     if (user_type === 'SUPPLIER') {
       props.history.push('/home')
     }
-
+    setIsLoading(true)
     await axios.get(`${nodeBackend}/buyer_input`, { params: { searchSupplierNumber, searchRequestedDate, searchStatus, searchCategory, country, email } }).then((res) => {
       if (res.data.data) {
         setsupplierInputsData(res.data.data.supplierInputs)
         setsupllierNumberOptions(res.data.data.supplierIDOptions)
         setCategoryOptions(res.data.data.categoryOptions)
         setSupplierListOption(res.data.data.supplierListOption)
+        setIsLoading(false)
+      } else {
+        setIsLoading(false)
       }
     })
+    
   }, [])
 
   const dataToRender = () => {
@@ -192,8 +199,10 @@ const BuyerInput = props => {
   }
 
   const assortmentDownload = async (flag) => {
+    setIsLoading(true)
     await axios.get(`${nodeBackend}/buyer_article_details`, { params: { country, email, searchSupplierNumber, searchRequestedDate, searchStatus, searchCategory } }).then((res) => {
       const csvdata = res.data.data
+      
       csvdata.forEach(function (item) {
         delete item.row_id
         delete item.frmt_new_price
@@ -216,13 +225,17 @@ const BuyerInput = props => {
         "Category Name": item.stratbuyer_name ? item.stratbuyer_name.replace(",", ".") : item.stratbuyer_name
       }))
       if (flag === 1) {
+        setIsLoading(false)
         downloadCSV(finalcsvdata)
+        
       } else {
         const name = fileName.length ? `${fileName}.${fileFormat}` : `excel-sheet.${fileFormat}`
         const wb = utils.json_to_sheet(finalcsvdata)
         const wbout = utils.book_new()
         utils.book_append_sheet(wbout, wb, fileName)
+        setIsLoading(false)
         writeFile(wbout, name)
+        setIsLoading(false)
       }
     })
   }
@@ -231,11 +244,12 @@ const BuyerInput = props => {
   const handleSupplierNumberFilter = async (e) => {
     const searchSupplierNumber = e.value
     setSupplierNumber(searchSupplierNumber)
-
+    setIsLoading(true)
     await axios.get(`${nodeBackend}/buyer_input`, { params: { searchSupplierNumber, searchRequestedDate, searchStatus, searchCategory, country, email } }).then((res) => {
       setsupplierInputsData(res.data.data.supplierInputs)
       setsupllierNumberOptions(res.data.data.supplierIDOptions)
       setCategoryOptions(res.data.data.categoryOptions)
+      setIsLoading(false)
     })
   }
 
@@ -260,11 +274,16 @@ const BuyerInput = props => {
     setPicker(range)
 
     setSearchRequestedDate(searchRequestedDate)
+    setIsLoading(true)
     await axios.get(`${nodeBackend}/buyer_input`, { params: { searchSupplierNumber, searchRequestedDate, searchStatus, searchCategory, country, email } }).then((res) => {
       if (res.data.data) {
+        setIsLoading(false)
         setsupplierInputsData(res.data.data.supplierInputs)
         setsupllierNumberOptions(res.data.data.supplierIDOptions)
         setCategoryOptions(res.data.data.categoryOptions)
+       
+      } else {
+        setIsLoading(false)
       }
     })
   }
@@ -273,20 +292,26 @@ const BuyerInput = props => {
   const handleStatusFilter = async (e) => {
     const searchStatus = e.value
     setSearchStatus(searchStatus)
+    setIsLoading(true)
     await axios.get(`${nodeBackend}/buyer_input`, { params: { searchSupplierNumber, searchRequestedDate, searchStatus, searchCategory, country, email } }).then((res) => {
+      setIsLoading(false)
       setsupplierInputsData(res.data.data.supplierInputs)
       setsupllierNumberOptions(res.data.data.supplierIDOptions)
       setCategoryOptions(res.data.data.categoryOptions)
+      
     })
   }
 
   const handleCategoryFilter = async (e) => {
     const searchCategory = e.value
     setSearchCategory(searchCategory)
+    setIsLoading(true)
     await axios.get(`${nodeBackend}/buyer_input`, { params: { searchSupplierNumber, searchRequestedDate, searchStatus, searchCategory, country, email } }).then((res) => {
+      setIsLoading(false)
       setsupplierInputsData(res.data.data.supplierInputs)
       setsupllierNumberOptions(res.data.data.supplierIDOptions)
       setCategoryOptions(res.data.data.categoryOptions)
+      
     })
   }
 
@@ -383,12 +408,15 @@ const BuyerInput = props => {
     const searchRequestedDate = ''
     const searchStatus = ''
     const searchCategory = ''
-
+    setIsLoading(true)
     await axios.get(`${nodeBackend}/buyer_input`, { params: { searchSupplierNumber, searchRequestedDate, searchStatus, searchCategory, country, email } }).then((res) => {
       if (res.data.data) {
         setsupplierInputsData(res.data.data.supplierInputs)
         setsupllierNumberOptions(res.data.data.supplierIDOptions)
         setCategoryOptions(res.data.data.categoryOptions)
+        setIsLoading(false)
+      } else {
+        setIsLoading(false)
       }
     })
   }
@@ -778,7 +806,7 @@ const BuyerInput = props => {
   ]
   return (
     <Fragment>
-      <Card className='pageBox buyer-screen'>
+      {isLoading ? <LoadingSpinner /> : <Card className='pageBox buyer-screen'>
         <CardHeader className='align-items-center align-items-start border-bottom'>
           <CardTitle tag='h2'>List of Assortment</CardTitle>
           <div className='d-md-flex mt-md-0 mt-1 btn-row document-btn-row'>
@@ -895,7 +923,7 @@ const BuyerInput = props => {
                 placement='top'
                 isOpen={refreshButton}
                 target='refreshButton'
-                toggle={() => setRefreshButton(!refreshButton)}
+                toggle={() => setrefreshButton(false)}
               >
                 Refresh Filter
               </Tooltip>
@@ -933,7 +961,7 @@ const BuyerInput = props => {
           </div>
         </CardBody>
       </Card>
-
+      }
       <DownloadSupplierAssortmentsModal open={pdfDownload} handleModal={downloadArticlePDFModal} supllierNumberOptions={supllierNumberOptions} />
 
       <AddBuyerInputModal open={editBuyerModal} handleModal={handleEdit} rowData={rowData} setsupplierInputsData={setsupplierInputsData} />

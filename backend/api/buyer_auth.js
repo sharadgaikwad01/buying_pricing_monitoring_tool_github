@@ -42,7 +42,7 @@ router.use((req, res, next) => {
     const params = client.callbackParams(req)
     client.callback(config.nodebackend+'/buyer/api/v2/callback', params, { code_verifier }) // => Promise
         .then(token => {
-            console.log(token.access_token)
+            // console.log(token.access_token)
             let user_details = token.claims();
             sql = "SELECT * FROM public.tbl_buyer_details where buyer_emailid = '"+ user_details.email +"' and active_status='active'";
             clientDB.query(sql, function(err, result) {

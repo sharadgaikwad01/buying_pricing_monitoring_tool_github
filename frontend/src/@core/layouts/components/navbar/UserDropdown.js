@@ -8,37 +8,38 @@ import { reactFrontend } from '@utils'
 
 // ** Custom Components
 import Avatar from '@components/avatar'
+import { useState, useEffect } from 'react'
 
 // ** Utils
 // import { isUserLoggedIn } from '@utils'
+
 
 // ** Third Party Components
 import { User, Mail, CheckSquare, MessageSquare, Settings, CreditCard, HelpCircle, Power } from 'react-feather'
 
 // ** Reactstrap Imports
-import { UncontrolledDropdown, DropdownMenu, DropdownToggle, DropdownItem } from 'reactstrap'
+import { UncontrolledDropdown, DropdownMenu, DropdownToggle, DropdownItem, Button } from 'reactstrap'
 
 const UserDropdown = () => {
   // ** State
   // const user_email = localStorage.getItem('email')
   // const vat_number = localStorage.getItem('vat')
   const user_name = localStorage.getItem('name')
+  const [reportlink, setreportlink] = useState(false)
 
-  // const handlelogout = () => {    
-  //   const user_type = localStorage.getItem("type")
-  //   if (user_type === 'SUPPLIER') {
-  //     localStorage.clear()
-  //     window.location.replace(`${reactFrontend}/logout`)
-  //   }
-  //   if (user_type === 'BUYER') {
-  //     localStorage.clear()
-  //     window.location.replace(`${reactFrontend}/buyer_login?message=Logout`)
-  //   }
-  //   if (user_type === 'ADMIN') {
-  //     localStorage.clear()
-  //     window.location.replace(`${reactFrontend}/buyer_login?message=Logout`)
-  //   }      
-  // }
+  useEffect(async () => {
+
+    const user_type = localStorage.getItem("type")
+    if (user_type === 'SUPPLIER') {
+      setreportlink(false)
+    }
+    if (user_type === 'BUYER') {
+      setreportlink(false)
+    }
+    if (user_type === 'ADMIN' || user_type === 'SUPERADMIN') {
+      setreportlink(true)
+    }      
+  })
   const handlelogout = () => {
     const user_type = localStorage.getItem("type")
     const token = localStorage.getItem("token")
@@ -47,13 +48,17 @@ const UserDropdown = () => {
       localStorage.clear()
       const url = `https://idam.metrosystems.net/authorize/api/oauth2/op_session_end?id_token_hint=${token}&post_logout_redirect_uri=${reactFrontend}/logout`
       console.log(url)
+     
       window.location.replace(url)
+     
     }
     if (user_type === 'BUYER') {
       localStorage.clear()
       const url = `https://idam.metrosystems.net/authorize/api/oauth2/op_session_end?id_token_hint=${token}&post_logout_redirect_uri=${reactFrontend}/buyer_login?message=Logout`
       console.log(url)
+     
       window.location.replace(url)
+      
     }
     if (user_type === 'ADMIN' || user_type === 'SUPERADMIN') {
       localStorage.clear()
@@ -72,6 +77,7 @@ const UserDropdown = () => {
         <Avatar color='light-primary' content={user_name} initials />
       </DropdownToggle>
       <DropdownMenu end>
+          {reportlink ? <DropdownItem><Link to={'/report'}><span className='align-middle ms-25'>Report</span></Link></DropdownItem> : ''}
         <DropdownItem onClick={handlelogout}>
           <Power size={14} className='me-75' />
           <span className='align-middle'>Logout</span>

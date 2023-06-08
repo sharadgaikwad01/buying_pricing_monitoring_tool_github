@@ -145,11 +145,14 @@ const AddNewModal = ({ open, handleModal, supllierNumberOptions, setsupplierInpu
   const handleSupplierNumberFilter = async (value) => {
     setarticleOptions([{ value: '', label: '' }])
     const supplierNumber = value.value
-    await axios.get(`${nodeBackend}/getArticlesBySupplierNumber`, { params: { supplierNumber, country, vat_number} }).then((res) => {
-      if (res.data.data) {
-        setarticleOptions(res.data.data.articleOptions)
-      }      
-    })
+    if (supplierNumber) {
+      await axios.get(`${nodeBackend}/getArticlesBySupplierNumber`, { params: { supplierNumber, country, vat_number} }).then((res) => {
+        if (res.data.data) {
+          setarticleOptions(res.data.data.articleOptions)
+        }      
+      })
+    }
+   
   } 
   const handleModalClose = async () => {
     setNewPrice('')

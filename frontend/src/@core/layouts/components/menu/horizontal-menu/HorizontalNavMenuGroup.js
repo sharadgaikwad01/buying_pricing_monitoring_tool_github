@@ -110,7 +110,7 @@ const HorizontalNavMenuGroup = props => {
         tag='ul'
         modifiers={menuModifiers}
         className={classnames({ 'first-level': submenu === false })}
-      >
+      end>
         <HorizontalNavMenuItems
           submenu={true}
           parentItem={item}

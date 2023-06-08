@@ -72,7 +72,7 @@ const DownloadArticliesModal = ({ open, handleModal, supllierNumberOptions, flag
         setBlock(false)
         setBehalfOfSupplier(false)
         handleBlock()
-        setSupllierNumberOptionsList([])
+        // setSupllierNumberOptionsList([])
         let supplier_string = ''
         for (const value of data.supplier_number) {
             supplier_string = `${supplier_string}, '${value.value}'`
@@ -125,7 +125,7 @@ const DownloadArticliesModal = ({ open, handleModal, supllierNumberOptions, flag
                     }
                 })
             } else {
-                await axios.get(`${nodeBackend}/buyer_article_details`, { params: { country, email, flag } }).then((res) => {
+                await axios.get(`${nodeBackend}/buyer_article_details`, { params: { supplier_number, country, email, flag } }).then((res) => {
                     const csvdata = res.data.data
                     if (csvdata.length > 0) {
                         csvdata.forEach(function (item) {

@@ -52,9 +52,9 @@ app.use(function (req, res, next) {
 
 	// Website you wish to allow to connect
 	// //have you check oringin in header
-	console.log(req.headers.origin);
+	// console.log(req.headers.origin);
 	res.setHeader('Access-Control-Allow-Origin', config.reactFrontend);
-	console.log(req.headers.origin);
+	// console.log(req.headers.origin);
 	//res.setHeader('Access-Control-Allow-Origin', req.headers.origin);
 
 	// Request methods you wish to allow
@@ -104,11 +104,11 @@ const client = new Client({
 	password: config.db_password,
 	port: config.db_port,
 })
- client.connect();
+client.connect();
 // Enable query optimization settings
- client.query('SET enable_seqscan = OFF');
- client.query('SET enable_bitmapscan = ON');
- client.query('SET enable_indexscan = ON');
+client.query('SET enable_seqscan = OFF');
+client.query('SET enable_bitmapscan = ON');
+client.query('SET enable_indexscan = ON');
 
 client.query('SELECT NOW()', (err, res) => {
 	if (err) {
@@ -120,7 +120,6 @@ client.query('SELECT NOW()', (err, res) => {
 //========= Import api module ==================
 
 app.use("/", auth)
-// app.use("/", auth)
 app.use("/buyer", buyerAuth)
 supplierInput(app, client);
 mintechModal(app, client);

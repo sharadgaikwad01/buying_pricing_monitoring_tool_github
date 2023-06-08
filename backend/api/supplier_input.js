@@ -35,8 +35,7 @@ module.exports = function (app, con) {
 		});
 
 		if (req.query.searchSupplierNumber != '') {
-			var getUniqueArticleQuery = "select DISTINCT art_no, art_name from vw_artinfo_with_request  Where suppl_no='" + req.query.searchSupplierNumber + "' and country_name ='" + req.query.country + "' and vat_no ='" + req.query.vat_number + "'";			
-
+			var getUniqueArticleQuery = "select DISTINCT art_no, art_name from vw_artinfo_with_request  Where suppl_no='" + req.query.searchSupplierNumber + "' and country_name ='" + req.query.country + "' and vat_no ='" + req.query.vat_number + "'";
 			await con.query(getUniqueArticleQuery, function (err, result) {
 				if (err) {
 					res.json({ status: false });
@@ -232,10 +231,14 @@ module.exports = function (app, con) {
 		var data = {};
 		var articleOptions = [];
 
-		if (req.query.flag) {
+		if (req.query.flag && req.query.vat_number) {
 			var getUniqueArticleQuery = "select DISTINCT art_no, art_name from vw_artinfo_with_request  Where suppl_no='" + req.query.supplierNumber + "' and country_name ='" + req.query.country + "' and vat_no ='" + req.query.vat_number + "'"
 		} else {
 			var getUniqueArticleQuery = "SELECT DISTINCT art_no, art_name FROM public.vw_artinfo_without_request Where suppl_no='" + req.query.supplierNumber + "' and country_name ='" + req.query.country + "'"
+		}
+		if(req.query.supplierNumber =='undefined' || req.query.country == 'undefined'){
+			res.json({ status: false });
+			return;
 		}
 		console.log("getUniqueArticleQuery=============")	
 		console.log(getUniqueArticleQuery)
@@ -357,7 +360,7 @@ module.exports = function (app, con) {
 		
 		// var query = "select row_id, country_name, art_no, art_name, suppl_no, suppl_name, msg, new_price from tbl_notification where country_name='" + req.query.country;
 		var query = "select row_id, statuscol, country_name, art_no, art_name, suppl_no, suppl_name, msg, new_price, created_at from tbl_notification";
-
+		console.log(query)
 		await con.query(query, function (err, result) {
 			if (err) {
 				res.json({ status: false });
@@ -376,7 +379,7 @@ module.exports = function (app, con) {
 				res.json({ status: false });
 				return;
 			} else {
-				var query = "select row_id, statuscol, country_name, art_no, art_name, suppl_no, suppl_name, msg, new_price, created_at from tbl_notification";
+				var query = "select row_id, statuscol, country_name, art_no, art_name, suppl_no, suppl_name, msg, new_price, created_at from tbl_notification where statuscol=0";
 		await con.query(query, function (err, result) {
 			if (err) {
 				res.json({ status: false });
