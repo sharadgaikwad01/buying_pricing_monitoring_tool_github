@@ -25,7 +25,7 @@ Issuer.discover('https://idam.metrosystems.net/') // => Promise
   .then((idam) => {
     client = new idam.Client({
         client_id: 'BUYING_PRICING_MONITORING_TOOL_SUPPLIER',
-        client_secret: 'd8okLx6Q45',
+        client_secret: 'YM2ArHMahE',
         realm_id: 'SUPP_REALM',
         country_code: 'IN',
         locale_id: 'en-IN',
@@ -46,27 +46,36 @@ router.use((req, res, next) => {
         .then(token => {
 			var country;
             var salesLine;
-            var supplierNumber;
+            var supplierNumber = '';
             var vatNumber;
             var supplierName;
             var country_name;
             var user_details = jwt_decode(token.access_token);
-            // console.log(user_details);
+            console.log(user_details);
             for (const [key, value] of Object.entries(user_details.authorization)) {
                 for (const [key1, value1] of Object.entries(value)) {
                     if(key1 == 'BPMT_SUPPLIER')
                     {                        
                         for (const [key2, value2] of Object.entries(value1)) {
-                            // console.log(value2);
-                            country = value2.country[0];
-                            salesLine = value2.salesLine[0];
-                            supplierNumber = value2.supplierNumber[0];
+                            console.log(value2);
+                            if(key2 == 0){
+                                country = value2.country[0];
+                                salesLine = value2.salesLine[0];
+                                supplierNumber = `'${value2.supplierNumber[0]}'`;
+                            }else{
+                                country = value2.country[0];
+                                salesLine = value2.salesLine[0];
+                                supplierNumber = supplierNumber + `,'${value2.supplierNumber[0]}'`;
+                            }
+                           
                         }
                     }
                 }
             }
 
-            sql = "select * from public.vw_suppl_info where suppl_no='"+supplierNumber+"' and country_code='"+country+"'";
+            sql = "select * from public.vw_suppl_info where suppl_no in ("+supplierNumber+") and country_code='"+country+"'";
+            console.log("supplier login details")
+            console.log(sql)
             clientDB.query(sql, function(err, result) {                
                 if (err) {
                     // res.redirect(303, config.reactFrontend + '/auth?error=User not Exist');
@@ -108,7 +117,6 @@ router.get('/api/v1/login', (req, res, next) => {
         locale_id: 'en-IN',
         code_challenge_method: 'S256',
     });
-   
 	// res.redirect(303, authUrl);
     res.send('<script>window.location.href="'+authUrl+'";</script>');
     next()

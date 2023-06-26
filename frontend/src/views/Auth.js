@@ -21,7 +21,7 @@ export default class Auth extends Component {
 
             localStorage.setItem("id", id)
             localStorage.setItem("token", token)
-            localStorage.setItem("email", email)
+            localStorage.setItem("email", email.toLowerCase())
             localStorage.setItem("type", type)
             localStorage.setItem("country", country)
             localStorage.setItem("name", name)

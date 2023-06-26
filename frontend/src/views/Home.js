@@ -17,6 +17,7 @@ import { Download, Search, ChevronDown, Share, Printer, FileText, File, Grid, Co
 
 import '@styles/react/libs/tables/react-dataTable-component.scss'
 import '@styles/react/libs/flatpickr/flatpickr.scss'
+import LoadingSpinner from '@src/@core/components/spinner/Loading-spinner.js'
 
 // ** Reactstrap Imports
 import {
@@ -58,7 +59,6 @@ const Home = props => {
   const [Picker, setPicker] = useState('')
   const [searchRequestedDate, setSearchRequestedDate] = useState('')
 
-  
   const country = localStorage.getItem('country')
   const vat_number = localStorage.getItem('vat')
 
@@ -79,6 +79,7 @@ const Home = props => {
   const [currentPage, setCurrentPage] = useState(0)
   const [fileName] = useState('export')
   const [fileFormat] = useState('xlsx')
+  const [isLoading, setIsLoading] = useState(false)
 
   // ** Function to handle Modal toggle
   // const handleModal = () => setModal(!modal)
@@ -113,9 +114,10 @@ const Home = props => {
     if (!auth_token) {
       window.location.replace(`${nodeBackend}/api/v1/login`)
     }
-
+    setIsLoading(true)
     await axios.get(`${nodeBackend}/supplier_input`, { params: { searchSupplierNumber, searchArticleNumber, searchRequestedDate, searchStatus, country, vat_number } }).then((res) => {
       if (res.data.data) {
+        setIsLoading(false)
         setsupplierInputsData(res.data.data.supplierInputs)
         setsupllierNumberOptions(res.data.data.supplierIDOptions)
         setarticleOptions(res.data.data.articleOptions)
@@ -200,7 +202,9 @@ const Home = props => {
   const handleSupplierNumberFilter = async (e) => {
     const searchSupplierNumber = e.value
     setSupplierNumber(searchSupplierNumber)
+    setIsLoading(true)
     await axios.get(`${nodeBackend}/supplier_input`, { params: { searchSupplierNumber, searchArticleNumber, searchRequestedDate, searchStatus, country, vat_number } }).then((res) => {
+      setIsLoading(false)
       setsupplierInputsData(res.data.data.supplierInputs)
       setsupllierNumberOptions(res.data.data.supplierIDOptions)
       setarticleOptions(res.data.data.articleOptions)
@@ -213,9 +217,9 @@ const Home = props => {
   const handleArticleFilter = async (e) => {
     const searchArticleNumber = e.value
     setArticleNumber(searchArticleNumber)
-
+    setIsLoading(true)
     await axios.get(`${nodeBackend}/supplier_input`, { params: { searchSupplierNumber, searchArticleNumber, searchRequestedDate, searchStatus, country, vat_number } }).then((res) => {
-
+      setIsLoading(false)
       setsupplierInputsData(res.data.data.supplierInputs)
       setsupllierNumberOptions(res.data.data.supplierIDOptions)
       setarticleOptions(res.data.data.articleOptions)
@@ -246,9 +250,10 @@ const Home = props => {
     setPicker(range)
 
     setSearchRequestedDate(searchRequestedDate)
-
+    setIsLoading(true)
     await axios.get(`${nodeBackend}/supplier_input`, { params: { searchSupplierNumber, searchArticleNumber, searchRequestedDate, searchStatus, country, vat_number } }).then((res) => {
       if (res.data.data) {
+        setIsLoading(false)
         setsupplierInputsData(res.data.data.supplierInputs) 
         setsupllierNumberOptions(res.data.data.supplierIDOptions)
         setarticleOptions(res.data.data.articleOptions)
@@ -261,9 +266,9 @@ const Home = props => {
   const handleStatusFilter = async (e) => {
     const searchStatus = e.value
     setSearchStatus(searchStatus)
-
+    setIsLoading(true)
     await axios.get(`${nodeBackend}/supplier_input`, { params: { searchSupplierNumber, searchArticleNumber, searchRequestedDate, searchStatus, country, vat_number } }).then((res) => {
-
+      setIsLoading(false)
       setsupplierInputsData(res.data.data.supplierInputs)
       setsupllierNumberOptions(res.data.data.supplierIDOptions)
       setarticleOptions(res.data.data.articleOptions)
@@ -383,9 +388,9 @@ const Home = props => {
     const searchArticleNumber = ''
     const searchRequestedDate = ''
     const searchStatus = ''
-
+    setIsLoading(true)
     await axios.get(`${nodeBackend}/supplier_input`, { params: { searchSupplierNumber, searchArticleNumber, searchRequestedDate, searchStatus, country, vat_number } }).then((res) => {
-
+      setIsLoading(false)
       setsupplierInputsData(res.data.data.supplierInputs)
       setsupllierNumberOptions(res.data.data.supplierIDOptions)
       setarticleOptions(res.data.data.articleOptions)
@@ -514,7 +519,7 @@ const Home = props => {
   ]
   return (
     <Fragment>
-      <Card className='pageBox supplier-screen'>
+       {isLoading ? <LoadingSpinner /> : <Card className='pageBox supplier-screen'>
         <CardHeader className='flex-md-row flex-column align-items-center align-items-start border-bottom'>
           <CardTitle tag='h2'>List of Assortment</CardTitle>
           <div className='d-md-flex mt-md-0 mt-1  btn-row document-btn-row'>
@@ -642,7 +647,7 @@ const Home = props => {
             />
           </div>
         </CardBody>
-      </Card>
+      </Card> }
       <AddNewModal open={modal} handleModal={handleModal} supllierNumberOptions={supllierNumberOptions} setsupplierInputsData={setsupplierInputsData} />
       <UploadArticliesModal open={uploadArticleModal} handleModal={handleUploadArticleModal} setsupplierInputsData={setsupplierInputsData} />
       <DownloadArticliesModal open={supplierInputModal} handleModal={downloadArticleModal} supllierNumberOptions={supllierNumberOptions} />

@@ -122,7 +122,7 @@ const CategoryDashboard = () => {
     setcheckedvalue(value)
 
     if (value === 'buyer') {
-      setnotificationmsg('Displayed information represents the category wise by Category Manager')
+      setnotificationmsg('Dashboard information represents the category wise final price agreed by category manager')
       setIsLoading(true)
      // console.log('buyer dashboard called')
       axios.get(`${nodeBackend}/category_dashboard_buyer`).then((res) => {

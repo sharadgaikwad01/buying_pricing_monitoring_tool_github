@@ -4,6 +4,7 @@ var async = require("async");
 //=========== MonthEnd API Module ===================
 module.exports = function (app, con) {
 	app.get('/buyers', async function (req, res) {
+				
 		var data = {};
         // var query = "SELECT * FROM public.tbl_users where action_status='Open'" + condition;
 		var condition  = '';
@@ -75,7 +76,7 @@ module.exports = function (app, con) {
 		if (req.body.stratbuyer_name) {
 			console.log(req.body)
 			const stratbuyer_name = Array.prototype.map.call(req.body.stratbuyer_name, function (item) { return item.label; }).join(",")
-			var query = "call public.usp_update_buyerdetails ('" + req.body.first_name + "', '" + req.body.last_name + "', '" + req.body.dept_name + "', '" + req.body.buyer_emailid + "', '" + req.body.country_name + "','" + req.body.role_name + "', '" + stratbuyer_name + "')";
+			var query = "call public.usp_update_buyerdetails ('" + req.body.first_name + "', '" + req.body.last_name + "', '" + req.body.dept_name + "', '" + req.body.buyer_emailid.toLowerCase() + "', '" + req.body.country_name + "','" + req.body.role_name + "', '" + stratbuyer_name + "')";
 			await con.query(query, async function (err, result) {
 				if (err) {
 					console.log(err)

@@ -31,7 +31,7 @@ module.exports = function(app, con) {
 				return;
 			} else {
 				result.rows.forEach(function (row, key) {
-					option = { value: row.stratbuyer_name, label: row.stratbuyer_name }
+					option = { value: row.stratbuyer_name.trim(), label: row.stratbuyer_name.trim() }
 					CategoryOptions.push(option);
 				});
 				data.CategoryOptions = CategoryOptions;

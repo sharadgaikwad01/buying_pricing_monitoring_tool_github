@@ -230,17 +230,18 @@ module.exports = function (app, con) {
 	app.get('/getArticlesBySupplierNumber', async function (req, res) {
 		var data = {};
 		var articleOptions = [];
-
+		console.log("getUniqueArticleQuery=============")	
+		if(req.query.supplierNumber =='undefined' || req.query.country == 'undefined'){
+			res.json({ status: false });
+			return;
+		}
 		if (req.query.flag && req.query.vat_number) {
 			var getUniqueArticleQuery = "select DISTINCT art_no, art_name from vw_artinfo_with_request  Where suppl_no='" + req.query.supplierNumber + "' and country_name ='" + req.query.country + "' and vat_no ='" + req.query.vat_number + "'"
 		} else {
 			var getUniqueArticleQuery = "SELECT DISTINCT art_no, art_name FROM public.vw_artinfo_without_request Where suppl_no='" + req.query.supplierNumber + "' and country_name ='" + req.query.country + "'"
 		}
-		if(req.query.supplierNumber =='undefined' || req.query.country == 'undefined'){
-			res.json({ status: false });
-			return;
-		}
-		console.log("getUniqueArticleQuery=============")	
+		
+		
 		console.log(getUniqueArticleQuery)
 		await con.query(getUniqueArticleQuery, function (err, result) {
 			if (err) {

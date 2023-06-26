@@ -74,7 +74,6 @@ const BuyerInput = props => {
   const [rosIds, setRosIds] = useState([])
 
   const [editSupplierModal, setEditSupplierModal] = useState(false)
-
   const [currentPage, setCurrentPage] = useState(0)
 
   const [pdfDownload, setPDFDownload] = useState(false)
@@ -86,14 +85,11 @@ const BuyerInput = props => {
   const [addButton, setAddButton] = useState(false)
   const [closedStatusButton, setClosedStatusButton] = useState(false)
   const [editButton, setEditButton] = useState(false)
+  const [editButtonb, setEditButtonb] = useState(false)
   const [statusButton, setStatusButton] = useState(false)
   const [revokeButton, setRevokeButton] = useState(false)
   const [supplierListOption, setSupplierListOption] = useState([])
-
-  // ** Function to handle Pagination
-  const handlePagination = page => {
-    setCurrentPage(page.selected)
-  }
+  const [pageCount, setpageCount] = useState([])
   const downloadArticlePDFModal = () => setPDFDownload(!pdfDownload)
   const handleUploadArticleModal = () => setUploadArticleModal(!uploadArticleModal)
   const downloadArticleModal = () => setDownloadArticles(!downloadArticles)
@@ -106,18 +102,21 @@ const BuyerInput = props => {
   const [fileName] = useState('export')
   const [fileFormat] = useState('xlsx')
 
+  // ** Function to handle Pagination
+  
   useEffect(async () => {
     const user_type = localStorage.getItem("type")
     if (user_type === 'SUPPLIER') {
       props.history.push('/home')
     }
     setIsLoading(true)
-    await axios.get(`${nodeBackend}/buyer_input`, { params: { searchSupplierNumber, searchRequestedDate, searchStatus, searchCategory, country, email } }).then((res) => {
+    await axios.get(`${nodeBackend}/buyer_input`, { params: { searchSupplierNumber, searchRequestedDate, searchStatus, searchCategory, country, email, currentPage } }).then((res) => {
       if (res.data.data) {
         setsupplierInputsData(res.data.data.supplierInputs)
         setsupllierNumberOptions(res.data.data.supplierIDOptions)
         setCategoryOptions(res.data.data.categoryOptions)
         setSupplierListOption(res.data.data.supplierListOption)
+        setpageCount(res.data.data.pageCount)
         setIsLoading(false)
       } else {
         setIsLoading(false)
@@ -129,6 +128,22 @@ const BuyerInput = props => {
   const dataToRender = () => {
     return supplierInputsData
   }
+  const handlePagination = async page => {
+    setCurrentPage(page.selected)
+    // setIsLoading(true)
+    // await axios.get(`${nodeBackend}/buyer_input`, { params: { searchSupplierNumber, searchRequestedDate, searchStatus, searchCategory, country, email, currentPage } }).then((res) => {
+    //   if (res.data.data) {
+    //     setsupplierInputsData(res.data.data.supplierInputs)
+    //     setsupllierNumberOptions(res.data.data.supplierIDOptions)
+    //     setCategoryOptions(res.data.data.categoryOptions)
+    //     setSupplierListOption(res.data.data.supplierListOption)
+    //     setpageCount(res.data.data.pageCount)
+    //     setIsLoading(false)
+    //   } else {
+    //     setIsLoading(false)
+    //   }
+    // })
+  }
 
   // ** Custom Pagination
   const CustomPagination = () => (
@@ -137,7 +152,8 @@ const BuyerInput = props => {
       nextLabel=''
       forcePage={currentPage}
       onPageChange={page => handlePagination(page)}
-      pageCount={Math.ceil(dataToRender().length / 7) || 1}
+      // pageCount={Math.ceil(dataToRender().length / 7) || 1}
+      pageCount={pageCount}
       breakLabel='...'
       pageRangeDisplayed={2}
       marginPagesDisplayed={2}
@@ -213,9 +229,9 @@ const BuyerInput = props => {
         "Article Number": item.art_no ? item.art_no.replace(",", ".") : item.art_no,
         "EAN Number": item.ean_no ? item.ean_no.replace(",", ".") : item.ean_no,
         "Article Description": item.art_name_tl ? item.art_name_tl.replace(",", ".") : item.art_name_tl,
-        "Current Price": item.current_price ? item.current_price.replace(",", ".") : item.current_price,
+        "Current Price": item.frmt_current_price ? item.frmt_current_price.replace("€", "").replace(",", ".") : item.frmt_current_price,
         "Requested Price": item.new_price ? item.new_price.replace(",", ".") : item.new_price,
-        "Price Increase in %": item.price_difference_perc ? item.price_difference_perc.replace(",", ".") : item.price_difference_perc,
+        "Price Increase in %": item.price_increase_perc ? item.price_increase_perc.replace(",", ".") : item.price_increase_perc,
         "Requested Date": item.request_date ? item.request_date.replace(",", ".") : item.request_date,
         "Price change Reason": item.price_change_reason ? item.price_change_reason.replace(",", ".") : item.price_change_reason,
         "Article Status": item.action_status ? item.action_status.replace(",", ".") : item.action_status,
@@ -245,10 +261,11 @@ const BuyerInput = props => {
     const searchSupplierNumber = e.value
     setSupplierNumber(searchSupplierNumber)
     setIsLoading(true)
-    await axios.get(`${nodeBackend}/buyer_input`, { params: { searchSupplierNumber, searchRequestedDate, searchStatus, searchCategory, country, email } }).then((res) => {
+    await axios.get(`${nodeBackend}/buyer_input`, { params: { searchSupplierNumber, searchRequestedDate, searchStatus, searchCategory, country, email, currentPage } }).then((res) => {
       setsupplierInputsData(res.data.data.supplierInputs)
       setsupllierNumberOptions(res.data.data.supplierIDOptions)
       setCategoryOptions(res.data.data.categoryOptions)
+      setpageCount(res.data.data.pageCount)
       setIsLoading(false)
     })
   }
@@ -275,12 +292,13 @@ const BuyerInput = props => {
 
     setSearchRequestedDate(searchRequestedDate)
     setIsLoading(true)
-    await axios.get(`${nodeBackend}/buyer_input`, { params: { searchSupplierNumber, searchRequestedDate, searchStatus, searchCategory, country, email } }).then((res) => {
+    await axios.get(`${nodeBackend}/buyer_input`, { params: { searchSupplierNumber, searchRequestedDate, searchStatus, searchCategory, country, email, currentPage } }).then((res) => {
       if (res.data.data) {
         setIsLoading(false)
         setsupplierInputsData(res.data.data.supplierInputs)
         setsupllierNumberOptions(res.data.data.supplierIDOptions)
         setCategoryOptions(res.data.data.categoryOptions)
+        setpageCount(res.data.data.pageCount)
        
       } else {
         setIsLoading(false)
@@ -293,7 +311,7 @@ const BuyerInput = props => {
     const searchStatus = e.value
     setSearchStatus(searchStatus)
     setIsLoading(true)
-    await axios.get(`${nodeBackend}/buyer_input`, { params: { searchSupplierNumber, searchRequestedDate, searchStatus, searchCategory, country, email } }).then((res) => {
+    await axios.get(`${nodeBackend}/buyer_input`, { params: { searchSupplierNumber, searchRequestedDate, searchStatus, searchCategory, country, email, currentPage } }).then((res) => {
       setIsLoading(false)
       setsupplierInputsData(res.data.data.supplierInputs)
       setsupllierNumberOptions(res.data.data.supplierIDOptions)
@@ -306,7 +324,7 @@ const BuyerInput = props => {
     const searchCategory = e.value
     setSearchCategory(searchCategory)
     setIsLoading(true)
-    await axios.get(`${nodeBackend}/buyer_input`, { params: { searchSupplierNumber, searchRequestedDate, searchStatus, searchCategory, country, email } }).then((res) => {
+    await axios.get(`${nodeBackend}/buyer_input`, { params: { searchSupplierNumber, searchRequestedDate, searchStatus, searchCategory, country, email, currentPage } }).then((res) => {
       setIsLoading(false)
       setsupplierInputsData(res.data.data.supplierInputs)
       setsupllierNumberOptions(res.data.data.supplierIDOptions)
@@ -409,11 +427,12 @@ const BuyerInput = props => {
     const searchStatus = ''
     const searchCategory = ''
     setIsLoading(true)
-    await axios.get(`${nodeBackend}/buyer_input`, { params: { searchSupplierNumber, searchRequestedDate, searchStatus, searchCategory, country, email } }).then((res) => {
+    await axios.get(`${nodeBackend}/buyer_input`, { params: { searchSupplierNumber, searchRequestedDate, searchStatus, searchCategory, country, email, currentPage } }).then((res) => {
       if (res.data.data) {
         setsupplierInputsData(res.data.data.supplierInputs)
         setsupllierNumberOptions(res.data.data.supplierIDOptions)
         setCategoryOptions(res.data.data.categoryOptions)
+        setpageCount(res.data.data.pageCount)
         setIsLoading(false)
       } else {
         setIsLoading(false)
@@ -794,8 +813,9 @@ const BuyerInput = props => {
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512">
                 <path d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3C0 498.7 13.3 512 29.7 512H322.8c-3.1-8.8-3.7-18.4-1.4-27.8l15-60.1c2.8-11.3 8.6-21.5 16.8-29.7l40.3-40.3c-32.1-31-75.7-50.1-123.9-50.1H178.3zm435.5-68.3c-15.6-15.6-40.9-15.6-56.6 0l-29.4 29.4 71 71 29.4-29.4c15.6-15.6 15.6-40.9 0-56.6l-14.4-14.4zM375.9 417c-4.1 4.1-7 9.2-8.4 14.9l-15 60.1c-1.4 5.5 .2 11.2 4.2 15.2s9.7 5.6 15.2 4.2l60.1-15c5.6-1.4 10.8-4.3 14.9-8.4L576.1 358.7l-71-71L375.9 417z" />
               </svg>
+              <Tooltip placement='top' isOpen={editButtonb} target='editButtonb' toggle={() => setEditButtonb(!editButtonb)} >Edit behalf of supplier</Tooltip>
             </a>
-
+            
             <Trash size={15} onClick={(e) => handleDelete(e, row)} className="deleteTableIcon text-danger ms-1" /> 
             <Edit size={15} onClick={(e) => handleEdit(e, row)} className="editTableIcon text-info ms-1" id='editButton' />
             <Tooltip placement='top' isOpen={editButton} target='editButton' toggle={() => setEditButton(!editButton)} >Edit</Tooltip>

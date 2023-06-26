@@ -162,15 +162,15 @@ const Report = props => {
       const csvdata = res.data.data.supplierInputs
       console.log(csvdata)
       const finalcsvdata = csvdata.map(item => ({
-        "Supplier Number": item.supplier_no ? item.supplier_no : item.supplier_no,
-        "Supplier Name": item.supplier_name ? item.supplier_name : item.supplier_name,
+        "Supplier Number": item.suppl_no ? item.suppl_no : item.suppl_no,
+        "Supplier Name": item.suppl_name ? item.suppl_name : item.suppl_name,
         "Article Number": item.art_no ? item.art_no : item.art_no,
-        "Price Updated": item.price_updated ? item.price_updated : item.price_updated,
-        "Requested Date": item.price_updated_date ? item.price_updated_date : item.price_updated_date,
-        " Source": item.source_name ? item.source_name : item.source_name,
-        " Country": item.country_code ? item.country_code : item.country_code,
-        " Category Name": item.stratbuyer_name ? item.stratbuyer_name : item.stratbuyer_name,
-        "BPA Tool": item.bpa_updated_status ? item.bpa_updated_status : item.bpa_updated_status
+        "Price Updated": item.unit_nnbp ? item.unit_nnbp : item.unit_nnbp,
+        "Requested Date": item.price_date_from ? item.price_date_from : item.price_date_from,
+        // " Source": item.source_name ? item.source_name : item.source_name,
+        " Country": item.country_name ? item.country_name : item.country_name,
+        " Category Name": item.catman_buy_domain_desc ? item.catman_buy_domain_desc : item.catman_buy_domain_desc,
+        "BPA Tool": item.bpa_tool ? item.bpa_tool : item.bpa_tool
       }))
       if (flag === 1) {
         downloadCSV(finalcsvdata)
@@ -271,20 +271,20 @@ const Report = props => {
     })
   }
 
-  const handleChange = (state) => {
-    const row_ids = []
-    state.selectedRows.map(i => {
-      row_ids.push(i.row_id)
-    })
-  }
+  // const handleChange = (state) => {
+  //   const row_ids = []
+  //   state.selectedRows.map(i => {
+  //     row_ids.push(i.row_id)
+  //   })
+  // }
 
-  const rowDisabledCriteria = row => {
-    if (row.negotiate_final_price !== null && row.price_increase_communicated_date !== null && row.action_status === 'open') {
-      return false
-    } else {
-      return true
-    }
-  }
+  // const rowDisabledCriteria = row => {
+  //   if (row.negotiate_final_price !== null && row.price_increase_communicated_date !== null && row.action_status === 'open') {
+  //     return false
+  //   } else {
+  //     return true
+  //   }
+  // }
 
  
   const tableCustomStyles = {
@@ -323,10 +323,10 @@ const Report = props => {
       // width: 200,
       // size: 200,
       center: 'yes',
-      selector: row => row.supplier_no,
+      selector: row => row.suppl_no,
       cell: row => {
         return (
-          row.supplier_no ? row.supplier_no : "-"
+          row.suppl_no ? row.suppl_no : "-"
         )
       }
     },
@@ -339,10 +339,10 @@ const Report = props => {
       // width: 200,
       // width: 200,
       // center: 'yes',
-      selector: row => row.supplier_name,
+      selector: row => row.suppl_name,
       cell: row => {
         return (
-          row.supplier_name ? row.supplier_name : "-"
+          row.suppl_name ? row.suppl_name : "-"
         )
       }
     },
@@ -366,10 +366,10 @@ const Report = props => {
       sortable: true,
       // minWidth: 'auto',
       center: 'yes',
-      selector: row => row.price_updated,
+      selector: row => row.unit_nnbp,
       cell: row => {
         return (
-          row.price_updated ? `${row.price_updated}` : "-"
+          row.unit_nnbp ? `${row.unit_nnbp}` : "-"
         )
       }
     },
@@ -378,34 +378,34 @@ const Report = props => {
       sortable: true,
       // minWidth: 'auto',
       center: 'yes',
-      selector: row => row.price_updated_date,
+      selector: row => row.price_date_from,
       cell: row => {
         return (
-          row.price_updated_date ? row.price_updated_date : "-"
+          row.price_date_from ? row.price_date_from : "-"
         )
       }
     },
-    {
-      name: 'Source',
-      sortable: true,
-      // minWidth: 'auto',
-      center: 'yes',
-      selector: row => row.source_name,
-      cell: row => {
-        return (
-          row.source_name ? row.source_name : "-"
-        )
-      }
-    },
+    // {
+    //   name: 'Source',
+    //   sortable: true,
+    //   // minWidth: 'auto',
+    //   center: 'yes',
+    //   selector: row => row.source_name,
+    //   cell: row => {
+    //     return (
+    //       row.source_name ? row.source_name : "-"
+    //     )
+    //   }
+    // },
     {
       name: 'Country',
       sortable: true,
       // width: 'auto',
       center: 'yes',
-      selector: row => row.country_code,
+      selector: row => row.country_name,
       cell: row => {
         return (
-          row.country_code ? row.country_code : "ES"
+          row.country_name ? row.country_name : "ES"
         )
       }
     },
@@ -413,10 +413,10 @@ const Report = props => {
       name: 'Category Name',
       width: 'auto',
       center: 'yes',
-      sortable: row => row.stratbuyer_name,
+      sortable: row => row.catman_buy_domain_desc,
       cell: row => {
         return (
-          row.stratbuyer_name ? row.stratbuyer_name : ""
+          row.catman_buy_domain_desc ? row.catman_buy_domain_desc : ""
         )
       }
     },
@@ -424,10 +424,10 @@ const Report = props => {
       name: 'BPA TOOL',
       width: 'auto',
       center: 'yes',
-      sortable: row => row.bpa_updated_status,
+      sortable: row => row.bpa_tool,
       cell: row => {
         return (
-          row.bpa_updated_status === 'Yes' ? <div><Badge color="success" pill>YES</Badge><br /></div> : <div><Badge color="danger" pill>NO</Badge></div>
+          row.bpa_tool === 'Yes' ? <div><Badge color="success" pill>YES</Badge><br /></div> : <div><Badge color="danger" pill>NO</Badge></div>
         )
       }
     }
@@ -537,21 +537,24 @@ const Report = props => {
             <DataTable
               noHeader
               pagination
-              selectableRows
+              selectableRowsNoSelectAll
               columns={columns}
               paginationPerPage={10}
               className='react-dataTable'
               sortIcon={<ChevronDown size={10} />}
               paginationDefaultPage={currentPage + 1}
               paginationComponent={CustomPagination}
-              onSelectedRowsChange={handleChange}
-              selectableRowDisabled={rowDisabledCriteria}
+              // onSelectedRowsChange={handleChange}
+              // selectableRowDisabled={rowDisabledCriteria}
               customStyles={tableCustomStyles}
               // data={searchValue.length ? filteredData : data}
               data={dataToRender()}
             />
           </div>
+
+          
         </CardBody>
+
       </Card>
       }
 

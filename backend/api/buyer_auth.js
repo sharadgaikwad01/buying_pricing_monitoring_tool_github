@@ -23,7 +23,7 @@ Issuer.discover('https://idam.metrosystems.net/') // => Promise
   .then((idam) => {
     client = new idam.Client({
         client_id: 'BUYING_PRICING_MONITORING_TOOL',
-        client_secret: 'emWwM3Go8S',
+        client_secret: 'GIQpfmJ6XY',
         realm_id: 'EMP_REALM',
         country_code: 'IN',
         locale_id: 'en-IN',
@@ -44,7 +44,7 @@ router.use((req, res, next) => {
         .then(token => {
             // console.log(token.access_token)
             let user_details = token.claims();
-            sql = "SELECT * FROM public.tbl_buyer_details where buyer_emailid = '"+ user_details.email +"' and active_status='active'";
+            sql = "SELECT * FROM public.tbl_buyer_details where buyer_emailid = '"+ user_details.email.toLowerCase() +"' and active_status='active'";
             clientDB.query(sql, function(err, result) {
                
                 if (err) {

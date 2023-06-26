@@ -336,7 +336,7 @@ const Buyers = props => {
                <Label className='form-label' for='email'>
                 Buyer Email:
               </Label>
-              <Input className='form-control' type='text' id='email' placeholder='Buyer Name' value={searchEmail} onChange={handleEmailFilter} /> 
+              <Input className='form-control' type='text' id='email' placeholder='Buyer Email' value={searchEmail} onChange={handleEmailFilter} /> 
             </Col>
 
              {/* <Col className='mb-1 col-auto'>

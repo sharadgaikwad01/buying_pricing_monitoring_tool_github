@@ -72,7 +72,9 @@ const AddNewModalUser =  ({open, handleModal, rowData, CategoryOptions, setUsers
       // await setRegion(rowData.region)
       // setValue('region', rowData.region)
       if (rowData.dashboard_name) {
+
       console.log(rowData.stratbuyer_category.trim())
+      // console.log(rowData)
       setdashboard_nameValue(rowData.dashboard_name)
       setValue('dashboard_name', rowData.dashboard_name, { shouldValidate:true })
       
@@ -80,7 +82,8 @@ const AddNewModalUser =  ({open, handleModal, rowData, CategoryOptions, setUsers
       setValue('dashboard_url', rowData.dashboard_url, { shouldValidate:true })
 
       setCategoryValue(rowData.stratbuyer_category.trim())
-      setValue('stratbuyer_category', rowData.stratbuyer_category.trim())
+      setValue('stratbuyer_category', rowData.stratbuyer_category.trim(), { shouldValidate:true })
+      // setValue('stratbuyer_category', rowData.stratbuyer_category.trim(), { shouldValidate: true })
       
       setSubCategoryValue(rowData.mintec_sub_category)
       setValue('mintec_sub_category', rowData.mintec_sub_category)
@@ -254,14 +257,16 @@ const AddNewModalUser =  ({open, handleModal, rowData, CategoryOptions, setUsers
             <Controller
               name="stratbuyer_category"
               id="stratbuyer_category"
+              defaultValue={CategoryValue}
               control={control}
               render={({ field: { onChange, value } }) => (
                 <Select
                   options={CategoryOptions}
-                  value={CategoryOptions.find((c) => c.value === value)}
+                  // value={CategoryValue}
+                  value={CategoryOptions.find((c) => c.value.trim() === value.trim())}
                   // isSearchable={true}
-                  onChange={(val) => onChange(val.value)}
-                  // onChange={(val) => { setCategoryValue(val); onChange(val.value); setValue('stratbuyer_category', val.value, { shouldValidate: true }) }}
+                  // onChange={(val) => onChange(val.value)}
+                  onChange={(val) => { setCategoryValue(val.value); onChange(val.value); setValue('stratbuyer_category', val.value, { shouldValidate: true }) }}
                 />
               )}
             />
