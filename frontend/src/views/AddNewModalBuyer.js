@@ -53,7 +53,7 @@ const AddNewModalBuyer = ({ open, handleModal, rowData, articalNumberOptions, co
   // console.log(rowData)
 
   useEffect(async () => {
-      console.log(rowData)
+      // console.log(rowData)
       if (rowData.first_name) {
         setIsEdit(true)
         await setFNameValue(rowData.first_name)
@@ -66,7 +66,7 @@ const AddNewModalBuyer = ({ open, handleModal, rowData, articalNumberOptions, co
         setValue('dept_name', rowData.dept_name, { shouldValidate:true })
   
         await setCountryValue(rowData.country_name)
-        setValue('country_name', rowData.country_name)
+        setValue('country_name', rowData.country_name, { shouldValidate:true })
       
         await setEmailValue(rowData.buyer_emailid)
         setValue('buyer_emailid', rowData.buyer_emailid)
@@ -98,7 +98,7 @@ const AddNewModalBuyer = ({ open, handleModal, rowData, articalNumberOptions, co
       await setUserValue(rowData.user_id)
    
       if (rowData.stratbuyer_name) {
-          console.log(rowData.stratbuyer_name.split(','))
+          // console.log(rowData.stratbuyer_name.split(','))
           const articalIDOptions = []
           rowData.stratbuyer_name.split(',').forEach(item => {
             articalIDOptions.push({ value: item, label: item })
@@ -116,7 +116,7 @@ const AddNewModalBuyer = ({ open, handleModal, rowData, articalNumberOptions, co
   const CloseBtn = <X className='cursor-pointer' size={15} onClick={handleModal} />
 
   const onSubmit = data => {
-    console.log(data)
+    // console.log(data)
     const first_name = data.first_name
     const last_name = data.last_name
     const dept_name = data.dept_name
@@ -297,7 +297,7 @@ const AddNewModalBuyer = ({ open, handleModal, rowData, articalNumberOptions, co
                 />
               )}
             />
-            {errors["country_name"] && <FormFeedback>{'countryName is a required field'}</FormFeedback>}
+            {errors["country_name"] && <FormFeedback>{'Country Name is a required field'}</FormFeedback>}
           </div>
 
           <div className='mb-1'>

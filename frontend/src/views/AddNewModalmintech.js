@@ -64,7 +64,7 @@ const AddNewModalUser =  ({open, handleModal, rowData, CategoryOptions, setUsers
   } = useForm({ mode: 'onChange', resolver: yupResolver(validationSchema) })
 
   useEffect(async () => {
-    console.log(rowData.stratbuyer_id)
+    // console.log(rowData.stratbuyer_id)
     
     // setUsersData(rowData)
       // await setCountryValue(rowData.country_name)
@@ -73,7 +73,7 @@ const AddNewModalUser =  ({open, handleModal, rowData, CategoryOptions, setUsers
       // setValue('region', rowData.region)
       if (rowData.dashboard_name) {
 
-      console.log(rowData.stratbuyer_category.trim())
+      // console.log(rowData.stratbuyer_category.trim())
       // console.log(rowData)
       setdashboard_nameValue(rowData.dashboard_name)
       setValue('dashboard_name', rowData.dashboard_name, { shouldValidate:true })

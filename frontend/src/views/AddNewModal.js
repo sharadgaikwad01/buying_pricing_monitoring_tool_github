@@ -105,7 +105,7 @@ const AddNewModal = ({ open, handleModal, supllierNumberOptions, setsupplierInpu
     })
       .then(function (success) {
         //handle success 
-        console.log(success.data.data)
+        // console.log(success.data.data)
         setsupplierInputsData(success.data.data.supplierInputs)     
         if (success.data.status) {
           return MySwal.fire({

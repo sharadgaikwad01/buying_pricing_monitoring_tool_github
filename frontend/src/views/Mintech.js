@@ -82,7 +82,7 @@ const Home = props => {
 
   useEffect(async () => {
     await axios.get(`${nodeBackend}/mintech`, { params: { searchName, searchCategory } }).then((res) => {
-      console.log(res.data.data)
+      // console.log(res.data.data)
       setUsersInputsData(res.data.data.users)  
       setCategoryoptions(res.data.data.CategoryOptions)  
       // setCountryOptions(res.data.data.CountryOptions)  
@@ -199,7 +199,7 @@ const Home = props => {
         })
           .then(function (success) {
             //handle success 
-            console.log(success.data.data.users) 
+            // console.log(success.data.data.users) 
             // setUsersInputsData(success.data.data.users)     
             if (success.data.status) {
               setUsersInputsData(success.data.data.users)

@@ -40,7 +40,7 @@ const DownloadArticliesModal = ({ open, handleModal, supllierNumberOptions }) =>
     } = useForm({ mode: 'onChange', resolver: yupResolver(SupplierInputSchema) })
 
     const onSubmit = async (data) => {
-        console.log(data)
+        // console.log(data)
         const supplier_number = data.supplier_number
         await axios.get(`${nodeBackend}/download_supplier_assoerment_pdf`, {
             params: { supplier_number, country, buyer_name },

@@ -71,7 +71,7 @@ const AddBuyerInputModal = ({ open, handleModal, rowData, setsupplierInputsData 
 
   useEffect(async () => {
     if (rowData) {
-      console.log(rowData)
+      // console.log(rowData)
       await setArticleNumber(rowData.art_no)
       await setArticleDescription(rowData.art_name_tl)
       await setNewPrice(rowData.new_price)
@@ -107,7 +107,7 @@ const AddBuyerInputModal = ({ open, handleModal, rowData, setsupplierInputsData 
   }, [rowData])
 
   const onSubmit = data => {
-    console.log(data)
+    // console.log(data)
     const finalize_date_arr = []
     const effective_date_arr = []
     const row_id = data.row_id
@@ -158,7 +158,7 @@ const AddBuyerInputModal = ({ open, handleModal, rowData, setsupplierInputsData 
       .then(function (success) {
         //handle success 
         if (success.data.status) {
-          console.log(success.data)
+          // console.log(success.data)
           setsupplierInputsData(success.data.data.supplierInputs)
           return MySwal.fire({
             title: 'Done!',

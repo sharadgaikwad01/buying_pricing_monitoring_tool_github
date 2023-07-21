@@ -16,7 +16,7 @@ module.exports = function (app, con) {
 		var articleOptions = [];
 
 		console.log("supplier_input======================")
-		console.log(req.query)
+		// console.log(req.query)
 
 		var getUniqueSupplierIdQuery = "select distinct t1.suppl_no from vw_suppl_info t1 where country_name='" + req.query.country + "' AND vat_no='" + req.query.vat_number + "'";
 
@@ -79,7 +79,7 @@ module.exports = function (app, con) {
 				res.json({ status: false });
 				return;
 			} else {
-				console.log(result.rows);
+				// console.log(result.rows);
 				data.supplierInputs = result.rows
 				res.json({ status: true, data: data });
 				return;
@@ -91,8 +91,7 @@ module.exports = function (app, con) {
 		var data = {};
 		sql = `CALL public."usp_addNewRequest"('` + req.body.article_number + `','` + req.body.supplier_number + `','` + req.body.country + `',` + req.body.new_price + `,'` + req.body.reason + `','` + req.body.price_effective_date + `','` + req.body.email + `');`;	
 
-		console.log(sql);
-
+		// console.log(sql);
 		con.query(sql, async function (err, result) {
 			if (err) {
 				res.json({ status: false });
@@ -184,7 +183,7 @@ module.exports = function (app, con) {
 		var data = {};
 		var query = "call public.usp_update_requestdetails (record_id=>" + req.body.row_id + ", in_new_price=>" + req.body.new_price + ", in_reason=>'" + req.body.reason + "', in_effective_date=>'" + req.body.price_effective_date + "', in_updated_by=>'" + req.body.email + "')";
 
-		console.log(query);
+		// console.log(query);
 		
 		await con.query(query, function (err, result) {
 			if (err) {
@@ -242,7 +241,7 @@ module.exports = function (app, con) {
 		}
 		
 		
-		console.log(getUniqueArticleQuery)
+		// console.log(getUniqueArticleQuery)
 		await con.query(getUniqueArticleQuery, function (err, result) {
 			if (err) {
 				res.json({ status: false });
@@ -307,9 +306,11 @@ module.exports = function (app, con) {
 		var sucess_count = 0;
 		var error_count = 0;
 		var count = 0;
+		// console.log(supplier_inputs);
 		async.waterfall([
 			function (callback) {
 				supplier_inputs.forEach(async function (value, key) {
+					// console.log(value)
 					if (value.new_price && value.new_price != 'null' && value.new_price != undefined && value.new_price != null) {
 						if (value.new_price > 0) {
 							sql = `CALL public."usp_addNewRequest"('` + value.art_no + `','` + value.suppl_no + `','` + value.country_name + `',` + value.new_price + `,'` + value.price_change_reason + `','` + value.price_increase_effective_date + `','` + req.body.email + `');`;
@@ -342,7 +343,6 @@ module.exports = function (app, con) {
 			},
 			function (sucess_count, error_count, callback) {
 				var query = "SELECT ean_no, row_id, vat_no, suppl_no, art_no, art_name, new_price, frmt_new_price, to_char(request_date, 'dd-mm-YYYY') as request_date, frmt_negotiate_final_price, negotiate_final_price, to_char(price_increase_communicated_date, 'dd-mm-YYYY') as price_increase_communicated_date, to_char(price_increase_effective_date, 'dd-mm-YYYY') as price_increase_effective_date, action_status, price_change_reason FROM public.vw_request_details where country_name='" + req.body.country + "' AND vat_no='" + req.body.vat_number + "' AND new_price IS NOT NULL AND request_date IS NOT NULL ORDER BY action_status DESC, row_id DESC";
-
 				con.query(query, function (err, result) {
 					if (err) {
 						res.json({ status: false });
@@ -361,7 +361,7 @@ module.exports = function (app, con) {
 		
 		// var query = "select row_id, country_name, art_no, art_name, suppl_no, suppl_name, msg, new_price from tbl_notification where country_name='" + req.query.country;
 		var query = "select row_id, statuscol, country_name, art_no, art_name, suppl_no, suppl_name, msg, new_price, created_at from tbl_notification";
-		console.log(query)
+		// console.log(query)
 		await con.query(query, function (err, result) {
 			if (err) {
 				res.json({ status: false });

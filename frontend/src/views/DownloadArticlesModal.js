@@ -81,7 +81,7 @@ const DownloadArticliesModal = ({ open, handleModal, supllierNumberOptions, flag
             const supplier_number = supplier_string.substring(1)
             if (data.behalf_of_supplier) {
                 await axios.get(`${nodeBackend}/supplier_article_details`, { params: { supplier_number, country } }).then((res) => {
-                    console.log(res.data)
+                    // console.log(res.data)
                     if (res.data.data.length > 0) {
                         const customHeadingsData = res.data.data.map(item => ({
                             "Country Name": item.country_name,
@@ -181,7 +181,7 @@ const DownloadArticliesModal = ({ open, handleModal, supllierNumberOptions, flag
         } else {
             const supplier_number = supplier_string.substring(1)
             await axios.get(`${nodeBackend}/supplier_article_details`, { params: { supplier_number, country, vat_number } }).then((res) => {
-                console.log(res.data)
+                // console.log(res.data)
                 if (res.data.data.length > 0) {
                     const customHeadingsData = res.data.data.map(item => ({
                         "Country Name": item.country_name,
@@ -235,7 +235,7 @@ const DownloadArticliesModal = ({ open, handleModal, supllierNumberOptions, flag
         if (state === true) {
             await axios.get(`${nodeBackend}/getSupplierListByBuyer`, { params: { country, email } }).then((res) => {
                 setSupllierNumberOptionsList(res.data.data.supplierIDOptions)
-                console.log(supllierNumberOptionsList)
+                // console.log(supllierNumberOptionsList)
             })
         } else {
                 setSupllierNumberOptionsList(supllierNumberOptions)

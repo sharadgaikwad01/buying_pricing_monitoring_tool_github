@@ -65,9 +65,9 @@ const EditSupplierRequestModal = ({ open, handleModal, rowData, supllierNumberOp
       await setSupplierNumber(rowData.suppl_no)
       await setArticleNumber(rowData.art_no)
 
-      console.log(rowData)
+      // console.log(rowData)
       vat_number = rowData.vat_no
-      console.log(vat_number)
+      // console.log(vat_number)
 
       const finatEffectiveDate = []
       if (rowData.price_increase_effective_date) {
@@ -84,7 +84,7 @@ const EditSupplierRequestModal = ({ open, handleModal, rowData, supllierNumberOp
       setValue('supplier_number', rowData.suppl_no, { shouldValidate: true })
       setValue('article_number', rowData.art_no, { shouldValidate: true })
       setValue('price_effective_date', finatEffectiveDate, { shouldValidate: true })
-      console.log(supplierNumber)
+      // console.log(supplierNumber)
 
       const flag = '1'
       if (supplierNumber) {

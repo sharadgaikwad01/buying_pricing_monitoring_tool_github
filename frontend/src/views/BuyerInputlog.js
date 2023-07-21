@@ -1,15 +1,24 @@
-import { Fragment, useState, useEffect } from 'react'
+import { Fragment, useState, useEffect, forwardRef } from 'react'
 import Select from 'react-select'
+import { Link } from 'react-router-dom'
+
 import { selectThemeColors, nodeBackend } from '@utils'
 import axios from 'axios'
 import { utils, writeFile } from 'xlsx'
 
 import LoadingSpinner from '@src/@core/components/spinner/Loading-spinner.js'
+
 // ** Add New Modal Component
 import Flatpickr from 'react-flatpickr'
+import AddBuyerInputModal from './AddBuyerInputModal'
+import AddNewModal from './AddNewModal'
+import EditSupplierRequestModal from './EditSupplierRequestModal'
 import ReactPaginate from 'react-paginate'
 import DataTable from 'react-data-table-component'
+import DownloadSupplierAssortmentsModal from './DownloadSupplierAssortmentsModal'
 import { Download, Search, ChevronDown, Share, Printer, FileText, File, Grid, Copy, Plus, Upload, Edit, Trash, Check, RefreshCcw, ArrowLeftCircle, Repeat, Edit3 } from 'react-feather'
+import UploadBuyerArticliesModal from './UploadBuyerArticliesModal'
+import DownloadArticliesModal from './DownloadArticlesModal'
 
 import '@styles/react/libs/tables/react-dataTable-component.scss'
 import '@styles/react/libs/flatpickr/flatpickr.scss'
@@ -35,57 +44,62 @@ import {
 
 
 import Swal from 'sweetalert2'
+import moment from 'moment'
 import withReactContent from 'sweetalert2-react-content'
 const MySwal = withReactContent(Swal)
 
-const Report = props => {
+const statusOptions = [
+  { value: 'open', label: 'Open' },
+  { value: 'closed', label: 'Closed' },
+  { value: 'yet_to_approve', label: 'Yet to Approve' }
+]
+
+const BootstrapCheckbox = () => forwardRef((props, ref) => (
+  <div className='form-check'>
+    <Input type='checkbox' ref={ref} {...props} />
+  </div>
+))
+
+const BuyerInputlog = props => {
   const country = localStorage.getItem('country')
   const email = localStorage.getItem('email')
-  const user_type = localStorage.getItem("type")
   const [isLoading, setIsLoading] = useState(false)
-  const [searchName, setsearchName] = useState('')
 
   const [Picker, setPicker] = useState('')
   const [supplierInputsData, setsupplierInputsData] = useState([])
   const [searchSupplierNumber, setSupplierNumber] = useState('')
-  const [searchCountry, setsearchCountry] = useState('')
   const [searchRequestedDate, setSearchRequestedDate] = useState('')
-  
-  // const [searchCategory, setSearchCategory] = useState('')
+  const [searchStatus, setSearchStatus] = useState('')
+  const [searchCategory, setSearchCategory] = useState('')
+
   const [currentPage, setCurrentPage] = useState(0)
 
   const [refreshButton, setrefreshButton] = useState(false)
-  const [BPAcount, setBPAcount] = useState(false)
-  const [issuperadmin, setissuperadmin] = useState(false)
-  
-  // ** Function to handle Pagination
-  const handlePagination = page => {
-    setCurrentPage(page.selected)
-  }
-  
+
+  const [pageCount, setpageCount] = useState([])
+
   const [supllierNumberOptions, setsupllierNumberOptions] = useState([])
-  const [countryOptions, setcountryOptions] = useState([])
   // const [categoryOptions, setCategoryOptions] = useState([])
 
-  const [fileName] = useState('export')
+
+  const fileName = `buyer_input_${moment().format('DD-MM-YYYY')}`
   const [fileFormat] = useState('xlsx')
 
+  // ** Function to handle Pagination
+  
   useEffect(async () => {
-    
+    const user_type = localStorage.getItem("type")
     if (user_type === 'SUPPLIER') {
       props.history.push('/home')
     }
-    if (user_type === 'SUPERADMIN') {
-      setissuperadmin(true)
-    }
     setIsLoading(true)
-    await axios.get(`${nodeBackend}/reports`, { params: { searchSupplierNumber, searchRequestedDate, searchName, country, email, searchCountry, user_type } }).then((res) => {
+    await axios.get(`${nodeBackend}/buyer_input_log`, { params: { searchSupplierNumber, searchRequestedDate, searchStatus, searchCategory, country, email, currentPage } }).then((res) => {
       if (res.data.data) {
         setsupplierInputsData(res.data.data.supplierInputs)
         setsupllierNumberOptions(res.data.data.supplierIDOptions)
-        setcountryOptions(res.data.data.countryIDOptions)
         // setCategoryOptions(res.data.data.categoryOptions)
-        setBPAcount(res.data.data.BPAcount)
+       // setSupplierListOption(res.data.data.supplierListOption)
+        setpageCount(res.data.data.pageCount)
         setIsLoading(false)
       } else {
         setIsLoading(false)
@@ -97,6 +111,22 @@ const Report = props => {
   const dataToRender = () => {
     return supplierInputsData
   }
+  const handlePagination = async page => {
+    setCurrentPage(page.selected)
+    // setIsLoading(true)
+    // await axios.get(`${nodeBackend}/buyer_input`, { params: { searchSupplierNumber, searchRequestedDate, searchStatus, searchCategory, country, email, currentPage } }).then((res) => {
+    //   if (res.data.data) {
+    //     setsupplierInputsData(res.data.data.supplierInputs)
+    //     setsupllierNumberOptions(res.data.data.supplierIDOptions)
+    //     setCategoryOptions(res.data.data.categoryOptions)
+    //     setSupplierListOption(res.data.data.supplierListOption)
+    //     setpageCount(res.data.data.pageCount)
+    //     setIsLoading(false)
+    //   } else {
+    //     setIsLoading(false)
+    //   }
+    // })
+  }
 
   // ** Custom Pagination
   const CustomPagination = () => (
@@ -105,7 +135,8 @@ const Report = props => {
       nextLabel=''
       forcePage={currentPage}
       onPageChange={page => handlePagination(page)}
-      pageCount={Math.ceil(dataToRender().length / 7) || 1}
+      // pageCount={Math.ceil(dataToRender().length / 7) || 1}
+      pageCount={pageCount}
       breakLabel='...'
       pageRangeDisplayed={2}
       marginPagesDisplayed={2}
@@ -166,57 +197,43 @@ const Report = props => {
     link.click()
   }
 
-  const countryassortmentDownload = async (flag) => {
-    await axios.get(`${nodeBackend}/reportss`, { params: { country, user_type } }).then((res) => {
-      const csvdata = res.data.data.supplierInputs
-      const finalcsvdata = csvdata.map(item => ({
-        "Country Name": item.country_name,
-        "Total request": item.mdw_count,
-        // "Total request BPA": item.overall_bpa_count,
-        "Total BPA request": item.bpa_count_yes,
-        "Without BPA": item.bpa_count_no
-      }))
-      if (flag === 1) {
-        downloadCSV(finalcsvdata)
-      } else {
-        const name = fileName.length ? `country-report.${fileFormat}` : `country-report.${fileFormat}`
-        const wb = utils.json_to_sheet(finalcsvdata)
-        const colWidths = [{ wch: 20 }, { wch: 20 }, { wch: 20 }, { wch: 20 }, { wch: 40 }]
-        wb['!cols'] = colWidths
-
-        const wbout = utils.book_new()
-        utils.book_append_sheet(wbout, wb, fileName)
-        writeFile(wbout, name)
-      }
-    })
-  }
-
   const assortmentDownload = async (flag) => {
-    await axios.get(`${nodeBackend}/reports`, { params: { country, email, searchSupplierNumber, searchRequestedDate, searchName, searchCountry, user_type } }).then((res) => {
-      const csvdata = res.data.data.supplierInputs
-      // console.log(csvdata)
+    setIsLoading(true)
+    await axios.get(`${nodeBackend}/buyer_article_details`, { params: { country, email, searchSupplierNumber, searchRequestedDate, searchStatus, searchCategory } }).then((res) => {
+      const csvdata = res.data.data
+      
+      csvdata.forEach(function (item) {
+        delete item.row_id
+        delete item.frmt_new_price
+      })
       const finalcsvdata = csvdata.map(item => ({
-        "Supplier Number": item.suppl_no ? item.suppl_no : item.suppl_no,
-        "Supplier Name": item.suppl_name ? item.suppl_name : item.suppl_name,
-        "Article Number": item.art_no ? item.art_no : item.art_no,
-        "Price Updated": item.unit_nnbp ? item.unit_nnbp : item.unit_nnbp,
-        "Requested Date": item.price_date_from ? item.price_date_from : item.price_date_from,
-        // " Source": item.source_name ? item.source_name : item.source_name,
-        " Country": item.country_name ? item.country_name : item.country_name,
-        " Category Name": item.catman_buy_domain_desc ? item.catman_buy_domain_desc : item.catman_buy_domain_desc,
-        "BPA Tool": item.bpa_tool ? item.bpa_tool : item.bpa_tool
+        "Supplier Number": item.suppl_no ? item.suppl_no.replace(",", ".") : item.suppl_no,
+        "Supplier Name": item.suppl_name ? item.suppl_name.replace(",", ".") : item.suppl_name,
+        "Article Number": item.art_no ? item.art_no.replace(",", ".") : item.art_no,
+        "EAN Number": item.ean_no ? item.ean_no.replace(",", ".") : item.ean_no,
+        "Article Description": item.art_name_tl ? item.art_name_tl.replace(",", ".") : item.art_name_tl,
+        "Current Price": item.current_price ? item.current_price.replace(",", ".").replace(",", ".") : item.current_price,
+        "Requested Price": item.new_price ? item.new_price.replace(",", ".") : item.new_price,
+        "Price Increase in %": item.price_increase_perc ? item.price_increase_perc.replace(",", ".") : item.price_increase_perc,
+        "Requested Date": item.request_date ? item.request_date.replace(",", ".") : item.request_date,
+        "Price change Reason": item.price_change_reason ? item.price_change_reason.replace(",", ".") : item.price_change_reason,
+        "Article Status": item.action_status ? item.action_status.replace(",", ".") : item.action_status,
+        "Final Price": item.negotiate_final_price ? item.negotiate_final_price.replace(",", ".") : item.negotiate_final_price,
+        "Price Finalize Date": item.price_increase_communicated_date ? item.price_increase_communicated_date.replace(",", ".") : item.price_increase_communicated_date,
+        "Price Effective Date": item.price_increase_effective_date ? item.price_increase_effective_date.replace(",", ".") : item.price_increase_effective_date,
+        "Category Name": item.stratbuyer_name ? item.stratbuyer_name.replace(",", ".") : item.stratbuyer_name
       }))
       if (flag === 1) {
+        setIsLoading(false)
         downloadCSV(finalcsvdata)
       } else {
-        const name = fileName.length ? `${fileName}.${fileFormat}` : `excel-sheet.${fileFormat}`
+        const name = fileName.length ? `${fileName}.${fileFormat}` : `buyer_input_${moment().format('DD-MM-YYYY')}.xlsx`
         const wb = utils.json_to_sheet(finalcsvdata)
-
-        const colWidths = [{ wch: 15 }, { wch: 20 }, { wch: 25 }, { wch: 20 }, { wch: 20 }, { wch: 20 }, { wch: 20 }, { wch: 20 }]
-        wb['!cols'] = colWidths
         const wbout = utils.book_new()
         utils.book_append_sheet(wbout, wb, fileName)
+        setIsLoading(false)
         writeFile(wbout, name)
+        setIsLoading(false)
       }
     })
   }
@@ -226,26 +243,11 @@ const Report = props => {
     const searchSupplierNumber = e.value
     setSupplierNumber(searchSupplierNumber)
     setIsLoading(true)
-    await axios.get(`${nodeBackend}/reports`, { params: { searchSupplierNumber, searchRequestedDate, searchName, country, email, searchCountry, user_type } }).then((res) => {
+    await axios.get(`${nodeBackend}/buyer_input_log`, { params: { searchSupplierNumber, searchRequestedDate, searchStatus, searchCategory, country, email, currentPage } }).then((res) => {
       setsupplierInputsData(res.data.data.supplierInputs)
       setsupllierNumberOptions(res.data.data.supplierIDOptions)
-      setcountryOptions(res.data.data.countryIDOptions)
       // setCategoryOptions(res.data.data.categoryOptions)
-      setBPAcount(res.data.data.BPAcount)
-      setIsLoading(false)
-    })
-  }
-  
-  const handleCountryNumberFilter = async (e) => {
-    const searchCountry = e.value
-    setsearchCountry(searchCountry)
-    setIsLoading(true)
-    await axios.get(`${nodeBackend}/reports`, { params: { searchSupplierNumber, searchRequestedDate, searchName, country, email, searchCountry, user_type } }).then((res) => {
-      setsupplierInputsData(res.data.data.supplierInputs)
-      setsupllierNumberOptions(res.data.data.supplierIDOptions)
-      setcountryOptions(res.data.data.countryIDOptions)
-      // setCategoryOptions(res.data.data.categoryOptions)
-      setBPAcount(res.data.data.BPAcount)
+      setpageCount(res.data.data.pageCount)
       setIsLoading(false)
     })
   }
@@ -272,14 +274,13 @@ const Report = props => {
 
     setSearchRequestedDate(searchRequestedDate)
     setIsLoading(true)
-    await axios.get(`${nodeBackend}/reports`, { params: { searchSupplierNumber, searchRequestedDate, searchName, country, email, searchCountry, user_type } }).then((res) => {
+    await axios.get(`${nodeBackend}/buyer_input_log`, { params: { searchSupplierNumber, searchRequestedDate, searchStatus, searchCategory, country, email, currentPage } }).then((res) => {
       if (res.data.data) {
         setIsLoading(false)
         setsupplierInputsData(res.data.data.supplierInputs)
         setsupllierNumberOptions(res.data.data.supplierIDOptions)
-        setcountryOptions(res.data.data.countryIDOptions)
         // setCategoryOptions(res.data.data.categoryOptions)
-        setBPAcount(res.data.data.BPAcount)
+        setpageCount(res.data.data.pageCount)
        
       } else {
         setIsLoading(false)
@@ -287,31 +288,34 @@ const Report = props => {
     })
   }
 
-  const handleNameFilter = async (e) => {
-    const searchName = e.target.value
-    setsearchName(searchName)
+  // ** Function to handle status filter
+  const handleStatusFilter = async (e) => {
+    const searchStatus = e.value
+    setSearchStatus(searchStatus)
     setIsLoading(true)
-    await axios.get(`${nodeBackend}/reports`, { params: { searchSupplierNumber, searchRequestedDate, searchName, country, email, searchCountry, user_type } }).then((res) => {
+    await axios.get(`${nodeBackend}/buyer_input_log`, { params: { searchSupplierNumber, searchRequestedDate, searchStatus, searchCategory, country, email, currentPage } }).then((res) => {
       setIsLoading(false)
       setsupplierInputsData(res.data.data.supplierInputs)
       setsupllierNumberOptions(res.data.data.supplierIDOptions)
-      setcountryOptions(res.data.data.countryIDOptions)
       // setCategoryOptions(res.data.data.categoryOptions)
-      setBPAcount(res.data.data.BPAcount)
       
     })
-  } 
+  }
 
   // const handleCategoryFilter = async (e) => {
   //   const searchCategory = e.value
   //   setSearchCategory(searchCategory)
   //   setIsLoading(true)
-  //   await axios.get(`${nodeBackend}/reports`, { params: { searchSupplierNumber, searchRequestedDate, searchName, country, email } }).then((res) => {
+  //   await axios.get(`${nodeBackend}/buyer_input_log`, { params: { searchSupplierNumber, searchRequestedDate, searchStatus, searchCategory, country, email, currentPage } }).then((res) => {
   //     setIsLoading(false)
-  //     setsupplierInputsData(res.data.data.supplierInputs)
-  //     setsupllierNumberOptions(res.data.data.supplierIDOptions)
-  //     // setCategoryOptions(res.data.data.categoryOptions)
-  //     setBPAcount(res.data.data.BPAcount)
+  //     if (res.data.status) {
+  //       setsupplierInputsData(res.data.data.supplierInputs)
+  //       setsupllierNumberOptions(res.data.data.supplierIDOptions)
+  //       setCategoryOptions(res.data.data.categoryOptions)
+  //     } else {
+  //       setIsLoading(false)
+  //     }
+      
       
   //   })
   // }
@@ -319,23 +323,21 @@ const Report = props => {
   const handleRefresh = async () => {
     await setSupplierNumber("")
     await setSearchRequestedDate("")
+    await setSearchStatus("")
     await setPicker("")
-    await setsearchName("")
-    await setsearchCountry("")
+    await setSearchCategory("")
 
     const searchSupplierNumber = ''
     const searchRequestedDate = ''
-    // const searchCategory = ''
-    const searchName = ''
-    const searchCountry = ''
+    const searchStatus = ''
+    const searchCategory = ''
     setIsLoading(true)
-    await axios.get(`${nodeBackend}/reports`, { params: { searchSupplierNumber, searchRequestedDate, searchName, country, email, searchCountry, user_type } }).then((res) => {
+    await axios.get(`${nodeBackend}/buyer_input_log`, { params: { searchSupplierNumber, searchRequestedDate, searchStatus, searchCategory, country, email, currentPage } }).then((res) => {
       if (res.data.data) {
         setsupplierInputsData(res.data.data.supplierInputs)
         setsupllierNumberOptions(res.data.data.supplierIDOptions)
-        setcountryOptions(res.data.data.countryIDOptions)
         // setCategoryOptions(res.data.data.categoryOptions)
-        setBPAcount(res.data.data.BPAcount)
+        setpageCount(res.data.data.pageCount)
         setIsLoading(false)
       } else {
         setIsLoading(false)
@@ -343,22 +345,22 @@ const Report = props => {
     })
   }
 
-  // const handleChange = (state) => {
-  //   const row_ids = []
-  //   state.selectedRows.map(i => {
-  //     row_ids.push(i.row_id)
-  //   })
-  // }
+  const handleChange = (state) => {
+    const row_ids = []
+    state.selectedRows.map(i => {
+      row_ids.push(i.row_id)
+    })
+    // setRosIds(row_ids)
+  }
 
-  // const rowDisabledCriteria = row => {
-  //   if (row.negotiate_final_price !== null && row.price_increase_communicated_date !== null && row.action_status === 'open') {
-  //     return false
-  //   } else {
-  //     return true
-  //   }
-  // }
+  const rowDisabledCriteria = row => {
+    if (row.negotiate_final_price !== null && row.price_increase_communicated_date !== null && row.action_status === 'open') {
+      return false
+    } else {
+      return true
+    }
+  }
 
- 
   const tableCustomStyles = {
     headCells: {
       style: {
@@ -385,7 +387,15 @@ const Report = props => {
   }
 
   const columns = [
-   
+    {
+      name: 'Row Id',
+      omit: true,
+      // maxWidth: 400,
+      // minWidth: 140,
+      // size: 200,
+      // width: 200,
+      selector: row => row.row_id
+    },
     {
       name: 'Supplier No.',
       sortable: true,
@@ -398,7 +408,7 @@ const Report = props => {
       selector: row => row.suppl_no,
       cell: row => {
         return (
-          row.suppl_no ? row.suppl_no : "-"
+          row.suppl_no ? <Link to={`/view/${row.suppl_no}`}>{`${row.suppl_no}`}</Link> : "-"
         )
       }
     },
@@ -434,75 +444,145 @@ const Report = props => {
       }
     },
     {
-      name: 'Price Updated',
+      name: 'EAN No.',
       sortable: true,
       // minWidth: 'auto',
-      center: 'yes',
-      selector: row => row.unit_nnbp,
+      // width: 200,
+      // center: 'yes',
+      selector: row => row.ean_no,
       cell: row => {
         return (
-          row.unit_nnbp ? `${row.unit_nnbp}` : "-"
+          row.ean_no ? row.ean_no : "-"
         )
       }
     },
     {
-      name: 'Date',
+      name: 'Art. Desc.',
       sortable: true,
       // minWidth: 'auto',
-      center: 'yes',
-      selector: row => row.price_date_from,
+      //   maxWidth: 400,
+      // minWidth: 140,
+      // width: 200,
+      // center: 'yes',
+      selector: row => row.art_name_tl,
       cell: row => {
         return (
-          row.price_date_from ? row.price_date_from : "-"
+          row.art_name_tl ? row.art_name_tl : "-"
         )
       }
     },
-    // {
-    //   name: 'Source',
-    //   sortable: true,
-    //   // minWidth: 'auto',
-    //   center: 'yes',
-    //   selector: row => row.source_name,
-    //   cell: row => {
-    //     return (
-    //       row.source_name ? row.source_name : "-"
-    //     )
-    //   }
-    // },
     {
-      name: 'Country',
+      name: 'Current Price',
       sortable: true,
-      // width: 'auto',
-      center: 'yes',
-      selector: row => row.country_name,
-      cell: row => {
-        return (
-          row.country_name ? row.country_name : "ES"
-        )
-      }
-    },
-    {
-      name: 'Category Name',
+      // maxWidth: 400,
+      // minWidth: 140,
+      // width: 200,
+      // center: 'yes',
       width: 'auto',
-      sortable: true,
-      selector: row => row.catman_buy_domain_desc,
       center: 'yes',
+      selector: row => row.current_price,
       cell: row => {
         return (
-          row.catman_buy_domain_desc ? row.catman_buy_domain_desc : ""
+          row.current_price ? `${row.current_price}` : "-"
         )
       }
     },
     {
-      name: 'BPA TOOL',
-      // width: 'auto',
+      name: 'Requested Price',
       sortable: true,
-      center: 'yes',
-      selector: row => row.bpa_tool,
-      // sortable: row => row.bpa_tool,
+      // maxWidth: 400,
+      // minWidth: 140,
+      // width: 200,
+      // center: 'yes',
+      selector: row => row.new_price,
       cell: row => {
         return (
-          row.bpa_tool === 'Yes' ? <div><Badge color="success" pill>YES</Badge><br /></div> : <div><Badge color="danger" pill>NO</Badge></div>
+          row.new_price ? `${row.new_price}` : "-"
+        )
+      }
+    },
+    {
+      name: 'Price Increase(%)',
+      sortable: true,
+      // minWidth: 'auto',
+      // center: 'yes',
+      selector: row => row.price_increase_perc,
+      cell: row => {
+        return (
+          // `${row.price_increase_perc}%`
+          row.negotiate_final_price ? `${(((row.negotiate_final_price - row.current_price) / row.current_price).toFixed(2) * 100).toFixed(2)}%` : `${(((row.new_price - row.current_price) / row.current_price) * 100).toFixed(2)}%`
+        )
+      }
+    },
+    {
+      name: 'Request Creation_Date',
+      sortable: true,
+      // minWidth: 'auto',
+      // center: 'yes',
+      selector: row => row.request_date,
+      cell: row => {
+        return (
+          row.request_date ? row.request_date : "-"
+        )
+      }
+    },
+    {
+      name: 'Reason For Price_Change',
+      sortable: true,
+      // minWidth: 'auto',
+      // center: 'yes',
+      selector: row => row.price_change_reason,
+      cell: row => {
+        return (
+          row.price_change_reason ? row.price_change_reason : "-"
+        )
+      }
+    },
+    {
+      name: 'Price Effective_Date',
+      sortable: true,
+      // minWidth: 'auto',
+      // center: 'yes',
+      selector: row => row.price_increase_effective_date,
+      cell: row => {
+        return (
+          row.price_increase_effective_date ? row.price_increase_effective_date : "-"
+        )
+      }
+    },
+    {
+      name: 'Final Price',
+      sortable: true,
+      width: 'auto',
+      center: 'yes',
+      selector: row => row.frmt_negotiate_final_price,
+      cell: row => {
+        return (
+          row.frmt_negotiate_final_price ? row.frmt_negotiate_final_price : "-"
+        )
+      }
+    },
+    {
+      name: 'Price Finalize_Date',
+      sortable: true,
+      // width: 'auto',
+      // center: 'yes',
+      selector: row => row.price_increase_communicated_date,
+      cell: row => {
+        return (
+          row.price_increase_communicated_date ? row.price_increase_communicated_date : "-"
+        )
+      }
+    },
+    {
+      name: 'Status',
+      width: 'auto',
+      center: 'yes',
+      sortable: true,
+      selector: row => row.action_status,
+      cell: row => {
+        return (
+          row.action_status === 'open' ? <div><Badge color="primary" pill>Open</Badge><br /><span className='text-muted font-small-2'>{row.previous_request_days > 0 ? row.previous_request_days > 1 ? `${row.previous_request_days} Days Ago` : `${row.previous_request_days} Day Ago` : ''}  </span></div> : <div><Badge color="success" pill>Closed</Badge><br /><span className='text-muted font-small-2'>{row.previous_request_days > 0 ? row.previous_request_days > 1 ? `${row.previous_request_days} Days Ago` : `${row.previous_request_days} Day Ago` : ''}  </span></div>
         )
       }
     }
@@ -511,30 +591,13 @@ const Report = props => {
     <Fragment>
       {isLoading ? <LoadingSpinner /> : <Card className='pageBox buyer-screen'>
         <CardHeader className='align-items-center align-items-start border-bottom'>
-          <CardTitle tag='h2'>Report Summary</CardTitle>
+          <CardTitle tag='h2'>List of Assortment Log</CardTitle>
           <div className='d-md-flex mt-md-0 mt-1 btn-row document-btn-row'>
-           
+            
             <UncontrolledButtonDropdown className=''>
               <DropdownToggle color='primary' caret outline>
                 <Download size={15} />
-                <span className='align-middle ms-25'>Country Report Download</span>
-              </DropdownToggle>
-              <DropdownMenu>
-                <DropdownItem className='w-100' onClick={() => countryassortmentDownload(1)}>
-                  <FileText size={15} />
-                  <span className='align-middle ms-50'>CSV</span>
-                </DropdownItem>
-                <DropdownItem className='w-100' onClick={() => countryassortmentDownload(2)}>
-                  <Grid size={15} />
-                  <span className='align-middle ms-50'>Excel</span>
-                </DropdownItem>
-              </DropdownMenu>
-            </UncontrolledButtonDropdown>
-
-            <UncontrolledButtonDropdown className=''>
-              <DropdownToggle color='primary' caret outline>
-                <Download size={15} />
-                <span className='align-middle ms-25'>Report Download</span>
+                <span className='align-middle ms-25'>Assortment Download</span>
               </DropdownToggle>
               <DropdownMenu>
                 <DropdownItem className='w-100' onClick={() => assortmentDownload(1)}>
@@ -547,22 +610,12 @@ const Report = props => {
                 </DropdownItem>
               </DropdownMenu>
             </UncontrolledButtonDropdown>
+       
+          
           </div>
         </CardHeader>
         <CardBody>
           <Row className='mb-50 g-1 filter-row filter-buyer'>
-            <Col className='col-auto'>
-              <Label className='form-label'>Total request</Label> <Badge color="primary" pill> {supplierInputsData.length}</Badge>
-            </Col>
-            <Col className='col-auto'>
-              <Label className='form-label'>Total BPA request</Label> <Badge color="primary" pill> {BPAcount}</Badge>
-              </Col>
-            <Col className='col-auto'>
-              <Label className='form-label'>Without BPA</Label> <Badge color="primary" pill> {supplierInputsData.length - BPAcount }</Badge>
-            </Col>
-          </Row>
-          <Row className='mb-50 g-1 filter-row filter-buyer'>
-           
             <Col className='col-auto'>
               <Label className='form-label'>Supplier Number</Label>
               <Select
@@ -578,14 +631,6 @@ const Report = props => {
                 onChange={handleSupplierNumberFilter}
               />
             </Col>
-
-            <Col className='mb-1 col-auto'>
-               <Label className='form-label' for='name'>
-               Supplier Name:
-              </Label>
-              <Input className='form-control' type='text' id='name' placeholder='Supplier Name' value={searchName} onChange={handleNameFilter} /> 
-            </Col>
-
             <Col className='col-auto'>
               <Label className='form-label ' for='date'>
                 Requested Date:
@@ -599,23 +644,41 @@ const Report = props => {
                 onChange={date => handleDateFilter(date)}
               />
             </Col>
-            { issuperadmin ? <Col className='col-auto'>
-              <Label className='form-label'>Country</Label>
+            <Col className='col-auto'>
+              <Label className='form-label' for='status'>
+                Status:
+              </Label>
               <Select
                 theme={selectThemeColors}
                 className='react-select'
                 classNamePrefix='select'
-                defaultValue={countryOptions ? countryOptions[1] : countryOptions}
-                name='supplier_number'
-                options={countryOptions}
-                value={countryOptions ? countryOptions.filter(function (option) {
-                  return option.value === searchCountry
-                }) : ''}
-                onChange={handleCountryNumberFilter}
+                defaultValue={statusOptions[1]}
+                name='status'
+                options={statusOptions}
+                value={statusOptions.filter(function (option) {
+                  return option.value === searchStatus
+                })}
+                onChange={handleStatusFilter}
               />
-            </Col> : '' }
-        
-            <Col className='col-auto d-flex align-items-center'>
+            </Col>
+            {/* <Col className='col-auto'>
+              <Label className='form-label' for='status'>
+                Category:
+              </Label>
+              <Select
+                theme={selectThemeColors}
+                className='react-select category-Select'
+                classNamePrefix='select'
+                defaultValue={categoryOptions ? categoryOptions[1] : categoryOptions}
+                name='status'
+                options={categoryOptions}
+                value={categoryOptions ? categoryOptions.filter(function (option) {
+                  return option.value === searchCategory
+                }) : ''}
+                onChange={handleCategoryFilter}
+              />
+            </Col> */}
+            <Col className='col-auto d-flex align-items-end'>
               <Button.Ripple className='btn-icon me-1' id='refreshButton' color='primary' onClick={handleRefresh}>
                 <RefreshCcw size={16} />
               </Button.Ripple>
@@ -636,6 +699,23 @@ const Report = props => {
               pagination
               selectableRowsNoSelectAll
               columns={columns}
+              paginationPerPage={7}
+              className='react-dataTable'
+              sortIcon={<ChevronDown size={10} />}
+              paginationDefaultPage={currentPage + 1}
+              paginationComponent={CustomPagination}
+              // selectableRowsComponent={BootstrapCheckbox()}
+              onSelectedRowsChange={handleChange}
+              selectableRowDisabled={rowDisabledCriteria}
+              customStyles={tableCustomStyles}
+              // data={searchValue.length ? filteredData : data}
+              data={dataToRender()}
+            />
+            {/* <DataTable
+              noHeader
+              pagination
+              selectableRowsNoSelectAll
+              columns={columns}
               paginationPerPage={10}
               className='react-dataTable'
               sortIcon={<ChevronDown size={10} />}
@@ -646,16 +726,13 @@ const Report = props => {
               customStyles={tableCustomStyles}
               // data={searchValue.length ? filteredData : data}
               data={dataToRender()}
-            />
+            /> */}
           </div>
-
-          
         </CardBody>
-
       </Card>
       }
-
+  
     </Fragment>
   )
 }
-export default Report
+export default BuyerInputlog

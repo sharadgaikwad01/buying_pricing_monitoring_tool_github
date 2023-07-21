@@ -16,10 +16,11 @@ import { Navbar, NavItem, Button, UncontrolledDropdown, DropdownMenu, DropdownTo
 import themeConfig from '@configs/themeConfig'
 import { utils, writeFile } from 'xlsx'
 
+
 const NavbarUser = props => {
   // ** Props
 
-  console.log(themeConfig)
+  // console.log(themeConfig)
   const { skin, setSkin } = props
   const vat_number = localStorage.getItem('vat')
   const user_name = localStorage.getItem('name')
@@ -51,7 +52,7 @@ const NavbarUser = props => {
 
     await axios.get(`${nodeBackend}/notifications`).then((res) => {
       console.log('notification-----------------------------')
-      console.log(res.data.data)
+      // console.log(res.data.data)
       setnotificationList(res.data.data)
     })
 
@@ -66,12 +67,12 @@ const NavbarUser = props => {
   const notificationread = async (id) => {
     await axios.post(`${nodeBackend}/notificationread`, { params: id}).then((res) => {
       console.log('notification-----------------------------')
-     console.log(res.data.data)
+    //  console.log(res.data.data)
       setnotificationList(res.data.data)    
     })
   }
   const notificationDownload = async () => {
-    console.log(notificationList)
+    // console.log(notificationList)
       const finalcsvdata = notificationList.map((item, index) => ({
         "Sr no.": index + 1,
         "Country name": item.country_name,
@@ -80,7 +81,7 @@ const NavbarUser = props => {
       }))
         const filename = 'export.csv'
         // downloadCSV(finalcsvdata)
-        const name = `excel-sheet.xlsx`
+        const name = `BPA_notification_${moment().format('DD-MM-YYYY')}.xlsx`
         const wb = utils.json_to_sheet(finalcsvdata)
         const wbout = utils.book_new()
         utils.book_append_sheet(wbout, wb, filename)
@@ -110,7 +111,7 @@ const NavbarUser = props => {
       </DropdownItem>)
       } else {
         return (<DropdownItem className='' key={index} onClick={() => notificationread(step.row_id)}>
-        <a className="d-flex " href="#">
+        <a className="d-flex 8" href="#">
           <div className="list-item d-flex align-items-start">
             <div className="me-1">
               <div className="avatar notification-icon">

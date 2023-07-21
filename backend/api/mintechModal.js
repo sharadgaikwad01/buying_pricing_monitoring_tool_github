@@ -73,7 +73,7 @@ module.exports = function(app, con) {
 		var data = {};
 		var condition  = '';
 		var sql  = '';
-		console.log(req.body);
+		// console.log(req.body);
 		// usp_addNewUser('id','user_name','email','emp_id','user_role')
 		if(req.body.user_id == 'undefined' || req.body.user_id == 0){
 			sql=`CALL public.usp_mitech_dashboard('0','` + req.body.stratbuyer_category +`','`+ req.body.mintec_sub_category +`','`+ req.body.dashboard_name +`','`+ req.body.dashboard_url +`','` + req.body.is_deleted + `','` + req.body.created_by + `');`;
@@ -81,7 +81,7 @@ module.exports = function(app, con) {
 			sql=`CALL public.usp_mitech_dashboard('` + req.body.user_id + `','` + req.body.stratbuyer_category +`','`+ req.body.mintec_sub_category +`','`+ req.body.dashboard_name +`','`+ req.body.dashboard_url +`','` + req.body.is_deleted + `','` + req.body.created_by + `');`;		
 		}
 		// usp_addMintech('0','region','country_name','category','sub_category','dashboard_name','dashboard_url','created_by')
-		console.log(sql);
+		// console.log(sql);
 		con.query(sql, function(err, result) {
 			if (err) {
 				console.log(err);
@@ -116,7 +116,7 @@ module.exports = function(app, con) {
 
 	app.get('/edit_mintech_input', async function(req, res){
 		var query = "SELECT * FROM public.tbl_mintec_dashboard where id = '"+req.query.id +"'";
-		console.log(query);
+		// console.log(query);
 		await con.query(query, function(err, result) {
 			if (err) {
 				res.json({ status: false });
@@ -130,9 +130,9 @@ module.exports = function(app, con) {
 
 	app.get('/mintech_input', async function(req, res){
 		var query = "SELECT * FROM public.tbl_mintec_dashboard where id = '"+req.query.id +"'";
-		console.log(query);
+		// console.log(query);
 		await con.query(query, function(err, result) {
-			console.log(result);
+			// console.log(result);
 			console.log(err);
 			if (err) {
 				res.json({ status: false });
@@ -146,7 +146,7 @@ module.exports = function(app, con) {
 
 	app.post('/delete_mintech_input', async function(req, res){
 		var query = "DELETE FROM public.tbl_mintec_dashboard where id = '"+req.body.id +"'";
-		console.log(res.body);
+		// console.log(res.body);
 		var condition  = '';
 		var data = {};
 		console.log(query);
@@ -185,7 +185,7 @@ module.exports = function(app, con) {
 		var error_count = 0;
 		// var count = 0;
 		var condition  = '';
-		console.log(mintech_inputs[0].dashboard_name);
+		// console.log(mintech_inputs[0].dashboard_name);
 		var value = mintech_inputs[0];
 		async.waterfall([
 			function (callback) {
@@ -194,7 +194,7 @@ module.exports = function(app, con) {
 						if (value.dashboard_name && value.dashboard_name != 'null' && value.dashboard_name != undefined && value.dashboard_name != null) {
 								var sql=`CALL public.usp_mitech_dashboard('0','` + value.stratbuyer_category +`','`+ value.mintec_sub_category +`','`+ value.dashboard_name +`','`+ value.dashboard_url +`','1','` + req.body.created_by + `');`;
 								//var sql = `CALL public.usp_mitech_dashboard('0','` + value.stratbuyer_category +`','`+ value.mintec_sub_category +`','`+ value.dashboard_name +`','`+ value.dashboard_url +`','0','` + req.body.created_by + `');`;
-								console.log(sql);
+								// console.log(sql);
 								con.query(sql, function(err, result) {
 									if (err) {
 										error_count++;

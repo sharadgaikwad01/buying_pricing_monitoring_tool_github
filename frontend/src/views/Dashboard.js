@@ -84,9 +84,9 @@ const Dashboard = props => {
     max_val = parseInt(2 + parseInt(avg_val))
     min_val = parseInt(parseInt(avg_val) - 2)
     console.log(`Average value -------`)
-    console.log(avg_val)
-    console.log(min_val)
-    console.log(max_val)
+    // console.log(avg_val)
+    // console.log(min_val)
+    // console.log(max_val)
 
     if (x < 19) {
       if (value <= min_val) {

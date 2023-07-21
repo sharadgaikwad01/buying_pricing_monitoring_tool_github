@@ -42,7 +42,7 @@ const UploadBuyerArticliesModal = ({ open, handleModal, setsupplierInputsData })
       data: { buyer_inputs, country, email }
     }).then(function (success) {
         setsupplierInputsData(success.data.data.buyerInputs)
-        console.log(success)
+        // console.log(success)
         if (success.data.status) {
           return MySwal.fire({
             title: 'Done!',
@@ -155,7 +155,7 @@ const UploadBuyerArticliesModal = ({ open, handleModal, setsupplierInputsData })
         if (filename[1] === 'csv') {
           fileReader.onload = function (event) {
             const csvOutput = event.target.result
-            console.log(csvOutput)
+            // console.log(csvOutput)
             csvFileToArray(csvOutput)
           }
           fileReader.readAsText(file)
@@ -167,7 +167,7 @@ const UploadBuyerArticliesModal = ({ open, handleModal, setsupplierInputsData })
             const wb = read(fileData, { type: 'binary', cellDates: true, dateNF:'yyyy-mm-dd;@'})
             wb.SheetNames.forEach(function (sheetName) {
               const rowObj = utils.sheet_to_row_object_array(wb.Sheets[sheetName], { header: 1, raw: false, blankrows: false, dateNF: 'yyyy-mm-dd' })
-              console.log(rowObj)
+              // console.log(rowObj)
               const customHeadingsData = rowObj.map((item) => ({
                   country_name : item[0],
                   vat_no : item[1],
@@ -191,7 +191,7 @@ const UploadBuyerArticliesModal = ({ open, handleModal, setsupplierInputsData })
         if (filename[1] === 'csv') {
           fileReader.onload = function (event) {
             const csvOutput = event.target.result
-            console.log(csvOutput)
+            // console.log(csvOutput)
             csvFileToArray(csvOutput)
           }
           fileReader.readAsText(file)
@@ -203,7 +203,7 @@ const UploadBuyerArticliesModal = ({ open, handleModal, setsupplierInputsData })
             const wb = read(fileData, { type: 'binary', cellDates: true, dateNF: 'yyyy-mm-dd;@' })
             wb.SheetNames.forEach(function (sheetName) {
               const rowObj = utils.sheet_to_row_object_array(wb.Sheets[sheetName], { header: 1, raw: false, blankrows: false, dateNF: 'yyyy-mm-dd' })
-              console.log(rowObj)
+              // console.log(rowObj)
               const customHeadingsData = rowObj.map((item) => ({
                 Supplier_Number: item[0],
                 Supplier_Name: item[1],
@@ -222,7 +222,7 @@ const UploadBuyerArticliesModal = ({ open, handleModal, setsupplierInputsData })
               ))
               customHeadingsData.shift()
               handleModal(false)
-              console.log(customHeadingsData)
+              // console.log(customHeadingsData)
               uploadFile(customHeadingsData)
             })
           }

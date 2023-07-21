@@ -44,6 +44,7 @@ import {
 
 
 import Swal from 'sweetalert2'
+import moment from 'moment'
 import withReactContent from 'sweetalert2-react-content'
 const MySwal = withReactContent(Swal)
 
@@ -99,7 +100,7 @@ const BuyerInput = props => {
   const [categoryOptions, setCategoryOptions] = useState([])
   const [rowData, setRowData] = useState([])
 
-  const [fileName] = useState('export')
+  const fileName = `buyer_input_${moment().format('DD-MM-YYYY')}`
   const [fileFormat] = useState('xlsx')
 
   // ** Function to handle Pagination
@@ -243,9 +244,8 @@ const BuyerInput = props => {
       if (flag === 1) {
         setIsLoading(false)
         downloadCSV(finalcsvdata)
-        
       } else {
-        const name = fileName.length ? `${fileName}.${fileFormat}` : `excel-sheet.${fileFormat}`
+        const name = fileName.length ? `${fileName}.${fileFormat}` : `buyer_input_${moment().format('DD-MM-YYYY')}.xlsx`
         const wb = utils.json_to_sheet(finalcsvdata)
         const wbout = utils.book_new()
         utils.book_append_sheet(wbout, wb, fileName)
@@ -724,7 +724,8 @@ const BuyerInput = props => {
       selector: row => row.price_increase_perc,
       cell: row => {
         return (
-          row.price_increase_perc ? `${row.price_increase_perc}%` : "-"
+          `${row.price_increase_perc}%`
+          // row.negotiate_final_price ? `${(((row.new_price - row.current_price) / row.current_price) * 100).toFixed(2)}%` : `${(((row.negotiate_final_price - row.current_price) / row.current_price).toFixed(2) * 100).toFixed(2)}%`
         )
       }
     },
@@ -792,7 +793,8 @@ const BuyerInput = props => {
       name: 'Status',
       width: 'auto',
       center: 'yes',
-      sortable: row => row.action_status,
+      sortable: true,
+      selector: row => row.action_status,
       cell: row => {
         return (
           row.action_status === 'open' ? <div><Badge color="primary" pill>Open</Badge><br /><span className='text-muted font-small-2'>{row.previous_request_days > 0 ? row.previous_request_days > 1 ? `${row.previous_request_days} Days Ago` : `${row.previous_request_days} Day Ago` : ''}  </span></div> : <div><Badge color="success" pill>Closed</Badge><br /><span className='text-muted font-small-2'>{row.previous_request_days > 0 ? row.previous_request_days > 1 ? `${row.previous_request_days} Days Ago` : `${row.previous_request_days} Day Ago` : ''}  </span></div>

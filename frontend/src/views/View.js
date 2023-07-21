@@ -6,6 +6,7 @@ import { Download, Search, ChevronDown, Share, Printer, FileText, File, Grid, Co
 import axios from 'axios'
 import AddNewModalSupplier from './AddNewModalSupplier'
 import MintectDataModal from './MintectDataModal'
+import LoadingSpinner from '@src/@core/components/spinner/Loading-spinner.js'
 
 
 // ** Reactstrap Imports
@@ -33,7 +34,6 @@ const MySwal = withReactContent(Swal)
 const View = () => {
 
     const { id } = useParams()
-
     const suppl_no = id
     const country = localStorage.getItem('country')
     const [Suppliername, setSuppliername] = useState('')
@@ -43,15 +43,18 @@ const View = () => {
     const [Category, setCategory] = useState('')
     const [rowData, setRowData] = useState([])
     const [countries, setcountries] = useState([])
+    const [isLoading, setIsLoading] = useState(false)
 
     const [mintectModal, setMintectModal] = useState(false)
     const handleMintectModal = () => setMintectModal(!mintectModal)
 
     const handleEdit = async (e, countryname, suppl_no) => {
+        setIsLoading(true)
         e.preventDefault()
         handleModal()
         await axios.get(`${nodeBackend}/buyer_supplier_details_list`, { params: { suppl_no, countryname } }).then((res) => {
             setRowData(res.data.data)
+            setTimeout(function() { setIsLoading(false) }, 1000)
         })
     }
     const handleEditError = async (e) => {
@@ -67,8 +70,10 @@ const View = () => {
         })
     }
     useEffect(async () => {
+        setIsLoading(true)
         await axios.get(`${nodeBackend}/buyer_supplier_details`, { params: { suppl_no, country } }).then((res) => {
             if (res.data.data) {
+                setIsLoading(false)
                 if (res.data.data[0]) {
                     setSuppliername(res.data.data[0].bdm_global_umbrella_name)
                     setSupplierno(res.data.data[0].suppl_no)
@@ -83,9 +88,11 @@ const View = () => {
 
     const handleMintecSearch = async (e, row) => {
         e.preventDefault()
+        setIsLoading(true)
         const country_name = row.country_name
         const stratbuyer_name = row.stratbuyer_name
         await axios.get(`${nodeBackend}/getMintecData`, { params: { country_name, stratbuyer_name } }).then((res) => {
+            setIsLoading(false)
             setRowData(res.data.data)
         })
         handleMintectModal()
@@ -93,11 +100,10 @@ const View = () => {
 
     return (
         <Fragment>
-            <Card className='pageBox buyer-screen'>
+            { isLoading ? <LoadingSpinner /> : <Card className='pageBox buyer-screen'>
                 <CardHeader className='flex-md-row flex-column align-md-items-center align-items-start mb-1'>
                     {/* <CardTitle tag='h2'>Supplier Number - {bdm_global_umbrella_no}</CardTitle> */}
                     <CardTitle tag='h2'>Country Overview</CardTitle>
-                   
                 </CardHeader>
                 <CardBody>
                     <Row className='g-1 filter-row'>
@@ -162,9 +168,12 @@ const View = () => {
                         ))}
                     </Row>
                 </CardBody>
-            </Card>
-            <AddNewModalSupplier open={modal} handleModal={handleModal} rowData={rowData} />
-            <MintectDataModal open={mintectModal} handleModal={handleMintectModal} rowData={rowData} />
+                <AddNewModalSupplier open={modal} handleModal={handleModal} rowData={rowData} isLoading={isLoading} />
+                <MintectDataModal open={mintectModal} handleModal={handleMintectModal} rowData={rowData} />
+            </Card> 
+            }
+            
+            
         </Fragment>
     )
 }

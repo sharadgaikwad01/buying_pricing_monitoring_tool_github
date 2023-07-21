@@ -18,23 +18,29 @@ import {
   AccordionHeader,
   UncontrolledAccordion
 } from 'reactstrap'
+import { Link } from 'react-router-dom'
 
 // ** Images
 //import illustration from '@src/assets/images/illustration/faq-illustrations.svg'
 import illustration from '@src/assets/images/illustration/faq-illustrations.svg'
 
-const Faqs = ({ data }) => {
+const Faqs = ({ data, usertypes }) => {
   const dataToRender = []
-
   // ** States
-  const [activeTab, setActiveTab] = useState('Supplier')
-
-  const toggleTab = tab => setActiveTab(tab)
+  // console.log(usertypes)
+  const [activeTab, setActiveTab] = useState(usertypes)
 
   // eslint-disable-next-line
   Object.entries(data).forEach(([key, val]) => {
     dataToRender.push(val)
   })
+
+  // const user_type = localStorage.getItem("type")
+  // console.log(user_type)
+  // if (user_type === 'BUYER') {
+  //   setActiveTab('Buyer')
+  // }
+  const toggleTab = tab => setActiveTab(tab)
 
   const renderTabs = () => {
     return dataToRender.map(item => {
@@ -73,7 +79,10 @@ const Faqs = ({ data }) => {
                     <AccordionHeader tag='h2' targetId={String(index + 1)}>
                       {r.question}
                     </AccordionHeader>
-                    <AccordionBody accordionId={String(index + 1)}>{r.ans}</AccordionBody>
+                    <AccordionBody accordionId={String(index + 1)}>
+                      {r.ans}
+                    { r.type === 'url' ? <Link to={{ pathname: r.urlname}} target="_blank"><small>Click to view user manual - Hyperlink</small></Link> : ''}
+                    </AccordionBody>
                   </AccordionItem>
                 )
               })}
