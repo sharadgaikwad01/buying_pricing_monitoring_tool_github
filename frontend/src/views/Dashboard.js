@@ -18,6 +18,8 @@ import withReactContent from 'sweetalert2-react-content'
 import HeatMap from "react-heatmap-grid"
 
 import { Link } from 'react-router-dom'
+import  secureLocalStorage  from  "react-secure-storage"
+
 
 // ** Reactstrap Imports
 import {
@@ -53,7 +55,7 @@ const Dashboard = props => {
 
   useEffect(async () => {
 
-    const user_type = localStorage.getItem("type")
+    const user_type = secureLocalStorage.getItem("type")
     if (user_type === '') {
       props.history.push('/buyer_login')
     }

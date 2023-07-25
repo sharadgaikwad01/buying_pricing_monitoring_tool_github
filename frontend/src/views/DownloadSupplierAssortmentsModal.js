@@ -19,13 +19,15 @@ import { yupResolver } from '@hookform/resolvers/yup'
 
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
+import  secureLocalStorage  from  "react-secure-storage"
+
 const MySwal = withReactContent(Swal)
 const fileDownload = require('js-file-download')
 
 const DownloadArticliesModal = ({ open, handleModal, supllierNumberOptions }) => {
 
-    const country = localStorage.getItem('country')
-    const buyer_name = localStorage.getItem('name')
+    const country = secureLocalStorage.getItem('country')
+    const buyer_name = secureLocalStorage.getItem('name')
 
     const [supplierNumber, setSupplierNumber] = useState('')
 

@@ -17,6 +17,7 @@ import { Modal, Input, Label, Button, ModalHeader, ModalBody, InputGroup, InputG
 import * as yup from 'yup'
 import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
+import  secureLocalStorage  from  "react-secure-storage"
 
 // ** Styles
 import '@styles/react/libs/flatpickr/flatpickr.scss'
@@ -30,8 +31,8 @@ import { currencies } from './countryCurrency'
 const AddBuyerInputModal = ({ open, handleModal, rowData, setsupplierInputsData }) => {
   // ** State
   // const [Picker, setPicker] = useState('')
-  const country = localStorage.getItem('country')
-  const email = localStorage.getItem('email') 
+  const country = secureLocalStorage.getItem('country')
+  const email = secureLocalStorage.getItem('email') 
 
   const [newPrice, setNewPrice] = useState('')
   const [finalPrice, setFinalPrice] = useState('')

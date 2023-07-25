@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import  secureLocalStorage  from  "react-secure-storage"
 // import axios from 'axios'
 
 export default class Auth extends Component {
@@ -19,12 +20,12 @@ export default class Auth extends Component {
 
         if (searchParams.has('id') && searchParams.has('token') && searchParams.has('email') && searchParams.has('type') && searchParams.has('country')) {
 
-            localStorage.setItem("id", id)
-            localStorage.setItem("token", token)
-            localStorage.setItem("email", email.toLowerCase())
-            localStorage.setItem("type", type)
-            localStorage.setItem("country", country)
-            localStorage.setItem("name", name)
+            secureLocalStorage.setItem("id", id)
+            secureLocalStorage.setItem("token", token)
+            secureLocalStorage.setItem("email", email.toLowerCase())
+            secureLocalStorage.setItem("type", type)
+            secureLocalStorage.setItem("country", country)
+            secureLocalStorage.setItem("name", name)
             if (type === 'BUYER') {
                 this.props.history.push('/buyer_input')
             } else if (type === 'SUPERADMIN') {
@@ -32,7 +33,7 @@ export default class Auth extends Component {
             } else if (type === 'ADMIN') {
                 this.props.history.push('/dashboard')
             } else {
-                localStorage.setItem("vat", vat)
+                secureLocalStorage.setItem("vat", vat)
                 this.props.history.push('/home')
             }
         } else {

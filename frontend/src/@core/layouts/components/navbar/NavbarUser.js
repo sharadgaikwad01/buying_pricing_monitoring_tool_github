@@ -15,6 +15,7 @@ import moment from 'moment'
 import { Navbar, NavItem, Button, UncontrolledDropdown, DropdownMenu, DropdownToggle, DropdownItem } from 'reactstrap'
 import themeConfig from '@configs/themeConfig'
 import { utils, writeFile } from 'xlsx'
+import  secureLocalStorage  from  "react-secure-storage"
 
 
 const NavbarUser = props => {
@@ -22,10 +23,10 @@ const NavbarUser = props => {
 
   // console.log(themeConfig)
   const { skin, setSkin } = props
-  const vat_number = localStorage.getItem('vat')
-  const user_name = localStorage.getItem('name')
-  const user_type = localStorage.getItem('type')
-  const country = localStorage.getItem('country')
+  const vat_number = secureLocalStorage.getItem('vat')
+  const user_name = secureLocalStorage.getItem('name')
+  const user_type = secureLocalStorage.getItem('type')
+  const country = secureLocalStorage.getItem('country')
   const [notificationList, setnotificationList] = useState([])
 
   const [userDetails, setUserDetails] = useState([])
@@ -50,7 +51,7 @@ const NavbarUser = props => {
       //setApplicationName("Monitoring Tool")
     }
 
-    await axios.get(`${nodeBackend}/notifications`).then((res) => {
+    await axios.get(`${nodeBackend}/notifications`, { params: {country, user_type}}).then((res) => {
       console.log('notification-----------------------------')
       // console.log(res.data.data)
       setnotificationList(res.data.data)
@@ -134,7 +135,7 @@ const NavbarUser = props => {
   }
 
   const notificationbell = () => {
-    const user_type = localStorage.getItem("type")
+    const user_type = secureLocalStorage.getItem("type")
     return user_type === 'SUPPLIER' ? "" : <UncontrolledDropdown className='notification-panel nav-item' >
     <DropdownToggle caret className='nav-link avatar  bg-light-primary' tag='a' >
       <div className="avatar-content ">

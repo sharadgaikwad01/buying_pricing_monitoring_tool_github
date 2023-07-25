@@ -3,6 +3,7 @@ import { createSlice } from '@reduxjs/toolkit'
 
 // ** UseJWT import to get config
 import useJwt from '@src/auth/jwt/useJwt'
+// import  secureLocalStorage  from  "react-secure-storage"
 
 const config = useJwt.jwtConfig
 

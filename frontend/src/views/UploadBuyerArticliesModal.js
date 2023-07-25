@@ -14,13 +14,14 @@ import '@styles/react/libs/flatpickr/flatpickr.scss'
 
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
+import  secureLocalStorage  from  "react-secure-storage"
 const MySwal = withReactContent(Swal)
 
 import { read, utils } from 'xlsx'
 
 const UploadBuyerArticliesModal = ({ open, handleModal, setsupplierInputsData }) => {
-  const country = localStorage.getItem('country')
-  const email = localStorage.getItem('email')
+  const country = secureLocalStorage.getItem('country')
+  const email = secureLocalStorage.getItem('email')
   // ** Custom close btn
   const CloseBtn = <X className='cursor-pointer' size={15} onClick={handleModal} />
 

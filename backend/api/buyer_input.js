@@ -696,7 +696,8 @@ module.exports = function (app, con) {
 		var supplierIDOptions = [];
 		// console.log(req.query);
 		var query = "SELECT suppl_no, suppl_name, buyer_emailid, stratbuy_domain_id, stratbuyer_name FROM public.vw_suppl_with_buyer where country_name='" + req.query.country + "' AND buyer_emailid='" + req.query.email + "'";
-
+		// var getUniqueSupplierIdQuery = "SELECT distinct suppl_no FROM public.vw_suppl_with_buyer where buyer_emailid = '" + req.query.email + "' AND country_name='" + req.query.country + "'";
+		
 		// console.log(query);
 
 		await con.query(query, async function (err, result) {

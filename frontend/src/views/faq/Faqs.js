@@ -23,6 +23,7 @@ import { Link } from 'react-router-dom'
 // ** Images
 //import illustration from '@src/assets/images/illustration/faq-illustrations.svg'
 import illustration from '@src/assets/images/illustration/faq-illustrations.svg'
+// import  secureLocalStorage  from  "react-secure-storage"
 
 const Faqs = ({ data, usertypes }) => {
   const dataToRender = []
@@ -35,7 +36,7 @@ const Faqs = ({ data, usertypes }) => {
     dataToRender.push(val)
   })
 
-  // const user_type = localStorage.getItem("type")
+  // const user_type = secureLocalStorage.getItem("type")
   // console.log(user_type)
   // if (user_type === 'BUYER') {
   //   setActiveTab('Buyer')

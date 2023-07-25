@@ -22,14 +22,16 @@ import '@styles/react/libs/flatpickr/flatpickr.scss'
 
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
+import  secureLocalStorage  from  "react-secure-storage"
+
 const MySwal = withReactContent(Swal)
 
 const AddNewModal = ({ open, handleModal, supllierNumberOptions, setsupplierInputsData, type }) => {
   // ** State
   // const [Picker, setPicker] = useState('')
-  const country = localStorage.getItem('country')
-  const vat_number = localStorage.getItem('vat')
-  const email = localStorage.getItem('email')
+  const country = secureLocalStorage.getItem('country')
+  const vat_number = secureLocalStorage.getItem('vat')
+  const email = secureLocalStorage.getItem('email')
 
   const [articleOptions, setarticleOptions] = useState([])
 

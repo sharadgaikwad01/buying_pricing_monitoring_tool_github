@@ -70,6 +70,7 @@
     "react-redux": "^7.2.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "^5.0.1",
+    "react-secure-storage": "^1.2.2",
     "react-select": "^5.2.0",
     "react-shepherd": "^3.3.6",
     "react-slidedown": "^2.4.5",

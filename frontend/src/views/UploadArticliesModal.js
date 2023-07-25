@@ -11,6 +11,8 @@ import { Modal, Input, Label, Button, ModalHeader, ModalBody, InputGroup, InputG
 
 // ** Styles
 import '@styles/react/libs/flatpickr/flatpickr.scss'
+import  secureLocalStorage  from  "react-secure-storage"
+
 
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
@@ -19,9 +21,9 @@ const MySwal = withReactContent(Swal)
 import { read, utils } from 'xlsx'
 
 const UploadArticliesModal = ({ open, handleModal, setsupplierInputsData }) => {
-  const country = localStorage.getItem('country')
-  const vat_number = localStorage.getItem('vat')
-  const email = localStorage.getItem('email')
+  const country = secureLocalStorage.getItem('country')
+  const vat_number = secureLocalStorage.getItem('vat')
+  const email = secureLocalStorage.getItem('email')
 
   // ** Custom close btn
   const CloseBtn = <X className='cursor-pointer' size={15} onClick={handleModal} />

@@ -28,13 +28,14 @@ import withReactContent from 'sweetalert2-react-content'
 const MySwal = withReactContent(Swal)
 
 import { utils, writeFile } from 'xlsx'
+import  secureLocalStorage  from  "react-secure-storage"
 
 const DownloadArticliesModal = ({ open, handleModal, supllierNumberOptions, flag = null }) => {
 
-    const country = localStorage.getItem('country')
-    const user_type = localStorage.getItem('type')
-    const email = localStorage.getItem('email')
-    const vat_number = localStorage.getItem('vat')
+    const country = secureLocalStorage.getItem('country')
+    const user_type = secureLocalStorage.getItem('type')
+    const email = secureLocalStorage.getItem('email')
+    const vat_number = secureLocalStorage.getItem('vat')
     const [fileName] = useState('export')
     const [fileFormat] = useState('xlsx')
 
@@ -182,6 +183,7 @@ const DownloadArticliesModal = ({ open, handleModal, supllierNumberOptions, flag
             const supplier_number = supplier_string.substring(1)
             await axios.get(`${nodeBackend}/supplier_article_details`, { params: { supplier_number, country, vat_number } }).then((res) => {
                 // console.log(res.data)
+               // setSupllierNumberOptionsList(supllierNumberOptions)
                 if (res.data.data.length > 0) {
                     const customHeadingsData = res.data.data.map(item => ({
                         "Country Name": item.country_name,
@@ -210,6 +212,7 @@ const DownloadArticliesModal = ({ open, handleModal, supllierNumberOptions, flag
                         },
                         buttonsStyling: false
                     })
+                    
                 } else {
                     setBlock(false)
                     handleModal(false)
@@ -235,7 +238,7 @@ const DownloadArticliesModal = ({ open, handleModal, supllierNumberOptions, flag
         if (state === true) {
             await axios.get(`${nodeBackend}/getSupplierListByBuyer`, { params: { country, email } }).then((res) => {
                 setSupllierNumberOptionsList(res.data.data.supplierIDOptions)
-                // console.log(supllierNumberOptionsList)
+                console.log(supllierNumberOptionsList)
             })
         } else {
                 setSupllierNumberOptionsList(supllierNumberOptions)
@@ -259,7 +262,7 @@ const DownloadArticliesModal = ({ open, handleModal, supllierNumberOptions, flag
                     <Form onSubmit={handleSubmit(onSubmit)}>                    
                         <ModalBody className='flex-grow-1'>
                             <Row className='mb-50'>
-                                { user_type === 'BUYER' ? (<Col lg='12' md='6' className='mb-1'>
+                                { (user_type === 'BUYER' || user_type === 'ADMIN') ? (<Col lg='12' md='6' className='mb-1'>
                                     <Controller
                                         name="behalf_of_supplier"
                                         control={control}

@@ -19,6 +19,7 @@ import '@styles/react/libs/tables/react-dataTable-component.scss'
 import '@styles/react/libs/flatpickr/flatpickr.scss'
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
+import  secureLocalStorage  from  "react-secure-storage"
 
 // ** Reactstrap Imports
 import {
@@ -83,7 +84,7 @@ const Buyerslog = props => {
   }
    
   useEffect(async () => {
-  const user_type = localStorage.getItem("type")
+  const user_type = secureLocalStorage.getItem("type")
     if (user_type === '') {
       props.history.push('/buyer_login')
     }

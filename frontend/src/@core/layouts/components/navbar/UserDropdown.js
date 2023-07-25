@@ -9,6 +9,7 @@ import { reactFrontend } from '@utils'
 // ** Custom Components
 import Avatar from '@components/avatar'
 import { useState, useEffect } from 'react'
+import  secureLocalStorage  from  "react-secure-storage"
 
 // ** Utils
 // import { isUserLoggedIn } from '@utils'
@@ -22,15 +23,15 @@ import { UncontrolledDropdown, DropdownMenu, DropdownToggle, DropdownItem, Butto
 
 const UserDropdown = () => {
   // ** State
-  // const user_email = localStorage.getItem('email')
-  // const vat_number = localStorage.getItem('vat')
-  const user_name = localStorage.getItem('name')
+  // const user_email = secureLocalStorage.getItem('email')
+  // const vat_number = secureLocalStorage.getItem('vat')
+  const user_name = secureLocalStorage.getItem('name')
   const [reportlink, setreportlink] = useState(false)
   const [reportlinkadmin, setreportlinkadmin] = useState(false)
 
   useEffect(async () => {
 
-    const user_type = localStorage.getItem("type")
+    const user_type = secureLocalStorage.getItem("type")
     if (user_type === 'SUPPLIER') {
       setreportlink(false)
       setreportlinkadmin(false)
@@ -49,8 +50,8 @@ const UserDropdown = () => {
     }      
   })
   const handlelogout = () => {
-    const user_type = localStorage.getItem("type")
-    const token = localStorage.getItem("token")
+    const user_type = secureLocalStorage.getItem("type")
+    const token = secureLocalStorage.getItem("token")
     // console.log(reactFrontend)
     if (user_type === 'SUPPLIER') {
       localStorage.clear()

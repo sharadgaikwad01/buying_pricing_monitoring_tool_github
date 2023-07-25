@@ -20,6 +20,8 @@ import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 
 import { useState, useEffect } from 'react'
+import  secureLocalStorage  from  "react-secure-storage"
+
 const MySwal = withReactContent(Swal)
 
 const AddNewModalUser =  ({open, handleModal, rowData, CategoryOptions, setUsersInputsData, searchName, searchCategory}) => {
@@ -119,7 +121,7 @@ const AddNewModalUser =  ({open, handleModal, rowData, CategoryOptions, setUsers
     const dashboard_name = data.dashboard_name
     const stratbuyer_category = data.stratbuyer_category
     const mintec_sub_category = data.mintec_sub_category
-    const created_by = localStorage.getItem('email')
+    const created_by = secureLocalStorage.getItem('email')
     const is_deleted = '0'
 
     handleModal(false)

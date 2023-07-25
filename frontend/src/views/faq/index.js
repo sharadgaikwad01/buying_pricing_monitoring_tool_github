@@ -8,6 +8,7 @@ import FaqContact from './FaqContact'
 
 // ** Styles
 import '@styles/base/pages/page-faq.scss'
+import  secureLocalStorage  from  "react-secure-storage"
 
 import {
   Card,
@@ -16,7 +17,7 @@ import {
 
 const Faq = () => {
   // ** States
-  const user_type = localStorage.getItem("type")
+  const user_type = secureLocalStorage.getItem("type")
   let data = ''
   let usertypes = ''
     // console.log(user_type)

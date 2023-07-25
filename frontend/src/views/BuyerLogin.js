@@ -7,6 +7,7 @@ import InputPasswordToggle from '@components/input-password-toggle'
 import { Row, Col, CardTitle, CardText, Form, Label, Input, Button } from 'reactstrap'
 import '@styles/react/pages/page-authentication.scss'
 import { nodeBackend, reactFrontend } from '@utils'
+import  secureLocalStorage  from  "react-secure-storage"
 export const data = []
 
 const BuyerLogin = () => {
@@ -25,8 +26,8 @@ const BuyerLogin = () => {
   source = require(`@src/assets/images/pages/${illustration}`)
 
   useEffect(async () => {
-    const auth_token = localStorage.getItem('token')
-    const type = localStorage.getItem('type')
+    const auth_token = secureLocalStorage.getItem('token')
+    const type = secureLocalStorage.getItem('type')
     if (auth_token) {
       if (type === 'BUYER') {
         window.location.replace(`${reactFrontend}/buyer_input`)

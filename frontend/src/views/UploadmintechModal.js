@@ -14,6 +14,8 @@ import '@styles/react/libs/flatpickr/flatpickr.scss'
 
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
+import  secureLocalStorage  from  "react-secure-storage"
+
 const MySwal = withReactContent(Swal)
 
 import { read, utils } from 'xlsx'
@@ -33,7 +35,7 @@ const UploadmintechModal = ({ open, handleModal, setUsersInputsData, searchName,
 
   async function uploadFile(data) {
     const mintech_inputs = data
-    const created_by = localStorage.getItem('email')
+    const created_by = secureLocalStorage.getItem('email')
     await axios({
       method: "post",
       url: `${nodeBackend}/upload_mintech_input`,

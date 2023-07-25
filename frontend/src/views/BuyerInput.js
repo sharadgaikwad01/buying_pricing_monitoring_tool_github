@@ -23,6 +23,7 @@ import DownloadArticliesModal from './DownloadArticlesModal'
 import '@styles/react/libs/tables/react-dataTable-component.scss'
 import '@styles/react/libs/flatpickr/flatpickr.scss'
 
+
 // ** Reactstrap Imports
 import {
   Row,
@@ -46,6 +47,8 @@ import {
 import Swal from 'sweetalert2'
 import moment from 'moment'
 import withReactContent from 'sweetalert2-react-content'
+import  secureLocalStorage  from  "react-secure-storage"
+
 const MySwal = withReactContent(Swal)
 
 const statusOptions = [
@@ -61,8 +64,8 @@ const BootstrapCheckbox = () => forwardRef((props, ref) => (
 ))
 
 const BuyerInput = props => {
-  const country = localStorage.getItem('country')
-  const email = localStorage.getItem('email')
+  const country = secureLocalStorage.getItem('country')
+  const email = secureLocalStorage.getItem('email')
   const [isLoading, setIsLoading] = useState(false)
 
   const [Picker, setPicker] = useState('')
@@ -106,7 +109,7 @@ const BuyerInput = props => {
   // ** Function to handle Pagination
   
   useEffect(async () => {
-    const user_type = localStorage.getItem("type")
+    const user_type = secureLocalStorage.getItem("type")
     if (user_type === 'SUPPLIER') {
       props.history.push('/home')
     }

@@ -36,12 +36,14 @@ import {
 
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
+import  secureLocalStorage  from  "react-secure-storage"
+
 const MySwal = withReactContent(Swal)
 
 const Report = props => {
-  const country = localStorage.getItem('country')
-  const email = localStorage.getItem('email')
-  const user_type = localStorage.getItem("type")
+  const country = secureLocalStorage.getItem('country')
+  const email = secureLocalStorage.getItem('email')
+  const user_type = secureLocalStorage.getItem("type")
   const [isLoading, setIsLoading] = useState(false)
   const [searchName, setsearchName] = useState('')
 

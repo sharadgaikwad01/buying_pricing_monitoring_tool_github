@@ -44,8 +44,8 @@ router.use((req, res, next) => {
     const params = client.callbackParams(req)
     client.callback(config.nodebackend+'/buyer/api/v2/callback', params, { code_verifier }) // => Promise
         .then(token => {
-            var country_code;
-            var userGroup;
+            var country_code = '';
+            var userGroup = '';
             var COMSCategory='';
             var user_details = jwt_decode(token.access_token);
             console.log(token.access_token);
@@ -61,23 +61,31 @@ router.use((req, res, next) => {
                         for (const [key2, value2] of Object.entries(value1)) {
                             console.log(value2);
                             if(key2 == 0){
-                                country_code = value2.country ? value2.country[0] : '';
-                                userGroup = value2.userGroup ? value2.userGroup[0] : '';
+                                if(value2.country != '' && value2.country != 'undefined'){
+                                    country_code = value2.country ? value2.country[0] : '';
+                                }
+                                if(value2.userGroup != '' && value2.userGroup != 'undefined'){
+                                    userGroup = value2.userGroup ? value2.userGroup[0] : '';
+                                }
                                 if(value2.COMSCategory){
                                     COMSCategory = value2.COMSCategory ? value2.COMSCategory.toString() : '';
                                 }
-                                if(value2.category){
-                                    COMSCategory = value2.category ? value2.category.toString() : '';
-                                }
+                                // if(value2.category){
+                                //     COMSCategory = value2.category ? value2.category.toString() : '';
+                                // }
                             }else{
-                                country_code = value2.country ? value2.country[0] : '';
-                                userGroup = value2.userGroup ? value2.userGroup[0] : '';
+                                if(value2.country != '' && value2.country != 'undefined'){
+                                    country_code = value2.country ? value2.country[0] : '';
+                                }
+                                if(value2.userGroup != '' && value2.userGroup != 'undefined'){
+                                    userGroup = value2.userGroup ? value2.userGroup[0] : '';
+                                }
                                 if(value2.COMSCategory){
                                     COMSCategory = COMSCategory + `,'${value2.COMSCategory.toString()}'`;
                                 }
-                                if(value2.category){
-                                    COMSCategory = COMSCategory + `,'${value2.category.toString()}'`;
-                                }
+                                // if(value2.category){
+                                //     COMSCategory = COMSCategory + `,'${value2.category.toString()}'`;
+                                // }
                             }
                         }
                     }

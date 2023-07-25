@@ -18,6 +18,8 @@ import LoadingSpinner from '@src/@core/components/spinner/Loading-spinner.js'
 import HeatMap from "react-heatmap-grid"
 
 import { Link } from 'react-router-dom'
+import  secureLocalStorage  from  "react-secure-storage"
+
 
 // ** Reactstrap Imports
 import {
@@ -52,6 +54,17 @@ const CategoryDashboard = () => {
     .fill(0).map(() => (true))
 
   useEffect(async () => {
+    const user_type = secureLocalStorage.getItem("type")
+    if (user_type === '') {
+      props.history.push('/buyer_login')
+    }
+    if (user_type === 'BUYER') {
+      props.history.push('/buyer_input')
+    }
+    if (user_type === 'SUPPLIER') {
+      props.history.push('/home')
+    }
+
     setIsLoading(true)
     await axios.get(`${nodeBackend}/category_dashboard`).then((res) => {
       setData(res.data.data.countryData)      

@@ -24,15 +24,17 @@ import withReactContent from 'sweetalert2-react-content'
 const MySwal = withReactContent(Swal)
 
 import { currencies } from './countryCurrency'
+import  secureLocalStorage  from  "react-secure-storage"
+
 
 const EditSupplierRequestModal = ({ open, handleModal, rowData, supllierNumberOptions, setsupplierInputsData, searchSupplierNumber, searchArticleNumber, searchRequestedDate, searchStatus, type }) => {
   // ** State
   // const [Picker, setPicker] = useState('')
   const [articleOptions, setarticleOptions] = useState([])
 
-  const country = localStorage.getItem('country')
-  let vat_number = localStorage.getItem('vat')
-  const email = localStorage.getItem('email')
+  const country = secureLocalStorage.getItem('country')
+  let vat_number = secureLocalStorage.getItem('vat')
+  const email = secureLocalStorage.getItem('email')
   
   const [newPrice, setNewPrice] = useState('')
   const [reason, setReason] = useState('')

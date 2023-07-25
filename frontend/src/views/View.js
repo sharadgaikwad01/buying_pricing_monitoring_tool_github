@@ -29,13 +29,15 @@ import {
 
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
+import  secureLocalStorage  from  "react-secure-storage"
+
 const MySwal = withReactContent(Swal)
 
 const View = () => {
 
     const { id } = useParams()
     const suppl_no = id
-    const country = localStorage.getItem('country')
+    const country = secureLocalStorage.getItem('country')
     const [Suppliername, setSuppliername] = useState('')
     const [modal, setModal] = useState(false)
     const handleModal = () => setModal(!modal)

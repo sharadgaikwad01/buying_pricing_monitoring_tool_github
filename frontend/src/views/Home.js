@@ -40,6 +40,7 @@ import {
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 import { utils, writeFile } from 'xlsx'
+import  secureLocalStorage  from  "react-secure-storage"
 const MySwal = withReactContent(Swal)
 
 const statusOptions = [
@@ -59,8 +60,8 @@ const Home = props => {
   const [Picker, setPicker] = useState('')
   const [searchRequestedDate, setSearchRequestedDate] = useState('')
 
-  const country = localStorage.getItem('country')
-  const vat_number = localStorage.getItem('vat')
+  const country = secureLocalStorage.getItem('country')
+  const vat_number = secureLocalStorage.getItem('vat')
 
   const [supplierInputsData, setsupplierInputsData] = useState([])
   const [supplierInputCount, setSupplierInputCount] = useState([])
@@ -105,12 +106,12 @@ const Home = props => {
   const [articleOptions, setarticleOptions] = useState([])
 
   useEffect(async () => {
-    const user_type = localStorage.getItem("type")
+    const user_type = secureLocalStorage.getItem("type")
     if (user_type === 'BUYER') {
       props.history.push('/buyer_input')
     }
 
-    const auth_token = localStorage.getItem('token')
+    const auth_token = secureLocalStorage.getItem('token')
     if (!auth_token) {
       window.location.replace(`${nodeBackend}/api/v1/login`)
     }
