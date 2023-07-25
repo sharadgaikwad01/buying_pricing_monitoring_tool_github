@@ -4,6 +4,7 @@ var async = require("async");
 //=========== MonthEnd API Module ===================
 module.exports = function (app, con) {
 	app.get('/buyers', async function (req, res) {
+				
 		var data = {};
         // var query = "SELECT * FROM public.tbl_users where action_status='Open'" + condition;
 		var condition  = '';
@@ -71,11 +72,46 @@ module.exports = function (app, con) {
 		});
 	});
 
+	app.get('/buyers_log', async function (req, res) {
+
+        // var query = "SELECT * FROM public.tbl_users where action_status='Open'" + condition;
+		var condition  = '';
+        var CountryOptions = [];
+		
+		if (req.query.searchEmail != '') {
+			condition = condition + " AND RTRIM(LTRIM(RTRIM(email))) ILIKE '%" +req.query.searchEmail +"%'"
+		}
+		var getUniquecountryQuery = "select distinct country_name, row_id from tbl_users_log";
+		con.query(getUniquecountryQuery, function (err2, result2) {
+			if (err2) {
+				res.json({ status: false });
+				return;
+			} else {
+				result2.rows.forEach(function(value, key) {
+					option = { value: value.country_name, label: value.country_name }
+					CountryOptions.push(option);
+				});
+				var query = "SELECT row_id, email, country_name, comments, created_on FROM tbl_users_log where email IS NOT NULL" + condition;
+				console.log(query);
+				con.query(query, function (err, result) {
+					if (err) {
+						console.log(err)
+						res.json({ status: false });
+						return;
+					} else {
+						res.json({ status: true, data: result.rows , countryoptions : CountryOptions });
+						return;
+					}
+				});
+			}
+		});
+	});
+
 	app.post('/buyers_add_input', async function (req, res) {
 		if (req.body.stratbuyer_name) {
-			console.log(req.body)
+			// console.log(req.body)
 			const stratbuyer_name = Array.prototype.map.call(req.body.stratbuyer_name, function (item) { return item.label; }).join(",")
-			var query = "call public.usp_update_buyerdetails ('" + req.body.first_name + "', '" + req.body.last_name + "', '" + req.body.dept_name + "', '" + req.body.buyer_emailid + "', '" + req.body.country_name + "','" + req.body.role_name + "', '" + stratbuyer_name + "')";
+			var query = "call public.usp_update_buyerdetails ('" + req.body.first_name + "', '" + req.body.last_name + "', '" + req.body.dept_name + "', '" + req.body.buyer_emailid.toLowerCase() + "', '" + req.body.country_name + "','" + req.body.role_name + "', '" + stratbuyer_name + "')";
 			await con.query(query, async function (err, result) {
 				if (err) {
 					console.log(err)
@@ -111,7 +147,7 @@ module.exports = function (app, con) {
 		var len = req.body.row_id.length;
 		var count = 0;
 		var condition = '';
-		console.log(req.body);
+		// console.log(req.body);
 		
 		if (req.body.searchName != '') {
 			condition = condition + " AND RTRIM(CONCAT(LTRIM(RTRIM(first_name)) , ' ' , LTRIM(RTRIM(last_name)))) ILIKE '%" +req.body.searchName +"%'"
