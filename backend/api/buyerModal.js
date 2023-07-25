@@ -92,7 +92,7 @@ module.exports = function (app, con) {
 					CountryOptions.push(option);
 				});
 				var query = "SELECT row_id, email, country_name, comments, created_on FROM tbl_users_log where email IS NOT NULL" + condition;
-				console.log(query);
+				// console.log(query);
 				con.query(query, function (err, result) {
 					if (err) {
 						console.log(err)

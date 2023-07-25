@@ -42,6 +42,9 @@ const NavbarUser = props => {
     }
   }
   useEffect(async () => {
+    if (user_type === '' || user_type === null) {
+      props.history.push('/buyer_login')
+    }
     if (user_type === 'SUPPLIER') {
       const result = `${user_name} / Vat ID: ${vat_number}`
       setUserDetails(result)
@@ -67,7 +70,7 @@ const NavbarUser = props => {
 
   const notificationread = async (id) => {
     await axios.post(`${nodeBackend}/notificationread`, { params: id}).then((res) => {
-      console.log('notification-----------------------------')
+      // console.log('notification-----------------------------')
     //  console.log(res.data.data)
       setnotificationList(res.data.data)    
     })

@@ -110,6 +110,11 @@ const BuyerInput = props => {
   
   useEffect(async () => {
     const user_type = secureLocalStorage.getItem("type")
+    console.log("user_type")
+    // console.log(user_type)
+    if (user_type === '' || user_type === null) {
+      props.history.push('/buyer_login')
+    }
     if (user_type === 'SUPPLIER') {
       props.history.push('/home')
     }

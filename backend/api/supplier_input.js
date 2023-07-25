@@ -361,8 +361,8 @@ module.exports = function (app, con) {
 		
 		var query = "select row_id, statuscol, country_name, art_no, art_name, suppl_no, suppl_name, msg, new_price from tbl_notification where country_name='" + req.query.country+"'";
 		// var query = "select row_id, statuscol, country_name, art_no, art_name, suppl_no, suppl_name, msg, new_price, created_at from tbl_notification";
-		console.log(req.query.country);
-		console.log(query);
+		// console.log(req.query.country);
+		// console.log(query);
 		await con.query(query, function (err, result) {
 			if (err) {
 				res.json({ status: false });

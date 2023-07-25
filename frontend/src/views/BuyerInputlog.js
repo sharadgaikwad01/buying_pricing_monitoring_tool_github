@@ -93,6 +93,9 @@ const BuyerInputlog = props => {
     if (user_type === 'SUPPLIER') {
       props.history.push('/home')
     }
+    if (user_type === '' || user_type === null) {
+      props.history.push('/buyer_login')
+    }
     setIsLoading(true)
     await axios.get(`${nodeBackend}/buyer_input_log`, { params: { searchSupplierNumber, searchRequestedDate, searchStatus, searchCategory, country, email, currentPage } }).then((res) => {
       if (res.data.data) {

@@ -21,6 +21,9 @@ const Faq = () => {
   let data = ''
   let usertypes = ''
     // console.log(user_type)
+    if (user_type === '' || user_type === null) {
+      props.history.push('/login')
+    }
     if (user_type === 'SUPPLIER') {
       usertypes = 'Supplier'
       data = {

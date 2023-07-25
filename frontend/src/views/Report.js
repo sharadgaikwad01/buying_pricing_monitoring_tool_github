@@ -73,9 +73,14 @@ const Report = props => {
   const [fileFormat] = useState('xlsx')
 
   useEffect(async () => {
-    
+    if (user_type === '' || user_type === null) {
+      props.history.push('/buyer_login')
+    }
     if (user_type === 'SUPPLIER') {
       props.history.push('/home')
+    }
+    if (user_type === "BUYER") {
+      props.history.push('/buyer_input')
     }
     if (user_type === 'SUPERADMIN') {
       setissuperadmin(true)

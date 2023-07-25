@@ -88,7 +88,7 @@ const Buyers = props => {
    
   useEffect(async () => {
   const user_type = secureLocalStorage.getItem("type")
-    if (user_type === '') {
+    if (user_type === '' || user_type === null) {
       props.history.push('/buyer_login')
     }
     if (user_type === 'BUYER') {

@@ -149,7 +149,7 @@ module.exports = function(app, con) {
 		// console.log(res.body);
 		var condition  = '';
 		var data = {};
-		console.log(query);
+		// console.log(query);
 		await con.query(query, async function(err, result) {
 			if (err) {
 				res.json({ status: false, message:'Error in delete' });

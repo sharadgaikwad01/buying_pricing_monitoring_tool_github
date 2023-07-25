@@ -54,6 +54,7 @@ const DownloadArticliesModal = ({ open, handleModal, supllierNumberOptions, flag
         setBlock(false)
         setSelected([])
         setSupllierNumberOptionsList(supllierNumberOptions)
+        console.log(supllierNumberOptions)
     }, [supllierNumberOptions])
 
     const {

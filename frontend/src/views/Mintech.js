@@ -81,6 +81,16 @@ const Home = props => {
   }
 
   useEffect(async () => {
+    const user_type = localStorage.getItem("type")
+    if (user_type === '' || user_type === null) {
+      props.history.push('/buyer_login')
+    }
+    if (user_type === 'SUPPLIER') {
+      props.history.push('/home')
+    }
+    if (user_type === "BUYER") {
+      props.history.push('/buyer_input')
+    }
     await axios.get(`${nodeBackend}/mintech`, { params: { searchName, searchCategory } }).then((res) => {
       // console.log(res.data.data)
       setUsersInputsData(res.data.data.users)  
