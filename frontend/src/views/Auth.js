@@ -19,7 +19,7 @@ export default class Auth extends Component {
         }
 
         if (searchParams.has('id') && searchParams.has('token') && searchParams.has('email') && searchParams.has('type') && searchParams.has('country')) {
-
+            localStorage.clear()
             secureLocalStorage.setItem("id", id)
             secureLocalStorage.setItem("token", token)
             secureLocalStorage.setItem("email", email.toLowerCase())
@@ -37,6 +37,7 @@ export default class Auth extends Component {
                 this.props.history.push('/home')
             }
         } else {
+            localStorage.clear()
             this.props.history.push({ pathname: '/notAuthorized', search: '?error=User Not Exist' })
         }
     }

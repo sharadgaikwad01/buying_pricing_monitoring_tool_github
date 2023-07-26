@@ -81,6 +81,7 @@ const Home = props => {
   const [fileName] = useState('export')
   const [fileFormat] = useState('xlsx')
   const [isLoading, setIsLoading] = useState(false)
+  const [pageCount, setpageCount] = useState([])
 
   // ** Function to handle Modal toggle
   // const handleModal = () => setModal(!modal)
@@ -129,6 +130,7 @@ const Home = props => {
         setsupllierNumberOptions(res.data.data.supplierIDOptions)
         setarticleOptions(res.data.data.articleOptions)
         setSupplierInputCount(res.data.data.supplierInputCount)
+        setpageCount(res.data.data.pageCount)
       }
     })
   }, [])
@@ -144,7 +146,7 @@ const Home = props => {
       nextLabel=''
       forcePage={currentPage}
       onPageChange={page => handlePagination(page)}
-      pageCount={Math.ceil(dataToRender().length / 7) || 1}
+      pageCount={pageCount}
       breakLabel='...'
       pageRangeDisplayed={2}
       marginPagesDisplayed={2}
@@ -216,6 +218,7 @@ const Home = props => {
       setsupllierNumberOptions(res.data.data.supplierIDOptions)
       setarticleOptions(res.data.data.articleOptions)
       setSupplierInputCount(res.data.data.supplierInputCount)
+      setpageCount(res.data.data.pageCount)
     })
 
   }
@@ -231,6 +234,7 @@ const Home = props => {
       setsupllierNumberOptions(res.data.data.supplierIDOptions)
       setarticleOptions(res.data.data.articleOptions)
       setSupplierInputCount(res.data.data.supplierInputCount)
+      setpageCount(res.data.data.pageCount)
     })
 
   }
@@ -265,6 +269,7 @@ const Home = props => {
         setsupllierNumberOptions(res.data.data.supplierIDOptions)
         setarticleOptions(res.data.data.articleOptions)
         setSupplierInputCount(res.data.data.supplierInputCount)
+        setpageCount(res.data.data.pageCount)
       }      
     })
   }
@@ -280,6 +285,7 @@ const Home = props => {
       setsupllierNumberOptions(res.data.data.supplierIDOptions)
       setarticleOptions(res.data.data.articleOptions)
       setSupplierInputCount(res.data.data.supplierInputCount)
+      setpageCount(res.data.data.pageCount)
     })
   }
 
@@ -402,6 +408,7 @@ const Home = props => {
       setsupllierNumberOptions(res.data.data.supplierIDOptions)
       setarticleOptions(res.data.data.articleOptions)
       setSupplierInputCount(res.data.data.supplierInputCount)
+      setpageCount(res.data.data.pageCount)
     })
   }
 

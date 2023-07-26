@@ -263,7 +263,7 @@ const DownloadArticliesModal = ({ open, handleModal, supllierNumberOptions, flag
                     <Form onSubmit={handleSubmit(onSubmit)}>                    
                         <ModalBody className='flex-grow-1'>
                             <Row className='mb-50'>
-                                { (user_type === 'BUYER' || user_type === 'ADMIN') ? (<Col lg='12' md='6' className='mb-1'>
+                                { (user_type === 'BUYER' || user_type === 'ADMIN' || user_type === 'SUPERADMIN') ? (<Col lg='12' md='6' className='mb-1'>
                                     <Controller
                                         name="behalf_of_supplier"
                                         control={control}

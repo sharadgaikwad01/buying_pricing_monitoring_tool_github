@@ -27,6 +27,7 @@ const NavbarUser = props => {
   const user_name = secureLocalStorage.getItem('name')
   const user_type = secureLocalStorage.getItem('type')
   const country = secureLocalStorage.getItem('country')
+  const email = secureLocalStorage.getItem('email')
   const [notificationList, setnotificationList] = useState([])
 
   const [userDetails, setUserDetails] = useState([])
@@ -54,7 +55,7 @@ const NavbarUser = props => {
       //setApplicationName("Monitoring Tool")
     }
 
-    await axios.get(`${nodeBackend}/notifications`, { params: {country, user_type}}).then((res) => {
+    await axios.get(`${nodeBackend}/notifications`, { params: {country, user_type, email}}).then((res) => {
       console.log('notification-----------------------------')
       // console.log(res.data.data)
       setnotificationList(res.data.data)
@@ -148,7 +149,7 @@ const NavbarUser = props => {
         {notificationicon}
       </div>
     </DropdownToggle>
-    <DropdownMenu right className='dropdown-menu-media'>
+    <DropdownMenu className='dropdown-menu-media' end>
       <DropdownItem header>
         <div className="d-flex">
           <h4 className="notification-title mb-0 me-auto">Notifications</h4>

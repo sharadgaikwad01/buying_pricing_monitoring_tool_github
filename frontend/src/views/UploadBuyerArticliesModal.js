@@ -15,6 +15,8 @@ import '@styles/react/libs/flatpickr/flatpickr.scss'
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 import  secureLocalStorage  from  "react-secure-storage"
+import LoadingSpinner from '@src/@core/components/spinner/Loading-spinner.js'
+
 const MySwal = withReactContent(Swal)
 
 import { read, utils } from 'xlsx'
@@ -22,6 +24,7 @@ import { read, utils } from 'xlsx'
 const UploadBuyerArticliesModal = ({ open, handleModal, setsupplierInputsData }) => {
   const country = secureLocalStorage.getItem('country')
   const email = secureLocalStorage.getItem('email')
+  const [isLoading, setIsLoading] = useState(false)
   // ** Custom close btn
   const CloseBtn = <X className='cursor-pointer' size={15} onClick={handleModal} />
 
@@ -37,14 +40,18 @@ const UploadBuyerArticliesModal = ({ open, handleModal, setsupplierInputsData })
 
   async function uploadFile(data) {
     const buyer_inputs = data
+    setIsLoading(true)
     await axios({
       method: "post",
       url: `${nodeBackend}/upload_buyer_input`,
       data: { buyer_inputs, country, email }
     }).then(function (success) {
         setsupplierInputsData(success.data.data.buyerInputs)
+       
         // console.log(success)
         if (success.data.status) {
+          setIsLoading(false)
+          handleModal(false)
           return MySwal.fire({
             title: 'Done!',
             text: success.data.sucess_count > 1 ? `${success.data.sucess_count} Records has been uploaded` : `${success.data.sucess_count} Record has been uploaded`,
@@ -55,6 +62,8 @@ const UploadBuyerArticliesModal = ({ open, handleModal, setsupplierInputsData })
             buttonsStyling: false
           })
         } else {
+          setIsLoading(false)
+          handleModal(false)
           return MySwal.fire({
             title: 'Duplicate entry found.',
             text: 'Request already open for article. Please check file records',
@@ -68,6 +77,8 @@ const UploadBuyerArticliesModal = ({ open, handleModal, setsupplierInputsData })
       })
       .catch(function (e) {
         console.log(e)
+        setIsLoading(false)
+        handleModal(false)
         return MySwal.fire({
           title: 'Error',
           text: 'Something went wrong. Please try again later',
@@ -82,6 +93,7 @@ const UploadBuyerArticliesModal = ({ open, handleModal, setsupplierInputsData })
 
   async function uploadSupplierInput(data) {
     const supplier_inputs = data
+    setIsLoading(true)
     await axios({
       method: "post",
       url: `${nodeBackend}/upload_supplier_input_by_buyer`,
@@ -90,6 +102,8 @@ const UploadBuyerArticliesModal = ({ open, handleModal, setsupplierInputsData })
       .then(function (success) {
         setsupplierInputsData(success.data.data.supplierInputs)
         if (success.data.status) {
+          setIsLoading(false)
+          handleModal(false)
           return MySwal.fire({
             title: 'Done!',
             text: success.data.sucess_count > 1 ? `${success.data.sucess_count} Records has been uploaded` : `${success.data.sucess_count} Record has been uploaded`,
@@ -100,6 +114,8 @@ const UploadBuyerArticliesModal = ({ open, handleModal, setsupplierInputsData })
             buttonsStyling: false
           })
         } else {
+          setIsLoading(false)
+          handleModal(false)
           return MySwal.fire({
             title: 'Duplicate entry found.',
             text: 'Request already open for article. Please check file records',
@@ -112,6 +128,8 @@ const UploadBuyerArticliesModal = ({ open, handleModal, setsupplierInputsData })
         }
       })
       .catch(function () {
+        setIsLoading(false)
+        handleModal(false)
         return MySwal.fire({
           title: 'Error',
           text: 'Something went wrong. Please try again later',
@@ -140,16 +158,18 @@ const UploadBuyerArticliesModal = ({ open, handleModal, setsupplierInputsData })
       }, {})
       return obj
     })
-    handleModal(false)
+   
     if (behalfOfSupplier) {
       uploadFile(supplier_inputs)
     } else {
       uploadSupplierInput(supplier_inputs)
+      
     }    
   }
 
   const handleOnSubmit = (e) => {
     e.preventDefault()
+    setIsLoading(true)
     if (file) {
       if (behalfOfSupplier) {
         const filename = file.name.split(".")
@@ -160,6 +180,7 @@ const UploadBuyerArticliesModal = ({ open, handleModal, setsupplierInputsData })
             csvFileToArray(csvOutput)
           }
           fileReader.readAsText(file)
+          setIsLoading(false)
         }
         if (filename[1] === 'xlsx') {
           fileReader.readAsBinaryString(file)
@@ -182,7 +203,8 @@ const UploadBuyerArticliesModal = ({ open, handleModal, setsupplierInputsData })
                 }
               ))
               customHeadingsData.shift()
-              handleModal(false)
+              
+              setIsLoading(false)
               uploadSupplierInput(customHeadingsData)
             })
           }
@@ -196,6 +218,7 @@ const UploadBuyerArticliesModal = ({ open, handleModal, setsupplierInputsData })
             csvFileToArray(csvOutput)
           }
           fileReader.readAsText(file)
+          setIsLoading(false)
         }
         if (filename[1] === 'xlsx') {
           fileReader.readAsBinaryString(file)
@@ -222,13 +245,23 @@ const UploadBuyerArticliesModal = ({ open, handleModal, setsupplierInputsData })
               }
               ))
               customHeadingsData.shift()
-              handleModal(false)
               // console.log(customHeadingsData)
               uploadFile(customHeadingsData)
             })
           }
         }
       }
+    } else {
+      setIsLoading(false)
+      return MySwal.fire({
+        title: 'Error',
+        text: 'Please select File First',
+        icon: 'error',
+        customClass: {
+          confirmButton: 'btn btn-primary'
+        },
+        buttonsStyling: false
+      })
     }
   }
 
@@ -242,7 +275,7 @@ const UploadBuyerArticliesModal = ({ open, handleModal, setsupplierInputsData })
       <ModalHeader className='mb-1' toggle={handleModal} close={CloseBtn} tag='div'>
         <h5 className='modal-title'>Upload Supplier Input</h5>
       </ModalHeader>
-      <ModalBody className='flex-grow-1'>
+      {isLoading ? <LoadingSpinner /> : <ModalBody className='flex-grow-1'>
         <Row className='mb-50'>
           <Col lg='12' md='6' className='mb-1'>
             Note : While Uploading Article
@@ -272,7 +305,7 @@ const UploadBuyerArticliesModal = ({ open, handleModal, setsupplierInputsData })
             Upload
           </Button>
         </div>
-      </ModalBody>
+      </ModalBody> }
     </Modal>
   )
 }

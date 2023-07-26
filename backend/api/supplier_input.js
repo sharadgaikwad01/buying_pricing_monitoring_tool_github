@@ -73,14 +73,22 @@ module.exports = function (app, con) {
 
 		var query = "SELECT ean_no, row_id, suppl_no, vat_no, art_no, art_name, new_price, frmt_new_price, to_char(request_date, 'dd-mm-YYYY') as request_date, frmt_negotiate_final_price, negotiate_final_price, to_char(price_increase_communicated_date, 'dd-mm-YYYY') as price_increase_communicated_date, to_char(price_increase_effective_date, 'dd-mm-YYYY') as price_increase_effective_date, action_status, price_change_reason, previous_request_days FROM public.vw_request_details where country_name='" + req.query.country + "' AND vat_no='" + req.query.vat_number + "' AND new_price IS NOT NULL AND request_date IS NOT NULL " + condition + " ORDER BY action_status DESC, row_id DESC";
 
-		await con.query(query, function (err, result) {
+		await con.query(query, function (err, result3) {
 			if (err) {
 				console.log(err);
 				res.json({ status: false });
 				return;
 			} else {
 				// console.log(result.rows);
-				data.supplierInputs = result.rows
+				const pageCount = Math.ceil(result3.rows.length / 7);
+				let page = parseInt(req.query.currentPage);
+				if (!page) { page = 1;}
+				if (page > pageCount) {
+					page = pageCount
+				}
+				data.page = page;
+				data.pageCount = pageCount;
+				data.supplierInputs = result3.rows
 				res.json({ status: true, data: data });
 				return;
 			}

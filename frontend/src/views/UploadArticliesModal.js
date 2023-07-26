@@ -5,6 +5,7 @@ import { nodeBackend } from '@utils'
 import { useState } from 'react'
 
 import axios from 'axios'
+import LoadingSpinner from '@src/@core/components/spinner/Loading-spinner.js'
 // import { nodeBackend } from '@utils'
 // ** Reactstrap Imports
 import { Modal, Input, Label, Button, ModalHeader, ModalBody, InputGroup, InputGroupText, Row, Col } from 'reactstrap'
@@ -18,12 +19,14 @@ import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 const MySwal = withReactContent(Swal)
 
+
 import { read, utils } from 'xlsx'
 
 const UploadArticliesModal = ({ open, handleModal, setsupplierInputsData }) => {
   const country = secureLocalStorage.getItem('country')
   const vat_number = secureLocalStorage.getItem('vat')
   const email = secureLocalStorage.getItem('email')
+  const [isLoading, setIsLoading] = useState(false)
 
   // ** Custom close btn
   const CloseBtn = <X className='cursor-pointer' size={15} onClick={handleModal} />
@@ -37,6 +40,7 @@ const UploadArticliesModal = ({ open, handleModal, setsupplierInputsData }) => {
   }
 
   async function uploadFile(data) {
+    setIsLoading(true)
     const supplier_inputs = data
     await axios({
       method: "post",
@@ -45,6 +49,8 @@ const UploadArticliesModal = ({ open, handleModal, setsupplierInputsData }) => {
     })
       .then(function (success) {
         setsupplierInputsData(success.data.data.supplierInputs)
+        setIsLoading(false)
+        handleModal(false)
         if (success.data.status) {
           return MySwal.fire({
             title: 'Done!',
@@ -56,6 +62,7 @@ const UploadArticliesModal = ({ open, handleModal, setsupplierInputsData }) => {
             buttonsStyling: false
           })
         } else {
+          
           return MySwal.fire({
             title: 'Duplicate entry found.',
             text: 'Request already open for article. Please check file records',
@@ -68,6 +75,8 @@ const UploadArticliesModal = ({ open, handleModal, setsupplierInputsData }) => {
         }
       })
       .catch(function () {
+        setIsLoading(false)
+        handleModal(false)
         return MySwal.fire({
           title: 'Error',
           text: 'Something went wrong. Please try again later',
@@ -96,7 +105,7 @@ const UploadArticliesModal = ({ open, handleModal, setsupplierInputsData }) => {
       }, {})
       return obj
     })
-    handleModal(false)    
+       
     uploadFile(supplier_inputs)
   }
 
@@ -133,7 +142,7 @@ const UploadArticliesModal = ({ open, handleModal, setsupplierInputsData }) => {
               }
             ))
             customHeadingsData.shift()
-            handleModal(false)
+            
             uploadFile(customHeadingsData)
           })
         }
@@ -151,7 +160,7 @@ const UploadArticliesModal = ({ open, handleModal, setsupplierInputsData }) => {
       <ModalHeader className='mb-1' toggle={handleModal} close={CloseBtn} tag='div'>
         <h5 className='modal-title'>Upload Supplier Input</h5>
       </ModalHeader>
-      <ModalBody className='flex-grow-1'>
+      {isLoading ? <LoadingSpinner /> : <ModalBody className='flex-grow-1'>
         <Row className='mb-50'>
           <Col lg='12' md='6' className='mb-1'>
             Note : While Uploading Article 
@@ -173,7 +182,7 @@ const UploadArticliesModal = ({ open, handleModal, setsupplierInputsData }) => {
             Upload
           </Button>
         </div>
-      </ModalBody>
+      </ModalBody> }
     </Modal>
   )
 }
