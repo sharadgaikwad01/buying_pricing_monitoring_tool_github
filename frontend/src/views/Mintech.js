@@ -155,8 +155,7 @@ const Home = props => {
       setUsersInputsData(res.data.data.users)
     })
   }
-
-
+  
   // ** Function to handle status filter
   const handleCategoryFilter = async (e) => {
     const Category = e.value
