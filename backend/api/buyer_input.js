@@ -728,7 +728,6 @@ module.exports = function (app, con) {
 	app.post('/add_supplier_input_by_buyer', function (req, res) {
 		var data = {};
 		sql = `CALL public."usp_addNewRequest"('` + req.body.article_number + `','` + req.body.supplier_number + `','` + req.body.country + `',` + req.body.new_price + `,'` + req.body.reason + `','` + req.body.price_effective_date + `','` + req.body.email + `');`;	
-
 		// console.log(sql);
 		con.query(sql, async function (err, result) {
 			if (err) {
@@ -767,6 +766,8 @@ module.exports = function (app, con) {
 						if (value.new_price > 0) {
 							sql = `CALL public."usp_addNewRequest"('` + value.art_no + `','` + value.suppl_no + `','` + value.country_name + `',` + value.new_price + `,'` + value.price_change_reason + `','` + value.price_increase_effective_date + `','` + req.body.email + `');`;
 							await con.query(sql, function (err, result) {
+								console.log(err);
+								console.log(result);
 								if (err) {
 									error_count++;
 									if((sucess_count+error_count+count) == len){
