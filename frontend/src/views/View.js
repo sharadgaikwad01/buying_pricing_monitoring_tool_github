@@ -33,7 +33,7 @@ import  secureLocalStorage  from  "react-secure-storage"
 
 const MySwal = withReactContent(Swal)
 
-const View = () => {
+const View = props => {
 
     const { id } = useParams()
     const suppl_no = id
@@ -72,6 +72,10 @@ const View = () => {
         })
     }
     useEffect(async () => {
+        const user_type = secureLocalStorage.getItem("type")
+        if (user_type === '' || user_type === null) {
+            props.history.push('/buyer_login')
+          }
         setIsLoading(true)
         await axios.get(`${nodeBackend}/buyer_supplier_details`, { params: { suppl_no, country } }).then((res) => {
             if (res.data.data) {
