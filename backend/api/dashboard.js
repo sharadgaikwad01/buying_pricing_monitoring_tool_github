@@ -87,7 +87,6 @@ module.exports = function (app, con) {
 		var getCountriesQuery = "SELECT bdm_global_umbrella_name, bg, cz, de, es, fr, hr, hu, it, kz, md, nl, pk, pl, pt, ro, rs, sk, tr, ua FROM public.vw_heatmap_dashboard_cat_tabular "+ condition;
 
 		// console.log(getCountriesQuery)
-
 		await con.query(getCountriesQuery, function (err, result) {
 			if (err) {
 				res.json({ status: false });

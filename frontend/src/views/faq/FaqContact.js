@@ -14,7 +14,7 @@ const FaqContact = () => {
             If you cannot find a question in our FAQ, you can always contact us. We will answer to you shortly!
           </p>
         </Col>
-        <Col sm='6'>
+        {/* <Col sm='6'>
           <Card className='text-center faq-contact-card shadow-none py-1'>
             <CardBody>
               <div className='avatar avatar-tag bg-light-primary mb-2 mx-auto'>
@@ -24,14 +24,14 @@ const FaqContact = () => {
               <span className='text-body'>We are always happy to help!</span>
             </CardBody>
           </Card>
-        </Col>
-        <Col sm='6'>
+        </Col> */}
+        <Col sm='12'>
           <Card className='text-center faq-contact-card shadow-none py-1'>
             <CardBody>
               <div className='avatar avatar-tag bg-light-primary mb-2 mx-auto'>
                 <Mail size={18} />
               </div>
-              <h4>hello@help.com</h4>
+              <h4>indrabhadur.yadav@metro-gsc.in</h4>
               <span className='text-body'>Best way to get answer faster!</span>
             </CardBody>
           </Card>

@@ -8,57 +8,71 @@ import { reactFrontend } from '@utils'
 
 // ** Custom Components
 import Avatar from '@components/avatar'
+import { useState, useEffect } from 'react'
+import  secureLocalStorage  from  "react-secure-storage"
 
 // ** Utils
 // import { isUserLoggedIn } from '@utils'
+
 
 // ** Third Party Components
 import { User, Mail, CheckSquare, MessageSquare, Settings, CreditCard, HelpCircle, Power } from 'react-feather'
 
 // ** Reactstrap Imports
-import { UncontrolledDropdown, DropdownMenu, DropdownToggle, DropdownItem } from 'reactstrap'
+import { UncontrolledDropdown, DropdownMenu, DropdownToggle, DropdownItem, Button } from 'reactstrap'
 
 const UserDropdown = () => {
   // ** State
-  // const user_email = localStorage.getItem('email')
-  // const vat_number = localStorage.getItem('vat')
-  const user_name = localStorage.getItem('name')
+  // const user_email = secureLocalStorage.getItem('email')
+  // const vat_number = secureLocalStorage.getItem('vat')
+  const user_name = secureLocalStorage.getItem('name')
+  const [reportlink, setreportlink] = useState(false)
+  const [reportlinkadmin, setreportlinkadmin] = useState(false)
 
-  // const handlelogout = () => {    
-  //   const user_type = localStorage.getItem("type")
-  //   if (user_type === 'SUPPLIER') {
-  //     localStorage.clear()
-  //     window.location.replace(`${reactFrontend}/logout`)
-  //   }
-  //   if (user_type === 'BUYER') {
-  //     localStorage.clear()
-  //     window.location.replace(`${reactFrontend}/buyer_login?message=Logout`)
-  //   }
-  //   if (user_type === 'ADMIN') {
-  //     localStorage.clear()
-  //     window.location.replace(`${reactFrontend}/buyer_login?message=Logout`)
-  //   }      
-  // }
+  useEffect(async () => {
+
+    const user_type = secureLocalStorage.getItem("type")
+    if (user_type === 'SUPPLIER') {
+      setreportlink(false)
+      setreportlinkadmin(false)
+    }
+    if (user_type === 'BUYER' || user_type === 'CAT_MAN') {
+      setreportlink(false)
+      setreportlinkadmin(false)
+    }
+    if (user_type === 'ADMIN') {
+      setreportlink(true)
+      setreportlinkadmin(false)
+    } 
+    if (user_type === 'SUPERADMIN') {
+      setreportlink(true)
+      setreportlinkadmin(true)
+    }      
+  })
   const handlelogout = () => {
-    const user_type = localStorage.getItem("type")
-    const token = localStorage.getItem("token")
-    console.log(reactFrontend)
+    const user_type = secureLocalStorage.getItem("type")
+    const token = secureLocalStorage.getItem("token")
+    // console.log(reactFrontend)
     if (user_type === 'SUPPLIER') {
       localStorage.clear()
       const url = `https://idam.metrosystems.net/authorize/api/oauth2/op_session_end?id_token_hint=${token}&post_logout_redirect_uri=${reactFrontend}/logout`
-      console.log(url)
+      // console.log(url)
+     
       window.location.replace(url)
+     
     }
-    if (user_type === 'BUYER') {
+    if (user_type === 'BUYER' || user_type === 'CAT_MAN') {
       localStorage.clear()
       const url = `https://idam.metrosystems.net/authorize/api/oauth2/op_session_end?id_token_hint=${token}&post_logout_redirect_uri=${reactFrontend}/buyer_login?message=Logout`
-      console.log(url)
+      // console.log(url)
+     
       window.location.replace(url)
+      
     }
     if (user_type === 'ADMIN' || user_type === 'SUPERADMIN') {
       localStorage.clear()
       const url = `https://idam.metrosystems.net/authorize/api/oauth2/op_session_end?id_token_hint=${token}&post_logout_redirect_uri=${reactFrontend}/buyer_login?message=Logout`
-      console.log(url)
+      // console.log(url)
       window.location.replace(url)
     }
   }
@@ -72,6 +86,12 @@ const UserDropdown = () => {
         <Avatar color='light-primary' content={user_name} initials />
       </DropdownToggle>
       <DropdownMenu end>
+          {reportlink ? <DropdownItem><Link to={'/report'}><span className='align-middle ms-25'>BPA vs MMS Dashboard</span></Link></DropdownItem> : ''}
+          {reportlink ? <DropdownItem><Link to={'/buyer_input'}><span className='align-middle ms-25'>Buyer Input</span></Link></DropdownItem> : ''}
+          {reportlink ? <DropdownItem><Link to={'/dashboard'}><span className='align-middle ms-25'>Dashboard</span></Link></DropdownItem> : ''}
+          {reportlinkadmin ? <DropdownItem><Link to={'/buyers_log'}><span className='align-middle ms-25'>User Log</span></Link></DropdownItem> : ''}
+          {reportlinkadmin ? <DropdownItem><Link to={'/buyer_input_log'}><span className='align-middle ms-25'>Request Log</span></Link></DropdownItem> : ''}
+          <DropdownItem><Link to={'/faq'}><span className='align-middle ms-25'>FAQ</span></Link></DropdownItem>
         <DropdownItem onClick={handlelogout}>
           <Power size={14} className='me-75' />
           <span className='align-middle'>Logout</span>

@@ -19,6 +19,7 @@ import '@styles/react/libs/tables/react-dataTable-component.scss'
 import '@styles/react/libs/flatpickr/flatpickr.scss'
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
+import  secureLocalStorage  from  "react-secure-storage"
 
 // ** Reactstrap Imports
 import {
@@ -86,8 +87,8 @@ const Buyers = props => {
   }
    
   useEffect(async () => {
-  const user_type = localStorage.getItem("type")
-    if (user_type === '') {
+  const user_type = secureLocalStorage.getItem("type")
+    if (user_type === '' || user_type === null) {
       props.history.push('/buyer_login')
     }
     if (user_type === 'BUYER') {
@@ -180,7 +181,7 @@ const Buyers = props => {
   
   const handleDelete = (e, row) => {
     const row_id = row.row_id
-    console.log(row_id)
+    // console.log(row_id)
     e.preventDefault()
     MySwal.fire({
       title: 'Are you sure?',
@@ -201,7 +202,7 @@ const Buyers = props => {
           data: { row_id, searchName, searchEmail}
         }) 
           .then(function (success) {
-            console.log(success.data.status)
+            // console.log(success.data.status)
             //handle success        
             if (success.data.status) {
               setUsersInputsData(success.data.data)
@@ -336,7 +337,7 @@ const Buyers = props => {
                <Label className='form-label' for='email'>
                 Buyer Email:
               </Label>
-              <Input className='form-control' type='text' id='email' placeholder='Buyer Name' value={searchEmail} onChange={handleEmailFilter} /> 
+              <Input className='form-control' type='text' id='email' placeholder='Buyer Email' value={searchEmail} onChange={handleEmailFilter} /> 
             </Col>
 
              {/* <Col className='mb-1 col-auto'>

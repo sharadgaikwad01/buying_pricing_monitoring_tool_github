@@ -51,12 +51,13 @@ router.use((req, res, next) => {
             var supplierName;
             var country_name;
             var user_details = jwt_decode(token.access_token);
+            console.log("New user try to login")
             console.log(user_details);
             for (const [key, value] of Object.entries(user_details.authorization)) {
                 for (const [key1, value1] of Object.entries(value)) {
                     if(key1 == 'BPMT_SUPPLIER')
                     {   
-                        console.log(Object.entries(value1));                    
+                        console.log(Object.entries(value1));                     
                         for (const [key2, value2] of Object.entries(value1)) {
                             console.log(value2);
                             if(key2 == 0){
@@ -68,6 +69,7 @@ router.use((req, res, next) => {
                                 salesLine = value2.salesLine[0];
                                 supplierNumber = supplierNumber + `,'${value2.supplierNumber[0]}'`;
                             }
+                           
                         }
                     }
                 }
@@ -81,6 +83,16 @@ router.use((req, res, next) => {
                     // res.redirect(303, config.reactFrontend + '/auth?error=User not Exist');
                     res.send('<script>window.location.href="'+config.reactFrontend + '/auth?error=User not Exist'+'";</script>');
                 } else{
+                    var sql2 = "INSERT INTO tbl_users_log (country_name,email,comments) VALUES ('"+country+"','"+ user_details.email+"','"+ supplierNumber +"')";
+                    console.log(sql2);
+                    clientDB.query(sql2, function (err, result) {
+                        console.log(err)
+                        if (err) {
+                            console.log("Create log failure. Please try again.");
+                            res.json({ status: false });
+                            return;
+                        }
+                    });
                     if(result.rowCount == 0){
                         // res.redirect(303, config.reactFrontend + '/auth?error=User not Exist');
                         res.send('<script>window.location.href="'+config.reactFrontend + '/auth?error=User not Exist' + '";</script>');
@@ -117,7 +129,6 @@ router.get('/api/v1/login', (req, res, next) => {
         locale_id: 'en-IN',
         code_challenge_method: 'S256',
     });
-   
 	// res.redirect(303, authUrl);
     res.send('<script>window.location.href="'+authUrl+'";</script>');
     next()

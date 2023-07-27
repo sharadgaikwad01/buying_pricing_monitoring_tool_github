@@ -1,0 +1,186 @@
+Learn React JS with Project in 2 Hours | React Tutorial for Beginners | React Project Crash Course
+Dipesh Malvia
+React Crash Course for Beginners
+This is a two-hour long React crash course for beginners. In this video, we will be building a React project from scratch. Here are the topics we will cover:
+
+Basics of React
+Creating a React application
+Components: Class components and functional components
+JSX in components
+Props and state
+React hooks: useState and useEffect
+Component lifecycle
+Conditional rendering
+Lists and keys
+Basic form handling
+Project structure
+React routing
+Programmatic navigation
+Setting up a JSON server
+CRUD operations
+Search filter functionality
+React hooks
+If this sounds interesting to you, stick around and don't forget to subscribe to the channel for more videos like this one.
+
+Getting Started
+The first thing we need is to have Node.js installed on our machine. If you don't have Node.js installed, you can quickly install it from the official website.
+
+Once you have Node.js installed, open the terminal and check the version by typing "node -v".
+
+Next, we need to create a React app. To do this, go to the GitHub page of Create React App. Scroll down to see the command to create a React app using "npx create-react-app".
+
+Run the command "npx create-react-app contact-app" to create a React app called "contact-app". This will download all the dependencies and set up the app.
+
+To start the development server, go to the app directory and run "npm start". This will start the app on localhost port 3000.
+
+Folder Structure
+The app folder structure will look like this:
+
+node_modules: Contains all the dependencies
+public: Contains the index.html file and other assets
+src: Contains the application code
+.gitignore: File to ignore certain files and folders
+package.json: Contains dependencies and scripts
+README.md: Readme file of the project
+In the public folder, we have the index.html file with a root div where our React application will be rendered. In the src folder, we have the main index.js file that renders the app component.
+
+Creating Components
+We will be creating multiple components for our app. We'll have a header component, add contact component, contact list component, and contact card component. We'll organize these components in a separate "components" directory.
+
+We'll also have an "images" directory to store our images.
+
+After creating the components, we can delete the default files that were created by Create React App.
+
+Summary
+In this video, we learned about the basics of React and how to create a React app using Create React App. We also saw the folder structure of the app and created our own components. Stay tuned for the next video where we'll dive into the details of each component and start building our app!
+
+Folder Structure
+Our folder structure now consists of an index.js file and the app component file. We will remove the logo and unnecessary content from the app component.
+
+CSS
+For the CSS, we will be using the Semantic UI library. We will add the necessary CSS code to the index.html file.
+
+Components
+A component is a reusable piece of code with its own inputs, outputs, and functionality.
+
+Header Component
+The header component will contain the header of our application. We will import it and use it in the app component.
+
+Add Contact Component
+The add contact component will contain a form to add a new contact. We will import it and use it in the app component.
+
+Contact List Component
+The contact list component will display a list of contacts. We will import it and use it in the app component.
+
+Header Component Code
+    import React from 'react';        const Header = () => {      return (        <div className="ui fixed menu">          <div className="ui container center">            <h2>Contact Manager</h2>          </div>        </div>      );    }        export default Header;  
+Add Contact Component Code
+    import React from 'react';        class AddContact extends React.Component {      render() {        return (          <div className="ui main">            <h2>Add Contact</h2>            <form className="ui form">              <div className="field">                <label>Name</label>                <input type="text" name="name" placeholder="Name" />              </div>              <div className="field">                <label>Email</label>                <input type="text" name="email" placeholder="Email" />              </div>              <button className="ui button blue">Add</button>            </form>          </div>        );      }    }        export default AddContact;  
+Contact List Component Code
+    import React from 'react';        const ContactList = () => {      return (        <div>          <h2>Contact List</h2>          <ul>            <li>Contact 1</li>            <li>Contact 2</li>            <li>Contact 3</li>          </ul>        </div>      );    }        export default ContactList;  
+App Component Code
+    import React from 'react';    import Header from './Header';    import AddContact from './AddContact';    import ContactList from './ContactList';        const App = () => {      return (        <div>          <Header />          <AddContact />          <ContactList />        </div>      );    }        export default App;  
+Creating a Contact List in React
+In this tutorial, we will learn how to create a contact list in React. We will create a functional component called "ContactList" and render a list of contacts using props.
+
+Step 1: Creating the Button
+First, let's create a button inside the div. We will use the class name "ui button blue" for styling.
+
+    <button className="ui button blue">Add</button>  
+Step 2: Creating the ContactList Component
+Next, let's create a functional component called "ContactList". We will return a div with the class name "ui cell list".
+
+    const ContactList = () => {      return (        <div className="ui cell list">          Contact List        </div>      );    }        export default ContactList;  
+Step 3: Styling the App Component
+Now, let's style the App component by adding a class name "ui space container".
+
+    <div className="ui space container">      ...    </div>  
+Step 4: Rendering a List
+To render a list in React, we need to pass the list as a prop to the ContactList component. We can do this by adding "contacts" as a property and passing the contacts array as the prop.
+
+    <ContactList contacts={contacts} />  
+In the ContactList component, we can access the props using the default parameter "props". We can then map over the contacts and render each contact using JSX.
+
+    const ContactList = (props) => {      const contacts = props.contacts;            const renderContactList = () => {        return contacts.map((contact) => {          return (            <div className="item">              <div className="content">                <div className="header">{contact.name}</div>                <div>{contact.email}</div>              </div>              <i className="trash alternate outline icon" style={{ color: 'red', marginTop: '7px' }}></i>            </div>          );        });      }            return (        <div className="ui cell list">          {renderContactList()}        </div>      );    }  
+Step 5: Creating a ContactCard Component
+It seems that the JSX code for each contact is being repeated. We can create a separate component called "ContactCard" to handle this part.
+
+    const ContactCard = (props) => {      const { name, email } = props.contact;            return (        <div className="item">          <div className="content">            <div className="header">{name}</div>            <div>{email}</div>          </div>          <i className="trash alternate outline icon" style={{ color: 'red', marginTop: '7px' }}></i>        </div>      );    }  
+Step 6: Rendering the ContactList Component
+Now, we can render the ContactCard component inside the ContactList component. We need to pass the contact as a prop to the ContactCard component.
+
+    const ContactList = (props) => {      const contacts = props.contacts;            const renderContactList = () => {        return contacts.map((contact) => {          return <ContactCard contact={contact} />;        });      }            return (        <div className="ui cell list">          {renderContactList()}        </div>      );    }  
+Click it then it's going to add another one, and if we click on it, we can actually delete it. And if we refresh, we can retrieve it. So this app is simple in terms of functionality, but the concepts we used are important. We used React concepts like hooks, states, function components, class components, and JSX. We also learned how to use local storage to retrieve data.
+
+In the previous video, we built this application with all the components listed on the same page, which is localhost:3000. But now, we want different routes and URLs for our different components.
+
+We want to go to localhost:3000/add to see the add contact component, and when we visit just localhost:3000, we should only see the contact list with a button to add contact. Clicking on the button should take us to localhost:3000/add, the add contact page.
+
+To achieve this, we need to use the React Router. We will use a package called React Router DOM. To install it, open the terminal, navigate to your contact app folder, and run the command npm install react-router-dom --save.
+
+Now, let's go to our application code. In the components folder, we have the app.js file. We will apply the routing in this file.
+
+First, we need to import the necessary components from React Router DOM. We need BrowserRouter (which we will alias as Router), Switch, and Route. These components will help us set up the routes and handle navigation.
+
+Once we've imported the components, we can start setting up the router. We wrap our components with the Router component. Inside the Router, we add the Route components for each route we want to create.
+
+We want the header component to be constant throughout the application, so we exclude it from the routes. We add the routes for the add contact component and the contact list component. The path prop of the Route component specifies the URL for each route. For example, for the add component, the URL will be localhost:3000/add. And we specify the component to render when that URL is accessed.
+
+You may notice that when we go to localhost:3000/add, we still see the contact list. This is because the Route component matches the first route it finds. To solve this, we can use the Switch component. The Switch component ensures that only one route is matched. It stops searching for matches after finding the first one.
+
+After adding the Switch component, we can see that the contact list is not displayed on the add contact page, and we only see the contact list on the home page. However, if we remove the exact prop from the contact list route and move it above the add contact route, we will see the contact list on both pages. To fix this, we can use the exact prop. The exact prop ensures that the route matches exactly and not partially.
+
+Now we have set up the routing in our app. We have different routes and URLs for our different components.
+
+A button is needed to go to the add contact page without manipulating the URL. To implement this, a button is added to the contact list page with the class "ui button blue". When the button is clicked, it should redirect to the "/add" route. To achieve this, the Link component is imported from the react-router-dom library and used in the button. The "to" prop of the Link component is set to "/add".
+
+However, when trying to add a contact on the add contact page, an error occurs because the props are not being passed from the route. To fix this, an arrow function is added inside the component to pass the props. The prop name for the add contact handler is "addContactHandler". The same approach is used for the contact list component.
+
+Instead of using anonymous functions to pass the props, a better approach is to use the "render" prop in the route. The syntax is a bit different, but it allows for better performance as the component is not recreated every time the route is visited. The render prop takes an arrow function with the props as an argument, and the desired props can be destructured and passed to the component.
+
+To programmatically route back to the contact list page after adding a contact, the onSubmit event of the add contact form can be used. After clearing the form, the page can be redirected to the contact list page using the route's history object.
+
+Subscribe to our newsletter for more programming tips and tricks!
+
+Programmatically Navigating from One Component to Another
+In order to programmatically navigate from one component to another, you can use the history.push method. Here's an example:
+
+this.props.history.push('/home');
+Creating Links in React Router
+To create links in React Router, you can use the Link component. Here's an example:
+
+import { Link } from 'react-router-dom';
+And then you can use it like this:
+
+<Link to="/contact/1">Contact 1</Link>
+Creating a Contact Detail Page
+In order to create a contact detail page, you need to create a new component and add it to the route. Here's an example:
+
+import ContactDetail from './ContactDetail';
+And then add it to the route:
+
+<Route path="/contact/:id" component={ContactDetail} />
+Passing Data to the Contact Detail Page
+In order to pass data to the contact detail page, you can use the state property of the Link component. Here's an example:
+
+<Link to={{ pathname: '/contact/1', state: { name: 'John Doe' } }}>Contact 1</Link>
+And then access the data in the contact detail page:
+
+const { name } = this.props.location.state;
+We want to pass a contact to the contact detail page. In this page, we can display the name, ID, and email of the contact. We can get this information from the props object. Let's destructure the name and email from props.location.state.contact. We will also create a button to go back to the contact list. The button will be inside a div with a class name of "center" and will have a class name of "ui button blue music center". We will use the Link component to navigate back to the contact list page when the button is clicked. When we click on a contact, we can see their name and email on the contact detail page. We can also delete a contact or add a new contact. If we click on the delete button, we should go to a new page where we can confirm if we want to delete the contact. If we click on "ok", the contact will be deleted and we will be redirected back to the contact list page. If you have any questions or get stuck, feel free to ask for help in the comments.
+
+Now, let's set up a JSON server to create fake APIs for our application. We will create a new folder called "server-api" and install the JSON server using npm. We will then create a db.json file where we will define our contacts resource. The JSON server follows the RESTful API conventions, which allows us to perform CRUD operations on the contacts resource. We can create, update, delete, and fetch contacts using the JSON server.
+
+Once the JSON server is installed and the db.json file is created, we can start our application. We can add contacts to the contacts array in the db.json file. Currently, contacts are stored in the local storage when added in the application. We will replace the local storage data with the contacts data from the db.json file.
+
+Go to the scripts and remove the video. Instead, add a "start" with the value "json-server -p" followed by a port number and "-w" to watch the db.json file for changes. Save the changes and start the json server from the terminal. Visit the server at localhost:3006. The json server is now running and displays the contacts.
+
+To fetch data from the json server instead of local storage, we need to install Axios. In the terminal, go to the contact app directory and run "npm install --save axios". Create a new directory named "api" and inside it, create a new file named "contacts.js". Import Axios and set the base url to "localhost:3006".
+
+In the app.js file, comment out the code that retrieves contacts from local storage. Import the API from "api/contacts". Write a function named "retrieveContacts" that uses Axios to make a GET request to "/contacts" and returns the response data. In the useEffect hook, create a constant named "getAllContacts" that calls "retrieveContacts" and updates the state with the fetched contacts. Call this function to fetch the data.
+
+Now, the data is fetched from the server instead of local storage. If the local storage is deleted, the data can still be fetched from the server. Confirm this by checking the network tab in the browser's developer tools.
+
+To create a new contact, go to the "addContact" function and create a request object with an ID generated from the uuid utility and the contact details. Use Axios to make a POST request to "/contacts" with the request body. Update the state with the response data. Save the changes and try adding a new contact. Fix any errors by checking the response data in the console log.
+
+Here's how to log the response and inspect it in the console: clear the console, add a variable called "max" and initialize it. Then, add the "max" variable. The response should be initialized before adding it. When inspecting the "add contact" function, add "max" and click on the "add" button to see the actual response (data). To delete a contact, use the "remove contact" handler and make a slight change to call the API. Use the "async" keyword and the "await" keyword for the delete method. Pass the ID of the contact you want to delete. To update a contact, create a similar functionality to the "add contact" function. Add the "edit" icon to the contact card and pass the ID as a parameter. In the "edit contact" component, create a constructor and initialize the state with the props. Use the props to update the state. Add a route for the "edit contact" component in the App.js file. Define the "update contact" function in the "edit contact" component. Add buttons for "update" and "edit" in the contact card component. Update the "add contact" handler to the "update contact" handler in the contact card component. Finally, clear the fields and go back to the contact list after updating a contact.

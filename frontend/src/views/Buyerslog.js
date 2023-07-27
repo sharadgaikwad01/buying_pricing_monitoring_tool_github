@@ -19,6 +19,7 @@ import '@styles/react/libs/tables/react-dataTable-component.scss'
 import '@styles/react/libs/flatpickr/flatpickr.scss'
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
+import  secureLocalStorage  from  "react-secure-storage"
 
 // ** Reactstrap Imports
 import {
@@ -51,28 +52,26 @@ const BootstrapCheckbox = forwardRef((props, ref) => (
   </div>
 ))
 
-const Buyers = props => {
+const Buyerslog = props => {
   // ** States
 
   const [UsersInputsData, setUsersInputsData] = useState([])
-  const [searchName, setsearchName] = useState('')
-  const [rowData, setRowData] = useState([])
+  
+  const [searchEmail, setsearchEmail] = useState('')
+ 
   // const [searchRequestedDate, setSearchRequestedDate] = useState('')
   // const [Status, setStatus] = useState('')
   // const [searchRole, setsearchRole] = useState('')
 
-  const [modal, setModal] = useState(false)
+  
   // 
   // const [supplierInputModal, setSupplierInputModal] = useState(false)
   // const [uploadArticleModal, setUploadArticleModal] = useState(false)
 
   const [currentPage, setCurrentPage] = useState(0)
-  const [articalNumberOptions, setarticalNumberOptions] = useState([])
-  const [countryOptions, setcountryOptions] = useState([])
-  const [deptOptions, setdeptOptions] = useState([])
-  // const [rowData, setrowData] = useState([])
-  // ** Function to handle Modal toggle
-  const handleModal = () => setModal(!modal)
+  
+  // const [countryOptions, setcountryOptions] = useState([])
+
   // const downloadArticleModal = () => setSupplierInputModal(!supplierInputModal)
   const [UserData] = useState({first_name:'', last_name:'', dept_name:'',  buyer_emailid:'', user_id:0, stratbuyer_name:'', country_name: ''})
   // const handleUploadArticleModal = () => setUploadArticleModal(!uploadArticleModal)
@@ -81,26 +80,30 @@ const Buyers = props => {
     setCurrentPage(page.selected)
   }
   const handlebuyers = () => {
-    props.history.push('/users')
+    props.history.push('/mintech')
   }
    
   useEffect(async () => {
-	const user_type = localStorage.getItem("type")
-    if (user_type === '') {
-      props.history.push('/buyer_login')
-    }
+  const user_type = secureLocalStorage.getItem("type")
+  if (user_type === '' || user_type === null) {
+    props.history.push('/buyer_login')
+  }
     if (user_type === 'BUYER') {
       props.history.push('/buyer_input')
     }
     if (user_type === 'SUPPLIER') {
       props.history.push('/home')
     }
-    await axios.get(`${nodeBackend}/buyers`, { params: { searchName } }).then((res) => {
+    if (user_type === 'ADMIN') {
+      props.history.push('/dashboard')
+    }
+
+    await axios.get(`${nodeBackend}/buyers_log`, { params: { searchEmail } }).then((res) => {
      
       setUsersInputsData(res.data.data)  
-      setarticalNumberOptions(res.data.options)  
-      setcountryOptions(res.data.countryoptions)  
-      setdeptOptions(res.data.deptOptions)  
+       
+      // setcountryOptions(res.data.countryoptions)  
+     
     })
   }, [])
 
@@ -134,10 +137,17 @@ const Buyers = props => {
 
 
   // ** Function to handle supplier filter
-  const handleNameFilter = async (e) => {
-    const searchName = e.target.value
-    setsearchName(searchName)
-    await axios.get(`${nodeBackend}/buyers`, { params: { searchName } }).then((res) => {
+  // const handleNameFilter = async (e) => {
+  //   const searchName = e.target.value
+  //   setsearchName(searchName)
+  //   await axios.get(`${nodeBackend}/buyers`, { params: { searchName, searchEmail } }).then((res) => {
+  //     setUsersInputsData(res.data.data)
+  //   })
+  // } 
+  const handleEmailFilter = async (e) => {
+    const searchEmail = e.target.value
+    setsearchEmail(searchEmail)
+    await axios.get(`${nodeBackend}/buyers`, { params: { searchEmail } }).then((res) => {
       setUsersInputsData(res.data.data)
     })
   }
@@ -151,83 +161,11 @@ const Buyers = props => {
   //     setUsersInputsData(res.data.data)
   //   })
   // }
+  
+  const handleAdd = async () => {
+    props.history.push('/buyers')
+  }
 
-  const handleEdit = async (e, row) => {
-    e.preventDefault()
-    handleModal()
-    row.user_id = 1
-    setRowData(row)
-  }
-  
-  const handleAdd = async (e) => {
-    e.preventDefault()
-    handleModal()
-    UserData.user_id = 0
-    setRowData(UserData)
-  }
-  
-  const handleDelete = (e, row) => {
-    const row_id = row.row_id
-    e.preventDefault()
-    MySwal.fire({
-      title: 'Are you sure?',
-      text: "You won't be able to revert this!",
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Yes, delete it!',
-      customClass: {
-        confirmButton: 'btn btn-primary',
-        cancelButton: 'btn btn-outline-danger ms-1'
-      },
-      buttonsStyling: false
-    }).then(function (result) {
-      if (result.value) {
-        axios({
-          method: "post",
-          url: `${nodeBackend}/delete_buyer_input`,
-          data: { row_id, searchName}
-        }) 
-          .then(function (success) {
-            console.log(success.data.status)
-            //handle success        
-            if (success.data.status) {
-              setUsersInputsData(success.data.data)
-              return MySwal.fire({
-                title: 'Done!',
-                text: 'Record has been deleted successfully',
-                icon: 'success',
-                customClass: {
-                  confirmButton: 'btn btn-primary'
-                },
-                buttonsStyling: false
-              })
-            } else {
-              return MySwal.fire({
-                title: 'Error',
-                text: 'Something went wrong. Please try again later',
-                icon: 'error',
-                customClass: {
-                  confirmButton: 'btn btn-primary'
-                },
-                buttonsStyling: false
-              })
-            }
-          })
-          .catch(function () {
-            return MySwal.fire({
-              title: 'Error',
-              text: 'Something went wrong. Please try again later',
-              icon: 'error',
-              customClass: {
-                confirmButton: 'btn btn-primary'
-              },
-              buttonsStyling: false
-            })
-          })
-      }
-    })
-  }
-  
   // ** Table Common Column
   const columns = [
     {
@@ -237,54 +175,27 @@ const Buyers = props => {
       // cell: (row, index) => index + 1
       cell: (row, index) => (currentPage * 10) + index + 1
     },
-    {
-      name: 'Actions',
-      width: "80px",
-      allowOverflow: true,
-      cell: (row) => {
-        return (
-          <div className='d-flex'>
-            <Edit size={15} onClick={(e) => handleEdit(e, row)} />
-            <Trash size={15} onClick={(e) => handleDelete(e, row)} />
-          </div>
-        )
-      }
-    },
-    {
-      name: 'Full name',
-      sortable: true,
-      selector: row => `${row.first_name} ${row.last_name}`
-    },
+  
     {
       name: 'Email',
       sortable: true,
-      selector: row => row.buyer_emailid
+      selector: row => row.email
     },
-    {
-      name: 'Department',
-      sortable: true,
-      selector: row => row.dept_name
-    },
-    {
-      name: 'Category',
-      sortable: true,
-      selector: row => row.stratbuyer_name
-    },
+   
     {
       name: 'Country',
       sortable: true,
       selector: row => row.country_name
     },
     {
-      name: 'Status',
+      name: 'Details',
       sortable: true,
-      // selector: row => row.active_status,
-      cell: row => {
-         return (
-          row.active_status === 'Active' ? <Badge color='success' pill>Active</Badge> : <Badge color='success' pill>Active</Badge>
-          // row.active_status === 'Active' ? <Badge color='success' pill>{row.active_status}</Badge> : <Badge color='primary' pill>{row.active_status}</Badge>
-         )
-      }
+      selector: row => row.comments
+    },
+    {
+      name: 'Created',
+      sortable: true,
+      selector: row => row.created_on
     }
   ]
 
@@ -293,25 +204,26 @@ const Buyers = props => {
       <Card className='pageBox user-screen'>
         <CardHeader className='flex-md-row flex-column align-md-items-center align-items-start border-bottom'>
           <CardTitle tag='h2'>Buyers Data</CardTitle>
-          <div className='d-flex mt-md-0 mt-1'>
+          <div className='d-flex mt-md-0 mt-1 btn-row'>
             <Button.Ripple className='ms-2 btn-icon' color='primary' onClick={handleAdd}>
               <Plus size={16} />
-              <span className='align-middle ms-25'>Add New Buyer</span>
+              <span className='align-middle ms-25'>Buyers</span>
             </Button.Ripple>
             <Button.Ripple className='ms-2' outline color='warning' onClick={handlebuyers}>
               <Download size={14} />
-              <span className='align-middle ms-25'>All Users</span>
+               <span className='align-middle ms-25'>Mintech Master</span> 
             </Button.Ripple>
            
           </div>
         </CardHeader>
         <CardBody>
           <Row className='g-1 filter-row'>
+
             <Col className='mb-1 col-auto'>
-               <Label className='form-label' for='name'>
-                Buyer Name:
+               <Label className='form-label' for='email'>
+                Email:
               </Label>
-              <Input className='form-control' type='text' id='name' placeholder='Buyer Name' value={searchName} onChange={handleNameFilter} /> 
+              <Input className='form-control' type='text' id='email' placeholder='Email' value={searchEmail} onChange={handleEmailFilter} /> 
             </Col>
 
              {/* <Col className='mb-1 col-auto'>
@@ -351,8 +263,7 @@ const Buyers = props => {
           </Row>
         </CardBody>       
       </Card>
-      <AddNewModalBuyer open={modal} handleModal={handleModal} rowData={rowData} articalNumberOptions={articalNumberOptions} countryOptions={countryOptions} deptOptions={deptOptions} setUsersInputsData={setUsersInputsData} searchName={searchName} />
-    </Fragment>
+     </Fragment>
   )
 } 
-export default Buyers
+export default Buyerslog

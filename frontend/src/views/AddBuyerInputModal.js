@@ -17,12 +17,14 @@ import { Modal, Input, Label, Button, ModalHeader, ModalBody, InputGroup, InputG
 import * as yup from 'yup'
 import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
+import  secureLocalStorage  from  "react-secure-storage"
 
 // ** Styles
 import '@styles/react/libs/flatpickr/flatpickr.scss'
 
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
+import LoadingSpinner from '@src/@core/components/spinner/Loading-spinner.js'
 const MySwal = withReactContent(Swal)
 
 import { currencies } from './countryCurrency'
@@ -30,8 +32,8 @@ import { currencies } from './countryCurrency'
 const AddBuyerInputModal = ({ open, handleModal, rowData, setsupplierInputsData }) => {
   // ** State
   // const [Picker, setPicker] = useState('')
-  const country = localStorage.getItem('country')
-  const email = localStorage.getItem('email') 
+  const country = secureLocalStorage.getItem('country')
+  const email = secureLocalStorage.getItem('email') 
 
   const [newPrice, setNewPrice] = useState('')
   const [finalPrice, setFinalPrice] = useState('')
@@ -40,6 +42,7 @@ const AddBuyerInputModal = ({ open, handleModal, rowData, setsupplierInputsData 
   const [articleDescription, setArticleDescription] = useState('')
   const [priceIncreaseEffectiveDate, setPriceIncreaseEffectiveDate] = useState('')
   const [priceFinalliseDate, setPriceFinalliseDate] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
 
   // ** Custom close btn
   const CloseBtn = <X className='cursor-pointer' size={15} onClick={handleModal} />
@@ -47,6 +50,7 @@ const AddBuyerInputModal = ({ open, handleModal, rowData, setsupplierInputsData 
   const SupplierInputSchema = yup.object().shape({
     new_price: yup.number().required().positive(),
     price_effective_date: yup.array().required(),
+    price_finalize_date: yup.array().required(),
     final_price: yup.number()
       .typeError("you must specify a number")
       .notRequired()
@@ -71,7 +75,7 @@ const AddBuyerInputModal = ({ open, handleModal, rowData, setsupplierInputsData 
 
   useEffect(async () => {
     if (rowData) {
-      console.log(rowData)
+      // console.log(rowData)
       await setArticleNumber(rowData.art_no)
       await setArticleDescription(rowData.art_name_tl)
       await setNewPrice(rowData.new_price)
@@ -107,7 +111,7 @@ const AddBuyerInputModal = ({ open, handleModal, rowData, setsupplierInputsData 
   }, [rowData])
 
   const onSubmit = data => {
-    console.log(data)
+    // console.log(data)
     const finalize_date_arr = []
     const effective_date_arr = []
     const row_id = data.row_id
@@ -149,6 +153,7 @@ const AddBuyerInputModal = ({ open, handleModal, rowData, setsupplierInputsData 
     const effective_date = effective_date_arr[0]
 
     handleModal(false)
+    setIsLoading(true)
 
     axios({
       method: "post",
@@ -156,9 +161,10 @@ const AddBuyerInputModal = ({ open, handleModal, rowData, setsupplierInputsData 
       data: { row_id, final_price, comment, finalize_date, effective_date, country, email, newPrice}
     })
       .then(function (success) {
+        setIsLoading(false)
         //handle success 
         if (success.data.status) {
-          console.log(success.data)
+          // console.log(success.data)
           setsupplierInputsData(success.data.data.supplierInputs)
           return MySwal.fire({
             title: 'Done!',
@@ -182,6 +188,7 @@ const AddBuyerInputModal = ({ open, handleModal, rowData, setsupplierInputsData 
         }
       })
       .catch(function () {
+        setIsLoading(false)
         return MySwal.fire({
           title: 'Error',
           text: 'Something went wrong. Please try again later',
@@ -205,7 +212,7 @@ const AddBuyerInputModal = ({ open, handleModal, rowData, setsupplierInputsData 
       <ModalHeader className='mb-1' toggle={handleModal} close={CloseBtn} tag='div'>
         <h5 className='modal-title'>Update Record</h5>
       </ModalHeader>
-      <ModalBody className='flex-grow-1'>
+      {isLoading ? <LoadingSpinner /> : <ModalBody className='flex-grow-1'>
         <Form onSubmit={handleSubmit(onSubmit)}>
           <input type="hidden" name="row_id" value={rowId} />
           <div className='mb-1'>
@@ -341,7 +348,7 @@ const AddBuyerInputModal = ({ open, handleModal, rowData, setsupplierInputsData 
             Cancel
           </Button>
         </Form>
-      </ModalBody>
+      </ModalBody> }
     </Modal>
   )
 }

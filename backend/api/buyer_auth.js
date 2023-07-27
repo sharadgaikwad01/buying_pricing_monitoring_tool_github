@@ -48,18 +48,18 @@ router.use((req, res, next) => {
             var userGroup = '';
             var COMSCategory='';
             var user_details = jwt_decode(token.access_token);
-            console.log(token.access_token);
+           // console.log(token.access_token);
             // let user_details = token.claims();
-			console.log(user_details);
+			//console.log(user_details);
 			// console.log(user_details1);
 
             for (const [key, value] of Object.entries(user_details.authorization)) {
                 for (const [key1, value1] of Object.entries(value)) {
                     if(key1 == 'BPA_CAT_MANAGER' || key1 == 'BPA_ADMIN' || key1 == 'BPA_SUPERADMIN')
                     {   
-                        console.log(Object.entries(value1));                     
+                        // console.log(Object.entries(value1));                     
                         for (const [key2, value2] of Object.entries(value1)) {
-                            console.log(value2);
+                            // console.log(value2);
                             if(key2 == 0){
                                 if(value2.country != '' && value2.country != 'undefined'){
                                     country_code = value2.country ? value2.country[0] : '';
@@ -70,7 +70,9 @@ router.use((req, res, next) => {
                                 if(value2.COMSCategory){
                                     COMSCategory = value2.COMSCategory ? value2.COMSCategory.toString() : '';
                                 }
-                                
+                                // if(value2.category){
+                                //     COMSCategory = value2.category ? value2.category.toString() : '';
+                                // }
                             }else{
                                 if(value2.country != '' && value2.country != 'undefined'){
                                     country_code = value2.country ? value2.country[0] : '';
@@ -81,16 +83,18 @@ router.use((req, res, next) => {
                                 if(value2.COMSCategory){
                                     COMSCategory = COMSCategory + `,'${value2.COMSCategory.toString()}'`;
                                 }
-                                
+                                // if(value2.category){
+                                //     COMSCategory = COMSCategory + `,'${value2.category.toString()}'`;
+                                // }
                             }
                         }
                     }
                     
                 }
             }
-            console.log(country_code);
-            console.log(userGroup);
-            console.log(COMSCategory);
+            // console.log(country_code);
+            // console.log(userGroup);
+            // console.log(COMSCategory);
             
             if(userGroup == 'CAT_MAN'){
                 userGroup = 'BUYER';
@@ -107,18 +111,19 @@ router.use((req, res, next) => {
                 }
             });
 
-            // var sql3 = "SELECT * FROM public.tbl_country_details where country_code = '"+ country_code +"' AND live_status='active'";
-            // clientDB.query(sql3, function(err3, result3) {
-            //     console.log(result3.rows);
-            //     if (err3) {
-            //         console.log("Create log failure. Please try again.");
-            //         res.json({ status: false });
-            //         return;
-            //     }else{
-            //         console.log(result3.rows[0].country_name);
-            //         country_code = result3.rows[0].country_name;
-            //     }
-            // });
+            var sql3 = "SELECT * FROM public.tbl_country_details where country_code = '"+ country_code +"' AND live_status='active'";
+            clientDB.query(sql3, function(err3, result3) {
+                // console.log(result3.rows)
+                if (err3) {
+                    console.log("Create log failure. Please try again.");
+                    res.json({ status: false });
+                    return;
+                }else{
+                    if(result3.rows){
+                        country_code = result3.rows[0] ? result3.rows[0].country_name : '';
+                    }
+                }
+            });
 
             // console.log(country_code);
             // console.log(userGroup);
@@ -135,9 +140,8 @@ router.use((req, res, next) => {
                         res.send('<script>window.location.href="'+config.reactFrontend + '/auth?error=User not Exist' + '";</script>');
                     }else{
                         var role = userGroup ? userGroup : 'BUYER';
-                        // country_code = country_code ? country_code : result.rows[0].country_name;
-                        country_code = result.rows[0].country_name;
-                        console.log(country_code);
+                        country_code = country_code ? country_code : result.rows[0].country_name;
+                        // console.log(country_code);
                         // var role = result.rows[0].role_name ? result.rows[0].role_name : 'BUYER';
                         var frontend_redirect_url = config.reactFrontend + '/auth?token='+token.id_token+'&id='+user_details.metro_id+'&email='+user_details.email+'&type='+ role +'&country='+ country_code +'&name=' + result.rows[0].first_name + ' ' + result.rows[0].last_name;
                         res.send('<script>window.location.href="'+frontend_redirect_url+'";</script>');
@@ -147,6 +151,7 @@ router.use((req, res, next) => {
             
         }).catch( err => {
             console.log(err);
+            res.send('<script>window.location.href="'+config.reactFrontend + '/auth?error=Server Error' + '";</script>');
         });
     next()
 })
@@ -157,7 +162,7 @@ router.get('/api/v2/callback', (req, res, next) => {
 
 router.get('/api/v2/login', (req, res, next) => {
     if (client == undefined) {
-        res.send("Authorization provisder is unavailable");
+        res.send("Authorization provider is unavailable");
         next()
         return
     }

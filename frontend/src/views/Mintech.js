@@ -81,8 +81,18 @@ const Home = props => {
   }
 
   useEffect(async () => {
+    const user_type = localStorage.getItem("type")
+    if (user_type === '' || user_type === null) {
+      props.history.push('/buyer_login')
+    }
+    if (user_type === 'SUPPLIER') {
+      props.history.push('/home')
+    }
+    if (user_type === "BUYER") {
+      props.history.push('/buyer_input')
+    }
     await axios.get(`${nodeBackend}/mintech`, { params: { searchName, searchCategory } }).then((res) => {
-      console.log(res.data.data)
+      // console.log(res.data.data)
       setUsersInputsData(res.data.data.users)  
       setCategoryoptions(res.data.data.CategoryOptions)  
       // setCountryOptions(res.data.data.CountryOptions)  
@@ -145,8 +155,7 @@ const Home = props => {
       setUsersInputsData(res.data.data.users)
     })
   }
-
-
+  
   // ** Function to handle status filter
   const handleCategoryFilter = async (e) => {
     const Category = e.value
@@ -199,7 +208,7 @@ const Home = props => {
         })
           .then(function (success) {
             //handle success 
-            console.log(success.data.data.users) 
+            // console.log(success.data.data.users) 
             // setUsersInputsData(success.data.data.users)     
             if (success.data.status) {
               setUsersInputsData(success.data.data.users)

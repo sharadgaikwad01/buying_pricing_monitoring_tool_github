@@ -28,13 +28,14 @@ import withReactContent from 'sweetalert2-react-content'
 const MySwal = withReactContent(Swal)
 
 import { utils, writeFile } from 'xlsx'
+import  secureLocalStorage  from  "react-secure-storage"
 
 const DownloadArticliesModal = ({ open, handleModal, supllierNumberOptions, flag = null }) => {
 
-    const country = localStorage.getItem('country')
-    const user_type = localStorage.getItem('type')
-    const email = localStorage.getItem('email')
-    const vat_number = localStorage.getItem('vat')
+    const country = secureLocalStorage.getItem('country')
+    const user_type = secureLocalStorage.getItem('type')
+    const email = secureLocalStorage.getItem('email')
+    const vat_number = secureLocalStorage.getItem('vat')
     const [fileName] = useState('export')
     const [fileFormat] = useState('xlsx')
 
@@ -53,6 +54,7 @@ const DownloadArticliesModal = ({ open, handleModal, supllierNumberOptions, flag
         setBlock(false)
         setSelected([])
         setSupllierNumberOptionsList(supllierNumberOptions)
+        console.log(supllierNumberOptions)
     }, [supllierNumberOptions])
 
     const {
@@ -72,7 +74,7 @@ const DownloadArticliesModal = ({ open, handleModal, supllierNumberOptions, flag
         setBlock(false)
         setBehalfOfSupplier(false)
         handleBlock()
-        setSupllierNumberOptionsList([])
+        // setSupllierNumberOptionsList([])
         let supplier_string = ''
         for (const value of data.supplier_number) {
             supplier_string = `${supplier_string}, '${value.value}'`
@@ -81,7 +83,7 @@ const DownloadArticliesModal = ({ open, handleModal, supllierNumberOptions, flag
             const supplier_number = supplier_string.substring(1)
             if (data.behalf_of_supplier) {
                 await axios.get(`${nodeBackend}/supplier_article_details`, { params: { supplier_number, country } }).then((res) => {
-                    console.log(res.data)
+                    // console.log(res.data)
                     if (res.data.data.length > 0) {
                         const customHeadingsData = res.data.data.map(item => ({
                             "Country Name": item.country_name,
@@ -125,7 +127,7 @@ const DownloadArticliesModal = ({ open, handleModal, supllierNumberOptions, flag
                     }
                 })
             } else {
-                await axios.get(`${nodeBackend}/buyer_article_details`, { params: { country, email, flag } }).then((res) => {
+                await axios.get(`${nodeBackend}/buyer_article_details`, { params: { supplier_number, country, email, flag } }).then((res) => {
                     const csvdata = res.data.data
                     if (csvdata.length > 0) {
                         csvdata.forEach(function (item) {
@@ -181,7 +183,8 @@ const DownloadArticliesModal = ({ open, handleModal, supllierNumberOptions, flag
         } else {
             const supplier_number = supplier_string.substring(1)
             await axios.get(`${nodeBackend}/supplier_article_details`, { params: { supplier_number, country, vat_number } }).then((res) => {
-                console.log(res.data)
+                // console.log(res.data)
+               // setSupllierNumberOptionsList(supllierNumberOptions)
                 if (res.data.data.length > 0) {
                     const customHeadingsData = res.data.data.map(item => ({
                         "Country Name": item.country_name,
@@ -210,6 +213,7 @@ const DownloadArticliesModal = ({ open, handleModal, supllierNumberOptions, flag
                         },
                         buttonsStyling: false
                     })
+                    
                 } else {
                     setBlock(false)
                     handleModal(false)
@@ -259,7 +263,7 @@ const DownloadArticliesModal = ({ open, handleModal, supllierNumberOptions, flag
                     <Form onSubmit={handleSubmit(onSubmit)}>                    
                         <ModalBody className='flex-grow-1'>
                             <Row className='mb-50'>
-                                { user_type === 'BUYER' ? (<Col lg='12' md='6' className='mb-1'>
+                                { (user_type === 'BUYER' || user_type === 'ADMIN' || user_type === 'SUPERADMIN') ? (<Col lg='12' md='6' className='mb-1'>
                                     <Controller
                                         name="behalf_of_supplier"
                                         control={control}

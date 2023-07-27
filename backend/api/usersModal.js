@@ -44,7 +44,7 @@ module.exports = function(app, con) {
 		}else{
 			sql=`CALL public.usp_addNewUser('` + req.body.user_id + `','` + req.body.user_name +`','`+ req.body.email +`','`+ req.body.emp_id +`','`+ req.body.emp_id +`','` + req.body.user_type + `','','','','` + req.body.user_role + `');`;		
 		}
-		console.log(sql);
+		// console.log(sql);
 		con.query(sql, function(err, result) {
 			if (err) {
 				console.log(err);
@@ -68,7 +68,7 @@ module.exports = function(app, con) {
 
 	app.get('/edit_user_input', async function(req, res){
 		var query = "SELECT * FROM public.tbl_users where id = '"+req.query.id +"'";
-		console.log(query);
+		// console.log(query);
 		await con.query(query, function(err, result) {
 			if (err) {
 				res.json({ status: false });
@@ -82,10 +82,10 @@ module.exports = function(app, con) {
 
 	app.get('/user_input', async function(req, res){
 		var query = "SELECT * FROM public.tbl_users where email = '"+req.query.email +"'";
-		console.log(query);
+		// console.log(query);
 		
 		await con.query(query, function(err, result) {
-			console.log(result);
+			// console.log(result);
 			console.log(err);
 			if (err) {
 				res.json({ status: false });
@@ -99,7 +99,7 @@ module.exports = function(app, con) {
 
 	app.post('/delete_user_input', async function(req, res){
 		var query = "DELETE FROM public.tbl_users where id = '"+req.body.id +"'";
-		console.log(query);
+		// console.log(query);
 		await con.query(query, function(err, result) {
 			if (err) {
 				res.json({ status: false });

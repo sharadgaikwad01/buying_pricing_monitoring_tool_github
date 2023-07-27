@@ -10,19 +10,29 @@ import '@styles/react/libs/flatpickr/flatpickr.scss'
 import Swal from 'sweetalert2'
 import ReactPaginate from 'react-paginate'
 import withReactContent from 'sweetalert2-react-content'
-import { useState } from 'react'
+import LoadingSpinner from '@src/@core/components/spinner/Loading-spinner.js'
+import { useState, useEffect } from 'react'
 const MySwal = withReactContent(Swal)
 
 const AddNewModalSupplier = ({ open, handleModal, rowData }) => {
   const [currentPage, setCurrentPage] = useState(0)
+  const [isLoading, setIsLoading] = useState(false)
 
   // const [supplierInputsData, setsupplierInputsData] = useState([])
   const dataToRender = () => {
     return rowData
   }
+  useEffect(async () => { 
+    // setIsLoading(true)
+    // setTimeout(function() { setIsLoading(true) }, 0)
+    console.log('useEffect ran')
+    // setTimeout(function() { setIsLoading(false) }, 3000)
+  })
   // ** Function to handle Pagination
   const handlePagination = page => {
+    setIsLoading(true)
     setCurrentPage(page.selected)
+    setIsLoading(false)
   }
   const CustomPagination = () => (
     <ReactPaginate
@@ -150,7 +160,7 @@ const AddNewModalSupplier = ({ open, handleModal, rowData }) => {
       <ModalHeader className='mb-1' toggle={handleModal} close={CloseBtn} tag='div'>
         <h5 className='modal-title'>All Record</h5>
       </ModalHeader>
-      <ModalBody className='flex-grow-1'>
+      { isLoading ? <LoadingSpinner /> : <ModalBody className='flex-grow-1'>
           <div className='react-dataTable mb-1'>
             <DataTable
               noHeader
@@ -169,7 +179,7 @@ const AddNewModalSupplier = ({ open, handleModal, rowData }) => {
           <Button color='danger' onClick={handleModal} outline>
             Close
           </Button>
-      </ModalBody>
+      </ModalBody> }
     </Modal>
   )
 }

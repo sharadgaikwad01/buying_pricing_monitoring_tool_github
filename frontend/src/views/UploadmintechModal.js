@@ -14,6 +14,8 @@ import '@styles/react/libs/flatpickr/flatpickr.scss'
 
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
+import  secureLocalStorage  from  "react-secure-storage"
+
 const MySwal = withReactContent(Swal)
 
 import { read, utils } from 'xlsx'
@@ -33,7 +35,7 @@ const UploadmintechModal = ({ open, handleModal, setUsersInputsData, searchName,
 
   async function uploadFile(data) {
     const mintech_inputs = data
-    const created_by = localStorage.getItem('email')
+    const created_by = secureLocalStorage.getItem('email')
     await axios({
       method: "post",
       url: `${nodeBackend}/upload_mintech_input`,
@@ -103,7 +105,7 @@ const UploadmintechModal = ({ open, handleModal, setUsersInputsData, searchName,
       if (filename[1] === 'csv') {
         fileReader.onload = function (event) {
           const csvOutput = event.target.result
-          console.log(csvOutput)
+          // console.log(csvOutput)
           csvFileToArray(csvOutput)
         }
         fileReader.readAsText(file)
@@ -115,7 +117,7 @@ const UploadmintechModal = ({ open, handleModal, setUsersInputsData, searchName,
           const wb = read(fileData, { type: 'binary', cellDates: true, dateNF:'yyyy-mm-dd;@'})
           wb.SheetNames.forEach(function (sheetName) {
             const rowObj = utils.sheet_to_row_object_array(wb.Sheets[sheetName], { header: 1, raw: false, blankrows: false, dateNF: 'yyyy-mm-dd' })
-            console.log(rowObj)
+            // console.log(rowObj)
             const customHeadingsData = rowObj.map((item) => ({
                 dashboard_name : item[0],
                 dashboard_url : item[1],

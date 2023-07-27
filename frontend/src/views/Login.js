@@ -6,6 +6,7 @@ import InputPasswordToggle from '@components/input-password-toggle'
 import { Row, Col, CardTitle, CardText, Form, Label, Input, Button } from 'reactstrap'
 import '@styles/react/pages/page-authentication.scss'
 import { nodeBackend, reactFrontend } from '@utils'
+import  secureLocalStorage  from  "react-secure-storage"
 export const data = []
 
 const LoginCover = () => {
@@ -13,9 +14,9 @@ const LoginCover = () => {
 
   const illustration = skin === 'dark' ? 'login-v2-dark.svg' : 'login-v2.svg',
   source = require(`@src/assets/images/pages/${illustration}`)
-  console.log(source)
+  // console.log(source)
   useEffect(async () => {
-    const auth_token = localStorage.getItem('token')
+    const auth_token = secureLocalStorage.getItem('token')
     if (auth_token) {
       window.location.replace(`${reactFrontend}/home`)
     } else {

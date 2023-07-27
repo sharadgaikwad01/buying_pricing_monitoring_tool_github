@@ -27,8 +27,16 @@ const Routes = [
     component: lazy(() => import('../../views/Buyers'))
   },
   {
+    path: '/buyers_log',
+    component: lazy(() => import('../../views/Buyerslog'))
+  },
+  {
     path: '/dashboard',
     component: lazy(() => import('../../views/Dashboard'))
+  },
+  {
+    path: '/report',
+    component: lazy(() => import('../../views/Report'))
   },
   {
     path: '/category_dashboard',
@@ -41,6 +49,10 @@ const Routes = [
   {
     path: '/buyer_input',
     component: lazy(() => import('../../views/BuyerInput'))
+  },
+  {
+    path: '/buyer_input_log',
+    component: lazy(() => import('../../views/BuyerInputlog'))
   },
   {
     path: '/auth',

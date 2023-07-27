@@ -61,7 +61,7 @@ const BreadCrumbs = props => {
             <DropdownToggle color='primary' size='sm' className='btn-icon btn-round dropdown-toggle'>
               <Grid size={14} />
             </DropdownToggle>
-            <DropdownMenu tag='ul' end>
+            <DropdownMenu tag='ul'>
               <DropdownItem tag={Link} to='/apps/todo'>
                 <CheckSquare className='me-1' size={14} />
                 <span className='align-middle'>Todo</span>

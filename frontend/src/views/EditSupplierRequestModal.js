@@ -24,15 +24,17 @@ import withReactContent from 'sweetalert2-react-content'
 const MySwal = withReactContent(Swal)
 
 import { currencies } from './countryCurrency'
+import  secureLocalStorage  from  "react-secure-storage"
+
 
 const EditSupplierRequestModal = ({ open, handleModal, rowData, supllierNumberOptions, setsupplierInputsData, searchSupplierNumber, searchArticleNumber, searchRequestedDate, searchStatus, type }) => {
   // ** State
   // const [Picker, setPicker] = useState('')
   const [articleOptions, setarticleOptions] = useState([])
 
-  const country = localStorage.getItem('country')
-  let vat_number = localStorage.getItem('vat')
-  const email = localStorage.getItem('email')
+  const country = secureLocalStorage.getItem('country')
+  let vat_number = secureLocalStorage.getItem('vat')
+  const email = secureLocalStorage.getItem('email')
   
   const [newPrice, setNewPrice] = useState('')
   const [reason, setReason] = useState('')
@@ -65,9 +67,9 @@ const EditSupplierRequestModal = ({ open, handleModal, rowData, supllierNumberOp
       await setSupplierNumber(rowData.suppl_no)
       await setArticleNumber(rowData.art_no)
 
-      console.log(rowData)
+      // console.log(rowData)
       vat_number = rowData.vat_no
-      console.log(vat_number)
+      // console.log(vat_number)
 
       const finatEffectiveDate = []
       if (rowData.price_increase_effective_date) {
@@ -84,14 +86,17 @@ const EditSupplierRequestModal = ({ open, handleModal, rowData, supllierNumberOp
       setValue('supplier_number', rowData.suppl_no, { shouldValidate: true })
       setValue('article_number', rowData.art_no, { shouldValidate: true })
       setValue('price_effective_date', finatEffectiveDate, { shouldValidate: true })
+      // console.log(supplierNumber)
 
       const flag = '1'
-
-      await axios.get(`${nodeBackend}/getArticlesBySupplierNumber`, { params: { supplierNumber, country, vat_number, flag } }).then((res) => {
-        if (res.data.data) {
-          setarticleOptions(res.data.data.articleOptions)
-        }        
-      })
+      if (supplierNumber) {
+        await axios.get(`${nodeBackend}/getArticlesBySupplierNumber`, { params: { supplierNumber, country, vat_number, flag } }).then((res) => {
+          if (res.data.data) {
+            setarticleOptions(res.data.data.articleOptions)
+          }        
+        })
+      }
+      
     }
   }, [rowData])
 
@@ -174,9 +179,11 @@ const EditSupplierRequestModal = ({ open, handleModal, rowData, supllierNumberOp
   const handleSupplierNumberFilter = async (value) => {
     const supplierNumber = value.value
     setValue('article_number', '', { shouldValidate: true })
-    await axios.get(`${nodeBackend}/getArticlesBySupplierNumber`, { params: { supplierNumber, country, vat_number } }).then((res) => {
-      setarticleOptions(res.data.data.articleOptions)
-    })
+    if (supplierNumber) {
+      await axios.get(`${nodeBackend}/getArticlesBySupplierNumber`, { params: { supplierNumber, country, vat_number } }).then((res) => {
+        setarticleOptions(res.data.data.articleOptions)
+      })
+    }
   }
 
   return (
