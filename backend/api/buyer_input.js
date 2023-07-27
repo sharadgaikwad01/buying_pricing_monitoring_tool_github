@@ -428,16 +428,21 @@ module.exports = function (app, con) {
 				res.json({ status: false });
 				return;
 			} else {
-				var query1 = "select * from vw_buyer_dashboard where stratbuyer_name ='" + result.rows ? result.rows[0].stratbuyer_name : '' + "'";
-				await con.query(query1, function (err1, result1) {
-					if (err1) {
-						res.json({ status: true, data: result.rows, response: "" });
-						return;
-					} else {
-						res.json({ status: true, data: result.rows, response: result1.rows });
-						return;
-					}
-				});
+				if ( result.rows) {
+					var query1 = "select * from vw_buyer_dashboard where stratbuyer_name ='" + result.rows[0].stratbuyer_name + "'";
+					await con.query(query1, function (err1, result1) {
+						if (err1) {
+							res.json({ status: true, data: result.rows, response: "" });
+							return;
+						} else {
+							res.json({ status: true, data: result.rows, response: result1.rows });
+							return;
+						}
+					});
+				} else {
+					res.json({ status: true, data: result.rows, response: "" });
+					return;
+				}
 			}
 		});
 	});

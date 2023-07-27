@@ -90,6 +90,12 @@ const BuyerInputlog = props => {
   
   useEffect(async () => {
     const user_type = secureLocalStorage.getItem("type")
+    if (user_type === 'BUYER') {
+      props.history.push('/buyer_input')
+    }
+    if (user_type === 'ADMIN') {
+      props.history.push('/dashboard')
+    }
     if (user_type === 'SUPPLIER') {
       props.history.push('/home')
     }
