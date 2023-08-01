@@ -2,16 +2,16 @@ require('dotenv').config();   //instatiate environment variables
 
 let CONFIG = {}               //Make this global to use all over the application
 
-CONFIG.port         = process.env.PORT  || '8080';
-CONFIG.db_host      = process.env.DB_HOST       || '10.16.148.59';
+CONFIG.port         = process.env.PORT  || '8090';
+CONFIG.db_host      = process.env.DB_HOST       || '10.32.67.130';
 CONFIG.db_port      = process.env.DB_PORT       || '5432';
-CONFIG.db_name      = process.env.DB_NAME       || 'PSQL-BUYING_TOOL_LIVE';
+CONFIG.db_name      = process.env.DB_NAME       || 'PSQL-BUYING_TOOL_UAT';
 CONFIG.db_user      = process.env.DB_USER       || 'postgres';
 CONFIG.db_password  = process.env.DB_PASSWORD   || 'metroservices1$';
 
 
 CONFIG.reactFrontend = 'http://localhost:3000';
-CONFIG.nodebackend = 'http://localhost:8080';
+CONFIG.nodebackend = 'http://localhost:8090';
 
 // CONFIG.reactFrontend = 'https://bpmt.metro.de';
 // CONFIG.nodebackend  = 'https://api-bpmt.metro.de';

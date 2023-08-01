@@ -42,7 +42,7 @@ const Faq = () => {
                 question:'HOW TO DOWNLOAD ALL ASSORTMENT?',
                 ans: '',
                 type: 'url',
-                urlname: 'https://metro-my.sharepoint.com/:p:/r/personal/indrabhadur_yadav_metro-gsc_in/Documents/BPMT/Support/Buyer_UserManual_BPMT_Tool.pptx?d=wed1f468e02a6455aa3cc9889735f3944&csf=1&web=1&e=bYvtt3'
+                urlname: 'https://metro-my.sharepoint.com/:p:/g/personal/indrabhadur_yadav_metro-gsc_in/EZvRCcTJYgpKqh8D6sdPLOUBJtLjx20s6eDN1legqNGYzg?e=WQjmJv'
 
               }
             ]
@@ -64,21 +64,21 @@ const Faq = () => {
                 question: 'HOW TO ADD BULK ASSORTMENTS INPUT BEHALF OF SUPPLIER?',
                 ans: '',
                 type: 'url',
-                urlname: 'https://metro-my.sharepoint.com/:p:/r/personal/indrabhadur_yadav_metro-gsc_in/Documents/BPMT/Support/Buyer_UserManual_BPMT_Tool.pptx?d=wed1f468e02a6455aa3cc9889735f3944&csf=1&web=1&e=bYvtt3'
+                urlname: 'https://metro-my.sharepoint.com/:p:/r/personal/indrabhadur_yadav_metro-gsc_in/Documents/BPMT/Support/Buyer_UserManual_BPA_Tool.pptx?d=wed1f468e02a6455aa3cc9889735f3944&csf=1&web=1&e=mbeOHF'
 
               },
               {
                 question:'HOW TO DOWNLOAD ALL ASSORTMENT?',
                 ans: '',
                 type: 'url',
-                urlname: 'https://metro-my.sharepoint.com/:p:/r/personal/indrabhadur_yadav_metro-gsc_in/Documents/BPMT/Support/Buyer_UserManual_BPMT_Tool.pptx?d=wed1f468e02a6455aa3cc9889735f3944&csf=1&web=1&e=bYvtt3'
+                urlname: 'https://metro-my.sharepoint.com/:p:/r/personal/indrabhadur_yadav_metro-gsc_in/Documents/BPMT/Support/Buyer_UserManual_BPA_Tool.pptx?d=wed1f468e02a6455aa3cc9889735f3944&csf=1&web=1&e=mbeOHF'
 
               },
               {
                 question: 'HOW TO SEE COUNTRY DASHBOARD?',
                 ans: '',
                 type: 'url',
-                urlname: 'https://metro-my.sharepoint.com/:p:/r/personal/indrabhadur_yadav_metro-gsc_in/Documents/BPMT/Support/Buyer_UserManual_BPMT_Tool.pptx?d=wed1f468e02a6455aa3cc9889735f3944&csf=1&web=1&e=bYvtt3'
+                urlname: 'https://metro-my.sharepoint.com/:p:/r/personal/indrabhadur_yadav_metro-gsc_in/Documents/BPMT/Support/Buyer_UserManual_BPA_Tool.pptx?d=wed1f468e02a6455aa3cc9889735f3944&csf=1&web=1&e=mbeOHF'
 
               }
             ]
@@ -103,7 +103,7 @@ const Faq = () => {
                 question:'HOW TO DOWNLOAD ALL ASSORTMENT?',
                 ans: '',
                 type: 'url',
-                urlname: 'https://metro-my.sharepoint.com/:p:/r/personal/indrabhadur_yadav_metro-gsc_in/Documents/BPMT/Support/Buyer_UserManual_BPMT_Tool.pptx?d=wed1f468e02a6455aa3cc9889735f3944&csf=1&web=1&e=bYvtt3'
+                urlname: 'https://metro-my.sharepoint.com/:p:/g/personal/indrabhadur_yadav_metro-gsc_in/EZvRCcTJYgpKqh8D6sdPLOUBJtLjx20s6eDN1legqNGYzg?e=WQjmJv'
 
               }
             ]
@@ -118,21 +118,21 @@ const Faq = () => {
                 question: 'HOW TO ADD BULK ASSORTMENTS INPUT BEHALF OF SUPPLIER?',
                 ans: '',
                 type: 'url',
-                urlname: 'https://metro-my.sharepoint.com/:p:/r/personal/indrabhadur_yadav_metro-gsc_in/Documents/BPMT/Support/Buyer_UserManual_BPMT_Tool.pptx?d=wed1f468e02a6455aa3cc9889735f3944&csf=1&web=1&e=bYvtt3'
+                urlname: 'https://metro-my.sharepoint.com/:p:/r/personal/indrabhadur_yadav_metro-gsc_in/Documents/BPMT/Support/Buyer_UserManual_BPA_Tool.pptx?d=wed1f468e02a6455aa3cc9889735f3944&csf=1&web=1&e=mbeOHF'
 
               },
               {
                 question:'HOW TO DOWNLOAD ALL ASSORTMENT?',
                 ans: '',
                 type: 'url',
-                urlname: 'https://metro-my.sharepoint.com/:p:/r/personal/indrabhadur_yadav_metro-gsc_in/Documents/BPMT/Support/Buyer_UserManual_BPMT_Tool.pptx?d=wed1f468e02a6455aa3cc9889735f3944&csf=1&web=1&e=bYvtt3'
+                urlname: 'https://metro-my.sharepoint.com/:p:/r/personal/indrabhadur_yadav_metro-gsc_in/Documents/BPMT/Support/Buyer_UserManual_BPA_Tool.pptx?d=wed1f468e02a6455aa3cc9889735f3944&csf=1&web=1&e=mbeOHF'
 
               },
               {
                 question: 'HOW TO SEE COUNTRY DASHBOARD?',
                 ans: '',
                 type: 'url',
-                urlname: 'https://metro-my.sharepoint.com/:p:/r/personal/indrabhadur_yadav_metro-gsc_in/Documents/BPMT/Support/Buyer_UserManual_BPMT_Tool.pptx?d=wed1f468e02a6455aa3cc9889735f3944&csf=1&web=1&e=bYvtt3'
+                urlname: 'https://metro-my.sharepoint.com/:p:/r/personal/indrabhadur_yadav_metro-gsc_in/Documents/BPMT/Support/Buyer_UserManual_BPA_Tool.pptx?d=wed1f468e02a6455aa3cc9889735f3944&csf=1&web=1&e=mbeOHF'
               }
               // {
               //   question: 'What do I need to do to get the shipment delivered within a specific timeframe?',

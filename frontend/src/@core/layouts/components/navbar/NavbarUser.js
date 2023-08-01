@@ -70,7 +70,7 @@ const NavbarUser = props => {
   }, [])
 
   const notificationread = async (id) => {
-    await axios.post(`${nodeBackend}/notificationread`, { params: id}).then((res) => {
+    await axios.post(`${nodeBackend}/notificationread`, {id, email, country}).then((res) => {
       // console.log('notification-----------------------------')
     //  console.log(res.data.data)
       setnotificationList(res.data.data)    
@@ -95,7 +95,7 @@ const NavbarUser = props => {
   const renderContent = () => {
     return notificationList.map((step, index) => {
       if (step.statuscol === "1") { // all read notifications
-        return (<DropdownItem className='new-notification' key={index} onClick={() => notificationread(step.row_id)}>
+        return (<DropdownItem className='' key={index} onClick={() => notificationread(step.row_id)}>
         <a className="d-flex " href="#">
           <div className="list-item d-flex align-items-start">
             <div className="me-1">
@@ -115,7 +115,7 @@ const NavbarUser = props => {
         </a>
       </DropdownItem>)
       } else {
-        return (<DropdownItem className='' key={index} onClick={() => notificationread(step.row_id)}>
+        return (<DropdownItem className='new-notification' key={index} onClick={() => notificationread(step.row_id)}>
         <a className="d-flex 8" href="#">
           <div className="list-item d-flex align-items-start">
             <div className="me-1">

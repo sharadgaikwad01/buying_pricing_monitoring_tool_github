@@ -36,6 +36,7 @@ const AddNewModal = ({ open, handleModal, supllierNumberOptions, setsupplierInpu
   const [articleOptions, setarticleOptions] = useState([])
 
   const [newPrice, setNewPrice] = useState('')
+  const [newEAN, setnewEAN] = useState('')
   const [reason, setReason] = useState('')
   const [supplierNumber, setSupplierNumber] = useState('')
   const [articleNumber, setArticleNumber] = useState('')
@@ -47,6 +48,7 @@ const AddNewModal = ({ open, handleModal, supllierNumberOptions, setsupplierInpu
     await setSupplierNumber('')
     await setArticleNumber('')
     await setPriceIncreaseEffectiveDate('')
+    await setnewEAN('')
   }, [])
 
   // ** Custom close btn
@@ -73,6 +75,8 @@ const AddNewModal = ({ open, handleModal, supllierNumberOptions, setsupplierInpu
     const supplier_number = data.supplier_number
     const article_number = data.article_number
     const effective_date = data.price_effective_date
+    const ean_no = data.ean_no ? data.ean_no : newEAN
+    const subsys_no = ''
 
     const effective_date_arr = []
 
@@ -97,13 +101,14 @@ const AddNewModal = ({ open, handleModal, supllierNumberOptions, setsupplierInpu
     setSupplierNumber('')
     setArticleNumber('')
     setPriceIncreaseEffectiveDate('')
+    setnewEAN('')
 
     handleModal(false)
     
     axios({
       method: "post",
       url: type === 'behalf_of_supplier' ? `${nodeBackend}/add_supplier_input_by_buyer` :  `${nodeBackend}/add_supplier_input`,
-      data: { new_price, reason, supplier_number, article_number, country, vat_number, price_effective_date, email}
+      data: { new_price, reason, supplier_number, article_number, country, vat_number, price_effective_date, email, subsys_no, ean_no}
     })
       .then(function (success) {
         //handle success 
@@ -154,7 +159,21 @@ const AddNewModal = ({ open, handleModal, supllierNumberOptions, setsupplierInpu
         }      
       })
     }
-   
+  }
+  const handleArtNumberFilter = async (value) => {
+    // setarticleOptions([{ value: '', label: '' }])
+    const articleNumber = value.value
+    if (articleNumber) {
+      await axios.get(`${nodeBackend}/getArticlesByEANNumber`, { params: { articleNumber, country, vat_number} }).then((res) => {
+        if (res.data.data) {
+          if (res.data.data.articleOptions) {
+            setnewEAN(res.data.data.articleOptions[0] ? res.data.data.articleOptions[0].ean_no : '')
+            // ean_no
+          }
+          // 
+        }      
+      })
+    }
   } 
   const handleModalClose = async () => {
     setNewPrice('')
@@ -219,7 +238,7 @@ const AddNewModal = ({ open, handleModal, supllierNumberOptions, setsupplierInpu
                   className='is-invalid select-custom'
                   classNamePrefix="react-select"
                   value={articleOptions.find((c) => c.value === articleNumber)}
-                  onChange={(val) => onChange(val.value)}
+                  onChange={(val) => { handleArtNumberFilter(val); onChange(val.value) } }
                   theme={(theme) => ({
                     ...theme,
                     borderRadius: '4px',
@@ -232,6 +251,21 @@ const AddNewModal = ({ open, handleModal, supllierNumberOptions, setsupplierInpu
               )}
             />
             {errors["article_number"] && <FormFeedback>{'Article number is a required field'}</FormFeedback>}
+          </div>
+
+          <div className='mb-1'>
+            <Label className='form-label' for='ean_no'>
+            EAN No.
+            </Label>
+            <InputGroup>
+              <Controller
+                id='ean_no'
+                name='ean_no'
+                control={control}
+                render={() => <Input type="text" placeholder='EAN No.' readOnly value={newEAN} invalid={errors.ean_no && true} />}
+              />
+              {errors.ean_no && <FormFeedback>{"EAN is a required field"}</FormFeedback>}
+            </InputGroup>
           </div>
           <div className='mb-1'>
             <Label className='form-label' for='new_Price'>

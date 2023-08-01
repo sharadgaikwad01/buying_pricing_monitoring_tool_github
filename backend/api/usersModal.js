@@ -3,6 +3,7 @@ var nodemailer = require('nodemailer');
 //=========== MonthEnd API Module ===================
 module.exports = function(app, con) {
     app.get('/users', async function(req, res){
+		try {
 		var data = {};
         // var query = "SELECT * FROM public.tbl_users where action_status='Open'" + condition;
 
@@ -33,11 +34,17 @@ module.exports = function(app, con) {
 				return;
             }			
 		});
+		} catch(e) {
+			console.log(e);
+			return res.status(200).json({ status: false, message: "Server Error" });
+			// [Error: Uh oh!]
+		}
     });
 	
 	app.post('/add_user_input', function(req, res){
 		// var role = 'Admin';
 		var data = {};
+		try {
 		// usp_addNewUser('id','user_name','email','emp_id','user_role')
 		if(req.body.user_id == 'undefined' || req.body.user_id == 0){
 			sql=`CALL public.usp_addNewUser('0','` + req.body.user_name +`','`+ req.body.email +`','`+ req.body.emp_id +`','`+ req.body.emp_id +`','` + req.body.user_type + `','','','','` + req.body.user_role + `');`;
@@ -64,9 +71,15 @@ module.exports = function(app, con) {
 				return;
             }			
 		});
+		} catch(e) {
+			console.log(e);
+			return res.status(200).json({ status: false, message: "Server Error" });
+			// [Error: Uh oh!]
+		}
     });
 
 	app.get('/edit_user_input', async function(req, res){
+		try {
 		var query = "SELECT * FROM public.tbl_users where id = '"+req.query.id +"'";
 		// console.log(query);
 		await con.query(query, function(err, result) {
@@ -78,9 +91,15 @@ module.exports = function(app, con) {
 				return;
             }			
 		});
+		} catch(e) {
+			console.log(e);
+			return res.status(200).json({ status: false, message: "Server Error" });
+			// [Error: Uh oh!]
+		}
 	});
 
 	app.get('/user_input', async function(req, res){
+		try {
 		var query = "SELECT * FROM public.tbl_users where email = '"+req.query.email +"'";
 		// console.log(query);
 		
@@ -95,9 +114,15 @@ module.exports = function(app, con) {
 				return;
             }			
 		});
+		} catch(e) {
+			console.log(e);
+			return res.status(200).json({ status: false, message: "Server Error" });
+			// [Error: Uh oh!]
+		}
 	});
 
 	app.post('/delete_user_input', async function(req, res){
+		try {
 		var query = "DELETE FROM public.tbl_users where id = '"+req.body.id +"'";
 		// console.log(query);
 		await con.query(query, function(err, result) {
@@ -109,5 +134,10 @@ module.exports = function(app, con) {
 				return;
             }			
 		});
+		} catch(e) {
+			console.log(e);
+			return res.status(200).json({ status: false, message: "Server Error" });
+			// [Error: Uh oh!]
+		}
 	});
 }

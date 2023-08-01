@@ -105,9 +105,9 @@ const client = new Client({
 })
 client.connect();
 // Enable query optimization settings
-client.query('SET enable_seqscan = OFF');
-client.query('SET enable_bitmapscan = ON');
-client.query('SET enable_indexscan = ON');
+// client.query('SET enable_seqscan = OFF');
+// client.query('SET enable_bitmapscan = ON');
+// client.query('SET enable_indexscan = ON');
 
 client.query('SELECT NOW()', (err, res) => {
 	if (err) {
@@ -130,70 +130,70 @@ app.listen(config.port, () => {
 	console.log("Application is running at localhost:" + config.port)
 })
 
-var open_request = cron.schedule('* * * * * *', () => {
-	var db_query = "select distinct buyer_fullname as name, buyer_emailid, country_name from vw_buyer_details t Where t.request_date=current_date -1 and t.action_status='open'";
-	client.query(db_query, (err, result) => {
-		if (err) {
-			console.log(err)
-			return;
-		}
-		result.rows.forEach(async function (value, key) {	
-			var db_query = "select distinct coalesce(suppl_name_tl,suppl_name) as suppl_name, suppl_no, suppl_name, art_no, new_price, price_change_reason, to_char(price_increase_effective_date, 'dd-mm-YYYY') as price_increase_effective_date from vw_buyer_details t Where t.request_date =current_date-1 and t.action_status= 'open' and t.buyer_emailid ='" + value.buyer_emailid + "'";
-			var message = '';
-			await client.query(db_query, async (error, b_result) => {
-				if (error) {
-					return;
-				}
-				if(b_result.rowCount > 0){
-					message = (
-						'Hi '+value.name+', <br><br>'+
-						'This is a notice that there is a price change request made by supplier on BPMT tool.'+
-						'<br>For more information, please visit the BPMT portal. <a href="'+config.reactFrontend+'/buyer_login" >Click here </a><br>'+
-						'<br>If you require any assistance, please contact our support email address: support-hyperautomation@metro-gsc.in'+
-						'<br><br>Sincerely,'+
-						'<br>Team BPMT'+	
-						'<br><br><br><p style="font-size: 10px;">Note: This email was sent from a notification-only address that cannot accept incoming email. Please do not reply to this message.</p>'			
-					);
-					to = value.buyer_emailid;
-					//to = 'archanaaditya.deokar@metro-gsc.in'
-					subject = 'A new price change request has been submitted by the supplier - BPMT'
-					html = message
-					sendEmail(to, subject, html)	
-				}
-			});			
-		});
-	})
-});
+// var open_request = cron.schedule('* * * * * *', () => {
+// 	var db_query = "select distinct buyer_fullname as name, buyer_emailid, country_name from vw_buyer_details t Where t.request_date=current_date -1 and t.action_status='open'";
+// 	client.query(db_query, (err, result) => {
+// 		if (err) {
+// 			console.log(err)
+// 			return;
+// 		}
+// 		result.rows.forEach(async function (value, key) {	
+// 			var db_query = "select distinct coalesce(suppl_name_tl,suppl_name) as suppl_name, suppl_no, suppl_name, art_no, new_price, price_change_reason, to_char(price_increase_effective_date, 'dd-mm-YYYY') as price_increase_effective_date from vw_buyer_details t Where t.request_date =current_date-1 and t.action_status= 'open' and t.buyer_emailid ='" + value.buyer_emailid + "'";
+// 			var message = '';
+// 			await client.query(db_query, async (error, b_result) => {
+// 				if (error) {
+// 					return;
+// 				}
+// 				if(b_result.rowCount > 0){
+// 					message = (
+// 						'Hi '+value.name+', <br><br>'+
+// 						'This is a notice that there is a price change request made by supplier on BPMT tool.'+
+// 						'<br>For more information, please visit the BPMT portal. <a href="'+config.reactFrontend+'/buyer_login" >Click here </a><br>'+
+// 						'<br>If you require any assistance, please contact our support email address: support-hyperautomation@metro-gsc.in'+
+// 						'<br><br>Sincerely,'+
+// 						'<br>Team BPMT'+	
+// 						'<br><br><br><p style="font-size: 10px;">Note: This email was sent from a notification-only address that cannot accept incoming email. Please do not reply to this message.</p>'			
+// 					);
+// 					to = value.buyer_emailid;
+// 					//to = 'archanaaditya.deokar@metro-gsc.in'
+// 					subject = 'A new price change request has been submitted by the supplier - BPMT'
+// 					html = message
+// 					sendEmail(to, subject, html)	
+// 				}
+// 			});			
+// 		});
+// 	})
+// });
 
-open_request.stop();
+// open_request.stop();
 
-var closed_request = cron.schedule('*/10 * * * * *', () => {
-	var db_query = "select distinct buyer_fullname as name, country_name, buyer_emailid from vw_buyer_details t Where t.request_date=current_date-2 and t.action_status='closed'";
-	client.query(db_query, (err, result) => {
-		if (err) {
-			console.log(err)
-			return;
-		}
-		if(result.rowCount > 0){
-			result.rows.forEach(async function (value, key) {
-				var db_query = "select distinct coalesce(suppl_name_tl,suppl_name) as suppl_name, suppl_no, art_no, art_name, frmt_new_price as new_price, frmt_negotiate_final_price as final_price, to_char(price_increase_effective_date, 'dd-mm-YYYY') as price_increase_effective_date from vw_buyer_details t Where t.request_date =current_date-2 and t.action_status= 'closed' and t.buyer_emailid ='" + value.buyer_emailid + "'";
-				var message = '';
-				await client.query(db_query, async (error, b_result) => {
-					if (error) {
-						console.log(error)
-						return;
-					}
-					if(b_result.rowCount > 0){
-						var name = value.name.replace(" ","_");
-						var supplier_name = b_result.rows[0].suppl_name;
-						var file_path = path.join(__dirname+'/cron-pdf/supplier_assortments_'+name+'.pdf');
-						var flag = 'cron-job';
-						await createSupplierAssortments(b_result.rows, file_path, null, value.country_name, value.name, flag, supplier_name, value.buyer_emailid)
-					}
-				});			
-			});
-		}
-	})
-});
+// var closed_request = cron.schedule('*/10 * * * * *', () => {
+// 	var db_query = "select distinct buyer_fullname as name, country_name, buyer_emailid from vw_buyer_details t Where t.request_date=current_date-2 and t.action_status='closed'";
+// 	client.query(db_query, (err, result) => {
+// 		if (err) {
+// 			console.log(err)
+// 			return;
+// 		}
+// 		if(result.rowCount > 0){
+// 			result.rows.forEach(async function (value, key) {
+// 				var db_query = "select distinct coalesce(suppl_name_tl,suppl_name) as suppl_name, suppl_no, art_no, art_name, frmt_new_price as new_price, frmt_negotiate_final_price as final_price, to_char(price_increase_effective_date, 'dd-mm-YYYY') as price_increase_effective_date from vw_buyer_details t Where t.request_date =current_date-2 and t.action_status= 'closed' and t.buyer_emailid ='" + value.buyer_emailid + "'";
+// 				var message = '';
+// 				await client.query(db_query, async (error, b_result) => {
+// 					if (error) {
+// 						console.log(error)
+// 						return;
+// 					}
+// 					if(b_result.rowCount > 0){
+// 						var name = value.name.replace(" ","_");
+// 						var supplier_name = b_result.rows[0].suppl_name;
+// 						var file_path = path.join(__dirname+'/cron-pdf/supplier_assortments_'+name+'.pdf');
+// 						var flag = 'cron-job';
+// 						await createSupplierAssortments(b_result.rows, file_path, null, value.country_name, value.name, flag, supplier_name, value.buyer_emailid)
+// 					}
+// 				});			
+// 			});
+// 		}
+// 	})
+// });
 
-closed_request.stop();
+// closed_request.stop();

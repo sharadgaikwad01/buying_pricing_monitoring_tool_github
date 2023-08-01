@@ -67,9 +67,9 @@ router.use((req, res, next) => {
                                 if(value2.userGroup != '' && value2.userGroup != 'undefined'){
                                     userGroup = value2.userGroup ? value2.userGroup[0] : '';
                                 }
-                                if(value2.COMSCategory){
-                                    COMSCategory = value2.COMSCategory ? value2.COMSCategory.toString() : '';
-                                }
+                                // if(value2.COMSCategory){
+                                //     COMSCategory = value2.COMSCategory ? value2.COMSCategory.toString() : '';
+                                // }
                                 // if(value2.category){
                                 //     COMSCategory = value2.category ? value2.category.toString() : '';
                                 // }
@@ -80,9 +80,9 @@ router.use((req, res, next) => {
                                 if(value2.userGroup != '' && value2.userGroup != 'undefined'){
                                     userGroup = value2.userGroup ? value2.userGroup[0] : '';
                                 }
-                                if(value2.COMSCategory){
-                                    COMSCategory = COMSCategory + `,'${value2.COMSCategory.toString()}'`;
-                                }
+                                // if(value2.COMSCategory){
+                                //     COMSCategory = COMSCategory + `,'${value2.COMSCategory.toString()}'`;
+                                // }
                                 // if(value2.category){
                                 //     COMSCategory = COMSCategory + `,'${value2.category.toString()}'`;
                                 // }

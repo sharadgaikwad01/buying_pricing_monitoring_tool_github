@@ -6,7 +6,7 @@ module.exports = function(app, con) {
     app.get('/mintech', async function(req, res){
 		var data = {};
         // var query = "SELECT * FROM public.tbl_users where action_status='Open'" + condition;
-
+		try {
 		var condition  = '';
 		var CategoryOptions = [];
 		var CountryOptions = [];
@@ -66,6 +66,11 @@ module.exports = function(app, con) {
 				return;
             }			
 		});
+		} catch(e) {
+			console.log(e);
+			return res.status(200).json({ status: false, message: "Server Error" });
+			// [Error: Uh oh!]
+		}
     });
 	
 	app.post('/add_mintech_input', function(req, res){
@@ -73,6 +78,7 @@ module.exports = function(app, con) {
 		var data = {};
 		var condition  = '';
 		var sql  = '';
+		try {
 		// console.log(req.body);
 		// usp_addNewUser('id','user_name','email','emp_id','user_role')
 		if(req.body.user_id == 'undefined' || req.body.user_id == 0){
@@ -107,14 +113,15 @@ module.exports = function(app, con) {
 				});
 			}	
 		});
-
-        // console.log(query)
-        // console.log(req.query);
-
-        
+		} catch(e) {
+			console.log(e);
+			return res.status(200).json({ status: false, message: "Server Error" });
+			// [Error: Uh oh!]
+		}
     });
 
 	app.get('/edit_mintech_input', async function(req, res){
+		try {
 		var query = "SELECT * FROM public.tbl_mintec_dashboard where id = '"+req.query.id +"'";
 		// console.log(query);
 		await con.query(query, function(err, result) {
@@ -126,25 +133,37 @@ module.exports = function(app, con) {
 				return;
             }			
 		});
+		} catch(e) {
+			console.log(e);
+			return res.status(200).json({ status: false, message: "Server Error" });
+			// [Error: Uh oh!]
+		}
 	});
 
 	app.get('/mintech_input', async function(req, res){
-		var query = "SELECT * FROM public.tbl_mintec_dashboard where id = '"+req.query.id +"'";
-		// console.log(query);
-		await con.query(query, function(err, result) {
-			// console.log(result);
-			console.log(err);
-			if (err) {
-				res.json({ status: false });
-				return;
-			} else{
-				res.json({ status: true, data: result.rows });
-				return;
-            }			
-		});
+		try {		
+			var query = "SELECT * FROM public.tbl_mintec_dashboard where id = '"+req.query.id +"'";
+			// console.log(query);
+			await con.query(query, function(err, result) {
+				// console.log(result);
+				console.log(err);
+				if (err) {
+					res.json({ status: false });
+					return;
+				} else{
+					res.json({ status: true, data: result.rows });
+					return;
+				}			
+			});
+		} catch(e) {
+			console.log(e);
+			return res.status(200).json({ status: false, message: "Server Error" });
+			// [Error: Uh oh!]
+		}
 	});
 
 	app.post('/delete_mintech_input', async function(req, res){
+		try {
 		var query = "DELETE FROM public.tbl_mintec_dashboard where id = '"+req.body.id +"'";
 		// console.log(res.body);
 		var condition  = '';
@@ -174,10 +193,16 @@ module.exports = function(app, con) {
 				});
             }			
 		});
+		} catch(e) {
+			console.log(e);
+			return res.status(200).json({ status: false, message: "Server Error" });
+			// [Error: Uh oh!]
+		}
 	});
 
 	app.post('/upload_mintech_input', async function (req, res) {
 		var data = {};
+		try {
 		var mintech_inputs = req.body.mintech_inputs
 		// var created_by = req.body.created_by
 		var len = mintech_inputs.length;
@@ -241,5 +266,10 @@ module.exports = function(app, con) {
 				});
 			}
 		]);
+		} catch(e) {
+			console.log(e);
+			return res.status(200).json({ status: false, message: "Server Error" });
+			// [Error: Uh oh!]
+		}
 	});
 }

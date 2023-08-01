@@ -37,6 +37,7 @@ const EditSupplierRequestModal = ({ open, handleModal, rowData, supllierNumberOp
   const email = secureLocalStorage.getItem('email')
   
   const [newPrice, setNewPrice] = useState('')
+  const [newEAN, setnewEAN] = useState('')
   const [reason, setReason] = useState('')
   const [supplierNumber, setSupplierNumber] = useState('')
   const [articleNumber, setArticleNumber] = useState('')
@@ -66,6 +67,7 @@ const EditSupplierRequestModal = ({ open, handleModal, rowData, supllierNumberOp
       await setReason(rowData.price_change_reason)
       await setSupplierNumber(rowData.suppl_no)
       await setArticleNumber(rowData.art_no)
+      await setnewEAN(rowData.ean_no)
 
       // console.log(rowData)
       vat_number = rowData.vat_no
@@ -81,6 +83,7 @@ const EditSupplierRequestModal = ({ open, handleModal, rowData, supllierNumberOp
       setPriceIncreaseEffectiveDate(finatEffectiveDate)
 
       setValue('row_id', rowData.row_id)
+      setValue('ean_no', rowData.ean_no)
       setValue('new_price', rowData.new_price, { shouldValidate: true })
       setValue('reason', rowData.price_change_reason, { shouldValidate: true })
       setValue('supplier_number', rowData.suppl_no, { shouldValidate: true })
@@ -186,6 +189,22 @@ const EditSupplierRequestModal = ({ open, handleModal, rowData, supllierNumberOp
     }
   }
 
+  // const handleArtNumberFilter = async (value) => {
+  //   // setarticleOptions([{ value: '', label: '' }])
+  //   const articleNumber = value.value
+  //   if (articleNumber) {
+  //     await axios.get(`${nodeBackend}/getArticlesByEANNumber`, { params: { articleNumber, country, vat_number} }).then((res) => {
+  //       if (res.data.data) {
+  //         if (res.data.data.articleOptions) {
+  //           setnewEAN(res.data.data.articleOptions[0] ? res.data.data.articleOptions[0].ean_no : '')
+  //           // ean_no
+  //         }
+  //         // 
+  //       }      
+  //     })
+  //   }
+  // } 
+
   return (
     <Modal
       isOpen={open}
@@ -243,6 +262,23 @@ const EditSupplierRequestModal = ({ open, handleModal, rowData, supllierNumberOp
             />
             {errors["article_number"] && <FormFeedback>{'Article number is a required field'}</FormFeedback>}
           </div>
+
+          <div className='mb-1'>
+            <Label className='form-label' for='ean_no'>
+            EAN No.
+            </Label>
+            <InputGroup>
+             
+              <Controller
+                id='ean_no'
+                name='ean_no'
+                control={control}
+                render={() => <Input type="text" placeholder='EAN No.' readOnly value={newEAN} onChange={e => { setnewEAN(e.target.value); setValue('ean_no', e.target.value) }} invalid={errors.ean_no && true} />}
+              />
+              {errors.ean_no && <FormFeedback>{"Requested Price is a required field"}</FormFeedback>}
+            </InputGroup>
+          </div>
+
           <div className='mb-1'>
             <Label className='form-label' for='new_Price'>
             Requested Price

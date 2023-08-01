@@ -196,10 +196,12 @@ const UploadBuyerArticliesModal = ({ open, handleModal, setsupplierInputsData })
                   suppl_no : item[2],
                   art_no : item[3],
                   art_name : item[4],
-                  umbrella_name : item[5],
-                  new_price : item[6],
-                  price_change_reason : item[7],
-                  price_increase_effective_date : item[8]
+                  subsys_no : item[5],
+                  ean_no : item[6],
+                  umbrella_name : item[7],
+                  new_price : item[8],
+                  price_change_reason : item[9],
+                  price_increase_effective_date : item[10]
                 }
               ))
               customHeadingsData.shift()
@@ -232,16 +234,17 @@ const UploadBuyerArticliesModal = ({ open, handleModal, setsupplierInputsData })
                 Supplier_Number: item[0],
                 Supplier_Name: item[1],
                 Article_Number: item[2],
-                EAN_Number: item[3],
-                Article_Description: item[4],
-                Current_Price: item[5],
-                Requested_Price: item[6],
-                Requested_Date: item[7],
-                Price_change_Reason: item[8],
-                Price_Effective_Date: item[9],
-                Final_Price: item[10],
-                Price_Finalize_Date: item[11],
-                CAT_Manager_Comment: item[12]
+                subsys_no : item[3],
+                EAN_Number: item[4],
+                Article_Description: item[5],
+                Current_Price: item[6],
+                Requested_Price: item[7],
+                Requested_Date: item[8],
+                Price_change_Reason: item[9],
+                Price_Effective_Date: item[10],
+                Final_Price: item[11],
+                Price_Finalize_Date: item[12],
+                CAT_Manager_Comment: item[13]
               }
               ))
               customHeadingsData.shift()

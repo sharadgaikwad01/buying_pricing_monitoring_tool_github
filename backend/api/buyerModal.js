@@ -6,6 +6,7 @@ module.exports = function (app, con) {
 	app.get('/buyers', async function (req, res) {
 				
 		var data = {};
+		try {
         // var query = "SELECT * FROM public.tbl_users where action_status='Open'" + condition;
 		var condition  = '';
         var articalIDOptions = [];
@@ -54,6 +55,7 @@ module.exports = function (app, con) {
 									deptOptions.push(option);
 								});
 								var query = "SELECT array_agg(row_id) as row_id, first_name, last_name, buyer_emailid, dept_name, role_name, country_name,string_agg(stratbuyer_name,', ') stratbuyer_name FROM tbl_buyer_details where buyer_emailid IS NOT NULL AND active_status='active'" + condition + " group by first_name, last_name, buyer_emailid, dept_name, country_name, role_name";
+								console.log(query)
 								con.query(query, function (err, result) {
 									if (err) {
 										console.log(err)
@@ -70,6 +72,11 @@ module.exports = function (app, con) {
 				});
 			}
 		});
+		} catch(e) {
+			console.log(e);
+			return res.status(200).json({ status: false, message: "Server Error" });
+			// [Error: Uh oh!]
+		}
 	});
 
 	app.get('/buyers_log', async function (req, res) {
@@ -77,6 +84,7 @@ module.exports = function (app, con) {
         // var query = "SELECT * FROM public.tbl_users where action_status='Open'" + condition;
 		var condition  = '';
         var CountryOptions = [];
+		try {
 		
 		if (req.query.searchEmail != '') {
 			condition = condition + " AND RTRIM(LTRIM(RTRIM(email))) ILIKE '%" +req.query.searchEmail +"%'"
@@ -105,9 +113,15 @@ module.exports = function (app, con) {
 				});
 			}
 		});
+		} catch(e) {
+			console.log(e);
+			return res.status(200).json({ status: false, message: "Server Error" });
+			// [Error: Uh oh!]
+		}
 	});
 
 	app.post('/buyers_add_input', async function (req, res) {
+		try {
 		if (req.body.stratbuyer_name) {
 			// console.log(req.body)
 			const stratbuyer_name = Array.prototype.map.call(req.body.stratbuyer_name, function (item) { return item.label; }).join(",")
@@ -141,6 +155,11 @@ module.exports = function (app, con) {
 			res.json({ status: false, message: "Category is required." });
 			return;
 		}
+		} catch(e) {
+			console.log(e);
+			return res.status(200).json({ status: false, message: "Server Error" });
+			// [Error: Uh oh!]
+		}
 	});
 
 	app.post('/delete_buyer_input', async function (req, res) {
@@ -148,7 +167,7 @@ module.exports = function (app, con) {
 		var count = 0;
 		var condition = '';
 		// console.log(req.body);
-		
+		try {
 		if (req.body.searchName != '') {
 			condition = condition + " AND RTRIM(CONCAT(LTRIM(RTRIM(first_name)) , ' ' , LTRIM(RTRIM(last_name)))) ILIKE '%" +req.body.searchName +"%'"
 		}
@@ -178,6 +197,11 @@ module.exports = function (app, con) {
 					}
 				});
 			});
+		}
+		} catch(e) {
+			console.log(e);
+			return res.status(200).json({ status: false, message: "Server Error" });
+			// [Error: Uh oh!]
 		}
 	});
 }

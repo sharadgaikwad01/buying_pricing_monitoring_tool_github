@@ -10,10 +10,12 @@ var path = require('path');
 
 //=========== MonthEnd API Module ===================
 module.exports = function (app, con) {
+
 	app.get('/supplier_input', async function (req, res) {
 		var data = {};
 		var supplierIDOptions = [];
 		var articleOptions = [];
+		try {
 
 		console.log("supplier_input======================")
 		// console.log(req.query)
@@ -93,10 +95,16 @@ module.exports = function (app, con) {
 				return;
 			}
 		});
+		} catch(e) {
+			console.log(e);
+			return res.status(200).json({ status: false, message: "Server Error" });
+			// [Error: Uh oh!]
+		}
 	});
 
 	app.post('/add_supplier_input', function (req, res) {
 		var data = {};
+		try {
 		sql = `CALL public."usp_addNewRequest"('` + req.body.article_number + `','` + req.body.supplier_number + `','` + req.body.country + `',` + req.body.new_price + `,'` + req.body.reason + `','` + req.body.price_effective_date + `','` + req.body.email + `');`;	
 
 		// console.log(sql);
@@ -119,17 +127,23 @@ module.exports = function (app, con) {
 				}
 			});
 		});
+		} catch(e) {
+			console.log(e);
+			return res.status(200).json({ status: false, message: "Server Error" });
+			// [Error: Uh oh!]
+		}
 	});
 
 	app.get('/supplier_article_details', async function (req, res) {
-		
+		try {
 		if(req.query.vat_number){
-			var query = "select country_name, vat_no, suppl_no, art_no, art_name, umbrella_name, '' as new_price, '' as price_change_reason, '' as price_increase_effective_date from vw_art_info where vat_no='" + req.query.vat_number + "' and country_name='" + req.query.country + "' AND SUPPL_NO IN (" + req.query.supplier_number + ")";
+			var query = "select country_name, mikg_art_no, ean_no, vat_no, suppl_no, art_no, art_name, umbrella_name, '' as new_price, '' as price_change_reason, '' as price_increase_effective_date from vw_art_info where vat_no='" + req.query.vat_number + "' and country_name='" + req.query.country + "' AND SUPPL_NO IN (" + req.query.supplier_number + ")";
 		} else {
-			var query = "select country_name, vat_no, suppl_no, art_no, art_name, umbrella_name, '' as new_price, '' as price_change_reason, '' as price_increase_effective_date from vw_artinfo_without_request where country_name='" + req.query.country + "' AND SUPPL_NO IN (" + req.query.supplier_number + ")";
+			var query = "select country_name, mikg_art_no, ean_no, vat_no, suppl_no, art_no, art_name, umbrella_name, '' as new_price, '' as price_change_reason, '' as price_increase_effective_date from vw_artinfo_without_request where country_name='" + req.query.country + "' AND SUPPL_NO IN (" + req.query.supplier_number + ")";
 		}
-
+		console.log(query);
 		await con.query(query, function (err, result) {
+			console.log(err)
 			if (err) {
 				res.json({ status: false });
 				return;
@@ -138,13 +152,17 @@ module.exports = function (app, con) {
 				return;
 			}
 		});
+		} catch(e) {
+			console.log(e);
+			return res.status(200).json({ status: false, message: "Server Error" });
+			// [Error: Uh oh!]
+		}
 	});
-	
-
 
 	app.post('/delete_supplier_input', async function (req, res) {
 
 		var data = {};
+		try {
 		var query = "call public.usp_update_requestdetails (record_id=>" + req.body.id + ", in_is_deleted=> true)";
 		await con.query(query, function (err, result) {
 			if (err) {
@@ -185,10 +203,16 @@ module.exports = function (app, con) {
 
 			}
 		});
+		} catch(e) {
+			console.log(e);
+			return res.status(200).json({ status: false, message: "Server Error" });
+			// [Error: Uh oh!]
+		}
 	});
 
 	app.post('/update_supplier_input', async function (req, res) {		
 		var data = {};
+		try {
 		var query = "call public.usp_update_requestdetails (record_id=>" + req.body.row_id + ", in_new_price=>" + req.body.new_price + ", in_reason=>'" + req.body.reason + "', in_effective_date=>'" + req.body.price_effective_date + "', in_updated_by=>'" + req.body.email + "')";
 
 		// console.log(query);
@@ -232,10 +256,16 @@ module.exports = function (app, con) {
 				});
 			}
 		});
+		} catch(e) {
+			console.log(e);
+			return res.status(200).json({ status: false, message: "Server Error" });
+			// [Error: Uh oh!]
+		}
 	});
 
 	app.get('/getArticlesBySupplierNumber', async function (req, res) {
 		var data = {};
+		try {
 		var articleOptions = [];
 		console.log("getUniqueArticleQuery=============")	
 		if(req.query.supplierNumber =='undefined' || req.query.country == 'undefined'){
@@ -264,6 +294,43 @@ module.exports = function (app, con) {
 				return;
 			}
 		});
+		} catch(e) {
+			console.log(e);
+			return res.status(200).json({ status: false, message: "Server Error" });
+			// [Error: Uh oh!]
+		}
+	});
+
+	app.get('/getArticlesByEANNumber', async function (req, res) {
+		var data = {};
+		var articleOptions = [];
+		try {
+		console.log("getArticlesByEANNumber=============")	
+		if(req.query.supplierNumber =='undefined' || req.query.country == 'undefined'){
+			res.json({ status: false });
+			return;
+		}
+		if (req.query.flag && req.query.vat_number) {
+			var getUniqueArticleQuery = "select DISTINCT ean_no from vw_artinfo_with_request  Where art_no='" + req.query.articleNumber + "' and country_name ='" + req.query.country + "' and vat_no ='" + req.query.vat_number + "'"
+		} else {
+			var getUniqueArticleQuery = "SELECT DISTINCT ean_no FROM public.vw_artinfo_without_request Where art_no='" + req.query.articleNumber + "' and country_name ='" + req.query.country + "'"
+		}
+		
+		await con.query(getUniqueArticleQuery, function (err, result) {
+			if (err) {
+				res.json({ status: false });
+				return;
+			} else {
+				data.articleOptions = result.rows;
+				res.json({ status: true, data: data });
+				return;
+			}
+		});
+		} catch(e) {
+			console.log(e);
+			return res.status(200).json({ status: false, message: "Server Error" });
+			// [Error: Uh oh!]
+		}
 	});
 
 	// app.post('/upload_supplier_input', async function (req, res) {
@@ -314,6 +381,7 @@ module.exports = function (app, con) {
 		var sucess_count = 0;
 		var error_count = 0;
 		var count = 0;
+		try {
 		// console.log(supplier_inputs);
 		async.waterfall([
 			function (callback) {
@@ -363,14 +431,17 @@ module.exports = function (app, con) {
 				});
 			}
 		]);
+		} catch(e) {
+			console.log(e);
+			return res.status(200).json({ status: false, message: "Server Error" });
+			// [Error: Uh oh!]
+		}
 	});
 
 	app.get('/notifications', async function (req, res) {
-		
-		var query = "select row_id, statuscol, country_name, art_no, art_name, suppl_no, suppl_name, msg, new_price from tbl_notification where country_name='" + req.query.country+"'";
-		// var query = "select row_id, statuscol, country_name, art_no, art_name, suppl_no, suppl_name, msg, new_price, created_at from tbl_notification";
-		// console.log(req.query.country);
-		// console.log(query);
+		try {
+		var query = "select * from func_notification_details('" + req.query.country+"', '" + req.query.email+"')";
+
 		await con.query(query, function (err, result) {
 			if (err) {
 				res.json({ status: false });
@@ -380,27 +451,41 @@ module.exports = function (app, con) {
 				return;
 			}
 		});
+		} catch(e) {
+			console.log(e);
+			return res.status(200).json({ status: false, message: "Server Error" });
+			// [Error: Uh oh!]
+		}
 	});
 	
 	app.post('/notificationread', async function (req, res) {
-		var query = "UPDATE tbl_notification SET statuscol = '1' WHERE row_id =" + req.body.params;
+		try {
+		var query = "UPDATE tbl_notification SET statuscol = '1' WHERE row_id =" + req.body.id;
+		console.log(query);
 		await con.query(query, async function (err, result) {
 			if (err) {
 				res.json({ status: false });
 				return;
 			} else {
-				var query = "select row_id, statuscol, country_name, art_no, art_name, suppl_no, suppl_name, msg, new_price, created_at from tbl_notification where statuscol=0";
-		await con.query(query, function (err, result) {
-			if (err) {
-				res.json({ status: false });
-				return;
-			} else {
-				res.json({ status: true, data: result.rows });
-				return;
+				var query = "select * from func_notification_details('" + req.body.country+"', '" + req.body.email+"')";
+				// var query = "select row_id, statuscol, country_name, art_no, art_name, suppl_no, suppl_name, msg, new_price, created_at from tbl_notification where statuscol=0";
+				console.log(query);
+				await con.query(query, function (err, result) {
+					if (err) {
+						res.json({ status: false });
+						return;
+					} else {
+						res.json({ status: true, data: result.rows });
+						return;
+					}
+				});
 			}
 		});
-			}
-		});
+		} catch(e) {
+			console.log(e);
+			return res.status(200).json({ status: false, message: "Server Error" });
+			// [Error: Uh oh!]
+		}
 		// var query = "select row_id, country_name, art_no, art_name, suppl_no, suppl_name, msg, new_price from tbl_notification where country_name='" + req.query.country;
 	});
 }

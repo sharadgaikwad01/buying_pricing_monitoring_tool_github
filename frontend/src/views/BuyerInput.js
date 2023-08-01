@@ -111,7 +111,7 @@ const BuyerInput = props => {
   useEffect(async () => {
     const user_type = secureLocalStorage.getItem("type")
     console.log("user_type")
-    // console.log(user_type)
+    console.log(user_type)
     if (user_type === '' || user_type === null) {
       props.history.push('/buyer_login')
     }
@@ -243,6 +243,7 @@ const BuyerInput = props => {
         "Supplier Number": item.suppl_no ? item.suppl_no.replace(",", ".") : item.suppl_no,
         "Supplier Name": item.suppl_name ? item.suppl_name.replace(",", ".") : item.suppl_name,
         "Article Number": item.art_no ? item.art_no.replace(",", ".") : item.art_no,
+        "Subsystem Number": item.mikg_art_no ? item.mikg_art_no.replace(",", ".") : item.mikg_art_no,
         "EAN Number": item.ean_no ? item.ean_no.replace(",", ".") : item.ean_no,
         "Article Description": item.art_name_tl ? item.art_name_tl.replace(",", ".") : item.art_name_tl,
         "Current Price": item.frmt_current_price ? item.frmt_current_price.replace("€", "").replace(",", ".") : item.frmt_current_price,
